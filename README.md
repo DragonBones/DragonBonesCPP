@@ -7,8 +7,8 @@ DragonBones C++ Library
 
 ## [cocos2d-x][1]
 	
-	* cocos2d-x 2.x use the master branch.
-	* cocos2d-x 3.x use the dev branch.
+* cocos2d-x 2.x use the master branch.
+* cocos2d-x 3.x use the dev branch.
 
 # Samples
 
