@@ -69,7 +69,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\kazmath\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32\OGLES;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external\chipmunk\include\chipmunk;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\CocosDenshion\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\extensions;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\kazmath\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32\OGLES;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external\chipmunk\include\chipmunk;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\CocosDenshion\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\extensions;$(ProjectDir)..\..\..\renderer\cocos2d-x-2.x;$(ProjectDir)..\..\..\library;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -131,11 +131,89 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external\libwebsockets\
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\library\Animation.cpp" />
+    <ClCompile Include="..\..\..\library\AnimationEvent.cpp" />
+    <ClCompile Include="..\..\..\library\AnimationState.cpp" />
+    <ClCompile Include="..\..\..\library\Armature.cpp" />
+    <ClCompile Include="..\..\..\library\ArmatureEvent.cpp" />
+    <ClCompile Include="..\..\..\library\BaseFactory.cpp" />
+    <ClCompile Include="..\..\..\library\Bone.cpp" />
+    <ClCompile Include="..\..\..\library\BytesType.cpp" />
+    <ClCompile Include="..\..\..\library\ConstValues.cpp" />
+    <ClCompile Include="..\..\..\library\DBDataUtil.cpp" />
+    <ClCompile Include="..\..\..\library\DBObject.cpp" />
+    <ClCompile Include="..\..\..\library\dbtinyxml2.cpp" />
+    <ClCompile Include="..\..\..\library\DisplayData.cpp" />
+    <ClCompile Include="..\..\..\library\DragonBones.cpp" />
+    <ClCompile Include="..\..\..\library\Event.cpp" />
+    <ClCompile Include="..\..\..\library\FrameEvent.cpp" />
+    <ClCompile Include="..\..\..\library\Matrix.cpp" />
+    <ClCompile Include="..\..\..\library\Slot.cpp" />
+    <ClCompile Include="..\..\..\library\SoundEvent.cpp" />
+    <ClCompile Include="..\..\..\library\SoundEventManager.cpp" />
+    <ClCompile Include="..\..\..\library\TimelineState.cpp" />
+    <ClCompile Include="..\..\..\library\TransformTimeline.cpp" />
+    <ClCompile Include="..\..\..\library\TransformUtil.cpp" />
+    <ClCompile Include="..\..\..\library\XMLDataParser.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\CCDragonBones.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxAtlasNode.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxDisplayBridge.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxFactory.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxTextureAtlas.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\library\Animation.h" />
+    <ClInclude Include="..\..\..\library\AnimationData.h" />
+    <ClInclude Include="..\..\..\library\AnimationEvent.h" />
+    <ClInclude Include="..\..\..\library\AnimationState.h" />
+    <ClInclude Include="..\..\..\library\Armature.h" />
+    <ClInclude Include="..\..\..\library\ArmatureData.h" />
+    <ClInclude Include="..\..\..\library\ArmatureEvent.h" />
+    <ClInclude Include="..\..\..\library\BaseFactory.h" />
+    <ClInclude Include="..\..\..\library\Bone.h" />
+    <ClInclude Include="..\..\..\library\BoneData.h" />
+    <ClInclude Include="..\..\..\library\BytesType.h" />
+    <ClInclude Include="..\..\..\library\checkBytesTailisXML.h" />
+    <ClInclude Include="..\..\..\library\ColorTransform.h" />
+    <ClInclude Include="..\..\..\library\ConstValues.h" />
+    <ClInclude Include="..\..\..\library\DBDataUtil.h" />
+    <ClInclude Include="..\..\..\library\DBObject.h" />
+    <ClInclude Include="..\..\..\library\dbtinyxml2.h" />
+    <ClInclude Include="..\..\..\library\DBTransform.h" />
+    <ClInclude Include="..\..\..\library\DisplayData.h" />
+    <ClInclude Include="..\..\..\library\DragonBones.h" />
+    <ClInclude Include="..\..\..\library\DragonBonesHeaders.h" />
+    <ClInclude Include="..\..\..\library\Event.h" />
+    <ClInclude Include="..\..\..\library\Frame.h" />
+    <ClInclude Include="..\..\..\library\FrameEvent.h" />
+    <ClInclude Include="..\..\..\library\IAnimatable.h" />
+    <ClInclude Include="..\..\..\library\IDisplayBridge.h" />
+    <ClInclude Include="..\..\..\library\ITextureAtlas.h" />
+    <ClInclude Include="..\..\..\library\Matrix.h" />
+    <ClInclude Include="..\..\..\library\Point.h" />
+    <ClInclude Include="..\..\..\library\preDB.h" />
+    <ClInclude Include="..\..\..\library\Rectangle.h" />
+    <ClInclude Include="..\..\..\library\SkeletonData.h" />
+    <ClInclude Include="..\..\..\library\SkinData.h" />
+    <ClInclude Include="..\..\..\library\Slot.h" />
+    <ClInclude Include="..\..\..\library\SlotData.h" />
+    <ClInclude Include="..\..\..\library\SoundEvent.h" />
+    <ClInclude Include="..\..\..\library\SoundEventManager.h" />
+    <ClInclude Include="..\..\..\library\TextureAtlasData.h" />
+    <ClInclude Include="..\..\..\library\Timeline.h" />
+    <ClInclude Include="..\..\..\library\TimelineState.h" />
+    <ClInclude Include="..\..\..\library\TransformFrame.h" />
+    <ClInclude Include="..\..\..\library\TransformTimeline.h" />
+    <ClInclude Include="..\..\..\library\TransformUtil.h" />
+    <ClInclude Include="..\..\..\library\XMLDataParser.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\CCDragonBones.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxAtlasNode.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxDisplayBridge.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxFactory.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxTextureAtlas.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="main.h" />

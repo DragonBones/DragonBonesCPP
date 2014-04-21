@@ -33,6 +33,7 @@ namespace dragonBones
         
         addSkeletonData(skeleton , name);
     }
+
     void Cocos2dxFactory::loadTextureAtlasFile(const String &textureAtlasFile , const String &name)
     {
         dragonBones::XMLDataParser parser;

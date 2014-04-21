@@ -72,13 +72,31 @@ namespace dragonBones {
     {
         return m_Armature;
     }
-    void  CCDragonBones::addEventListener(
-                                          const String &type,
-                                          EventDispatcher::Function listener,
-                                          const String &key)
-    { 
-        m_Armature->addEventListener(type, listener, key);
+	
+    void  CCDragonBones::addEventListener(const String &type,const String &key, cocos2d::CCObject*pObj,SEL_CallFuncND callback)
+    {  
+		m_Caller = pObj;
+		m_Callback = callback;
+		std::function<void(Event*)> f =  std::bind(&CCDragonBones::eventBridge, this,std::placeholders::_1); 
+		m_Armature->addEventListener(type, f, key);
     }
+
+	
+		bool  CCDragonBones:: hasEventListener(const String &type)
+		{
+			return m_Armature->hasEventListener(type);
+		}
+		void CCDragonBones::removeEventListener(const String &type, const std::string &key)
+		{
+			m_Armature->removeEventListener(type,key);
+		}
+		void CCDragonBones::dispatchEvent(Event *event)
+		{
+			m_Armature->dispatchEvent(event);
+		}
+  void CCDragonBones::eventBridge(Event*e){ 
+	  (m_Caller->*m_Callback)(this,e);   
+  }
     void CCDragonBones::gotoAndPlay(
                 const String &animationName,
                 Number fadeInTime ,
@@ -135,7 +153,4 @@ namespace dragonBones {
         this->schedule(schedule_selector(CCDragonBones::update), 0);
 		this->addChild(static_cast<CocosNode*>(m_Armature->getDisplay())->node);
     }
-    
-    
-    
 }

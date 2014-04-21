@@ -17,7 +17,7 @@ namespace dragonBones
     protected:
         TextureAtlasData *_textureAtlasRawData;
 
-        // 名字与atlas里的quads索引的对应关系
+        // the corresponding relationship for name and quads index in atlas.
         std::map<String , uint> _textureNames;
         cocos2d::CCTextureAtlas *textureAtlas;
     public:
@@ -39,7 +39,6 @@ namespace dragonBones
          */
         virtual Rectangle getRegion(const String &name);
 
-        // 获取顶点数据所在的Quad索引
         uint getQuadIndex(const String &name)
         {
             std::map<String , uint>::iterator iter = _textureNames.find(name);

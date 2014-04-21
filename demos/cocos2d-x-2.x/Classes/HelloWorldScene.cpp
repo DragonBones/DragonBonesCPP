@@ -49,13 +49,7 @@ bool HelloWorld::init()
     pMenu->setPosition(CCPointZero);
     this->addChild(pMenu, 1);
 
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-    
-    CCLabelTTF* pLabel = CCLabelTTF::create("Hello World", "Arial", 24);
+    CCLabelTTF* pLabel = CCLabelTTF::create("DragonBonesCPP for cocos2d-x 2.x", "Arial", 24);
     
     // position the label on the center of the screen
     pLabel->setPosition(ccp(origin.x + visibleSize.width/2,
@@ -64,9 +58,21 @@ bool HelloWorld::init()
     // add the label as a child to this layer
     this->addChild(pLabel, 1);
     
+	dragonBones::CCDragonBones *m_bones = dragonBones::CCDragonBones::create("dragon/skeleton.xml", "dragon/texture.xml", "Dragon", "Dragon", "");
+	this->addChild(m_bones);
+	m_bones->getDisplayNode()->setPosition(300, 300);
+	m_bones->gotoAndPlay("walk");
+
+	m_bones->addEventListener(dragonBones::AnimationEvent::LOOP_COMPLETE, "mykey", this, callfuncND_selector(HelloWorld::animListener));
+
     return true;
 }
 
+void HelloWorld::animListener(CCNode*node, void*e)
+{
+	dragonBones::Event *_event = (dragonBones::Event *) e;
+	CCLog("Event Triggered:%s", _event->getType().c_str());
+}
 
 void HelloWorld::menuCloseCallback(CCObject* pSender)
 {
