@@ -16,15 +16,15 @@
     <Filter Include="DragonBones\renderer">
       <UniqueIdentifier>{91cdf648-2c1b-404e-b343-925edccf7509}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\example">
+      <UniqueIdentifier>{0af070ff-b611-4191-bb0d-f9eec34de03a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\library\Animation.cpp">
@@ -114,15 +114,21 @@
     <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxTextureAtlas.cpp">
       <Filter>DragonBones\renderer</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\VisibleRect.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\example\DragonDemoEntry.cpp">
+      <Filter>Classes\example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\example\DragonBonesDemo.cpp">
+      <Filter>Classes\example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\library\Animation.h">
@@ -271,6 +277,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxTextureAtlas.h">
       <Filter>DragonBones\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\VisibleRect.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\example\DragonDemoEntry.h">
+      <Filter>Classes\example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\example\DragonBonesDemo.h">
+      <Filter>Classes\example</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

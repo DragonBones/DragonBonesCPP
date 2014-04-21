@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+
+#include "example/DragonDemoEntry.h"
 
 USING_NS_CC;
 
@@ -25,8 +26,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     pDirector->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    CCScene *pScene = HelloWorld::scene();
+	CCScene *pScene = CCScene::create();
 
+	CCLayer* pLayer = new DragonDemoEntry();
+	pLayer->autorelease();
+	pScene->addChild(pLayer);
     // run
     pDirector->runWithScene(pScene);
 
