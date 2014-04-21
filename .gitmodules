@@ -1,3 +1,0 @@
-[submodule "cocos2d-x"]
-	path = engines/cocos2d-x
-	url = git@github.com:DragonBones/cocos2d-x.git
