@@ -136,14 +136,9 @@ namespace dragonBones {
                                            const char* armatureName,
                                            const char* animationName)
     {
-        XMLDataParser parser;
-        XMLDocument doc;
-        doc.LoadFile(skeletonXMLFile);
         Cocos2dxFactory fac;
-        fac.addSkeletonData(parser.parseSkeletonData(doc.RootElement()) );
-        XMLDocument doc1;
-        doc1.LoadFile(textureXMLFile);
-        fac.addTextureAtlas(new Cocos2dxTextureAtlas(parser.parseTextureAtlasData(doc1.RootElement())));
+		fac.loadSkeletonFile(skeletonXMLFile);
+		fac.loadTextureAtlasFile(textureXMLFile);
         return fac.buildArmature(armatureName, animationName ,dragonBonesName);
     }
     
