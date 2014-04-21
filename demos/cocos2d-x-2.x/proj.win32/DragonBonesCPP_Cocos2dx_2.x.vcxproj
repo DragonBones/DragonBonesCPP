@@ -100,7 +100,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\kazmath\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32\OGLES;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external\chipmunk\include\chipmunk;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\CocosDenshion\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\extensions;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\kazmath\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32\OGLES;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external\chipmunk\include\chipmunk;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\CocosDenshion\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\extensions;$(ProjectDir)..\..\..\renderer\cocos2d-x-2.x;$(ProjectDir)..\..\..\library;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -121,7 +121,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy ../Resources/*.* $(SolutionDir)$(Configuration).win32 /s /q /y</Command>
+      <Command>xcopy ..\Resources\*.* $(SolutionDir)$(Configuration).win32 /s /q /y</Command>
     </PostBuildEvent>
     <PreLinkEvent>
       <Command>
