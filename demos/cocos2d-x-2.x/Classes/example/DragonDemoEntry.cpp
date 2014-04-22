@@ -22,7 +22,7 @@ DragonDemoEntry::DragonDemoEntry()
 	_db->addEventListener(AnimationEvent::START, "mykey3", this, callfuncND_selector(DragonDemoEntry::animListener));
 	_db->addEventListener(AnimationEvent::COMPLETE, "mykey4", this, callfuncND_selector(DragonDemoEntry::animListener));
 	_db->setPosition(VisibleRect::bottom(0, _footY));
-	_db->gotoAndPlay("walk");
+	_db->gotoAndPlay("stand");
 	this->scheduleUpdate();
 }
 

@@ -81,71 +81,70 @@ namespace dragonBones {
 		m_Armature->addEventListener(type, f, key);
 	}
 
-
-	bool  CCDragonBones::hasEventListener(const String &type)
-	{
-		return m_Armature->hasEventListener(type);
-	}
-	void CCDragonBones::removeEventListener(const String &type, const std::string &key)
-	{
-		m_Armature->removeEventListener(type, key);
-	}
-	void CCDragonBones::dispatchEvent(Event *event)
-	{
-		m_Armature->dispatchEvent(event);
-	}
-	void CCDragonBones::eventBridge(Event*e){
-		(m_Caller->*m_Callback)(this, e);
-	}
-	void CCDragonBones::gotoAndPlay(
-		const String &animationName,
-		Number fadeInTime,
-		Number duration,
-		Number loop,
-		uint layer,
-		const String &group,
-		const String &fadeOutMode,
-		bool displayControl,
-		bool pauseFadeOut,
-		bool pauseFadeIn
-		)
-	{
-		m_Armature->getAnimation()->gotoAndPlay(
-			animationName,
-			fadeInTime,
-			duration,
-			loop,
-			layer,
-			group,
-			fadeOutMode,
-			displayControl,
-			pauseFadeOut,
-			pauseFadeIn
-			);
-	}
-
-
-	void CCDragonBones::onExit()
-	{
-		this->unscheduleAllSelectors();
-	}
-
-	Armature*   CCDragonBones::buildArmature(const char* skeletonXMLFile,
-		const char* textureXMLFile,
-		const char* dragonBonesName,
-		const char* armatureName,
-		const char* animationName)
-	{
-		Cocos2dxFactory fac;
-		fac.loadSkeletonFile(skeletonXMLFile);
-		fac.loadTextureAtlasFile(textureXMLFile);
-		return fac.buildArmature(armatureName, animationName, dragonBonesName);
-	}
-
-	void CCDragonBones::initWithArmature(Armature*arm)
-	{
-		this->m_Armature = arm;
-		this->schedule(schedule_selector(CCDragonBones::update), 0);
+		bool  CCDragonBones:: hasEventListener(const String &type)
+		{
+			return m_Armature->hasEventListener(type);
+		}
+		void CCDragonBones::removeEventListener(const String &type, const std::string &key)
+		{
+			m_Armature->removeEventListener(type,key);
+		}
+		void CCDragonBones::dispatchEvent(Event *event)
+		{
+			m_Armature->dispatchEvent(event);
+		}
+  void CCDragonBones::eventBridge(Event*e){ 
+	  (m_Caller->*m_Callback)(this,e);   
+  }
+    void CCDragonBones::gotoAndPlay(
+                const String &animationName,
+                Number fadeInTime ,
+                Number duration ,
+                Number loop ,
+                uint layer ,
+                const String &group ,
+                const String &fadeOutMode ,
+                bool displayControl ,
+                bool pauseFadeOut ,
+                bool pauseFadeIn
+                )
+    {
+        m_Armature->getAnimation()->gotoAndPlay(
+                                                animationName,
+                                                fadeInTime ,
+                                                duration ,
+                                                loop ,
+                                                layer ,
+                                                group ,
+                                                fadeOutMode ,
+                                                displayControl ,
+                                                pauseFadeOut ,
+                                                pauseFadeIn
+                                                );
+    }
+    
+    
+    void CCDragonBones::onExit()
+    {
+        this->unscheduleAllSelectors();
+    }
+    
+    Armature*   CCDragonBones::buildArmature(const char* skeletonXMLFile,
+                                           const char* textureXMLFile,
+                                           const char* dragonBonesName,
+                                           const char* armatureName,
+                                           const char* animationName)
+    {
+		Cocos2dxFactory *fac = Cocos2dxFactory::getInstance();
+		fac->loadSkeletonFile(skeletonXMLFile);
+		fac->loadTextureAtlasFile(textureXMLFile);
+        return fac->buildArmature(armatureName, animationName ,dragonBonesName);
+    }
+    
+    void CCDragonBones::initWithArmature(Armature*arm)
+    {
+        this->m_Armature = arm;
+        this->schedule(schedule_selector(CCDragonBones::update), 0);
 		this->addChild(static_cast<CocosNode*>(m_Armature->getDisplay())->node);
 	}
 }
