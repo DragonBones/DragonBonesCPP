@@ -123,6 +123,9 @@
     <ClCompile Include="..\..\..\dragonbones\XMLDataParser.cpp">
       <Filter>DragonBones\library</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\example\DragonSwitchClothes.cpp">
+      <Filter>Classes\example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -286,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\XMLDataParser.h">
       <Filter>DragonBones\library</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\example\DragonSwitchClothes.h">
+      <Filter>Classes\example</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

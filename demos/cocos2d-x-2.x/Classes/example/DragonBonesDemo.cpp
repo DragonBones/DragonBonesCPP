@@ -1,8 +1,9 @@
 #include "DragonBonesDemo.h"
 
 #include "example/DragonDemoEntry.h"
+#include "example/DragonSwitchClothes.h"
 
-static int sceneIdx = -1;
+static int sceneIdx = 0;
 
 CCLayer* nextDBDemoAction();
 CCLayer* backDBDemoAction();
@@ -14,10 +15,12 @@ typedef CCLayer* (*NEW_DB_DEMO_FUNC)();
 { return new className(); }
 
 DBDEMO_CREATE_FUNC(DragonDemoEntry);
+DBDEMO_CREATE_FUNC(DragonSwitchClothes);
 
 static NEW_DB_DEMO_FUNC createFunctions[] =
 {
 	createDragonDemoEntry,
+	createDragonSwitchClothes,
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
