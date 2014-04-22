@@ -48,7 +48,7 @@ CCLayer* backDBDemoAction()
 
 CCLayer* restartDBDemoAction()
 {
-	CCLayer* pLayer = (createFunctions[sceneIdx])();
+	CCLayer* pLayer = (createFunctions[sceneIdx<0 ? 0 : sceneIdx])();
 	pLayer->autorelease();
 
 	return pLayer;

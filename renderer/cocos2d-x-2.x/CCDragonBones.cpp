@@ -11,77 +11,76 @@
 #include "DragonBonesHeaders.h"
 using namespace cocos2d;
 namespace dragonBones {
-  
-	 CCDragonBones*	CCDragonBones::create(const char* skeletonXMLFile,
-													  const char* dragonBonesName,
-                                                      const char* armatureName)
+
+	CCDragonBones*	CCDragonBones::create(const char* skeletonXMLFile,
+		const char* dragonBonesName,
+		const char* armatureName)
 	{
-		return CCDragonBones::create( skeletonXMLFile,
-                                           "texture.xml",
-                                            dragonBonesName,
-                                            armatureName,
-                                            "");
+		return CCDragonBones::create(skeletonXMLFile,
+			"texture.xml",
+			dragonBonesName,
+			armatureName,
+			"");
 	}
- 
-															 
-   CCDragonBones*	CCDragonBones::create(const char* skeletonXMLFile,
-                                                             const char* textureXMLFile,
-                                                             const char* dragonBonesName,
-                                                             const char* armatureName,
-                                                             const char* animationName)
+
+
+	CCDragonBones*	CCDragonBones::create(const char* skeletonXMLFile,
+		const char* textureXMLFile,
+		const char* dragonBonesName,
+		const char* armatureName,
+		const char* animationName)
 	{
 		CCDragonBones* pNew = new CCDragonBones();
-        if(pNew && pNew->init())
-        {
-			Armature*arm = CCDragonBones::buildArmature( skeletonXMLFile,
-                                           textureXMLFile,
-                                            dragonBonesName,
-                                            armatureName,
-                                            animationName);
-            pNew->initWithArmature(arm);
-            pNew->autorelease();
-            return pNew;
-        }
-        CC_SAFE_DELETE(pNew);
-        return NULL;
+		if (pNew && pNew->init())
+		{
+			Armature*arm = CCDragonBones::buildArmature(skeletonXMLFile,
+				textureXMLFile,
+				dragonBonesName,
+				armatureName,
+				animationName);
+			pNew->initWithArmature(arm);
+			pNew->autorelease();
+			return pNew;
+		}
+		CC_SAFE_DELETE(pNew);
+		return NULL;
 	}
-    
-    CCDragonBones* CCDragonBones::create(Armature*arm)
-    {
-        CCDragonBones* pNew = new CCDragonBones();
-        if(pNew && pNew->init())
-        {
-            pNew->initWithArmature(arm);
-            pNew->autorelease();
-            return pNew;
-        }
-        CC_SAFE_DELETE(pNew);
-        return NULL;
-    }
-    void CCDragonBones::update(float dt)
-    {
-        if(m_Armature)
-            m_Armature->advanceTime(dt);
-    }
-    
-    CCNode*  CCDragonBones::getDisplayNode(){
-        return static_cast<CocosNode*>(m_Armature->getDisplay())->node;
-    }
-    
-    Armature*  CCDragonBones::getArmature()
-    {
-        return m_Armature;
-    }
-	
-    void  CCDragonBones::addEventListener(const String &type,const String &key, cocos2d::CCObject*pObj,SEL_CallFuncND callback)
-    {  
+
+	CCDragonBones* CCDragonBones::create(Armature*arm)
+	{
+		CCDragonBones* pNew = new CCDragonBones();
+		if (pNew && pNew->init())
+		{
+			pNew->initWithArmature(arm);
+			pNew->autorelease();
+			return pNew;
+		}
+		CC_SAFE_DELETE(pNew);
+		return NULL;
+	}
+	void CCDragonBones::update(float dt)
+	{
+		if (m_Armature)
+			m_Armature->advanceTime(dt);
+	}
+
+	CCNode*  CCDragonBones::getDisplayNode(){
+		return static_cast<CocosNode*>(m_Armature->getDisplay())->node;
+	}
+
+	Armature*  CCDragonBones::getArmature()
+	{
+		return m_Armature;
+	}
+
+	void  CCDragonBones::addEventListener(const String &type, const String &key, cocos2d::CCObject*pObj, SEL_CallFuncND callback)
+	{
 		m_Caller = pObj;
 		m_Callback = callback;
-		std::function<void(Event*)> f =  std::bind(&CCDragonBones::eventBridge, this,std::placeholders::_1); 
+		std::function<void(Event*)> f = std::bind(&CCDragonBones::eventBridge, this, std::placeholders::_1);
 		m_Armature->addEventListener(type, f, key);
-    }
+	}
 
-	
 		bool  CCDragonBones:: hasEventListener(const String &type)
 		{
 			return m_Armature->hasEventListener(type);
@@ -147,5 +146,5 @@ namespace dragonBones {
         this->m_Armature = arm;
         this->schedule(schedule_selector(CCDragonBones::update), 0);
 		this->addChild(static_cast<CocosNode*>(m_Armature->getDisplay())->node);
-    }
+	}
 }
