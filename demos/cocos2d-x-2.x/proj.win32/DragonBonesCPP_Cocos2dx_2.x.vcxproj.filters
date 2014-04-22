@@ -126,6 +126,9 @@
     <ClCompile Include="..\Classes\example\DragonSwitchClothes.cpp">
       <Filter>Classes\example</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\example\DragonChaseStarling.cpp">
+      <Filter>Classes\example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -291,6 +294,9 @@
       <Filter>DragonBones\library</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\example\DragonSwitchClothes.h">
+      <Filter>Classes\example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\example\DragonChaseStarling.h">
       <Filter>Classes\example</Filter>
     </ClInclude>
   </ItemGroup>

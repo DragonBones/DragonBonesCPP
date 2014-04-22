@@ -160,6 +160,7 @@
     <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxTextureAtlas.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\example\DragonBonesDemo.cpp" />
+    <ClCompile Include="..\Classes\example\DragonChaseStarling.cpp" />
     <ClCompile Include="..\Classes\example\DragonDemoEntry.cpp" />
     <ClCompile Include="..\Classes\example\DragonSwitchClothes.cpp" />
     <ClCompile Include="..\Classes\VisibleRect.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxTextureAtlas.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\example\DragonBonesDemo.h" />
+    <ClInclude Include="..\Classes\example\DragonChaseStarling.h" />
     <ClInclude Include="..\Classes\example\DragonDemoEntry.h" />
     <ClInclude Include="..\Classes\example\DragonSwitchClothes.h" />
     <ClInclude Include="..\Classes\VisibleRect.h" />
