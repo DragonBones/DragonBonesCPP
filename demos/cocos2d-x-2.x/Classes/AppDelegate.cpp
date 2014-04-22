@@ -10,6 +10,7 @@ AppDelegate::AppDelegate() {
 
 AppDelegate::~AppDelegate() 
 {
+	Cocos2dxFactory::destroyInstance();
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {

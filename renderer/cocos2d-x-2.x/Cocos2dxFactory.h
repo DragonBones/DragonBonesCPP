@@ -115,6 +115,11 @@ namespace dragonBones
          * Creates a new StarlingFactory instance.
          */
         Cocos2dxFactory();
+
+		// get singleton
+		static Cocos2dxFactory *getInstance();
+		static void destroyInstance();
+
         
         /** @private */
         ITextureAtlas* generateTextureAtlas(Object *content, TextureAtlasData *textureAtlasRawData);
@@ -130,6 +135,9 @@ namespace dragonBones
 
         virtual void loadSkeletonFile(const String &skeletonFile , const String &name  = "");
         virtual void loadTextureAtlasFile(const String &textureAtlasFile , const String &name  = "");
+
+	protected:
+		static Cocos2dxFactory *msCocos2dxFactory;
     };
 };
 #endif // __COCOS2DX_FACTORY_H__

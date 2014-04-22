@@ -153,4 +153,25 @@ namespace dragonBones
 
         //return obj;
     }
+
+	Cocos2dxFactory * Cocos2dxFactory::msCocos2dxFactory = nullptr;
+
+	Cocos2dxFactory * Cocos2dxFactory::getInstance()
+	{
+		if (msCocos2dxFactory == nullptr)
+		{
+			msCocos2dxFactory = new Cocos2dxFactory();
+		}
+		return msCocos2dxFactory;
+	}
+
+	void Cocos2dxFactory::destroyInstance()
+	{
+		if (msCocos2dxFactory)
+		{
+			msCocos2dxFactory->dispose();
+			CC_SAFE_DELETE(msCocos2dxFactory);
+		}
+	}
+
 };

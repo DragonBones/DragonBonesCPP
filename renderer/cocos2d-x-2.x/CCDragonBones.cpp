@@ -136,10 +136,10 @@ namespace dragonBones {
                                            const char* armatureName,
                                            const char* animationName)
     {
-        Cocos2dxFactory fac;
-		fac.loadSkeletonFile(skeletonXMLFile);
-		fac.loadTextureAtlasFile(textureXMLFile);
-        return fac.buildArmature(armatureName, animationName ,dragonBonesName);
+		Cocos2dxFactory *fac = Cocos2dxFactory::getInstance();
+		fac->loadSkeletonFile(skeletonXMLFile);
+		fac->loadTextureAtlasFile(textureXMLFile);
+        return fac->buildArmature(armatureName, animationName ,dragonBonesName);
     }
     
     void CCDragonBones::initWithArmature(Armature*arm)
