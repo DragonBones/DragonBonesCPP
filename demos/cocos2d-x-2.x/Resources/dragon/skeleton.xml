@@ -698,4 +698,62 @@
       </timeline>
     </animation>
   </armature>
+  <armature name="clothTextureTemp">
+    <bone name="clothes4">
+      <transform x="52" y="43.3" skX="0" skY="0" scX="1" scY="1"/>
+    </bone>
+    <bone name="clothes3">
+      <transform x="52" y="43.3" skX="0" skY="0" scX="1" scY="1"/>
+    </bone>
+    <bone name="clothes2">
+      <transform x="51.95" y="43.3" skX="0" skY="0" scX="1" scY="1"/>
+    </bone>
+    <bone name="clothes1">
+      <transform x="52" y="43.3" skX="0" skY="0" scX="1" scY="1"/>
+    </bone>
+    <skin name="">
+      <slot name="clothes1" parent="clothes1" z="0">
+        <display name="parts/clothes1" type="image">
+          <transform x="-52" y="-43.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </display>
+      </slot>
+      <slot name="clothes2" parent="clothes2" z="1">
+        <display name="parts/clothes2" type="image">
+          <transform x="-51.95" y="-43.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </display>
+      </slot>
+      <slot name="clothes3" parent="clothes3" z="2">
+        <display name="parts/clothes3" type="image">
+          <transform x="-52" y="-43.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </display>
+      </slot>
+      <slot name="clothes4" parent="clothes4" z="3">
+        <display name="parts/clothes4" type="image">
+          <transform x="-52" y="-43.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </display>
+      </slot>
+    </skin>
+    <animation name="temp" fadeInTime="0.3" duration="1" scale="1" loop="1" tweenEasing="NaN">
+      <timeline name="clothes1" scale="1" offset="0">
+        <frame z="0" duration="1">
+          <transform x="52" y="43.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </frame>
+      </timeline>
+      <timeline name="clothes2" scale="1" offset="0">
+        <frame z="1" duration="1">
+          <transform x="51.95" y="43.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </frame>
+      </timeline>
+      <timeline name="clothes3" scale="1" offset="0">
+        <frame z="2" duration="1">
+          <transform x="52" y="43.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </frame>
+      </timeline>
+      <timeline name="clothes4" scale="1" offset="0">
+        <frame z="3" duration="1">
+          <transform x="52" y="43.3" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </frame>
+      </timeline>
+    </animation>
+  </armature>
 </dragonBones>
