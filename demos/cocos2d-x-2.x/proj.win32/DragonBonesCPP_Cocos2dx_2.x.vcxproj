@@ -69,7 +69,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\kazmath\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32\OGLES;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external\chipmunk\include\chipmunk;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\CocosDenshion\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\extensions;$(ProjectDir)..\..\..\renderer\cocos2d-x-2.x;$(ProjectDir)..\..\..\library;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\kazmath\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\cocos2dx\platform\third_party\win32\OGLES;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\external\chipmunk\include\chipmunk;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\CocosDenshion\include;$(ProjectDir)..\..\..\engines\cocos2d-x-2.x\extensions;$(ProjectDir)..\..\..\renderer\cocos2d-x-2.x;$(ProjectDir)..\..\..\dragonbones;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -129,30 +129,30 @@
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\library\Animation.cpp" />
-    <ClCompile Include="..\..\..\library\AnimationEvent.cpp" />
-    <ClCompile Include="..\..\..\library\AnimationState.cpp" />
-    <ClCompile Include="..\..\..\library\Armature.cpp" />
-    <ClCompile Include="..\..\..\library\ArmatureEvent.cpp" />
-    <ClCompile Include="..\..\..\library\BaseFactory.cpp" />
-    <ClCompile Include="..\..\..\library\Bone.cpp" />
-    <ClCompile Include="..\..\..\library\BytesType.cpp" />
-    <ClCompile Include="..\..\..\library\ConstValues.cpp" />
-    <ClCompile Include="..\..\..\library\DBDataUtil.cpp" />
-    <ClCompile Include="..\..\..\library\DBObject.cpp" />
-    <ClCompile Include="..\..\..\library\dbtinyxml2.cpp" />
-    <ClCompile Include="..\..\..\library\DisplayData.cpp" />
-    <ClCompile Include="..\..\..\library\DragonBones.cpp" />
-    <ClCompile Include="..\..\..\library\Event.cpp" />
-    <ClCompile Include="..\..\..\library\FrameEvent.cpp" />
-    <ClCompile Include="..\..\..\library\Matrix.cpp" />
-    <ClCompile Include="..\..\..\library\Slot.cpp" />
-    <ClCompile Include="..\..\..\library\SoundEvent.cpp" />
-    <ClCompile Include="..\..\..\library\SoundEventManager.cpp" />
-    <ClCompile Include="..\..\..\library\TimelineState.cpp" />
-    <ClCompile Include="..\..\..\library\TransformTimeline.cpp" />
-    <ClCompile Include="..\..\..\library\TransformUtil.cpp" />
-    <ClCompile Include="..\..\..\library\XMLDataParser.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\Animation.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\AnimationEvent.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\AnimationState.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\Armature.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\ArmatureEvent.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\BaseFactory.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\Bone.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\BytesType.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\ConstValues.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\DBDataUtil.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\DBObject.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\dbtinyxml2.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\DisplayData.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\DragonBones.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\Event.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\FrameEvent.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\Matrix.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\Slot.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\SoundEvent.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\SoundEventManager.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\TimelineState.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\TransformTimeline.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\TransformUtil.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\XMLDataParser.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\CCDragonBones.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxAtlasNode.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxDisplayBridge.cpp" />
@@ -165,50 +165,50 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\library\Animation.h" />
-    <ClInclude Include="..\..\..\library\AnimationData.h" />
-    <ClInclude Include="..\..\..\library\AnimationEvent.h" />
-    <ClInclude Include="..\..\..\library\AnimationState.h" />
-    <ClInclude Include="..\..\..\library\Armature.h" />
-    <ClInclude Include="..\..\..\library\ArmatureData.h" />
-    <ClInclude Include="..\..\..\library\ArmatureEvent.h" />
-    <ClInclude Include="..\..\..\library\BaseFactory.h" />
-    <ClInclude Include="..\..\..\library\Bone.h" />
-    <ClInclude Include="..\..\..\library\BoneData.h" />
-    <ClInclude Include="..\..\..\library\BytesType.h" />
-    <ClInclude Include="..\..\..\library\checkBytesTailisXML.h" />
-    <ClInclude Include="..\..\..\library\ColorTransform.h" />
-    <ClInclude Include="..\..\..\library\ConstValues.h" />
-    <ClInclude Include="..\..\..\library\DBDataUtil.h" />
-    <ClInclude Include="..\..\..\library\DBObject.h" />
-    <ClInclude Include="..\..\..\library\dbtinyxml2.h" />
-    <ClInclude Include="..\..\..\library\DBTransform.h" />
-    <ClInclude Include="..\..\..\library\DisplayData.h" />
-    <ClInclude Include="..\..\..\library\DragonBones.h" />
-    <ClInclude Include="..\..\..\library\DragonBonesHeaders.h" />
-    <ClInclude Include="..\..\..\library\Event.h" />
-    <ClInclude Include="..\..\..\library\Frame.h" />
-    <ClInclude Include="..\..\..\library\FrameEvent.h" />
-    <ClInclude Include="..\..\..\library\IAnimatable.h" />
-    <ClInclude Include="..\..\..\library\IDisplayBridge.h" />
-    <ClInclude Include="..\..\..\library\ITextureAtlas.h" />
-    <ClInclude Include="..\..\..\library\Matrix.h" />
-    <ClInclude Include="..\..\..\library\Point.h" />
-    <ClInclude Include="..\..\..\library\preDB.h" />
-    <ClInclude Include="..\..\..\library\Rectangle.h" />
-    <ClInclude Include="..\..\..\library\SkeletonData.h" />
-    <ClInclude Include="..\..\..\library\SkinData.h" />
-    <ClInclude Include="..\..\..\library\Slot.h" />
-    <ClInclude Include="..\..\..\library\SlotData.h" />
-    <ClInclude Include="..\..\..\library\SoundEvent.h" />
-    <ClInclude Include="..\..\..\library\SoundEventManager.h" />
-    <ClInclude Include="..\..\..\library\TextureAtlasData.h" />
-    <ClInclude Include="..\..\..\library\Timeline.h" />
-    <ClInclude Include="..\..\..\library\TimelineState.h" />
-    <ClInclude Include="..\..\..\library\TransformFrame.h" />
-    <ClInclude Include="..\..\..\library\TransformTimeline.h" />
-    <ClInclude Include="..\..\..\library\TransformUtil.h" />
-    <ClInclude Include="..\..\..\library\XMLDataParser.h" />
+    <ClInclude Include="..\..\..\dragonbones\Animation.h" />
+    <ClInclude Include="..\..\..\dragonbones\AnimationData.h" />
+    <ClInclude Include="..\..\..\dragonbones\AnimationEvent.h" />
+    <ClInclude Include="..\..\..\dragonbones\AnimationState.h" />
+    <ClInclude Include="..\..\..\dragonbones\Armature.h" />
+    <ClInclude Include="..\..\..\dragonbones\ArmatureData.h" />
+    <ClInclude Include="..\..\..\dragonbones\ArmatureEvent.h" />
+    <ClInclude Include="..\..\..\dragonbones\BaseFactory.h" />
+    <ClInclude Include="..\..\..\dragonbones\Bone.h" />
+    <ClInclude Include="..\..\..\dragonbones\BoneData.h" />
+    <ClInclude Include="..\..\..\dragonbones\BytesType.h" />
+    <ClInclude Include="..\..\..\dragonbones\checkBytesTailisXML.h" />
+    <ClInclude Include="..\..\..\dragonbones\ColorTransform.h" />
+    <ClInclude Include="..\..\..\dragonbones\ConstValues.h" />
+    <ClInclude Include="..\..\..\dragonbones\DBDataUtil.h" />
+    <ClInclude Include="..\..\..\dragonbones\DBObject.h" />
+    <ClInclude Include="..\..\..\dragonbones\dbtinyxml2.h" />
+    <ClInclude Include="..\..\..\dragonbones\DBTransform.h" />
+    <ClInclude Include="..\..\..\dragonbones\DisplayData.h" />
+    <ClInclude Include="..\..\..\dragonbones\DragonBones.h" />
+    <ClInclude Include="..\..\..\dragonbones\DragonBonesHeaders.h" />
+    <ClInclude Include="..\..\..\dragonbones\Event.h" />
+    <ClInclude Include="..\..\..\dragonbones\Frame.h" />
+    <ClInclude Include="..\..\..\dragonbones\FrameEvent.h" />
+    <ClInclude Include="..\..\..\dragonbones\IAnimatable.h" />
+    <ClInclude Include="..\..\..\dragonbones\IDisplayBridge.h" />
+    <ClInclude Include="..\..\..\dragonbones\ITextureAtlas.h" />
+    <ClInclude Include="..\..\..\dragonbones\Matrix.h" />
+    <ClInclude Include="..\..\..\dragonbones\Point.h" />
+    <ClInclude Include="..\..\..\dragonbones\preDB.h" />
+    <ClInclude Include="..\..\..\dragonbones\Rectangle.h" />
+    <ClInclude Include="..\..\..\dragonbones\SkeletonData.h" />
+    <ClInclude Include="..\..\..\dragonbones\SkinData.h" />
+    <ClInclude Include="..\..\..\dragonbones\Slot.h" />
+    <ClInclude Include="..\..\..\dragonbones\SlotData.h" />
+    <ClInclude Include="..\..\..\dragonbones\SoundEvent.h" />
+    <ClInclude Include="..\..\..\dragonbones\SoundEventManager.h" />
+    <ClInclude Include="..\..\..\dragonbones\TextureAtlasData.h" />
+    <ClInclude Include="..\..\..\dragonbones\Timeline.h" />
+    <ClInclude Include="..\..\..\dragonbones\TimelineState.h" />
+    <ClInclude Include="..\..\..\dragonbones\TransformFrame.h" />
+    <ClInclude Include="..\..\..\dragonbones\TransformTimeline.h" />
+    <ClInclude Include="..\..\..\dragonbones\TransformUtil.h" />
+    <ClInclude Include="..\..\..\dragonbones\XMLDataParser.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\CCDragonBones.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxAtlasNode.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxDisplayBridge.h" />
