@@ -96,14 +96,17 @@ void DragonDemoEntry::changeClothesCallback(CCObject* pSender)
 	if (_textureIndex >= _textures.size()) {
 		_textureIndex = _textureIndex - _textures.size();
 	}
-	////Get image instance from texture data.
-	//string imageName = _TEXTURES[_textureIndex];
-	//
-	//var _image : Image = factory.getTextureDisplay(_textureName) as Image;
-	////Replace bone.display by the new texture. Don't forget to dispose.
-	//var _bone : Bone = armature.getBone("clothes");
-	//_bone.display.dispose();
-	//_bone.display = _image;
+
+	Cocos2dxFactory* fac = Cocos2dxFactory::getInstance();
+	String textureName = _textures[_textureIndex];
+	Object* clothesObj = fac->getTextureDisplay(textureName, "Dragon");
+
+	CCLOG("CLOSE %d", clothesObj);
+
+	Bone* bone = _db->getArmature()->getBone("clothes");
+	CocosNode* oldClothesObj = static_cast<CocosNode*>(bone->getDisplay());
+	bone->setDisplay(clothesObj);
+
 }
 
 void DragonDemoEntry::update(float dt)
