@@ -93,16 +93,7 @@ void DragonSwitchClothes::changeClothesCallback(CCObject* pSender)
 		_textureIndex = _textureIndex - _textures.size();
 	}
 
-	Cocos2dxFactory* fac = Cocos2dxFactory::getInstance();
-	String textureName = _textures[_textureIndex];
-	Object* clothesObj = fac->getTextureDisplay(textureName, "Dragon");
-
-	//CCLOG("CLOSE %d", clothesObj);
-
-	Bone* bone = _db->getArmature()->getBone("clothes");
-	CocosNode* oldClothesObj = static_cast<CocosNode*>(bone->getDisplay());
-	bone->setDisplay(clothesObj);
-
+    _db->setBoneTexture("clothes", _textures[_textureIndex].c_str(), "Dragon");
 }
 
 void DragonSwitchClothes::update(float dt)
