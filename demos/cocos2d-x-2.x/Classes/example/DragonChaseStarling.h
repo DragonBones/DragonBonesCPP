@@ -8,21 +8,21 @@ class DragonChaseStarling : public DragonBonesDemo
 public:
     DragonChaseStarling();
     virtual std::string title();
-    virtual void onEnter();
+    virtual std::string subtitle();
     virtual void update(float dt);
-
-    void menuCallback(CCObject* pSender);
-    void moveLeftCallback(CCObject* pSender);
-    void moveRightCallback(CCObject* pSender);
-    void stopCallback(CCObject* pSender);
-    void jumpCallback(CCObject* pSender);
-    void changeClothesCallback(CCObject* pSender);
+    virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
+    virtual void ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent);
 
 private:
     int _moveDirection;
     float _speedX;
-    float _speedY;
-    float _footY;
+    float _touchX;
+    float _touchY;
+    float _r;
+    float _distance;
+    bool _isChasing;
+
+    const int _footY = 100;
     CCSize _winSize;
 
     CCDragonBones* _db;
@@ -32,7 +32,11 @@ private:
     Bone* _armR;
     Bone* _armL;
 
-    void updateBehavior();
+    void updatePosition(CCPoint& point);
+    void updateBehavior(int direction);
+	void updateMove();
+	void updateBones();
+	void checkDistance();
 
 };
 

@@ -10,10 +10,9 @@ using namespace dragonBones;
 
 class DragonBonesDemo : public CCLayer
 {
-protected:
-	std::string    m_strTitle;
-
 public:
+    static DragonBonesDemo* create(int index);
+
 	DragonBonesDemo(void);
 	~DragonBonesDemo(void);
 
@@ -25,6 +24,8 @@ public:
 	void nextCallback(CCObject* pSender);
 	void backCallback(CCObject* pSender);
 	void menuCloseCallback(CCObject* pSender);
+protected:
+    std::string    m_strTitle;
 };
 
 #endif // __DRAGON_BONES_DEMO__

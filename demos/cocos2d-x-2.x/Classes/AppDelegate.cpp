@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
 
-#include "example/DragonDemoEntry.h"
+#include "example/DragonBonesDemo.h"
 
 USING_NS_CC;
 
@@ -29,8 +29,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // create a scene. it's an autorelease object
 	CCScene *pScene = CCScene::create();
 
-	CCLayer* pLayer = new DragonDemoEntry();
-	pLayer->autorelease();
+    CCLayer* pLayer = DragonBonesDemo::create(2);
 	pScene->addChild(pLayer);
     // run
     pDirector->runWithScene(pScene);
