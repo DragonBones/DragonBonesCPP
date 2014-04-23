@@ -1,3 +1,5 @@
+// Created by zrong(zengrong.net) 2014-04-23
+
 #ifndef __DRAGON_CHASE_STARLING__
 #define __DRAGON_CHASE_STARLING__
 

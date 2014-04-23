@@ -111,9 +111,9 @@ void DragonChaseStarling::updateBones()
         _r -= M_PI * 2;
     }
     
-    //_head.node.rotation = _r*0.3		
-    //_armR.node.rotation = _r *0.8;
-    //_armL.node.rotation = _r * 1.5;
+    _head->offset.setRotation(_r*0.3);
+    _armR->offset.setRotation(_r*0.8);
+    _armL->offset.setRotation(_r*1.5);
     //CCLOG("updateBones %.2f", _r*0.2*(180 / M_PI));
     _starlingBird->setRotation(_r*0.2*(180/M_PI));
  

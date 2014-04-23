@@ -18,7 +18,7 @@ Please get the cocos2d-x source codes and copy them to **engines** directory.
 
 * DragonDemoEntry (100%)
 * DragonSwitchClothes (100%)
-* DragonChaseStarling (90%)
+* DragonChaseStarling (99%)
 * CyborgSwitchWeapon
 * KnightTimelineEvent
 * WarriorMultiResolution

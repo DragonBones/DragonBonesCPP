@@ -1,3 +1,5 @@
+// Created by zrong(zengrong.net) 2014-04-22
+
 #ifndef __DRAGON_SWITCH_CLOTHES__
 #define __DRAGON_SWITCH_CLOTHES__
 
