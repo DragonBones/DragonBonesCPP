@@ -2,59 +2,69 @@
 
 #include "example/DragonDemoEntry.h"
 #include "example/DragonSwitchClothes.h"
+#include "example/DragonChaseStarling.h"
 
 static int sceneIdx = 0;
 
-CCLayer* nextDBDemoAction();
-CCLayer* backDBDemoAction();
-CCLayer* restartDBDemoAction();
+DragonBonesDemo* nextDBDemoAction();
+DragonBonesDemo* backDBDemoAction();
+DragonBonesDemo* restartDBDemoAction();
 
-typedef CCLayer* (*NEW_DB_DEMO_FUNC)();
+typedef DragonBonesDemo* (*NEW_DB_DEMO_FUNC)();
 #define DBDEMO_CREATE_FUNC(className) \
-	static CCLayer* create##className() \
+    static DragonBonesDemo* create##className() \
 { return new className(); }
 
 DBDEMO_CREATE_FUNC(DragonDemoEntry);
 DBDEMO_CREATE_FUNC(DragonSwitchClothes);
+DBDEMO_CREATE_FUNC(DragonChaseStarling);
 
 static NEW_DB_DEMO_FUNC createFunctions[] =
 {
 	createDragonDemoEntry,
 	createDragonSwitchClothes,
+	createDragonChaseStarling,
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
 
-CCLayer* nextDBDemoAction()
+DragonBonesDemo* nextDBDemoAction()
 {
 	sceneIdx++;
 	sceneIdx = sceneIdx % MAX_LAYER;
 
-	CCLayer* pLayer = (createFunctions[sceneIdx])();
+    DragonBonesDemo* pLayer = (createFunctions[sceneIdx])();
 	pLayer->autorelease();
 
 	return pLayer;
 }
 
-CCLayer* backDBDemoAction()
+DragonBonesDemo* backDBDemoAction()
 {
 	sceneIdx--;
 	int total = MAX_LAYER;
 	if (sceneIdx < 0)
 		sceneIdx += total;
 
-	CCLayer* pLayer = (createFunctions[sceneIdx])();
+    DragonBonesDemo* pLayer = (createFunctions[sceneIdx])();
 	pLayer->autorelease();
 
 	return pLayer;
 }
 
-CCLayer* restartDBDemoAction()
+DragonBonesDemo* restartDBDemoAction()
 {
-	CCLayer* pLayer = (createFunctions[sceneIdx<0 ? 0 : sceneIdx])();
+    DragonBonesDemo* pLayer = (createFunctions[sceneIdx<0 ? 0 : sceneIdx])();
 	pLayer->autorelease();
 
 	return pLayer;
+}
+DragonBonesDemo* DragonBonesDemo::create(int index)
+{
+    DragonBonesDemo* pLayer = (createFunctions[index])();
+    pLayer->autorelease();
+    sceneIdx = index;
+    return pLayer;
 }
 
 DragonBonesDemo::DragonBonesDemo(void)
@@ -94,7 +104,7 @@ void DragonBonesDemo::onEnter()
 	std::string strSubtitle = subtitle();
 	if (!strSubtitle.empty())
 	{
-		CCLabelTTF* l = CCLabelTTF::create(strSubtitle.c_str(), "Thonburi", 16);
+		CCLabelTTF* l = CCLabelTTF::create(strSubtitle.c_str(), "Thonburi", 20);
 		addChild(l, 1);
 		l->setPosition(VisibleRect::top(0, -80));
 	}
