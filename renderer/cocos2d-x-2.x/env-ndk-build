@@ -1,0 +1,24 @@
+#!/bin/bash
+
+path_for_engine()
+{
+    _COCOS2DX_DIR=$(get_engine_dir_or_default COCOS2DX2_SRC_ROOT cocos2d-x-2.x)
+    if [ -n "$_COCOS2DX_DIR" ]; then
+        _COCOS2DX_TP_DIR=$_COCOS2DX_DIR/cocos2dx/platform/third_party/android
+        if [ "$_BUILD_EXTERNAL_FROM_SOURCE" == 1 ]; then
+            echo "$_COCOS2DX_DIR:$_COCOS2DX_TP_DIR/source"
+        else
+            echo "$_COCOS2DX_DIR:$_COCOS2DX_TP_DIR/prebuilt"
+        fi
+        unset _COCOS2DX_TP_DIR
+        unset _COCOS2DX_DIR
+        return 0
+    else
+        unset _COCOS2DX_DIR
+        return 1
+    fi
+}
+
+source "$(dirname "${BASH_SOURCE[0]}")/../../dragonbones/.env-ndk-build"
+
+unset path_for_engine

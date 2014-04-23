@@ -80,3 +80,6 @@ Device-Release/
 
 # CTags
 tags
+
+# Configuration for path of related project
+/.project-deps
