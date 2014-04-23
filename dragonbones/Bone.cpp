@@ -1,14 +1,14 @@
 #include "Bone.h"
 #include "Slot.h"
-#include "AnimationState.h"
-#include "TransformFrame.h"
-#include "TransformUtil.h"
+#include "animation/AnimationState.h"
+#include "objects/TransformFrame.h"
+#include "utils/TransformUtil.h"
 #include "Armature.h"
-#include "Animation.h"
-#include "IDisplayBridge.h"
-#include "FrameEvent.h"
-#include "SoundEvent.h"
-#include "SoundEventManager.h"
+#include "animation/Animation.h"
+#include "display/IDisplayBridge.h"
+#include "events/FrameEvent.h"
+#include "events/SoundEvent.h"
+#include "events/SoundEventManager.h"
 #include <stdexcept>
 namespace dragonBones
 {

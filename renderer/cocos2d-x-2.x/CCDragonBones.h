@@ -12,9 +12,9 @@
 
 #include <iostream>
 #include "cocos2d.h"
-#include "preDB.h"
-#include "Animation.h"
-#include "Event.h"
+#include "utils/preDB.h"
+#include "animation/Animation.h"
+#include "events/Event.h"
 
 namespace dragonBones {
     class Armature;

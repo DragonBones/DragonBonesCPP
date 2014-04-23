@@ -1,14 +1,14 @@
 #include "Cocos2dxFactory.h"
 #include "Cocos2dxDisplayBridge.h"
-#include "base_nodes/CCNode.h"
-#include "layers_scenes_transitions_nodes/CCLayer.h"
 #include "Cocos2dxTextureAtlas.h"
 #include "Cocos2dxAtlasNode.h"
-#include "cocoa/CCGeometry.h"
-#include "ConstValues.h"
-#include "XMLDataParser.h"
+#include "utils/ConstValues.h"
+#include "objects/XMLDataParser.h"
 #include "platform/CCFileUtils.h"
 
+#include "cocoa/CCGeometry.h"
+#include "base_nodes/CCNode.h"
+#include "layers_scenes_transitions_nodes/CCLayer.h"
 namespace dragonBones
 {
 

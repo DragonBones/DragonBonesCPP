@@ -1,7 +1,7 @@
 #ifndef __BONE_H__
 #define __BONE_H__
-#include "preDB.h"
-#include "DBObject.h"
+#include "utils/preDB.h"
+#include "core/DBObject.h"
 namespace dragonBones
 {
     class Frame;

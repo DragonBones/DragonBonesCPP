@@ -1,10 +1,12 @@
 ﻿#ifndef __COCOS2DX_TEXTURE_ATLAS_H__
 #define __COCOS2DX_TEXTURE_ATLAS_H__
-#include "preDB.h"
-#include "ITextureAtlas.h"
-#include "DBTransform.h"
+
+#include "utils/preDB.h"
+#include "utils/Matrix.h"
+#include "textures/ITextureAtlas.h"
+#include "objects/DBTransform.h"
 #include "textures/CCTextureAtlas.h"
-#include "Matrix.h"
+
 namespace dragonBones
 {
     class DisplayObject;

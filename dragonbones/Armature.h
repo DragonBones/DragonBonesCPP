@@ -1,11 +1,12 @@
 #ifndef __ARMATURE_H__
 #define __ARMATURE_H__
-#include "preDB.h"
-#include "IAnimatable.h"
+#include "utils/preDB.h"
+#include "animation/IAnimatable.h"
+#include "animation/Animation.h"
+#include "events/Event.h"
 #include "Slot.h"
 #include "Bone.h"
-#include "Animation.h"
-#include "Event.h"
+
 namespace dragonBones
 {
     class Animation;

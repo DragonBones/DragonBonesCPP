@@ -1,9 +1,9 @@
 #include "Slot.h"
 #include "Armature.h"
-#include "IDisplayBridge.h"
-#include "DisplayData.h"
-#include "Animation.h"
-#include "AnimationState.h"
+#include "display/IDisplayBridge.h"
+#include "objects/DisplayData.h"
+#include "animation/Animation.h"
+#include "animation/AnimationState.h"
 namespace dragonBones
 {    
         Number Slot::getZOrder()

@@ -1,5 +1,5 @@
 #include "Cocos2dxTextureAtlas.h"
-#include "TextureAtlasData.h"
+#include "objects/TextureAtlasData.h"
 #include "textures/CCTextureAtlas.h"
 #include "textures/CCTexture2D.h"
 #include "Cocos2dxFactory.h"

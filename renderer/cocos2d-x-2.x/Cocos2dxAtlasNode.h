@@ -5,8 +5,8 @@
 #include "base_nodes/CCNode.h"
 #include "CCProtocols.h"
 #include "ccTypes.h"
-#include "preDB.h"
-#include "BytesType.h"
+#include "utils/preDB.h"
+#include "utils/BytesType.h"
 
 NS_CC_BEGIN
 

@@ -1,12 +1,12 @@
 #include "Armature.h"
-#include "Animation.h"
-#include "IDisplayBridge.h"
-#include "Frame.h"
-#include "AnimationState.h"
-#include "ArmatureEvent.h"
-#include "FrameEvent.h"
-#include "SoundEvent.h"
-#include "SoundEventManager.h"
+#include "animation/Animation.h"
+#include "display/IDisplayBridge.h"
+#include "objects/Frame.h"
+#include "animation/AnimationState.h"
+#include "events/ArmatureEvent.h"
+#include "events/FrameEvent.h"
+#include "events/SoundEvent.h"
+#include "events/SoundEventManager.h"
 #include <stdexcept>
 namespace dragonBones
 {
