@@ -28,9 +28,6 @@
     <Filter Include="DragonBones\events">
       <UniqueIdentifier>{9a1e0722-9e7e-45b6-92eb-3b0412f18a7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DragonBones\factorys">
-      <UniqueIdentifier>{d1beea89-c189-4eb9-86cb-32e36ce2ad58}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DragonBones\objects">
       <UniqueIdentifier>{b4b78037-7ade-44be-9084-21743969a0e0}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="DragonBones\utils">
       <UniqueIdentifier>{19357c2b-b8a2-4a84-8fff-f358e1095726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DragonBones\factories">
+      <UniqueIdentifier>{d1beea89-c189-4eb9-86cb-32e36ce2ad58}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,9 +111,6 @@
     <ClCompile Include="..\..\..\dragonbones\events\SoundEventManager.cpp">
       <Filter>DragonBones\events</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\dragonbones\factorys\BaseFactory.cpp">
-      <Filter>DragonBones\factorys</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\dragonbones\objects\dbtinyxml2.cpp">
       <Filter>DragonBones\objects</Filter>
     </ClCompile>
@@ -149,6 +146,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\dragonbones\Slot.cpp">
       <Filter>DragonBones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dragonbones\factories\BaseFactory.cpp">
+      <Filter>DragonBones\factories</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,9 +226,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\events\SoundEventManager.h">
       <Filter>DragonBones\events</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\dragonbones\factorys\BaseFactory.h">
-      <Filter>DragonBones\factorys</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\objects\AnimationData.h">
       <Filter>DragonBones\objects</Filter>
@@ -319,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\Slot.h">
       <Filter>DragonBones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dragonbones\factories\BaseFactory.h">
+      <Filter>DragonBones\factories</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

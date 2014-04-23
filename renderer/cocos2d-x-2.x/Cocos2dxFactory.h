@@ -2,7 +2,7 @@
 #define __COCOS2DX_FACTORY_H__
 
 #include "utils/preDB.h"
-#include "factorys/BaseFactory.h"
+#include "factories/BaseFactory.h"
 #include "Armature.h"
 #include "Slot.h"
 #include "base_nodes/CCNode.h"

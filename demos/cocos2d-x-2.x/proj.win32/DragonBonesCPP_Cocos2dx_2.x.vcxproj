@@ -142,7 +142,7 @@
     <ClCompile Include="..\..\..\dragonbones\events\FrameEvent.cpp" />
     <ClCompile Include="..\..\..\dragonbones\events\SoundEvent.cpp" />
     <ClCompile Include="..\..\..\dragonbones\events\SoundEventManager.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\factorys\BaseFactory.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\factories\BaseFactory.cpp" />
     <ClCompile Include="..\..\..\dragonbones\objects\dbtinyxml2.cpp" />
     <ClCompile Include="..\..\..\dragonbones\objects\DisplayData.cpp" />
     <ClCompile Include="..\..\..\dragonbones\objects\TransformTimeline.cpp" />
@@ -183,7 +183,7 @@
     <ClInclude Include="..\..\..\dragonbones\events\FrameEvent.h" />
     <ClInclude Include="..\..\..\dragonbones\events\SoundEvent.h" />
     <ClInclude Include="..\..\..\dragonbones\events\SoundEventManager.h" />
-    <ClInclude Include="..\..\..\dragonbones\factorys\BaseFactory.h" />
+    <ClInclude Include="..\..\..\dragonbones\factories\BaseFactory.h" />
     <ClInclude Include="..\..\..\dragonbones\objects\AnimationData.h" />
     <ClInclude Include="..\..\..\dragonbones\objects\ArmatureData.h" />
     <ClInclude Include="..\..\..\dragonbones\objects\BoneData.h" />

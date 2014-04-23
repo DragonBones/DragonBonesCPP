@@ -20,7 +20,7 @@
 #include "Bone.h"
 #include "Slot.h"
 
-#include "factorys/BaseFactory.h"
+#include "factories/BaseFactory.h"
 #include "display/IDisplayBridge.h"
 #include "textures/ITextureAtlas.h"
 
