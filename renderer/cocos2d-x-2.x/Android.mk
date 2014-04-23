@@ -20,7 +20,9 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
 
-LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static dragonbones_static
+LOCAL_WHOLE_STATIC_LIBRARIES := \
+	cocos2dx_static \
+	dragonbones_static \
 
 NDK_TOOLCHAIN_VERSION := 4.8
 
@@ -28,3 +30,8 @@ include $(BUILD_STATIC_LIBRARY)
 
 $(call import-module,cocos2dx)
 $(call import-module,dragonbones)
+$(call import-module,CocosDenshion/android)
+$(call import-module,extensions)
+$(call import-module,external/Box2D)
+$(call import-module,external/chipmunk)
+

@@ -28,7 +28,7 @@ import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 
 import android.os.Bundle;
 
-public class DragonBonesCPP_Cocos2dx_2.x extends Cocos2dxActivity{
+public class HelloCpp extends Cocos2dxActivity {
 	
     protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);	
@@ -43,6 +43,6 @@ public class DragonBonesCPP_Cocos2dx_2.x extends Cocos2dxActivity{
     }
 
     static {
-        System.loadLibrary("cocos2dcpp");
+        System.loadLibrary("hellocpp");
     }     
 }
