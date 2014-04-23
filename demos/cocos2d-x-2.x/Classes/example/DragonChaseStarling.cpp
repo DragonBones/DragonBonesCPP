@@ -13,6 +13,7 @@ DragonChaseStarling::DragonChaseStarling()
 , _r(0)
 , _distance(0)
 , _isChasing(false)
+,_footY(100)
 {
     _winSize = VisibleRect::getWinSize();
 

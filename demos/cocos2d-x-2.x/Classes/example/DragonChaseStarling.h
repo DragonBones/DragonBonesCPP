@@ -24,7 +24,7 @@ private:
     float _distance;
     bool _isChasing;
 
-    const int _footY = 100;
+    const int _footY; //= 100;
     CCSize _winSize;
 
     CCDragonBones* _db;
