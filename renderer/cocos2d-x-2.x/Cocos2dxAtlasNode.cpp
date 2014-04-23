@@ -110,6 +110,7 @@ void Cocos2dxAtlasNode::draw()
     getShaderProgram()->setUniformLocationWith4fv(m_nUniformColor, colors, 1);
 
     m_pTextureAtlas->drawNumberOfQuads(1, m_nQuadIndex);
+	m_pTextureAtlas->getQuads();
 }
 
 // Cocos2dxAtlasNode - RGBA protocol
