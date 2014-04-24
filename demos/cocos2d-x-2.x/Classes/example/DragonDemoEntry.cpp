@@ -15,6 +15,28 @@ DragonDemoEntry::DragonDemoEntry()
 	this->scheduleUpdate();
 }
 
+void DragonDemoEntry::onEnter()
+{
+    DragonBonesDemo::onEnter();
+    CCMenu *menu = CCMenu::create(
+        CCMenuItemFont::create("Stop", this, menu_selector(DragonDemoEntry::stopCallback)),
+        CCMenuItemFont::create("Play", this, menu_selector(DragonDemoEntry::playCallback)),
+        NULL);
+    menu->alignItemsVertically();
+    menu->setPosition(VisibleRect::left(100, 0));
+    this->addChild(menu);
+}
+
+void DragonDemoEntry::stopCallback(CCObject* pSender)
+{
+    _db->getAnimation()->stop();
+}
+
+void DragonDemoEntry::playCallback(CCObject* pSender)
+{
+    _db->getAnimation()->play();
+}
+
 
 void DragonDemoEntry::animListener(CCNode*node, void*e)
 {
