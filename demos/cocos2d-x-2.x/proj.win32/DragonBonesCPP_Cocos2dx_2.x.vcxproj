@@ -151,7 +151,7 @@
     <ClCompile Include="..\..\..\dragonbones\utils\BytesType.cpp" />
     <ClCompile Include="..\..\..\dragonbones\utils\ConstValues.cpp" />
     <ClCompile Include="..\..\..\dragonbones\utils\DBDataUtil.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\utils\Matrix.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\utils\DBGeometry.cpp" />
     <ClCompile Include="..\..\..\dragonbones\utils\TransformUtil.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\CCDragonBones.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxAtlasNode.cpp" />
@@ -203,13 +203,10 @@
     <ClInclude Include="..\..\..\dragonbones\textures\ITextureAtlas.h" />
     <ClInclude Include="..\..\..\dragonbones\utils\BytesType.h" />
     <ClInclude Include="..\..\..\dragonbones\utils\checkBytesTailisXML.h" />
-    <ClInclude Include="..\..\..\dragonbones\utils\ColorTransform.h" />
     <ClInclude Include="..\..\..\dragonbones\utils\ConstValues.h" />
     <ClInclude Include="..\..\..\dragonbones\utils\DBDataUtil.h" />
-    <ClInclude Include="..\..\..\dragonbones\utils\Matrix.h" />
-    <ClInclude Include="..\..\..\dragonbones\utils\Point.h" />
+    <ClInclude Include="..\..\..\dragonbones\utils\DBGeometry.h" />
     <ClInclude Include="..\..\..\dragonbones\utils\preDB.h" />
-    <ClInclude Include="..\..\..\dragonbones\utils\Rectangle.h" />
     <ClInclude Include="..\..\..\dragonbones\utils\TransformUtil.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\CCDragonBones.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-2.x\Cocos2dxAtlasNode.h" />

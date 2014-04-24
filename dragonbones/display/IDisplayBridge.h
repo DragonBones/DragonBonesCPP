@@ -2,7 +2,7 @@
 #define __I_DISPLAY_BRIDGE_H__
 #include "utils/preDB.h"
 #include "objects/DBTransform.h"
-#include "utils/Matrix.h"
+
 namespace dragonBones
 {
     /**

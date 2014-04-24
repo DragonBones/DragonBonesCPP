@@ -2,7 +2,6 @@
 #define __DB_OBJECT_H__
 #include "utils/preDB.h"
 #include "objects/DBTransform.h"
-#include "utils/Matrix.h"
 namespace dragonBones
 {    
     class Bone;

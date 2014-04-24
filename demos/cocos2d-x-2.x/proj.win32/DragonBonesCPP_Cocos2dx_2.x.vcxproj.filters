@@ -132,9 +132,6 @@
     <ClCompile Include="..\..\..\dragonbones\utils\DBDataUtil.cpp">
       <Filter>DragonBones\utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\dragonbones\utils\Matrix.cpp">
-      <Filter>DragonBones\utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\dragonbones\utils\TransformUtil.cpp">
       <Filter>DragonBones\utils</Filter>
     </ClCompile>
@@ -149,6 +146,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\dragonbones\factories\BaseFactory.cpp">
       <Filter>DragonBones\factories</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dragonbones\utils\DBGeometry.cpp">
+      <Filter>DragonBones\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -281,25 +281,13 @@
     <ClInclude Include="..\..\..\dragonbones\utils\checkBytesTailisXML.h">
       <Filter>DragonBones\utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\dragonbones\utils\ColorTransform.h">
-      <Filter>DragonBones\utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\utils\ConstValues.h">
       <Filter>DragonBones\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\utils\DBDataUtil.h">
       <Filter>DragonBones\utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\dragonbones\utils\Matrix.h">
-      <Filter>DragonBones\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\dragonbones\utils\Point.h">
-      <Filter>DragonBones\utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\utils\preDB.h">
-      <Filter>DragonBones\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\dragonbones\utils\Rectangle.h">
       <Filter>DragonBones\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\utils\TransformUtil.h">
@@ -319,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\factories\BaseFactory.h">
       <Filter>DragonBones\factories</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dragonbones\utils\DBGeometry.h">
+      <Filter>DragonBones\utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
