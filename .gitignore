@@ -84,3 +84,6 @@ tags
 
 # Configuration for path of related project
 /.project-deps
+
+# .setting directory for eclipse project
+.settings/
