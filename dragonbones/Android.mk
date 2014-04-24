@@ -5,30 +5,15 @@ LOCAL_MODULE := dragonbones_static
 LOCAL_MODULE_FILENAME := libdragonbones
 
 LOCAL_SRC_FILES := \
-	Animation.cpp \
-	AnimationEvent.cpp \
-	AnimationState.cpp \
-	Armature.cpp \
-	ArmatureEvent.cpp \
-	BaseFactory.cpp \
-	Bone.cpp \
-	BytesType.cpp \
-	ConstValues.cpp \
-	DBDataUtil.cpp \
-	DBObject.cpp \
-	dbtinyxml2.cpp \
-	DisplayData.cpp \
-	DragonBones.cpp \
-	Event.cpp \
-	FrameEvent.cpp \
-	Matrix.cpp \
-	Slot.cpp \
-	SoundEvent.cpp \
-	SoundEventManager.cpp \
-	TimelineState.cpp \
-	TransformTimeline.cpp \
-	TransformUtil.cpp \
-	XMLDataParser.cpp \
+	$(wildcard $(LOCAL_PATH)/*.cpp) \
+	$(wildcard $(LOCAL_PATH)/animation/*.cpp) \
+	$(wildcard $(LOCAL_PATH)/core/*.cpp) \
+	$(wildcard $(LOCAL_PATH)/display/*.cpp) \
+	$(wildcard $(LOCAL_PATH)/events/*.cpp) \
+	$(wildcard $(LOCAL_PATH)/factories/*.cpp) \
+	$(wildcard $(LOCAL_PATH)/objects/*.cpp) \
+	$(wildcard $(LOCAL_PATH)/textures/*.cpp) \
+	$(wildcard $(LOCAL_PATH)/utils/*.cpp) \
 
 # TODO(hejiangzhou): Shall we disable exception?
 LOCAL_CPPFLAGS := -fexceptions -std=c++11
