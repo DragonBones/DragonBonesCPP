@@ -1,0 +1,8 @@
+[submodule "engines/cocos2d-x-3.x"]
+	path = engines/cocos2d-x-3.x
+	url = https://github.com/cocos2d/cocos2d-x.git
+	branch = cocos2d-x-3.0
+[submodule "engines/cocos2d-x-2.x"]
+	path = engines/cocos2d-x-2.x
+	url = https://github.com/cocos2d/cocos2d-x.git
+	branch = cocos2d-x-2.2.3
