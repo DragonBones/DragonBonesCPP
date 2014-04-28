@@ -166,6 +166,7 @@ namespace dragonBones
 
     void CCDragonBones::onExit()
     {
+		DB_SAFE_DELETE(m_Armature);
         this->unscheduleAllSelectors();
     }
 }
