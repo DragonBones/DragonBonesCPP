@@ -20,46 +20,59 @@ namespace dragonBones
     }
     void Cocos2dxFactory::loadSkeletonFile(const String &skeletonFile , const String &name)
     {
-        dragonBones::XMLDataParser parser;
-        unsigned long dummySize;
-        
-        dragonBones::XMLDocument doc;
-        unsigned char* skeleton_data = cocos2d::CCFileUtils::sharedFileUtils()->
-        getFileData(skeletonFile.c_str(), "rb", &dummySize);
-        doc.Parse(reinterpret_cast<char*>(skeleton_data),dummySize);
-        delete[] skeleton_data;
-        
-        SkeletonData *skeleton = parser.parseSkeletonData(doc.RootElement());
-        
-        addSkeletonData(skeleton , name);
+		if (existSkeletonDataInDic(name))
+		{
+			//todo
+		} 
+		else
+		{
+			dragonBones::XMLDataParser parser;
+			unsigned long dummySize;
+
+			dragonBones::XMLDocument doc;
+			unsigned char* skeleton_data = cocos2d::CCFileUtils::sharedFileUtils()->
+				getFileData(skeletonFile.c_str(), "rb", &dummySize);
+			doc.Parse(reinterpret_cast<char*>(skeleton_data),dummySize);
+			delete[] skeleton_data;
+
+			SkeletonData *skeleton = parser.parseSkeletonData(doc.RootElement());
+
+			addSkeletonData(skeleton , name);
+		}
     }
 
     void Cocos2dxFactory::loadTextureAtlasFile(const String &textureAtlasFile , const String &name)
     {
-        dragonBones::XMLDataParser parser;
-        unsigned long dummySize;
-        
-        dragonBones::XMLDocument doc;
-        unsigned char* texture_data = cocos2d::CCFileUtils::sharedFileUtils()->
-        getFileData(textureAtlasFile.c_str(), "rb", &dummySize);
-        doc.Parse(reinterpret_cast<char*>(texture_data),dummySize);
-        delete[] texture_data;
+		if (existTextureDataInDic(name))
+		{
+			//todo
+		} 
+		else
+		{
+			dragonBones::XMLDataParser parser;
+			unsigned long dummySize;
 
-        int pos = textureAtlasFile.find_last_of("/");
-        if (std::string::npos != pos){
-            std::string base_path = textureAtlasFile.substr(0, pos + 1);
-            
-            std::string img_path = doc.RootElement()->Attribute(ConstValues::A_IMAGE_PATH.c_str());
-            std::string new_img_path = base_path + img_path;
+			dragonBones::XMLDocument doc;
+			unsigned char* texture_data = cocos2d::CCFileUtils::sharedFileUtils()->
+				getFileData(textureAtlasFile.c_str(), "rb", &dummySize);
+			doc.Parse(reinterpret_cast<char*>(texture_data),dummySize);
+			delete[] texture_data;
 
-            doc.RootElement()->SetAttribute(ConstValues::A_IMAGE_PATH.c_str(), new_img_path.c_str());
-        }
-        
-        TextureAtlasData *textureAtlasData = parser.parseTextureAtlasData(doc.RootElement());
-        addTextureAtlas(new dragonBones::Cocos2dxTextureAtlas(textureAtlasData));
-        
+			int pos = textureAtlasFile.find_last_of("/");
+			if (std::string::npos != pos){
+				std::string base_path = textureAtlasFile.substr(0, pos + 1);
+
+				std::string img_path = doc.RootElement()->Attribute(ConstValues::A_IMAGE_PATH.c_str());
+				std::string new_img_path = base_path + img_path;
+
+				doc.RootElement()->SetAttribute(ConstValues::A_IMAGE_PATH.c_str(), new_img_path.c_str());
+			}
+
+			TextureAtlasData *textureAtlasData = parser.parseTextureAtlasData(doc.RootElement());
+			addTextureAtlas(new dragonBones::Cocos2dxTextureAtlas(textureAtlasData));
+		}
     }
-        
+    
     /** @private */
     ITextureAtlas* Cocos2dxFactory::generateTextureAtlas(Object *content, TextureAtlasData *textureAtlasRawData)
     {

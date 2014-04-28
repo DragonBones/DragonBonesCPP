@@ -21,8 +21,8 @@ namespace dragonBones
         const char* animationName)
     {
         Cocos2dxFactory *fac = Cocos2dxFactory::getInstance();
-        fac->loadSkeletonFile(skeletonXMLFile);
-        fac->loadTextureAtlasFile(textureXMLFile);
+        fac->loadSkeletonFile(skeletonXMLFile, dragonBonesName);
+        fac->loadTextureAtlasFile(textureXMLFile, dragonBonesName);
         return fac->buildArmature(armatureName, animationName, dragonBonesName);
     }
 
