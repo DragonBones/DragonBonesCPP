@@ -132,7 +132,9 @@ namespace cocos2d {
 
 	void DragonBonesNode::onExit()
 	{
+		DB_SAFE_DELETE(m_Armature);
 		this->unscheduleAllSelectors();
+		Node::onExit();
 	}
 
 	dragonBones::Armature*   DragonBonesNode::buildArmature(const char* skeletonXMLFile,
