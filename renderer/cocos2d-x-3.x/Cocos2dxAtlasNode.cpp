@@ -3,14 +3,9 @@
 #include "CCTextureCache.h"
 #include "CCDirector.h"
 #include "CCGLProgram.h"
-#include "CCShaderCache.h"
 #include "ccGLStateCache.h"
 #include "CCDirector.h"
-#include "TransformUtils.h"
 #include "CCRenderer.h"
-
-// external
-#include "kazmath/GL/matrix.h"
 
 NS_CC_BEGIN
 
@@ -100,20 +95,97 @@ bool Cocos2dxAtlasNode::initWithTextureAtlas(TextureAtlas* textureAtlas , unsign
 // Cocos2dxAtlasNode - draw
 void Cocos2dxAtlasNode::draw(Renderer* renderer, const kmMat4 &transform, bool transformUpdated)
 {
+    // TODO
+    // FIXME
+    //
+    // eastcowboy: 此处有问题
+    // 先是_shaderProgram编译不过。
+    // 改为GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR), 编译过了但是各个骨骼的位置不对。
+    // 似乎是cocos2d-x有问题，而不是DragonBones有问题。
+    // 先写一个山寨版本确保可以运行，然后坐等更新。
+
+#if 0
     CC_NODE_DRAW_SETUP();
 
 	
 	_quadCommand.init(
 		_globalZOrder,
 		m_pTextureAtlas->getTexture()->getName(),
-		_shaderProgram,
+		// _shaderProgram,
+        GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR),
 		m_tBlendFunc,
 		m_pTextureAtlas->getQuads() + m_nQuadIndex,
 		1,
 		transform);
 
 	renderer->addCommand(&_quadCommand);
+#elif 1
+    // eastcowboy: 山寨版本
 
+    GLProgramState* state = GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR);
+    GLProgram* glProgram = state->getGLProgram();
+    glProgram->use();
+    glProgram->setUniformsForBuiltins();
+
+    const BlendFunc& blendFunc = getBlendFunc();
+    ccGLBlendFunc(blendFunc.src, blendFunc.dst);
+
+    GL::bindTexture2D(m_pTextureAtlas->getTexture()->getName());
+
+    V3F_C4B_T2F_Quad* quad = m_pTextureAtlas->getQuads() + m_nQuadIndex;
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    ccGLEnableVertexAttribs(kCCVertexAttribFlag_Position | kCCVertexAttribFlag_Color | kCCVertexAttribFlag_TexCoords);
+    glVertexAttribPointer(kCCVertexAttrib_Position, 3, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), &quad->tl.vertices.x);
+    glVertexAttribPointer(kCCVertexAttrib_Color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V3F_C4B_T2F), &quad->tl.colors.r);
+    glVertexAttribPointer(kCCVertexAttrib_TexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B_T2F), &quad->tl.texCoords.u);
+
+    GLushort indices[] = {0, 1, 2, 2, 1, 3};
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
+#else
+    // eastcowboy: 山寨版本2
+    // 只能在桌面版本的OpenGL运行，GLES不支持。
+    // Windows调试用。
+    ccGLUseProgram(0);
+
+    const Mat4& projectionMatrix = Director::getInstance()->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+    const Mat4& modelviewMatrix = Director::getInstance()->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(projectionMatrix.m);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixf(modelviewMatrix.m);
+
+    const BlendFunc& blendFunc = getBlendFunc();
+    ccGLBlendFunc(blendFunc.src, blendFunc.dst);
+
+    GL::bindTexture2D(m_pTextureAtlas->getTexture()->getName());
+
+    V3F_C4B_T2F_Quad* quad = m_pTextureAtlas->getQuads() + m_nQuadIndex;
+
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glBegin(GL_QUADS);
+        glTexCoord2fv(&quad->tl.texCoords.u);
+        glColor4ubv(&quad->tl.colors.r);
+        glVertex3fv(&quad->tl.vertices.x);
+
+        glTexCoord2fv(&quad->bl.texCoords.u);
+        glColor4ubv(&quad->bl.colors.r);
+        glVertex3fv(&quad->bl.vertices.x);
+
+        glTexCoord2fv(&quad->br.texCoords.u);
+        glColor4ubv(&quad->br.colors.r);
+        glVertex3fv(&quad->br.vertices.x);
+
+        glTexCoord2fv(&quad->tr.texCoords.u);
+        glColor4ubv(&quad->tr.colors.r);
+        glVertex3fv(&quad->tr.vertices.x);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+#endif
 }
 
 // Cocos2dxAtlasNode - RGBA protocol
