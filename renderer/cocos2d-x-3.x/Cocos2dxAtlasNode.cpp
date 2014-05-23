@@ -3,14 +3,9 @@
 #include "CCTextureCache.h"
 #include "CCDirector.h"
 #include "CCGLProgram.h"
-#include "CCShaderCache.h"
 #include "ccGLStateCache.h"
 #include "CCDirector.h"
-#include "TransformUtils.h"
 #include "CCRenderer.h"
-
-// external
-#include "kazmath/GL/matrix.h"
 
 NS_CC_BEGIN
 
@@ -106,7 +101,7 @@ void Cocos2dxAtlasNode::draw(Renderer* renderer, const kmMat4 &transform, bool t
 	_quadCommand.init(
 		_globalZOrder,
 		m_pTextureAtlas->getTexture()->getName(),
-		_shaderProgram,
+        getGLProgramState(),
 		m_tBlendFunc,
 		m_pTextureAtlas->getQuads() + m_nQuadIndex,
 		1,

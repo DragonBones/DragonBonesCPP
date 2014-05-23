@@ -9,6 +9,7 @@
 #include "BytesType.h"
 #include "CCTextureAtlas.h"
 #include "CCQuadCommand.h"
+#include "cocos2d.h"
 NS_CC_BEGIN
 
 /**
