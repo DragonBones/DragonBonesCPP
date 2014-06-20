@@ -274,8 +274,8 @@ namespace dragonBones
         frame->visible = uint(frameXML->IntAttribute(ConstValues::A_HIDE.c_str())) != 1;
 
         //frame->tweenEasing = Number(frameXML->DoubleAttribute(ConstValues::A_TWEEN_EASING.c_str()));
-	const char * tweenEasing = frameXML->Attribute(ConstValues::A_TWEEN_EASING.c_str());
-	if(tweenEasing  && strcmp( tweenEasing , "NaN" ) == 0)
+        const char * tweenEasing = frameXML->Attribute(ConstValues::A_TWEEN_EASING.c_str());
+        if(tweenEasing  && strcmp( tweenEasing , "NaN" ) == 0)
         {
             frame->tweenEasing = NaN;
         }
@@ -291,6 +291,10 @@ namespace dragonBones
 
         parseTransform(frameXML->FirstChildElement(ConstValues::TRANSFORM.c_str()), &frame->global, &frame->pivot);
         frame->transform = frame->global;
+
+        //add scale offset to frame
+        frame->scaleOffset.x = Number(frameXML->DoubleAttribute(ConstValues::A_SCALE_X_OFFSET.c_str()));
+        frame->scaleOffset.y = Number(frameXML->DoubleAttribute(ConstValues::A_SCALE_Y_OFFSET.c_str()));
 
         const dragonBones::XMLElement * colorTransformXML = frameXML->FirstChildElement(ConstValues::COLOR_TRANSFORM.c_str());
         if(colorTransformXML)

@@ -209,8 +209,10 @@ namespace dragonBones
                             _durationTransform.y = nextFrame->transform.y - _currentFrame->transform.y;
                             _durationTransform.skewX = nextFrame->transform.skewX - _currentFrame->transform.skewX;
                             _durationTransform.skewY = nextFrame->transform.skewY - _currentFrame->transform.skewY;
-                            _durationTransform.scaleX = nextFrame->transform.scaleX - _currentFrame->transform.scaleX;
-                            _durationTransform.scaleY = nextFrame->transform.scaleY - _currentFrame->transform.scaleY;
+                            
+                            //add scale offset
+                            _durationTransform.scaleX = nextFrame->transform.scaleX - _currentFrame->transform.scaleX + nextFrame->scaleOffset.x;
+                            _durationTransform.scaleY = nextFrame->transform.scaleY - _currentFrame->transform.scaleY + nextFrame->scaleOffset.y;
                             
                             if(frameIndex == 0)
                             {

@@ -108,10 +108,18 @@ namespace dragonBones
             global.skewX = origin.skewX + offset.skewX + tween.skewX;
             global.skewY = origin.skewY + offset.skewY + tween.skewY;
         }
-            
+        
+        //remove scale from matrix
+        /*
         _globalTransformMatrix.a = global.scaleX * cos(global.skewY);
         _globalTransformMatrix.b = global.scaleX * sin(global.skewY);
         _globalTransformMatrix.c = -global.scaleY * sin(global.skewX);
         _globalTransformMatrix.d = global.scaleY * cos(global.skewX);
+        */
+
+        _globalTransformMatrix.a = cos(global.skewY);
+        _globalTransformMatrix.b = sin(global.skewY);
+        _globalTransformMatrix.c = -sin(global.skewX);
+        _globalTransformMatrix.d = cos(global.skewX);
     }
 };

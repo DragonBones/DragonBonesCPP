@@ -66,6 +66,9 @@ namespace dragonBones
         static const String A_RED_MULTIPLIER;
         static const String A_GREEN_MULTIPLIER;
         static const String A_BLUE_MULTIPLIER;
+
+        static const String A_SCALE_X_OFFSET;
+        static const String A_SCALE_Y_OFFSET;
     };
 
 };

@@ -10,10 +10,18 @@ namespace dragonBones
 
         void transformToMatrix(DBTransform &transform, Matrix &matrix)
         {
+            //remove scale from matrix
+            /*
             matrix.a = transform.scaleX * cos(transform.skewY);
             matrix.b = transform.scaleX * sin(transform.skewY);
             matrix.c = -transform.scaleY * sin(transform.skewX);
             matrix.d = transform.scaleY * cos(transform.skewX);
+            */
+
+            matrix.a = cos(transform.skewY);
+            matrix.b = sin(transform.skewY);
+            matrix.c = -sin(transform.skewX);
+            matrix.d = cos(transform.skewX);
             matrix.tx = transform.x;
             matrix.ty = transform.y;
         }

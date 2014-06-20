@@ -18,6 +18,7 @@ namespace dragonBones
         DBTransform transform;
         Point pivot;
         ColorTransform *color;
+        Point scaleOffset;
         
         
         TransformFrame()

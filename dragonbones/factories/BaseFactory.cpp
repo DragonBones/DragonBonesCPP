@@ -171,11 +171,7 @@ namespace dragonBones
         {
             throw std::invalid_argument("textureAtlas is null");
         }
-        String newname = name;
-        if(newname.empty())
-        {
-            newname = textureAtlas->getName();
-        }
+        String newname = name.empty() ? textureAtlas->getName() : name;
         if(newname.empty())
         {
             throw std::invalid_argument("Unnamed data!");

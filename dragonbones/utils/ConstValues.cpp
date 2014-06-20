@@ -62,5 +62,8 @@ namespace dragonBones
     const String ConstValues::A_GREEN_MULTIPLIER = "gM";
     const String ConstValues::A_BLUE_MULTIPLIER = "bM";
 
-
+    //add scale offset to frame
+    const String ConstValues::A_SCALE_X_OFFSET = "scXOffset";
+    const String ConstValues::A_SCALE_Y_OFFSET = "scYOffset";
+    
 }
