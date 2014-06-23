@@ -273,17 +273,17 @@ namespace dragonBones
             
             if(_isDisplayOnStage)
             {
+                //add parent scale to matrix
+                _globalTransformMatrix.a *= global.scaleX;
+                _globalTransformMatrix.b *= global.scaleX;
+                _globalTransformMatrix.c *= -global.scaleY;
+                _globalTransformMatrix.d *= global.scaleY;
+
                 Number pivotX = parent->_tweenPivot.x;
                 Number pivotY = parent->_tweenPivot.y;
                 if(pivotX || pivotY)
                 {
                     
-                    //add parent scale to matrix
-                    _globalTransformMatrix.a *= global.scaleX;
-                    _globalTransformMatrix.b *= global.scaleX;
-                    _globalTransformMatrix.c *= -global.scaleY;
-                    _globalTransformMatrix.d *= global.scaleY;
-
                     Matrix parentMatrix = parent->_globalTransformMatrix;
                     _globalTransformMatrix.tx += parentMatrix.a * pivotX + parentMatrix.c * pivotY;
                     _globalTransformMatrix.ty += parentMatrix.b * pivotX + parentMatrix.d * pivotY;

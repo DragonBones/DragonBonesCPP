@@ -1,6 +1,8 @@
 #ifndef __TEXTURE_ATLAS_DATA_H__
 #define __TEXTURE_ATLAS_DATA_H__
-#include "utils/BytesType.h"
+
+#include "utils/DBGeometry.h"
+
 namespace dragonBones
 {    
     class TextureAtlasData
