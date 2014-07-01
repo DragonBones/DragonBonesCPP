@@ -168,5 +168,6 @@ namespace dragonBones
     {
 		DB_SAFE_DELETE(m_Armature);
         this->unscheduleAllSelectors();
+        CCNode::onExit();
     }
 }
