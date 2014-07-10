@@ -14,22 +14,30 @@ namespace dragonBones
         
         
         /**
-         * An vector containing all AnimationData names the Animation can play.
-         * @see dragonBones.objects.animationData->
+         * Unrecommended API. Recommend use getAnimationList.
          */
         const std::vector<String> &Animation::getMovementList()
         {
-            return _animationList;
+            return getAnimationList();
         }
-        
+
         /**
-         * The name of the last AnimationData played.
-         * @see dragonBones.objects.animationData->
+         * Unrecommended API. Recommend use getLastAnimationName.
          */
         const String &Animation::getMovementID()
         {
+            return getLastAnimationName();
+        }
+    
+        /**
+         * The name of the last AnimationData played.
+        * @see dragonBones.objects.AnimationData.
+         */
+        const String &Animation::getLastAnimationName()
+        {
             return _lastAnimationState?_lastAnimationState->name:BytesType::BLANK;
         }
+    
         /**
          * The last AnimationData this Animation played.
          * @see dragonBones.objects.animationData->
@@ -87,6 +95,7 @@ namespace dragonBones
         {
             return _animationDataList;
         }
+    
         void Animation::setAnimationDataList(const std::vector<AnimationData*> &value)
         {
             _animationDataList = value;
@@ -96,6 +105,20 @@ namespace dragonBones
                 _animationList.push_back(_animationDataList[i]->name);
             }
         }
+
+        AnimationData* Animation::getAnimationData(std::string &name)
+        {
+            for (size_t i = 0; i < _animationDataList.size(); i++)
+            {
+                AnimationData* data = _animationDataList[i];
+                if (data->name == name)
+                {
+                    return data;
+                }
+            }
+            return 0;
+        }
+       
         /**
          * The amount by which passed time should be scaled. Used to slow down or speed up animations. Defaults to 1.
          */
