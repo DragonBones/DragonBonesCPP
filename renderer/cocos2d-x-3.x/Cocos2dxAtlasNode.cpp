@@ -143,11 +143,19 @@ void Cocos2dxAtlasNode::setColor(const Color3B& color3)
 
 void Cocos2dxAtlasNode::setOpacity(GLubyte opacity)
 {
+	cocos2d::V3F_C4B_T2F_Quad & quad = m_pTextureAtlas->getQuads()[m_nQuadIndex];
+	quad.bl.colors.a = opacity;
+	quad.bl.colors.a = opacity;
+	quad.tl.colors.a = opacity;
+	quad.tr.colors.a = opacity;
+
+	/*
     Node::setOpacity(opacity);
 
     // special opacity for premultiplied textures
     if( m_bIsOpacityModifyRGB )
         this->setColor(m_tColorUnmodified);
+	*/
 }
 
 void Cocos2dxAtlasNode::setOpacityModifyRGB(bool bValue)
