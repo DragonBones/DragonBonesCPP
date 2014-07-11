@@ -46,7 +46,7 @@ namespace dragonBones
         CCDragonBones* pNew = new CCDragonBones();
         if (pNew && pNew->init())
         {
-            Armature*arm = CCDragonBones::buildArmature(skeletonXMLFile,
+            Armature* arm = CCDragonBones::buildArmature(skeletonXMLFile,
                 textureXMLFile,
                 dragonBonesName,
                 armatureName,
