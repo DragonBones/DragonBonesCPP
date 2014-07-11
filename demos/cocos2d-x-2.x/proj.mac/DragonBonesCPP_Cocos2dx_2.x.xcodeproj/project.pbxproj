@@ -75,15 +75,9 @@
 		E5B9E340196AE3E7000DB919 /* r1.png in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E339196AE3E7000DB919 /* r1.png */; };
 		E5B9E341196AE3E7000DB919 /* r2.png in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E33A196AE3E7000DB919 /* r2.png */; };
 		E5B9E342196AE3E7000DB919 /* starling.png in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E33B196AE3E7000DB919 /* starling.png */; };
-		E5B9E34F196AE3EF000DB919 /* skeleton.xml in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E344196AE3EF000DB919 /* skeleton.xml */; };
-		E5B9E350196AE3EF000DB919 /* texture.png in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E345196AE3EF000DB919 /* texture.png */; };
-		E5B9E351196AE3EF000DB919 /* texture.xml in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E346196AE3EF000DB919 /* texture.xml */; };
-		E5B9E352196AE3EF000DB919 /* skeleton.xml in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E348196AE3EF000DB919 /* skeleton.xml */; };
-		E5B9E353196AE3EF000DB919 /* texture.png in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E349196AE3EF000DB919 /* texture.png */; };
-		E5B9E354196AE3EF000DB919 /* texture.xml in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E34A196AE3EF000DB919 /* texture.xml */; };
-		E5B9E355196AE3EF000DB919 /* skeleton.xml in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E34C196AE3EF000DB919 /* skeleton.xml */; };
-		E5B9E356196AE3EF000DB919 /* texture.png in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E34D196AE3EF000DB919 /* texture.png */; };
-		E5B9E357196AE3EF000DB919 /* texture.xml in Resources */ = {isa = PBXBuildFile; fileRef = E5B9E34E196AE3EF000DB919 /* texture.xml */; };
+		E5BEE949196F9D1E00C382E2 /* cyborg in Resources */ = {isa = PBXBuildFile; fileRef = E5BEE946196F9D1E00C382E2 /* cyborg */; };
+		E5BEE94A196F9D1E00C382E2 /* cyborg_mix in Resources */ = {isa = PBXBuildFile; fileRef = E5BEE947196F9D1E00C382E2 /* cyborg_mix */; };
+		E5BEE94B196F9D1E00C382E2 /* dragon in Resources */ = {isa = PBXBuildFile; fileRef = E5BEE948196F9D1E00C382E2 /* dragon */; };
 		E5C5E8D1196F81B8006E01EB /* libcocos2dx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E5B9E322196AE1E4000DB919 /* libcocos2dx.a */; };
 		E5C5E8E0196F82E1006E01EB /* CCDragonBones.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5C5E8D4196F82E1006E01EB /* CCDragonBones.cpp */; };
 		E5C5E8E1196F82E1006E01EB /* Cocos2dxAtlasNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5C5E8D6196F82E1006E01EB /* Cocos2dxAtlasNode.cpp */; };
@@ -225,15 +219,9 @@
 		E5B9E339196AE3E7000DB919 /* r1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = r1.png; sourceTree = "<group>"; };
 		E5B9E33A196AE3E7000DB919 /* r2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = r2.png; sourceTree = "<group>"; };
 		E5B9E33B196AE3E7000DB919 /* starling.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = starling.png; sourceTree = "<group>"; };
-		E5B9E344196AE3EF000DB919 /* skeleton.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = skeleton.xml; sourceTree = "<group>"; };
-		E5B9E345196AE3EF000DB919 /* texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture.png; sourceTree = "<group>"; };
-		E5B9E346196AE3EF000DB919 /* texture.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = texture.xml; sourceTree = "<group>"; };
-		E5B9E348196AE3EF000DB919 /* skeleton.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = skeleton.xml; sourceTree = "<group>"; };
-		E5B9E349196AE3EF000DB919 /* texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture.png; sourceTree = "<group>"; };
-		E5B9E34A196AE3EF000DB919 /* texture.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = texture.xml; sourceTree = "<group>"; };
-		E5B9E34C196AE3EF000DB919 /* skeleton.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = skeleton.xml; sourceTree = "<group>"; };
-		E5B9E34D196AE3EF000DB919 /* texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture.png; sourceTree = "<group>"; };
-		E5B9E34E196AE3EF000DB919 /* texture.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = texture.xml; sourceTree = "<group>"; };
+		E5BEE946196F9D1E00C382E2 /* cyborg */ = {isa = PBXFileReference; lastKnownFileType = folder; path = cyborg; sourceTree = "<group>"; };
+		E5BEE947196F9D1E00C382E2 /* cyborg_mix */ = {isa = PBXFileReference; lastKnownFileType = folder; path = cyborg_mix; sourceTree = "<group>"; };
+		E5BEE948196F9D1E00C382E2 /* dragon */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dragon; sourceTree = "<group>"; };
 		E5C5E8D4196F82E1006E01EB /* CCDragonBones.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCDragonBones.cpp; sourceTree = "<group>"; };
 		E5C5E8D5196F82E1006E01EB /* CCDragonBones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDragonBones.h; sourceTree = "<group>"; };
 		E5C5E8D6196F82E1006E01EB /* Cocos2dxAtlasNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cocos2dxAtlasNode.cpp; sourceTree = "<group>"; };
@@ -388,9 +376,9 @@
 		78C7DDAA14EBA5050085D0C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E5B9E343196AE3EF000DB919 /* cyborg */,
-				E5B9E347196AE3EF000DB919 /* cyborg_mix */,
-				E5B9E34B196AE3EF000DB919 /* dragon */,
+				E5BEE946196F9D1E00C382E2 /* cyborg */,
+				E5BEE947196F9D1E00C382E2 /* cyborg_mix */,
+				E5BEE948196F9D1E00C382E2 /* dragon */,
 				E5B9E335196AE3E7000DB919 /* b1.png */,
 				E5B9E336196AE3E7000DB919 /* b2.png */,
 				E5B9E337196AE3E7000DB919 /* f1.png */,
@@ -567,36 +555,6 @@
 			path = ../Classes/example;
 			sourceTree = "<group>";
 		};
-		E5B9E343196AE3EF000DB919 /* cyborg */ = {
-			isa = PBXGroup;
-			children = (
-				E5B9E344196AE3EF000DB919 /* skeleton.xml */,
-				E5B9E345196AE3EF000DB919 /* texture.png */,
-				E5B9E346196AE3EF000DB919 /* texture.xml */,
-			);
-			path = cyborg;
-			sourceTree = "<group>";
-		};
-		E5B9E347196AE3EF000DB919 /* cyborg_mix */ = {
-			isa = PBXGroup;
-			children = (
-				E5B9E348196AE3EF000DB919 /* skeleton.xml */,
-				E5B9E349196AE3EF000DB919 /* texture.png */,
-				E5B9E34A196AE3EF000DB919 /* texture.xml */,
-			);
-			path = cyborg_mix;
-			sourceTree = "<group>";
-		};
-		E5B9E34B196AE3EF000DB919 /* dragon */ = {
-			isa = PBXGroup;
-			children = (
-				E5B9E34C196AE3EF000DB919 /* skeleton.xml */,
-				E5B9E34D196AE3EF000DB919 /* texture.png */,
-				E5B9E34E196AE3EF000DB919 /* texture.xml */,
-			);
-			path = dragon;
-			sourceTree = "<group>";
-		};
 		E5C5E8D2196F82E1006E01EB /* renderer */ = {
 			isa = PBXGroup;
 			children = (
@@ -685,26 +643,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				E5B9E341196AE3E7000DB919 /* r2.png in Resources */,
-				E5B9E357196AE3EF000DB919 /* texture.xml in Resources */,
 				E5B9E340196AE3E7000DB919 /* r1.png in Resources */,
 				E5B9E33E196AE3E7000DB919 /* f1.png in Resources */,
 				41BC70E515BF81A5006A0A6C /* InfoPlist.strings in Resources */,
 				E5B9E33D196AE3E7000DB919 /* b2.png in Resources */,
-				E5B9E34F196AE3EF000DB919 /* skeleton.xml in Resources */,
 				41BC70E615BF81A5006A0A6C /* MainMenu.xib in Resources */,
 				41BC70E715BF81A5006A0A6C /* Icon.icns in Resources */,
-				E5B9E355196AE3EF000DB919 /* skeleton.xml in Resources */,
-				E5B9E352196AE3EF000DB919 /* skeleton.xml in Resources */,
-				E5B9E356196AE3EF000DB919 /* texture.png in Resources */,
 				E5B9E33C196AE3E7000DB919 /* b1.png in Resources */,
 				1AFAF8C316D3884900DB1158 /* CloseNormal.png in Resources */,
+				E5BEE949196F9D1E00C382E2 /* cyborg in Resources */,
 				1AFAF8C416D3884900DB1158 /* CloseSelected.png in Resources */,
 				E5B9E342196AE3E7000DB919 /* starling.png in Resources */,
-				E5B9E354196AE3EF000DB919 /* texture.xml in Resources */,
-				E5B9E353196AE3EF000DB919 /* texture.png in Resources */,
+				E5BEE94B196F9D1E00C382E2 /* dragon in Resources */,
+				E5BEE94A196F9D1E00C382E2 /* cyborg_mix in Resources */,
 				E5B9E33F196AE3E7000DB919 /* f2.png in Resources */,
-				E5B9E350196AE3EF000DB919 /* texture.png in Resources */,
-				E5B9E351196AE3EF000DB919 /* texture.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

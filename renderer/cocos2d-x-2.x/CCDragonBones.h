@@ -42,6 +42,7 @@ namespace dragonBones {
         CCNode* getDisplayNode();
         Armature* getArmature();
         Animation* getAnimation();
+        cocos2d::CCArray* getAnimationList();
         void gotoAndPlay(   const String &animationName,
                             Number fadeInTime = -1,
                             Number duration = -1,
@@ -70,13 +71,12 @@ namespace dragonBones {
 
         
     private:
-        void initWithArmature(Armature*arm);
+        void initWithArmature(Armature* arm);
         void update(float dt);
         Armature* m_Armature; 
 		cocos2d::SEL_CallFuncND	m_Callback;
 		cocos2d::CCObject*	m_Caller;
-		void eventBridge(Event*e); 
-
+		void eventBridge(Event* e);
     }; 
 }
 #endif // __CCDRAGONBONES__
