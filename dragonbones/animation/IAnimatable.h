@@ -1,28 +1,16 @@
-#ifndef __I_ANIMATABLE_H__
-#define __I_ANIMATABLE_H__
-#include "utils/preDB.h"
-namespace dragonBones
+#ifndef __ANIMATION_I_ANIMATABLE_H__
+#define __ANIMATION_I_ANIMATABLE_H__
+
+NAME_SPACE_DRAGON_BONES_BEGIN
+class IAnimatable
 {
-    /**
-    * Copyright 2012-2013. DragonBones. All Rights Reserved.
-    * @playerversion Flash 10.0
-    * @langversion 3.0
-    * @version 2.0
-    */
+public:
+    IAnimatable() {};
+    virtual ~IAnimatable() {};
+    virtual void advanceTime(float passedTime) = 0;
     
-    /**
-     * The IAnimatable interface defines the methods used by all animatable instance type used by the DragonBones system.
-     * @see dragonBones.Armature
-     * @see dragonBones.animation.WorldClock
-     */
-    class IAnimatable : public Object
-    {
-    public:
-        /**
-         * Update the animation using this method typically in an ENTERFRAME Event or with a Timer.
-         * @param    The amount of second to move the playhead ahead.
-         */
-        virtual void advanceTime(Number passedTime) = 0;
-    };
+private:
+    DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(IAnimatable);
 };
-#endif // __I_ANIMATABLE_H__
+NAME_SPACE_DRAGON_BONES_END
+#endif  // __ANIMATION_I_ANIMATABLE_H__

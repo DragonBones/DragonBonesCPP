@@ -1,556 +1,371 @@
-#include "objects/AnimationData.h"
 #include "Animation.h"
-#include "AnimationState.h"
-#include "Slot.h"
-#include "Armature.h"
-#include "TimelineState.h"
-namespace dragonBones
-{    
-        const String Animation::NONE = "none";
-        const String Animation::SAME_LAYER = "sameLayer";
-        const String Animation::SAME_GROUP = "sameGroup";
-        const String Animation::SAME_LAYER_AND_GROUP = "sameLayerAndGroup";
-        const String Animation::ALL = "all";
-        
-        
-        /**
-         * An vector containing all AnimationData names the Animation can play.
-         * @see dragonBones.objects.animationData->
-         */
-        const std::vector<String> &Animation::getMovementList()
+
+NAME_SPACE_DRAGON_BONES_BEGIN
+
+bool Animation::getIsPlaying() const
+{
+    return _isPlaying && !getIsComplete();
+}
+bool Animation::getIsComplete() const
+{
+    if (_lastAnimationState)
+    {
+        if (!_lastAnimationState->_isComplete)
         {
-            return _animationList;
-        }
-        
-        /**
-         * The name of the last AnimationData played.
-         * @see dragonBones.objects.animationData->
-         */
-        const String &Animation::getMovementID()
-        {
-            return _lastAnimationState?_lastAnimationState->name:BytesType::BLANK;
-        }
-        /**
-         * The last AnimationData this Animation played.
-         * @see dragonBones.objects.animationData->
-         */
-        AnimationState *Animation::getLastAnimationState()
-        {
-            return _lastAnimationState;
-        }
-        
-        /**
-         * An vector containing all AnimationData names the Animation can play.
-         * @see dragonBones.objects.animationData->
-         */
-        const std::vector<String> &Animation::getAnimationList()
-        {
-            return _animationList;
-        }
-        
-        bool Animation::getIsPlaying()
-        {
-            return _isPlaying && _isActive;
-        }
-        
-        bool Animation::getIsComplete()
-        {
-            if(_lastAnimationState)
-            {
-                if(!_lastAnimationState->getIsComplete())
-                {
-                    return false;
-                }
-                int j = _animationLayer.size();
-                while(j --)
-                {
-                    std::vector<AnimationState*> *animationStateList = _animationLayer[j];
-                    int i = animationStateList->size();
-                    while(i --)
-                    {
-                        if(!animationStateList->at(i)->getIsComplete())
-                        {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            }
             return false;
         }
         
-        /**
-         * The AnimationData list associated with this Animation instance.
-         * @see dragonBones.objects.animationData->
-         */
-        const std::vector<AnimationData*>& Animation::getAnimationDataList()
+        for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
         {
-            return _animationDataList;
-        }
-        void Animation::setAnimationDataList(const std::vector<AnimationData*> &value)
-        {
-            _animationDataList = value;
-            _animationList.clear();
-            for(size_t i = 0 ; i < _animationDataList.size() ; i ++)
+            if (!_animationStateList[i]->_isComplete)
             {
-                _animationList.push_back(_animationDataList[i]->name);
+                return false;
             }
-        }
-        /**
-         * The amount by which passed time should be scaled. Used to slow down or speed up animations. Defaults to 1.
-         */
-        Number Animation::getTimeScale()
-        {
-            return _timeScale;
-        }
-        void Animation::setTimeScale(Number value)
-        {
-            if (value < 0)
-            {
-                value = 0;
-            }
-            _timeScale = value;
         }
         
-        /**
-         * Creates a new Animation instance and attaches it to the passed Armature.
-         * @param    An Armature to attach this Animation instance to.
-         */
-        Animation::Animation(Armature *armature)
-        {
-            _armature = armature;
-            _lastAnimationState = 0;
-            _isPlaying = false;
-            _isActive = false;
-            tweenEnabled = true;
-            _timeScale = 1;
-        }
-        
-        /**
-         * Qualifies all resources used by this Animation instance for garbage collection.
-         */
-        void Animation::dispose()
-        {
-            if(!_armature)
-            {
-                return;
-            }
-            stop();
-            int i = _animationLayer.size();
-            while(i --)
-            {
-                std::vector<AnimationState*> *animationStateList = _animationLayer[i];
-                int j = animationStateList->size();
-                while(j --)
-                {
-                    AnimationState::returnObject(animationStateList->at(j));
-                }
-                animationStateList->clear();
-                delete animationStateList;
-            }
-            _animationLayer.clear();
-            _animationList.clear();
-            
-            _armature = 0;
-            _animationDataList.clear();
-            _animationList.clear();
-        }
-        
-        /**
-         * Move the playhead to that AnimationData
-         * @param animationName The name of the AnimationData to play.
-         * @param fadeInTime A fade time to apply (> 0)
-         * @param duration The duration of that animationData->
-         * @param loop Loop(0:loop forever, 1~+∞:loop times, -1~-∞:will fade animation after loop complete).
-         * @param layer The layer of the animation.
-         * @param group The group of the animation.
-         * @param fadeOutMode Fade out mode.
-         * @param displayControl Display control.
-         * @param pauseFadeOut Pause other animation playing.
-         * @param pauseFadeIn Pause this animation playing before fade in complete.
-         * @see dragonBones.objects.animationData->
-         * @see dragonBones.animation.animationState->
-         */
-        AnimationState* Animation::gotoAndPlay(
-            const String &animationName, 
-            Number fadeInTime, 
-            Number duration, 
-            Number loop, 
-            uint layer, 
-            const String &group,
-            const String &fadeOutMode,
-            bool displayControl,
-            bool pauseFadeOut,
-            bool pauseFadeIn
-        )
-        {
-            if (_animationDataList.empty())
-            {
-                return 0;
-            }
-            int i = _animationDataList.size();
-            AnimationData* animationData = 0;
-            while(i --)
-            {
-                if(_animationDataList[i]->name == animationName)
-                {
-                    animationData = _animationDataList[i];
-                    break;
-                }
-            }
-            if (!animationData)
-            {
-                return 0;
-            }
-            
-            _isPlaying = true;
-            
-            //
-            fadeInTime = fadeInTime < 0?(animationData->fadeInTime < 0?0.3f:animationData->fadeInTime):fadeInTime;
-            
-            Number durationScale;
-            if(duration < 0)
-            {
-                durationScale = animationData->scale < 0?1:animationData->scale;
-            }
-            else
-            {
-                durationScale = duration / animationData->duration;
-            }
-            
-            loop = isNaN(loop) ?animationData->loop:loop;
-            layer = addLayer(layer);
-            
-            //autoSync = autoSync && !pauseFadeOut && !pauseFadeIn;
-            AnimationState* animationState = 0;
+        return true;
+    }
+    
+    return true;
+}
 
-            if(fadeOutMode == NONE)
+AnimationState *Animation::getLastAnimationState() const
+{
+    return _lastAnimationState;
+}
+
+/*
+const std::vector<String>& Animation::getAnimationList() const
+{
+    const std::vector<String>& animationList = std::vector<String>
+    for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
+    {
+        if(!_animationStateList[i]->_isComplete)
+        {
+            return false;
+        }
+    }
+    }*/
+
+float Animation::getTimeScale() const
+{
+    return _timeScale;
+}
+void Animation::setTimeScale(float timeScale)
+{
+    if (timeScale < 0 || timeScale != timeScale)
+    {
+        timeScale = 1;
+    }
+    
+    _timeScale = timeScale;
+}
+
+Animation::Animation()
+{
+    _isPlaying = false;
+    autoTween = true;
+    _timeScale = 1.f;
+    _armature = nullptr;
+    _lastAnimationState = nullptr;
+}
+Animation::~Animation()
+{
+    dispose();
+}
+
+void Animation::dispose()
+{
+    animationDataList.clear();
+    
+    for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
+    {
+        AnimationState::returnObject(_animationStateList[i]);
+    }
+    
+    _animationStateList.clear();
+    _armature = nullptr;
+    _lastAnimationState = nullptr;
+}
+
+AnimationState *Animation::gotoAndPlay(
+    const String &animationName,
+    float fadeInTime,
+    float duration,
+    int playTimes,
+    int layer,
+    const String &group,
+    const AnimationFadeOutMode &fadeOutMode,
+    bool pauseFadeOut,
+    bool pauseFadeIn
+)
+{
+    AnimationData *animationData = nullptr;
+    
+    for (size_t i = 0, l = animationDataList.size(); i < l; ++i)
+    {
+        if (animationDataList[i]->name == animationName)
+        {
+            animationData = animationDataList[i];
+            break;
+        }
+    }
+    
+    if (!animationData)
+    {
+        // throw
+        return nullptr;
+    }
+    
+    _isPlaying = true;
+    _isFading = true;
+    fadeInTime = fadeInTime < 0 ? (animationData->fadeTime < 0 ? 0.3f : animationData->fadeTime) : fadeInTime;
+    float durationScale;
+    
+    if (duration < 0)
+    {
+        durationScale = animationData->scale < 0 ? 1.f : animationData->scale;
+    }
+    
+    else
+    {
+        durationScale = duration * 1000 / animationData->duration;
+    }
+    
+    playTimes = playTimes < 0 ? animationData->playTimes : playTimes;
+    
+    switch (fadeOutMode)
+    {
+        case AnimationFadeOutMode::NONE:
+            break;
+            
+        case AnimationFadeOutMode::SAME_LAYER:
+            for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
             {
-            }
-            else if(fadeOutMode == SAME_LAYER)
-            {
-                std::vector<AnimationState*> *animationStateList = _animationLayer[layer];
-                i = animationStateList->size();
-                while(i --)
+                AnimationState *animationState = _animationStateList[i];
+                
+                if (animationState->_layer == layer)
                 {
-                    animationState = animationStateList->at(i);
                     animationState->fadeOut(fadeInTime, pauseFadeOut);
                 }
             }
-            else if(fadeOutMode == SAME_GROUP)
-            {
-                int j = _animationLayer.size();
-                while(j --)
-                {
-                    std::vector<AnimationState*> *animationStateList = _animationLayer[j];
-                    i = animationStateList->size();
-                    while(i --)
-                    {
-                        animationState = animationStateList->at(i);
-                        if(animationState->group == group)
-                        {
-                            animationState->fadeOut(fadeInTime, pauseFadeOut);
-                        }
-                    }
-                }
-
-            }
-            else if(fadeOutMode == ALL)
-            {
-                int j = _animationLayer.size();
-                while(j --)
-                {
-                    std::vector<AnimationState*> *animationStateList = _animationLayer[j];
-                    i = animationStateList->size();
-                    while(i --)
-                    {
-                        animationState = animationStateList->at(i);
-                        animationState->fadeOut(fadeInTime, pauseFadeOut);
-                    }
-                }
-
-            }
-            else 
-            {
-                std::vector<AnimationState*> *animationStateList = _animationLayer[layer];
-                i = animationStateList->size();
-                while(i --)
-                {
-                    animationState = animationStateList->at(i);
-                    if(animationState->group == group)
-                    {
-                        animationState->fadeOut(fadeInTime, pauseFadeOut);
-                    }
-                }
-            }
-
-            _lastAnimationState = animationState->borrowObject();
-            _lastAnimationState->group = group;
-            _lastAnimationState->tweenEnabled = tweenEnabled;
-            _lastAnimationState->fadeIn(_armature, animationData, fadeInTime, 1 / durationScale, (int)loop, layer, displayControl, pauseFadeIn);
             
-            addState(_lastAnimationState);
+            break;
             
-            std::vector<Slot*> &slotList = _armature->_slotList;
-            Slot* slot;
-            i = slotList.size();
-            while(i --)
+        case AnimationFadeOutMode::SAME_GROUP:
+            for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
             {
-                slot = slotList[i];
-                if(slot->getChildArmature())
-                {
-                    slot->getChildArmature()->getAnimation()->gotoAndPlay(animationName, fadeInTime);
-                }
-            }
-            
-            _lastAnimationState->advanceTime(0);
-            
-            return _lastAnimationState;
-        }
-        
-        /**
-         * Play the animation from the current position.
-         */
-        void Animation::play()
-        {
-            if (_animationDataList.size() == 0)
-            {
-                return;
-            }
-            if(!_lastAnimationState)
-            {
-                gotoAndPlay(_animationDataList[0]->name);
-            }
-            else if (!_isPlaying)
-            {
-                _isPlaying = true;
-            }
-            else
-            {
-                gotoAndPlay(_lastAnimationState->name);
-            }
-        }
-        
-        void Animation::stop()
-        {
-            _isPlaying = false;
-        }
-        
-        /**
-         * Returns the AnimationState named name.
-         * @return A AnimationState instance.
-         * @see dragonBones.animation.animationState->
-         */
-        AnimationState* Animation::getState(const String &name, uint layer)
-        {
-            int l = _animationLayer.size();
-            if(l == 0)
-            {
-                return 0;
-            }
-            else if((int)layer >= l)
-            {
-                layer = l - 1;
-            }
-            
-            std::vector<AnimationState*> *animationStateList = _animationLayer[layer];
-            if(!animationStateList)
-            {
-                return 0;
-            }
-            int i = animationStateList->size();
-            while(i --)
-            {
-                if(animationStateList->at(i)->name == name)
-                {
-                    return animationStateList->at(i);
-                }
-            }
-            
-            return 0;
-        }
-        
-        bool Animation::hasAnimation(const String &animationName)
-        {
-            int i = _animationDataList.size();
-            while(i --)
-            {
-                if(_animationDataList[i]->name == animationName)
-                {
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-        
-        void Animation::advanceTime(Number passedTime)
-        {
-            /*
-            if(!_isPlaying || !_isActive)
-            {
-                return;
-            }
-            */
-            passedTime *= _timeScale;
-            
-            int l = _armature->_boneList.size();
-            int i;
-            int j;
-            int k = l;
-            uint stateListLength;
-            Bone* bone;
-            String boneName;
-            Number weigthLeft;
-            
-            Number x;
-            Number y;
-            Number skewX;
-            Number skewY;
-            Number scaleX;
-            Number scaleY;
-            Number pivotX;
-            Number pivotY;
-            
-            Number layerTotalWeight;
-            AnimationState* animationState;
-            TimelineState* timelineState;
-            Number weight;
-            DBTransform *transform = 0;
-            Point *pivot = 0;
-            
-            l --;
-            while(k --)
-            {
-                bone = _armature->_boneList[k];
-                boneName = bone->name;
-                weigthLeft = 1;
+                AnimationState *animationState = _animationStateList[i];
                 
-                x = 0;
-                y = 0;
-                skewX = 0;
-                skewY = 0;
-                scaleX = 0;
-                scaleY = 0;
-                pivotX = 0;
-                pivotY = 0;
-                
-                i = _animationLayer.size();
-                while(i --)
+                if (animationState->_group == group)
                 {
-                    layerTotalWeight = 0;
-                    std::vector<AnimationState*> *animationStateList = _animationLayer[i];
-                    stateListLength = animationStateList->size();
-                    for(j = 0;j < (int)stateListLength;j ++)
-                    {
-                        animationState = animationStateList->at(j);
-                        if(k == l)
-                        {
-                            if(animationState->advanceTime(passedTime))
-                            {
-                                removeState(animationState);
-                                j --;
-                                stateListLength --;
-                                continue;
-                            }
-                        }
-                        
-                        timelineState = animationState->_timelineStates[boneName];
-                        
-                        if(timelineState && timelineState->tweenActive)
-                        {
-                            weight = animationState->_fadeWeight * animationState->weight * weigthLeft;
-                            transform = &timelineState->transform;
-                            pivot = &timelineState->pivot;
-                            x += transform->x * weight;
-                            y += transform->y * weight;
-                            skewX += transform->skewX * weight;
-                            skewY += transform->skewY * weight;
-                            scaleX += transform->scaleX * weight;
-                            scaleY += transform->scaleY * weight;
-                            pivotX += pivot->x * weight;
-                            pivotY += pivot->y * weight;
-                            
-                            layerTotalWeight += weight;
-                        }
-                    }
-                    
-                    if(layerTotalWeight >= weigthLeft)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        weigthLeft -= layerTotalWeight;
-                    }
+                    animationState->fadeOut(fadeInTime, pauseFadeOut);
                 }
-                transform = &bone->tween;
-                pivot = &bone->_tweenPivot;
+            }
+            
+            break;
+            
+        case AnimationFadeOutMode::ALL:
+            for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
+            {
+                AnimationState *animationState = _animationStateList[i];
+                animationState->fadeOut(fadeInTime, pauseFadeOut);
+            }
+            
+            break;
+            
+        case AnimationFadeOutMode::SAME_LAYER_AND_GROUP:
+        default:
+            for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
+            {
+                AnimationState *animationState = _animationStateList[i];
                 
-                transform->x = x;
-                transform->y = y;
-                transform->skewX = skewX;
-                transform->skewY = skewY;
-                transform->scaleX = scaleX;
-                transform->scaleY = scaleY;
-                pivot->x = pivotX;
-                pivot->y = pivotY;
-            }
-        }
-        
-        /** @private */
-        void Animation::setActive(AnimationState *animationState, bool active)
-        {
-            if(active)
-            {
-                _isActive = true;
-            }
-            else
-            {
-                int i = _animationLayer.size();
-                int j;
-                while(i --)
+                if (animationState->_layer == layer && animationState->_group == group)
                 {
-                    std::vector<AnimationState*> *animationStateList = _animationLayer[i];
-                    j = animationStateList->size();
-                    while(j --)
-                    {
-                        if(animationStateList->at(j)->getIsPlaying())
-                        {
-                            return;
-                        }
-                    }
+                    animationState->fadeOut(fadeInTime, pauseFadeOut);
                 }
-                _isActive = false;
             }
-        }
-        
-        uint Animation::addLayer(uint layer)
-        {
-            if(layer >= _animationLayer.size())
-            {
-                _animationLayer.push_back(new std::vector<AnimationState*>());
-            }
-            return layer;
-        }
-        
-        void Animation::addState(AnimationState *animationState)
-        {
-            std::vector<AnimationState*> *animationStateList = _animationLayer[animationState->getLayer()];
-            animationStateList->push_back(animationState);
-        }
-        
-        void Animation::removeState(AnimationState *animationState)
-        {
-            int layer = animationState->getLayer();
-            std::vector<AnimationState*> *animationStateList = _animationLayer[layer];
-            animationStateList->erase(animationStateList->begin() + indexOf(*animationStateList , animationState));
             
-            animationState->returnObject(animationState);
-            
-            if(animationStateList->size() == 0 && layer == _animationLayer.size() - 1)
-            {
-                _animationLayer.pop_back();
-            }
-        }    
+            break;
+    }
+    
+    _lastAnimationState = AnimationState::borrowObject();
+    _lastAnimationState->_layer = layer;
+    _lastAnimationState->_group = group;
+    _lastAnimationState->autoTween = autoTween;
+    _lastAnimationState->fadeIn(_armature, animationData, fadeInTime, 1.f / durationScale, playTimes, pauseFadeIn);
+    addState(_lastAnimationState);
+    const auto &slotList = _armature->getSlots();
+    
+    for (size_t i = 0, l = slotList.size(); i < l; ++i)
+    {
+        Slot *slot = slotList[i];
+        
+        if (slot->getChildArmature())
+        {
+            slot->getChildArmature()->_animation->gotoAndPlay(animationName, fadeInTime);
+        }
+    }
+    
+    return _lastAnimationState;
 }
+
+AnimationState *Animation::gotoAndStop(
+    const String &animationName,
+    float time,
+    float normalizedTime,
+    float fadeInTime,
+    float duration,
+    int layer,
+    const String &group,
+    const AnimationFadeOutMode &fadeOutMode
+)
+{
+    AnimationState *animationState = getState(animationName, layer);
+    
+    if (!animationState)
+    {
+        animationState = gotoAndPlay(animationName, fadeInTime, duration, -1, layer, group, fadeOutMode);
+    }
+    
+    if (normalizedTime >= 0)
+    {
+        animationState->setCurrentTime(animationState->getTotalTime() * normalizedTime);
+    }
+    
+    else
+    {
+        animationState->setCurrentTime(time);
+    }
+    
+    animationState->stop();
+    return animationState;
+}
+
+void Animation::play()
+{
+    if (animationDataList.empty())
+    {
+        return;
+    }
+    
+    if (!_lastAnimationState)
+    {
+        gotoAndPlay(animationDataList[0]->name);
+    }
+    
+    else if (!_isPlaying)
+    {
+        _isPlaying = true;
+    }
+    
+    else
+    {
+        gotoAndPlay(_lastAnimationState->name);
+    }
+}
+
+void Animation::stop()
+{
+    _isPlaying = false;
+}
+
+bool Animation::hasAnimation(const String &animationName) const
+{
+    for (size_t i = 0, l = animationDataList.size(); i < l; ++i)
+    {
+        if (animationDataList[i]->name == animationName)
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+AnimationState *Animation::getState(const String &name, int layer) const
+{
+    for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
+    {
+        AnimationState *animationState = _animationStateList[i];
+        
+        if (animationState->name == name && animationState->_layer == layer)
+        {
+            return animationState;
+        }
+    }
+    
+    return nullptr;
+}
+
+void Animation::advanceTime(float passedTime)
+{
+    if (!_isPlaying)
+    {
+        return;
+    }
+    
+    bool isFading = false;
+    passedTime *= _timeScale;
+    
+    // reverse advance
+    for (size_t i = _animationStateList.size(); i--;)
+    {
+        AnimationState *animationState = _animationStateList[i];
+        
+        if (animationState->advanceTime(passedTime))
+        {
+            removeState(animationState);
+        }
+        
+        else if (animationState->_fadeState != AnimationState::FadeState::FADE_COMPLETE)
+        {
+            isFading = true;
+        }
+    }
+    
+    _isFading = isFading;
+}
+
+void Animation::updateAnimationStates()
+{
+    for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
+    {
+        _animationStateList[i]->updateTimelineStates();
+    }
+}
+
+void Animation::addState(AnimationState *animationState)
+{
+    auto iterator = std::find(_animationStateList.cbegin(), _animationStateList.cend(), animationState);
+    
+    if (iterator == _animationStateList.cend())
+    {
+        _animationStateList.push_back(animationState);
+    }
+}
+
+void Animation::removeState(AnimationState *animationState)
+{
+    auto iterator = std::find(_animationStateList.begin(), _animationStateList.end(), animationState);
+    
+    if (iterator != _animationStateList.end())
+    {
+        _animationStateList.erase(iterator);
+        AnimationState::returnObject(animationState);
+        
+        if (_lastAnimationState == animationState)
+        {
+            if (_animationStateList.empty())
+            {
+                _lastAnimationState = nullptr;
+            }
+            
+            else
+            {
+                _lastAnimationState = _animationStateList.back();
+            }
+        }
+    }
+}
+NAME_SPACE_DRAGON_BONES_END

@@ -1,29 +1,38 @@
-#ifndef __DISPLAY_DATA_H__
-#define __DISPLAY_DATA_H__
-#include "utils/preDB.h"
-#include "objects/DBTransform.h"
-namespace dragonBones
-{
-    /** @private */
-    class DisplayData
-    {
-    public:
-        static const String ARMATURE;
-        static const String IMAGE;
-        
-        String name;
-        String type;
-        DBTransform transform;
-        Point pivot;
-        
-        DisplayData()
-        {
-        }
-        
-        void dispose()
-        {
+#ifndef __OBJECTS_DISPLAY_DATA_H__
+#define __OBJECTS_DISPLAY_DATA_H__
 
-        }
-    };
+#include "../DragonBones.h"
+#include "../geoms/Point.h"
+#include "../geoms/Transform.h"
+
+NAME_SPACE_DRAGON_BONES_BEGIN
+class DisplayData
+{
+public:
+    String name;
+    
+    DisplayType type;
+    Transform transform;
+    Point pivot;
+    
+public:
+    DisplayData()
+    {
+        type = DisplayType::DT_IMAGE;
+    }
+    DisplayData(const DisplayData &copyData)
+    {
+        operator=(copyData);
+    }
+    DisplayData &operator=(const DisplayData &copyData)
+    {
+        name = copyData.name;
+        type = copyData.type;
+        transform = copyData.transform;
+        pivot = copyData.pivot;
+        return *this;
+    }
+    virtual ~DisplayData() {}
 };
-#endif // __DISPLAY_DATA_H__
+NAME_SPACE_DRAGON_BONES_END
+#endif  // __OBJECTS_DISPLAY_DATA_H__

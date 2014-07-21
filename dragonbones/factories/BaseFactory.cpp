@@ -1,551 +1,376 @@
 #include "BaseFactory.h"
-#include "objects/SkeletonData.h"
-#include "textures/ITextureAtlas.h"
-#include "Armature.h"
-#include "animation/Animation.h"
-#include <stdexcept>
-namespace dragonBones
-{    
 
-    BaseFactory::BaseFactory()
+NAME_SPACE_DRAGON_BONES_BEGIN
+BaseFactory::BaseFactory() {}
+BaseFactory::~BaseFactory()
+{
+    dispose();
+}
+
+const SkeletonData *BaseFactory::getSkeletonData(const String &name) const
+{
+    auto iterator = _skeletonDataMap.find(name);
+    
+    if (iterator != _skeletonDataMap.end())
     {
+        return iterator->second;
     }
-	bool BaseFactory::existSkeletonDataInDic(const String &name)
-	{
-		if (_dataDic.find(name) != _dataDic.end())
-		{
-			return true;
-		} 
-		else
-		{
-			return false;
-		}
-	}
-	bool BaseFactory::existTextureDataInDic(const String &name)
-	{
-		if (_textureAtlasDic.find(name) != _textureAtlasDic.end())
-		{
-			return true;
-		} 
-		else
-		{
-			return false;
-		}
-	}
-
-    /**
-    * Parses the raw data and returns a SkeletonData instance.    
-    * @example 
-    * <listing>
-    * import flash.events.Event; 
-    * import dragonBones.factorys.BaseFactory;
-    * 
-    * [Embed(source = "../assets/Dragon1.swf", mimeType = "application/octet-stream")]
-    *    private static const ResourcesData:Class;
-    * var factory:BaseFactory = new BaseFactory(); 
-    * factory.addEventListener(Event.COMPLETE, textureCompleteHandler);
-    * factory.parseData(new ResourcesData());
-    * </listing>
-    * @param    ByteArray. Represents the raw data for the whole DragonBones system.
-    * @param    String. (optional) The SkeletonData instance name.
-    * @return A SkeletonData instance.
-    */
-    //public function parseData(bytes:ByteArray, dataName:String = null):SkeletonData
-    //{
-    //    if(!bytes)
-    //    {
-    //        throw new ArgumentError();
-    //    }
-    //    var decompressedData:DecompressedData = DataParser.decompressData(bytes);
-    //        
-    //    var data:SkeletonData = DataParser.parseData(decompressedData.dragonBonesData);
-    //    
-    //    dataName = dataName || data->name;
-    //    addSkeletonData(data, dataName);
-    //    var loader:Loader = new Loader();
-    //    loader.name = dataName;
-    //    _textureAtlasLoadingDic[dataName] = decompressedData.textureAtlasData;
-    //    loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loaderCompleteHandler);
-    //    loader.loadBytes(decompressedData.textureBytes, _loaderContext);
-    //    decompressedData.dispose();
-    //    return data;
-    //}
-
-
-    /**
-    * Returns a SkeletonData instance.
-    * @example 
-    * <listing>
-    * var data:SkeletonData = factory.getSkeletonData('dragon');
-    * </listing>
-    * @param    The name of an existing SkeletonData instance.
-    * @return A SkeletonData instance with given name (if exist).
-    */
-    SkeletonData* BaseFactory::getSkeletonData(const String &name)
+    
+    else
     {
-        std::map<String , SkeletonData*>::iterator iter = _dataDic.find(name);
-        if(iter != _dataDic.end())
-        {
-            return iter->second;
-        }
-        else
-        {
-            return 0;
-        }
+        return nullptr;
     }
-
-    /**
-    * Add a SkeletonData instance to this BaseFactory instance.
-    * @example 
-    * <listing>
-    * factory.addSkeletonData(data, 'dragon');
-    * </listing>
-    * @param    A SkeletonData instance.
-    * @param    (optional) A name for this SkeletonData instance.
-    */
-    void BaseFactory::addSkeletonData(SkeletonData *data, const String &name)
+}
+void BaseFactory::addSkeletonData(SkeletonData *data, const String &name)
+{
+    if (!data)
     {
-        if(!data)
-        {
-            throw std::invalid_argument("data is null");
-        }
-        String newname = name.empty() ? data->name : name;
-        if(newname.empty())
-        {
-            throw std::invalid_argument("Unnamed data!");
-        }
-        _dataDic[newname] = data;
+        // throw
     }
-
-    /**
-    * Remove a SkeletonData instance from this BaseFactory instance.
-    * @example 
-    * <listing>
-    * factory.removeSkeletonData('dragon');
-    * </listing>
-    * @param    The name for the SkeletonData instance to remove.
-    */
-    void BaseFactory::removeSkeletonData(const String &name)
+    
+    const String key = name.empty() ? data->name : name;
+    
+    if (key.empty())
     {
-        std::map<String , SkeletonData*>::iterator iter = _dataDic.find(name);
-        if(iter != _dataDic.end())
+        // throw
+    }
+    
+    if (_skeletonDataMap[key])
+    {
+        // throw
+        removeSkeletonData(key, true);
+    }
+    
+    _skeletonDataMap[key] = data;
+}
+void BaseFactory::removeSkeletonData(const String &name, bool disposeData)
+{
+    auto iterator = _skeletonDataMap.find(name);
+    
+    if (iterator != _skeletonDataMap.end())
+    {
+        if (disposeData)
         {
-            _dataDic.erase(iter);
+            iterator->second->dispose();
+            delete iterator->second;
+        }
+        
+        _skeletonDataMap.erase(iterator);
+    }
+}
+
+const ITextureAtlas *BaseFactory::getTextureAtlas(const String &name) const
+{
+    auto iterator = _textureAtlasMap.find(name);
+    
+    if (iterator != _textureAtlasMap.end())
+    {
+        return iterator->second;
+    }
+    
+    else
+    {
+        return nullptr;
+    }
+}
+void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const String &name)
+{
+    if (!textureAtlas)
+    {
+        // throw
+    }
+    
+    String key = name.empty() ? textureAtlas->textureAtlasData->name : name;
+    
+    if (key.empty())
+    {
+        // throw
+    }
+    
+    if (_textureAtlasMap[key])
+    {
+        // throw
+        removeTextureAtlas(key, true);
+    }
+    
+    _textureAtlasMap[key] = textureAtlas;
+}
+void BaseFactory::removeTextureAtlas(const String &name, bool disposeData)
+{
+    auto iterator = _textureAtlasMap.find(name);
+    
+    if (iterator != _textureAtlasMap.end())
+    {
+        if (disposeData)
+        {
+            iterator->second->dispose();
+            delete iterator->second;
+        }
+        
+        _textureAtlasMap.erase(iterator);
+    }
+}
+
+void BaseFactory::dispose(const bool disposeData)
+{
+    if (disposeData)
+    {
+        for (auto iterator = _skeletonDataMap.begin(); iterator != _skeletonDataMap.end(); ++iterator)
+        {
+            iterator->second->dispose();
+            delete iterator->second;
+        }
+        
+        for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
+        {
+            iterator->second->dispose();
+            delete iterator->second;
         }
     }
+    
+    _skeletonDataMap.clear();
+    _textureAtlasMap.clear();
+}
 
-    /**
-    * Return the TextureAtlas by that name.
-    * @example 
-    * <listing>
-    * var atlas:Object = factory.getTextureAtlas('dragon');
-    * </listing>
-    * @param    The name of the TextureAtlas to return.
-    * @return A textureAtlas.
-    */
-    ITextureAtlas* BaseFactory::getTextureAtlas(const String &name)
+Armature *BaseFactory::buildArmature(const String &armatureName) const
+{
+    return buildArmature(armatureName, "", armatureName, "", "");
+}
+Armature *BaseFactory::buildArmature(const String &armatureName, const String &skeletonName) const
+{
+    return buildArmature(armatureName, "", armatureName, skeletonName, skeletonName);
+}
+Armature *BaseFactory::buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &skeletonName, const String &textureAtlasName) const
+{
+    SkeletonData *skeletonData = nullptr;
+    ArmatureData *armatureData = nullptr;
+    ArmatureData *animationArmatureData = nullptr;
+    SkinData *skinData = nullptr;
+    SkinData *skinDataCopy = nullptr;
+    
+    if (!skeletonName.empty())
     {
-        std::map<String , ITextureAtlas*>::iterator iter = _textureAtlasDic.find(name);
-        if(iter != _textureAtlasDic.end())
+        auto iterator = _skeletonDataMap.find(skeletonName);
+        
+        if (iterator != _skeletonDataMap.end())
         {
-            return iter->second;
-        }
-        else
-        {
-            return 0;
+            skeletonData = iterator->second;
+            armatureData = skeletonData->getArmatureData(armatureName);
         }
     }
-
-    /**
-    * Add a textureAtlas to this BaseFactory instance.
-    * @example 
-    * <listing>
-    * factory.addTextureAtlas(textureatlas, 'dragon');
-    * </listing>
-    * @param    A textureAtlas to add to this BaseFactory instance.
-    * @param    (optional) A name for this TextureAtlas.
-    */
-    void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const String &name)
+    
+    else
     {
-        if(!textureAtlas)
+        for (auto iterator = _skeletonDataMap.begin(); iterator != _skeletonDataMap.end(); ++iterator)
         {
-            throw std::invalid_argument("textureAtlas is null");
-        }
-        String newname = name.empty() ? textureAtlas->getName() : name;
-        if(newname.empty())
-        {
-            throw std::invalid_argument("Unnamed data!");
-        }
-        _textureAtlasDic[newname] = textureAtlas;
-    }
-
-    /**
-    * Remove a textureAtlas from this baseFactory instance.
-    * @example 
-    * <listing>
-    * factory.removeTextureAtlas('dragon');
-    * </listing>
-    * @param    The name of the TextureAtlas to remove.
-    */
-    void BaseFactory::removeTextureAtlas(const String &name)
-    {
-        std::map<String , ITextureAtlas*>::iterator iter = _textureAtlasDic.find(name);
-        if(iter != _textureAtlasDic.end())
-        {
-            _textureAtlasDic.erase(iter);
-        }
-    }
-
-    /**
-    * Cleans up resources used by this BaseFactory instance.
-    * @example 
-    * <listing>
-    * factory.dispose();
-    * </listing>
-    * @param    (optional) Destroy all internal references.
-    */
-    void BaseFactory::dispose(bool disposeData)
-    {
-        if(disposeData)
-        {
-            for(std::map<String , SkeletonData*>::iterator iter = _dataDic.begin() ; iter != _dataDic.end() ; iter ++)
+            skeletonData = iterator->second;
+            armatureData = skeletonData->getArmatureData(armatureName);
+            
+            if (armatureData)
             {
-                iter->second->dispose();
-            }
-            for(std::map<String , ITextureAtlas*>::iterator iter = _textureAtlasDic.begin() ; iter != _textureAtlasDic.end() ; iter ++)
-            {
-                iter->second->dispose();
+                break;
             }
         }
-        _dataDic.clear();
-        _textureAtlasDic.clear();
-        _textureAtlasLoadingDic.clear();    
-        _currentDataName.clear();
-        _currentTextureAtlasName.clear();
     }
-
-    /**
-    * Build and returns a new Armature instance.
-    * @example 
-    * <listing>
-    * var armature:Armature = factory.buildArmature('dragon');
-    * </listing>
-    * @param    armatureName The name of this Armature instance.
-    * @param    The name of this animation->
-    * @param    The name of this SkeletonData.
-    * @param    The name of this textureAtlas.
-    * @param    The name of this skin.
-    * @return A Armature instance.
-    */
-    Armature* BaseFactory::buildArmature(const String &armatureName, const String &animationName, const String &skeletonName, const String &textureAtlasName, const String &skinName)
+    
+    if (!armatureData)
     {
-        ArmatureData* armatureData = 0;
-        SkeletonData *data = 0;
-        if(!skeletonName.empty())
+        return nullptr;
+    }
+    
+    _currentSkeletonDataName = skeletonData->name;
+    _currentTextureAtlasName = textureAtlasName.empty() ? _currentSkeletonDataName : textureAtlasName;
+    
+    if (!animationName.empty() && animationName != armatureName)
+    {
+        animationArmatureData = skeletonData->getArmatureData(animationName);
+        
+        if (!animationArmatureData)
         {
-            std::map<String , SkeletonData*>::iterator iter = _dataDic.find(skeletonName);
-            if(iter != _dataDic.end())
+            for (auto iterator = _skeletonDataMap.begin(); iterator != _skeletonDataMap.end(); ++iterator)
             {
-                data = iter->second;
-                armatureData = data->getArmatureData(armatureName);
-            }
-        }
-        //else
-        //{
-        //    for(skeletonName in _dataDic)
-        //    {
-        //        data = _dataDic[skeletonName];
-        //        armatureData = data->getArmatureData(armatureName);
-        //        if(armatureData)
-        //        {
-        //            break;
-        //        }
-        //    }
-        //}
-
-        if(!armatureData)
-        {
-            return 0;
-        }
-
-        _currentDataName = skeletonName;
-        _currentTextureAtlasName = textureAtlasName.empty() ? skeletonName : textureAtlasName;
-
-        Armature* armature = generateArmature();
-        armature->name = armatureName;
-        Bone* bone;
-        for(size_t i = 0 ; i < armatureData->boneDataList.size() ; i ++)
-        {
-            BoneData* boneData = armatureData->boneDataList[i];
-            bone = new Bone();
-            bone->name = boneData->name;
-            bone->fixedRotation = boneData->fixedRotation;
-            bone->scaleMode = boneData->scaleMode;
-            bone->origin = boneData->transform;
-            if(armatureData->getBoneData(boneData->parent))
-            {
-                armature->addBone(bone, boneData->parent);
-            }
-            else
-            {
-                armature->addBone(bone);
-            }
-        }
-
-        ArmatureData* animationArmatureData = 0;
-        SkinData *skinDataCopy = 0;
-        if(!animationName.empty() && animationName != armatureName)
-        {
-            ArmatureData* animationArmatureData = data->getArmatureData(animationName);
-            // 取默认动画
-            //if(!animationArmatureData)
-            //{
-            //    for (skeletonName in _dataDic)
-            //    {
-            //        data = _dataDic[skeletonName];
-            //        animationArmatureData = data->getArmatureData(animationName);
-            //        if(animationArmatureData)
-            //        {
-            //            break;
-            //        }
-            //    }
-            //}
-
-            ArmatureData* armatureDataCopy = data->getArmatureData(animationName);
-            if(armatureDataCopy)
-            {
-                skinDataCopy = armatureDataCopy->getSkinData("");
-            }
-        }
-
-        if(animationArmatureData)
-        {
-            armature->getAnimation()->setAnimationDataList(animationArmatureData->animationDataList);
-        }
-        else
-        {
-            armature->getAnimation()->setAnimationDataList(armatureData->animationDataList);
-        }
-
-        SkinData* skinData = armatureData->getSkinData(skinName);
-        if(!skinData)
-        {
-            return 0;
-            //throw new ArgumentError();
-        }
-
-        Slot* slot;
-        DisplayData* displayData;
-        Armature* childArmature;
-        int i;
-        //var helpArray:Array = [];
-        for(size_t j = 0 ; j < skinData->slotDataList.size() ; j ++)
-        {
-            SlotData* slotData = skinData->slotDataList[j];
-            bone = armature->getBone(slotData->parent);
-            if(!bone)
-            {
-                continue;
-            }
-            slot = generateSlot();
-            slot->name = slotData->name;
-            slot->setBlendMode(slotData->blendMode);
-            slot->_originZOrder = slotData->zOrder;
-            slot->_dislayDataList = slotData->displayDataList;
-
-            std::vector<Object*> helpArray;
-
-            i = slotData->displayDataList.size();
-            helpArray.resize(i);
-            while(i --)
-            {
-                displayData = slotData->displayDataList[i];
-
-                if(displayData->type == DisplayData::ARMATURE)
+                skeletonData = iterator->second;
+                animationArmatureData = skeletonData->getArmatureData(animationName);
+                
+                if (animationArmatureData)
                 {
-                    DisplayData* displayDataCopy = 0;
-                    if(skinDataCopy)
+                    break;
+                }
+            }
+        }
+        
+        if (animationArmatureData)
+        {
+            skinDataCopy = animationArmatureData->getSkinData("");
+        }
+    }
+    
+    skinData = armatureData->getSkinData(skinName);
+    Armature *armature = generateArmature(armatureData);
+    armature->name = armatureName;
+    
+    if (animationArmatureData)
+    {
+        armature->getAnimation()->animationDataList = animationArmatureData->animationDataList;
+    }
+    
+    else
+    {
+        armature->getAnimation()->animationDataList = armatureData->animationDataList;
+    }
+    
+    //
+    buildBones(armature, armatureData);
+    
+    //
+    if (skinData)
+    {
+        buildSlots(armature, armatureData, skinData, skinDataCopy);
+    }
+    
+    //
+    //armature->advanceTime(0);
+    return armature;
+}
+
+void *BaseFactory::getTextureDisplay(const String &textureName, const String &textureAtlasName) const
+{
+    ITextureAtlas *textureAtlas = nullptr;
+    
+    if (!textureAtlasName.empty())
+    {
+        auto iterator = _textureAtlasMap.find(textureAtlasName);
+        
+        if (iterator != _textureAtlasMap.end())
+        {
+            textureAtlas = iterator->second;
+        }
+    }
+    
+    else
+    {
+        for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
+        {
+            textureAtlas = iterator->second;
+            const TextureData *textureData = textureAtlas->textureAtlasData->getTextureData(textureName);
+            
+            if (textureData)
+            {
+                break;
+            }
+        }
+    }
+    
+    if (textureAtlas)
+    {
+        /*
+        if(isNaN(pivotX) || isNaN(pivotY))
+        {
+            var data:SkeletonData = _dataDic[textureAtlasName];
+            if(data)
+            {
+                var pivot:Point = data.getSubTexturePivot(textureName);
+                if(pivot)
+                {
+                    pivotX = pivot.x;
+                    pivotY = pivot.y;
+                }
+            }
+        }
+        */
+        return generateDisplay(textureAtlas, textureName, nullptr);
+    }
+    
+    return nullptr;
+}
+
+void BaseFactory::buildBones(Armature *armature, const ArmatureData *armatureData) const
+{
+    for (size_t i = 0, l = armatureData->boneDataList.size(); i < l; ++i)
+    {
+        const BoneData *boneData = armatureData->boneDataList[i];
+        Bone *bone = new Bone();
+        bone->name = boneData->name;
+        bone->inheritRotation = boneData->inheritRotation;
+        bone->inheritScale = boneData->inheritScale;
+        // copy
+        bone->origin = boneData->transform;
+        
+        if (armatureData->getBoneData(boneData->parent))
+        {
+            armature->addBone(bone, boneData->parent);
+        }
+        
+        else
+        {
+            armature->addBone(bone);
+        }
+    }
+}
+
+void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureData, const SkinData *skinData, const SkinData *skinDataCopy) const
+{
+    for (size_t i = 0, l = skinData->slotDataList.size(); i < l; ++i)
+    {
+        SlotData *slotData = skinData->slotDataList[i];
+        Bone *bone = armature->getBone(slotData->parent);
+        
+        if (!bone)
+        {
+            continue;
+        }
+        
+        Slot *slot = generateSlot(slotData);
+        slot->name = slotData->name;
+        slot->_originZOrder = slotData->zOrder;
+        slot->_slotData = slotData;
+        std::vector<std::pair<void *, DisplayType>> displayList;
+        
+        for (size_t j = 0, l = slotData->displayDataList.size(); j < l; ++j)
+        {
+            const DisplayData *displayData = slotData->displayDataList[j];
+            
+            switch (displayData->type)
+            {
+                case DisplayType::DT_ARMATURE:
+                {
+                    const DisplayData *displayDataCopy = nullptr;
+                    
+                    if (skinDataCopy)
                     {
-                        SlotData* slotDataCopy = skinDataCopy->getSlotData(slotData->name);
-                        if(slotDataCopy)
+                        const SlotData *slotDataCopy = skinDataCopy->getSlotData(slotData->name);
+                        
+                        if (slotDataCopy)
                         {
                             displayDataCopy = slotDataCopy->displayDataList[i];
                         }
                     }
-                    else
-                    {
-                        displayDataCopy = 0;
-                    }
-
-                    childArmature = buildArmature(displayData->name, displayDataCopy?displayDataCopy->name:"", _currentDataName, _currentTextureAtlasName);
-                    if(childArmature)
-                    {
-                        helpArray[i] = childArmature;
-                    }
-				   //fix by Wayne Dimart:
-                   // break; we don't use break here, or will crach the program due to incomplete helpArray.
-					continue;
+                    
+                    Armature *childArmature = buildArmature(displayData->name, "", displayDataCopy ? displayDataCopy->name : "", _currentSkeletonDataName, _currentTextureAtlasName);
+                    displayList.push_back(std::make_pair(childArmature, DisplayType::DT_ARMATURE));
                 }
-                else
+                break;
+                
+                case DisplayType::DT_IMAGE:
+                default:
                 {
-                    helpArray[i] = generateDisplay(getTextureAtlas(_currentTextureAtlasName), displayData->name, displayData->pivot.x, displayData->pivot.y);
-                }
-            }
-            slot->setDisplayList(helpArray);
-            slot->changeDisplay(0);
-            bone->addChild(slot);
-        }
-
-        //
-        i = armature->_boneList.size();
-        while(i --)
-        {
-            armature->_boneList[i]->update();
-        }
-
-        i = armature->_slotList.size();
-        while(i --)
-        {
-            slot = armature->_slotList[i];
-            slot->update();
-        }
-        armature->updateSlotsZOrder();
-
-        return armature;
-    }
-
-    /**
-    * Return the TextureDisplay.
-    * @example 
-    * <listing>
-    * var texturedisplay:Object = factory.getTextureDisplay('dragon');
-    * </listing>
-    * @param    The name of this Texture.
-    * @param    The name of the TextureAtlas.
-    * @param    The registration pivotX position.
-    * @param    The registration pivotY position.
-    * @return An Object.
-    */
-    Object* BaseFactory::getTextureDisplay(const String &textureName, const String &textureAtlasName, Number pivotX, Number pivotY)
-    {
-        ITextureAtlas* textureAtlas = 0;
-        if(!textureAtlasName.empty())
-        {
-            std::map<String , ITextureAtlas*>::iterator iter = _textureAtlasDic.find(textureAtlasName);
-            if(iter != _textureAtlasDic.end())
-            {
-                textureAtlas = iter->second;
-            }
-        }
-        //if(!textureAtlas && !textureAtlasName)
-        //{
-        //    for (textureAtlasName in _textureAtlasDic)
-        //    {
-        //        textureAtlas = _textureAtlasDic[textureAtlasName];
-        //        if(textureAtlas.getRegion(textureName))
-        //        {
-        //            break;
-        //        }
-        //        textureAtlas = null;
-        //    }
-        //}
-        if(textureAtlas)
-        {
-            if(isNaN(pivotX) || isNaN(pivotY))
-            {
-                SkeletonData* data = _dataDic[textureAtlasName];
-                if(data)
-                {
-                    Point *pivot = data->getSubTexturePivot(textureName);
-                    if(pivot)
+                    const ITextureAtlas *textureAtlas = nullptr;
+                    auto iterator = _textureAtlasMap.find(_currentTextureAtlasName);
+                    
+                    if (iterator != _textureAtlasMap.end())
                     {
-                        pivotX = pivot->x;
-                        pivotY = pivot->y;
+                        textureAtlas = iterator->second;
                     }
+                    
+                    void *display = generateDisplay(textureAtlas, displayData->name, displayData);
+                    displayList.push_back(std::make_pair(display, DisplayType::DT_IMAGE));
                 }
+                break;
             }
-
-            return generateDisplay(textureAtlas, textureName, pivotX, pivotY);
         }
-        return 0;
-    }
-
-    /** @private */
-    //void loaderCompleteHandler(Event *e)
-    //{
-    //    e.target.removeEventListener(Event.COMPLETE, loaderCompleteHandler);
-    //    var loader:Loader = e.target.loader;
-    //    var content:Object = e.target.content;
-    //    loader.unloadAndStop();
-    //    
-    //    String name = loader.name;
-    //    Object textureAtlasRawData = _textureAtlasLoadingDic[name];
-    //    delete _textureAtlasLoadingDic[name];
-    //    if(name && textureAtlasRawData)
-    //    {
-    //        if (content is Bitmap)
-    //        {
-    //            content =  (content as Bitmap).bitmapData;
-    //        }
-    //        else if (content is Sprite)
-    //        {
-    //            content = (content as Sprite).getChildAt(0) as MovieClip;
-    //        }
-    //        else
-    //        {
-    //            //
-    //        }
-    //        
-    //        var textureAtlas:Object = generateTextureAtlas(content, textureAtlasRawData);
-    //        addTextureAtlas(textureAtlas, name);
-    //        
-    //        name = null;
-    //        for(name in _textureAtlasLoadingDic)
-    //        {
-    //            break;
-    //        }
-    //        //
-    //        if(!name && this.hasEventListener(Event.COMPLETE))
-    //        {
-    //            this.dispatchEvent(new Event(Event.COMPLETE));
-    //        }
-    //    }
-    //}
-
-    /** @private */
-    ITextureAtlas* BaseFactory::generateTextureAtlas(Object *content, TextureAtlasData *textureAtlasRawData)
-    {
-        return 0;
-    }
-
-    /**
-    * Generates an Armature instance.
-    * @return Armature An Armature instance.
-    */
-    Armature* BaseFactory::generateArmature()
-    {
-        return 0;
-    }
-
-    /**
-    * Generates an Slot instance.
-    * @return Slot An Slot instance.
-    */
-    Slot* BaseFactory::generateSlot()
-    {
-        return 0;
-    }
-
-    /**
-    * Generates a DisplayObject
-    * @param    textureAtlas The TextureAtlas.
-    * @param    fullName A qualified name.
-    * @param    pivotX A pivot x based value.
-    * @param    pivotY A pivot y based value.
-    * @return
-    */
-    Object* BaseFactory::generateDisplay(ITextureAtlas *textureAtlas, const String &fullName, Number pivotX, Number pivotY)
-    {
-        return 0;
+        
+        bone->addChild(slot);
+        slot->setDisplayList(displayList, false);
     }
 }
+NAME_SPACE_DRAGON_BONES_END

@@ -1,86 +1,77 @@
-#ifndef __TIMELINE_STATE_H__
-#define __TIMELINE_STATE_H__
+#ifndef __ANIMATION_TIMELINE_STATE_H__
+#define __ANIMATION_TIMELINE_STATE_H__
 
-#include "utils/preDB.h"
+#include "../DragonBones.h"
+#include "../geoms/ColorTransform.h"
+#include "../geoms/Point.h"
+#include "../geoms/Transform.h"
+#include "../objects/TransformTimeline.h"
+#include "../core/Bone.h"
 #include "AnimationState.h"
-#include "objects/DBTransform.h"
-#include "utils//TransformUtil.h"
-#include <cmath>
 
-namespace dragonBones
+NAME_SPACE_DRAGON_BONES_BEGIN
+class TimelineState
 {
-    class Bone;
-    class TransformTimeline;
-    class TransformFrame;
-    /** @private */
-    class TimelineState
-    {
-    private:
-        static std::vector<TimelineState*> _pool;
-    public:
-        /** @private */
-        static TimelineState* borrowObject();
-        
-        /** @private */
-        static void returnObject(TimelineState *timeline);
-        
-        /** @private */
-        void static clear();
-        
-        static Number getEaseValue(Number value, Number easing)
-        {
-            Number valueEase;
-            if (easing > 1)
-            {
-                valueEase = 0.5f * (1 - cos(value * TransformUtil::PI )) - value;
-                easing -= 1;
-            }
-            else if (easing > 0)
-            {
-                valueEase = sin(value * TransformUtil::HALF_PI) - value;
-            }
-            else if (easing < 0)
-            {
-                valueEase = 1 - cos(value * TransformUtil::HALF_PI) - value;
-                easing *= -1;
-            }
-            return valueEase * easing + value;
-        }
-
-        TimelineState();
-
-        void fadeIn(Bone *bone, AnimationState *animationState, TransformTimeline *timeline);
-
-        void fadeOut();
-
-        void update(Number progress);
-
-        void clearAll();
-        DBTransform transform;
-        Point pivot;
-        bool tweenActive;
-        
-    private:
-        int _updateState;
-        
-        AnimationState *_animationState;
-        Bone *_bone;
-        TransformTimeline *_timeline;
-        TransformFrame *_currentFrame;
-        Number _currentFramePosition;
-        Number _currentFrameDuration;
-        DBTransform _durationTransform;
-        Point _durationPivot;
-        ColorTransform _durationColor;
-        DBTransform _originTransform;
-        Point _originPivot;
-        
-        Number _tweenEasing;
-        bool _tweenTransform;
-        bool _tweenColor;
-        
-        Number _totalTime;
-        
-    };
+    friend class AnimationState;
+    friend class Bone;
+    
+private:
+    static std::vector<TimelineState *> _pool;
+    static TimelineState *borrowObject();
+    static void returnObject(TimelineState *timelineState);
+    static void clearObjects();
+    
+    static enum class UpdateState {UPDATE, UPDATE_ONCE, UNUPDATE};
+    
+public:
+    String name;
+    
+private:
+    bool _blendEnabled;
+    bool _isComplete;
+    bool _tweenTransform;
+    bool _tweenScale;
+    bool _tweenColor;
+    int _currentTime;
+    int _currentFrameIndex;
+    int _currentFramePosition;
+    int _currentFrameDuration;
+    int _totalTime;
+    float _tweenEasing;
+    
+    UpdateState _updateState;
+    Transform _transform;
+    Transform _durationTransform;
+    Transform _originTransform;
+    Point _pivot;
+    Point _durationPivot;
+    Point _originPivot;
+    ColorTransform _durationColor;
+    
+    Bone *_bone;
+    AnimationState *_animationState;
+    TransformTimeline *_timeline;
+    
+public:
+    int getLayer() const;
+    float getWeight() const;
+    
+public:
+    TimelineState();
+    virtual ~TimelineState();
+    
+private:
+    void fadeIn(Bone *bone, AnimationState *animationState, TransformTimeline *timeline);
+    void fadeOut();
+    void update(float progress);
+    void updateMultipleFrame(float progress);
+    void updateToNextFrame(int currentPlayTimes);
+    void updateTween();
+    void updateSingleFrame();
+    void clear();
+    
+private:
+    DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(TimelineState);
 };
-#endif // __TIMELINE_STATE_H__
+NAME_SPACE_DRAGON_BONES_END
+#endif  // __ANIMATION_TIMELINE_STATE_H__

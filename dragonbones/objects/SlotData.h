@@ -1,57 +1,70 @@
-#ifndef __SLOT_DATA_H__
-#define __SLOT_DATA_H__
-#include "utils/preDB.h"
+#ifndef __OBJECTS_SLOT_DATA_H__
+#define __OBJECTS_SLOT_DATA_H__
+
+#include "../DragonBones.h"
 #include "DisplayData.h"
-namespace dragonBones
+
+NAME_SPACE_DRAGON_BONES_BEGIN
+class SlotData
 {
-    /** @private */
-    class SlotData
+public:
+    float zOrder;
+    
+    String name;
+    String parent;
+    BlendMode blendMode;
+    std::vector<DisplayData *> displayDataList;
+    
+public:
+    SlotData()
     {
-    public:
-        String name;
-        String parent;
-        Number zOrder;
-        String blendMode;
+        zOrder = 0.f;
+        blendMode = BlendMode::BM_NORMAL;
+    }
+    SlotData(const SlotData &copyData)
+    {
+        operator=(copyData);
+    }
+    SlotData &operator=(const SlotData &copyData)
+    {
+        dispose();
+        name = copyData.name;
+        displayDataList.reserve(copyData.displayDataList.size());
         
-        std::vector<DisplayData*> displayDataList;
-        
-        SlotData()
+        for (size_t i = 0, l = displayDataList.size(); i < l; ++i)
         {
-            zOrder = 0;
-            blendMode = "normal";
+            displayDataList.push_back(new DisplayData());
+            *(displayDataList[i]) = *(copyData.displayDataList[i]);
         }
-        virtual ~SlotData()
+        
+        return *this;
+    }
+    virtual ~SlotData()
+    {
+        dispose();
+    }
+    void dispose()
+    {
+        for (size_t i = 0, l = displayDataList.size(); i < l; ++i)
         {
-            dispose();
+            delete displayDataList[i];
         }
         
-        void dispose()
+        displayDataList.clear();
+    }
+    
+    const DisplayData *getDisplayData(const String &displayName) const
+    {
+        for (size_t i = 0, l = displayDataList.size(); i < l; ++i)
         {
-            for(size_t i = 0 ; i < displayDataList.size() ; i ++)
+            if (displayDataList[i]->name == displayName)
             {
-                displayDataList[i]->dispose();
-                delete displayDataList[i];
+                return displayDataList[i];
             }
-            displayDataList.clear();
         }
         
-        void addDisplayData(DisplayData *displayData)
-        {
-            displayDataList.push_back(displayData);
-        }
-        
-        DisplayData* getDisplayData(const String &displayName)
-        {
-            for(size_t i = 0 ; i < displayDataList.size() ; i ++)
-            {
-                if(displayDataList[i]->name == displayName)
-                {
-                    return displayDataList[i];
-                }
-            }
-            
-            return 0;
-        }
-    };
+        return nullptr;
+    }
 };
-#endif // __SLOT_DATA_H__
+NAME_SPACE_DRAGON_BONES_END
+#endif  // __OBJECTS_SLOT_DATA_H__

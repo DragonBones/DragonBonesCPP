@@ -1,70 +1,95 @@
-#ifndef __ANIMATION_DATA_H__
-#define __ANIMATION_DATA_H__
-#include "utils/preDB.h"
-#include "Timeline.h"
-#include "TransformTimeline.h"
-namespace dragonBones
-{
-    class AnimationData : public Timeline
-    {
-    public:
-        uint frameRate;
-        String name;
-        int loop;
-        Number tweenEasing;
-        
-        typedef std::map<std::string , Timeline*> Timelines;
-        Timelines timelines;
-        
-        Number fadeInTime;
-                
-        AnimationData()
-        {
-            loop = 0;
-            tweenEasing = NaN;            
-            fadeInTime = 0;
-        }
-        virtual ~AnimationData()
-        {
-            dispose();
-        }
-        void setFadeInTime(Number value)
-        {
-            if(isNaN(value))
-            {
-                value = 0;
-            }
-            fadeInTime = value;
-        }
+#ifndef __OBJECTS_ANIMATION_DATA_H__
+#define __OBJECTS_ANIMATION_DATA_H__
 
-        virtual void dispose()
+#include "../DragonBones.h"
+#include "TransformTimeline.h"
+
+NAME_SPACE_DRAGON_BONES_BEGIN
+class AnimationData : public Timeline
+{
+public:
+    bool autoTween;
+    int frameRate;
+    int playTimes;
+    float fadeTime;
+    //use frame tweenEase, NaN
+    //overwrite frame tweenEase, [-1, 0):ease in, 0:line easing, (0, 1]:ease out, (1, 2]:ease in out
+    float tweenEasing;
+    
+    String name;
+    std::vector<TransformTimeline *> timelineList;
+    std::vector<String> hideTimelineList;
+    
+public:
+    AnimationData()
+    {
+        autoTween = false;
+        frameRate = 30;
+        playTimes = 1;
+        fadeTime = 0.f;
+        tweenEasing = USE_FRAME_TWEEN_EASING;
+    }
+    AnimationData(const AnimationData &copyData)
+    {
+        operator=(copyData);
+    }
+    AnimationData &operator=(const AnimationData &copyData)
+    {
+        Timeline::operator=(copyData);
+        _dispose();
+        autoTween = copyData.autoTween;
+        frameRate = copyData.frameRate;
+        playTimes = copyData.playTimes;
+        fadeTime = copyData.fadeTime;
+        tweenEasing = copyData.tweenEasing;
+        name = copyData.name;
+        timelineList.reserve(copyData.timelineList.size());
+        
+        for (size_t i = 0, l = timelineList.size(); i < l; ++i)
         {
-            Timeline::dispose();
-            
-            for(Timelines::iterator iter = timelines.begin() ; iter != timelines.end() ; iter ++)
+            timelineList.push_back(new TransformTimeline());
+            *(timelineList[i]) = *(copyData.timelineList[i]);
+        }
+        
+        // copy
+        hideTimelineList = copyData.hideTimelineList;
+        return *this;
+    }
+    virtual ~AnimationData()
+    {
+        dispose();
+    }
+    virtual void dispose()
+    {
+        Timeline::dispose();
+        _dispose();
+    }
+    
+    TransformTimeline *getTimeline(const String &timelineName) const
+    {
+        for (size_t i = 0, l = timelineList.size(); i < l; ++i)
+        {
+            if (timelineList[i]->name == timelineName)
             {
-                if(iter->second != &TransformTimeline::HIDE_TIMELINE)
-                {
-                    iter->second->dispose();
-                    delete iter->second;
-                }
+                return timelineList[i];
             }
-            timelines.clear();
         }
         
-        TransformTimeline *getTimeline(const String &timelineName)
+        return nullptr;
+    }
+    
+private:
+    void _dispose()
+    {
+        for (size_t i = 0, l = timelineList.size(); i < l; ++i)
         {
-            Timelines::iterator iter = timelines.find(timelineName);
-            if(iter != timelines.end())
-                return static_cast<TransformTimeline*>(iter->second);
-            else
-                return 0;
+            timelineList[i]->dispose();
+            delete timelineList[i];
         }
         
-        void addTimeline(TransformTimeline *timeline, const String &timelineName)
-        {            
-            timelines[timelineName] = timeline;
-        }
-    };
+        timelineList.clear();
+        hideTimelineList.clear();
+    }
 };
-#endif // __ANIMATION_DATA_H__
+NAME_SPACE_DRAGON_BONES_END
+#endif  // __OBJECTS_ANIMATION_DATA_H__

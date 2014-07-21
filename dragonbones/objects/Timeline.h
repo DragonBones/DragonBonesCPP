@@ -1,40 +1,71 @@
-#ifndef __TIMELINE_H__
-#define __TIMELINE_H__
-#include "utils/preDB.h"
+#ifndef __OBJECTS_TIMELINE_H__
+#define __OBJECTS_TIMELINE_H__
+
+#include "../DragonBones.h"
 #include "Frame.h"
-namespace dragonBones
+#include "TransformFrame.h"
+
+NAME_SPACE_DRAGON_BONES_BEGIN
+class Timeline
 {
-    class Timeline
+public:
+    int duration;
+    float scale;
+    std::vector<Frame *> frameList;
+    
+public:
+    Timeline()
     {
-    public:
-        std::vector<Frame*> frameList;        
-        Number duration;        
-        Number scale;
+        duration = 0;
+        scale = 1.f;
+    }
+    Timeline(const Timeline &copyData)
+    {
+        operator=(copyData);
+    }
+    Timeline &operator=(const Timeline &copyData)
+    {
+        dispose();
+        duration = copyData.duration;
+        scale = copyData.scale;
+        frameList.reserve(copyData.frameList.size());
         
-        Timeline()
+        for (size_t i = 0, l = frameList.size(); i < l; ++i)
         {
-            duration = 0;
-            scale = 1;
-        }
-        virtual ~Timeline()
-        {
-            dispose();
-        }
-        
-        virtual void dispose()
-        {
-            for(size_t i = 0 ; i < frameList.size() ; i ++)
+            switch (copyData.frameList[i]->frameType)
             {
-                frameList[i]->dispose();
-                delete frameList[i];
+                case Frame::FrameType::FT_FRAME:
+                    frameList.push_back(new Frame());
+                    *(frameList[i]) = *(static_cast<Frame *>(copyData.frameList[i]));
+                    break;
+                    
+                case Frame::FrameType::FT_TRANSFORM_FRAME:
+                    frameList.push_back(new TransformFrame());
+                    *(frameList[i]) = *(static_cast<TransformFrame *>(copyData.frameList[i]));
+                    break;
+                    
+                default:
+                    // throw
+                    break;
             }
-            frameList.clear();
         }
         
-        void addFrame(Frame *frame)
+        return *this;
+    }
+    virtual ~Timeline()
+    {
+        dispose();
+    }
+    virtual void dispose()
+    {
+        for (size_t i = 0, l = frameList.size(); i < l; ++i)
         {
-            frameList.push_back(frame);
+            frameList[i]->dispose();
+            delete frameList[i];
         }
-    };
+        
+        frameList.clear();
+    }
 };
-#endif // __TIMELINE_H__
+NAME_SPACE_DRAGON_BONES_END
+#endif  // __OBJECTS_TIMELINE_H__

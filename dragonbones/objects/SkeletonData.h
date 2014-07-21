@@ -1,129 +1,63 @@
-#ifndef __SKELETON_DATA_H__
-#define __SKELETON_DATA_H__
-#include "utils/preDB.h"
+#ifndef __OBJECTS_SKELETON_DATA_H__
+#define __OBJECTS_SKELETON_DATA_H__
+
+#include "../DragonBones.h"
 #include "ArmatureData.h"
-namespace dragonBones
+
+NAME_SPACE_DRAGON_BONES_BEGIN
+class SkeletonData
 {
-
-    class SkeletonData
+public:
+    String name;
+    std::vector<ArmatureData *> armatureDataList;
+    
+public:
+    SkeletonData() {}
+    SkeletonData(const SkeletonData &copyData)
     {
-    public:
-        String name;
+        operator=(copyData);
+    }
+    SkeletonData &operator=(const SkeletonData &copyData)
+    {
+        dispose();
+        name = copyData.name;
+        armatureDataList.reserve(copyData.armatureDataList.size());
         
-        std::map<std::string , Point> _subTexturePivots;
-        
-        std::vector<String> getArmatureNames()
+        for (size_t i = 0, l = armatureDataList.size(); i < l; ++i)
         {
-            std::vector<String> nameList;
-            for(size_t i = 0 ; i < _armatureDataList.size() ; i ++)
+            armatureDataList.push_back(new ArmatureData());
+            *(armatureDataList[i]) = *(copyData.armatureDataList[i]);
+        }
+        
+        return *this;
+    }
+    virtual ~SkeletonData()
+    {
+        dispose();
+    }
+    void dispose()
+    {
+        for (size_t i = 0, l = armatureDataList.size(); i < l; ++i)
+        {
+            armatureDataList[i]->dispose();
+            delete armatureDataList[i];
+        }
+        
+        armatureDataList.clear();
+    }
+    
+    ArmatureData *getArmatureData(const String &armatureName) const
+    {
+        for (size_t i = 0, l = armatureDataList.size(); i < l; ++i)
+        {
+            if (armatureDataList[i]->name == armatureName)
             {
-                nameList.push_back(_armatureDataList[i]->name);
-            }
-            return nameList;
-        }
-        
-        std::vector<ArmatureData*> _armatureDataList;
-        
-        SkeletonData()
-        {
-        }
-        virtual ~SkeletonData()
-        {
-            dispose();
-        }
-        
-        void dispose()
-        {
-            for(size_t i = 0 ; i < _armatureDataList.size() ; i ++)
-            {
-                _armatureDataList[i]->dispose();
-                delete _armatureDataList[i];
-            }
-            _armatureDataList.clear();
-            _subTexturePivots.clear();
-        }
-        
-        ArmatureData* getArmatureData(const String &armatureName)
-        {
-            for(size_t i = 0 ; i < _armatureDataList.size() ; i ++)
-            {
-                if(_armatureDataList[i]->name == armatureName)
-                {
-                    return _armatureDataList[i];
-                }
-            }
-            
-            return 0;
-        }
-        
-        void addArmatureData(ArmatureData *armatureData)
-        {
-            _armatureDataList.push_back(armatureData);
-        }
-        
-        void removeArmatureData(ArmatureData *armatureData)
-        {
-            removeArmatureDataByName(armatureData->name);
-        }
-        
-        void removeArmatureDataByName(const String &armatureName)
-        {
-            for(size_t i = 0 ; i < _armatureDataList.size() ; i ++)
-            {
-                if(_armatureDataList[i]->name == armatureName)
-                {
-                    std::vector<ArmatureData*>::iterator iter = _armatureDataList.begin() + i;
-                    delete *iter;
-                    _armatureDataList.erase(_armatureDataList.begin() + i);
-                    return;
-                }
+                return armatureDataList[i];
             }
         }
         
-        Point *getSubTexturePivot(const String &subTextureName)
-        {
-            std::map<std::string , Point>::iterator i = _subTexturePivots.find(subTextureName);
-            if(i != _subTexturePivots.end())
-            {
-                return &i->second;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        
-        Point addSubTexturePivot(Number x, Number y, const String &subTextureName)
-        {
-            std::map<std::string , Point>::iterator i = _subTexturePivots.find(subTextureName);
-            if(i != _subTexturePivots.end())
-            {
-                i->second.x = x;
-                i->second.y = y;
-                return i->second;
-            }
-            else
-            {
-                Point &pt = _subTexturePivots[subTextureName];
-                pt.x = x;
-                pt.y = y;
-                return pt;
-            }
-        }
-
-        void removeSubTexturePivot(const String &subTextureName)
-        {
-            std::map<std::string , Point>::iterator i = _subTexturePivots.find(subTextureName);
-            if(i != _subTexturePivots.end())
-            {
-                _subTexturePivots.erase(i);
-            }        
-        }
-
-        void removeAllSubTexturePivots()
-        {
-            _subTexturePivots.clear();
-        }
-    };
+        return nullptr;
+    }
 };
-#endif // __SKELETON_DATA_H__
+NAME_SPACE_DRAGON_BONES_END
+#endif  // __OBJECTS_SKELETON_DATA_H__

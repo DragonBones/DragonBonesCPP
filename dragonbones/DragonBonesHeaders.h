@@ -1,70 +1,58 @@
-//
-//  DragonBonesHeaders.h
-//  quickcocos2dx
-//
-//  Created by Wayne Dimart on 14-4-8.
-//  Modified by zrong(zengrong.net) on 2014-04-23
-//
+#ifndef __DRAGON_BONES_HEADERS_H__
+#define __DRAGON_BONES_HEADERS_H__
 
-#ifndef __DRAGONBONES_HEADERS_H__
-#define __DRAGONBONES_HEADERS_H__
+#include "DragonBones.h"
 
-//#include "CCDragonBones.h"  
-#ifdef COCOS2D_3X
-#include "CCDragonBonesNode.h"
-#else
-#include "CCDragonBones.h"
-#endif
+// geoms
+#include "geoms/ColorTransform.h"
+#include "geoms/Matrix.h"
+#include "geoms/Point.h"
+#include "geoms/Rectangle.h"
+#include "geoms/Transform.h"
 
-#include "Cocos2dxAtlasNode.h"
-#include "Cocos2dxDisplayBridge.h"
-#include "Cocos2dxFactory.h"
-#include "Cocos2dxTextureAtlas.h"
-
-#include "Armature.h"
-#include "Bone.h"
-#include "Slot.h"
-
-#include "factories/BaseFactory.h"
-#include "display/IDisplayBridge.h"
-#include "textures/ITextureAtlas.h"
-
-#include "core/DBObject.h"
-#include "core/DragonBones.h"
-
-#include "animation/Animation.h"
-#include "animation/AnimationState.h"
-#include "animation/IAnimatable.h"
-#include "animation/TimelineState.h"
-
-#include "events/Event.h"
-#include "events/AnimationEvent.h"
-#include "events/ArmatureEvent.h"
-#include "events/FrameEvent.h"
-#include "events/SoundEvent.h"
-#include "events/SoundEventManager.h"
-
-#include "utils/DBGeometry.h"
-#include "utils/ConstValues.h"
-#include "utils/DBDataUtil.h"
-#include "utils/BytesType.h"
-#include "utils/preDB.h"
-#include "utils/TransformUtil.h"
-
-#include "objects/DBTransform.h"
-#include "objects//dbtinyxml2.h"
+// objects
+#include "objects/IAreaData.h"
+#include "objects/RectangleData.h"
+#include "objects/EllipseData.h"
+#include "objects/Frame.h"
+#include "objects/TransformFrame.h"
+#include "objects/Timeline.h"
+#include "objects/TransformTimeline.h"
+#include "objects/AnimationData.h"
 #include "objects/DisplayData.h"
 #include "objects/SlotData.h"
-#include "objects/SkeletonData.h"
-#include "objects/TransformFrame.h"
-#include "objects/TransformTimeline.h"
 #include "objects/SkinData.h"
-#include "objects/XMLDataParser.h" 
-#include "objects/TextureAtlasData.h"
-#include "objects/Timeline.h"
-#include "objects/AnimationData.h"
-#include "objects/ArmatureData.h"
 #include "objects/BoneData.h"
-#include "objects/Frame.h"
+#include "objects/ArmatureData.h"
+#include "objects/SkeletonData.h"
 
-#endif //__DRAGONBONES_HEADERS_H__
+// textures
+#include "textures/TextureData.h"
+#include "textures/TextureAtlasData.h"
+#include "textures/ITextureAtlas.h"
+
+// events
+#include "events/EventData.h"
+#include "events/IEventDispatcher.h"
+
+// animation
+#include "animation/IAnimatable.h"
+#include "animation/TimelineState.h"
+#include "animation/AnimationState.h"
+#include "animation/Animation.h"
+#include "animation/WorldClock.h"
+
+// core
+#include "core/Object.h"
+#include "core/Armature.h"
+#include "core/Bone.h"
+#include "core/Slot.h"
+
+// parsers
+#include "parsers/BaseDataParser.h"
+#include "parsers/XMLDataParser.h"
+
+// factories
+#include "factories/BaseFactory.h"
+
+#endif  // __DRAGON_BONES_HEADERS_H__

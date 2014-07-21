@@ -1,51 +1,63 @@
-#ifndef __SKIN_DATA_H__
-#define __SKIN_DATA_H__
-#include "utils/preDB.h"
+#ifndef __OBJECTS_SKIN_DATA_H__
+#define __OBJECTS_SKIN_DATA_H__
+
+#include "../DragonBones.h"
 #include "SlotData.h"
-namespace dragonBones
+
+NAME_SPACE_DRAGON_BONES_BEGIN
+class SkinData
 {
-    /** @private */
-    class SkinData
+public:
+    String name;
+    std::vector<SlotData *> slotDataList;
+    
+public:
+    SkinData() {}
+    SkinData(const SkinData &copyData)
     {
-    public:
-        String name;        
-        std::vector<SlotData*> slotDataList;
-
-        SkinData()
+        operator=(copyData);
+    }
+    SkinData &operator=(const SkinData &copyData)
+    {
+        dispose();
+        name = copyData.name;
+        slotDataList.reserve(copyData.slotDataList.size());
+        
+        for (size_t i = 0, l = slotDataList.size(); i < l; ++i)
         {
-
-        }
-        virtual ~SkinData()
-        {
-            dispose();
+            slotDataList.push_back(new SlotData());
+            *(slotDataList[i]) = *(copyData.slotDataList[i]);
         }
         
-        void dispose()
+        return *this;
+    }
+    virtual ~SkinData()
+    {
+        dispose();
+    }
+    void dispose()
+    {
+        for (size_t i = 0, l = slotDataList.size(); i < l; ++i)
         {
-            for(size_t i = 0 ; i < slotDataList.size() ; i ++)
+            slotDataList[i]->dispose();
+            delete slotDataList[i];
+        }
+        
+        slotDataList.clear();
+    }
+    
+    SlotData *getSlotData(const String &slotName) const
+    {
+        for (size_t i = 0, l = slotDataList.size(); i < l; ++i)
+        {
+            if (slotDataList[i]->name == slotName)
             {
-                slotDataList[i]->dispose();
-                delete slotDataList[i];
+                return slotDataList[i];
             }
-            slotDataList.clear();
         }
         
-        SlotData* getSlotData(const String &slotName)
-        {
-            for(size_t i = 0 ; i < slotDataList.size() ; i ++)
-            {
-                if(slotDataList[i]->name == slotName)
-                {
-                    return slotDataList[i];
-                }
-            }
-            return 0;
-        }
-        
-        void addSlotData(SlotData *slotData)
-        {            
-            slotDataList.push_back(slotData);
-        }
-    };
+        return nullptr;
+    }
 };
-#endif // __SKIN_DATA_H__
+NAME_SPACE_DRAGON_BONES_END
+#endif  // __OBJECTS_SKIN_DATA_H__
