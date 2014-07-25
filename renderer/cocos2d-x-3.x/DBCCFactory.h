@@ -12,6 +12,7 @@ public:
     
     virtual void loadSkeleton(const String &skeletonFilePath, const String &name = "");
     virtual void loadTextureAtlas(const String &textureAtlasFile, const String &name = "");
+    virtual void refreshTextureAtlasTexture();
     
 protected:
     virtual Armature *generateArmature(const ArmatureData *armatureData) const override;

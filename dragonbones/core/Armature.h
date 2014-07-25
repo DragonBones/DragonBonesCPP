@@ -75,7 +75,7 @@ public:
     virtual void invalidUpdate();
     virtual void invalidUpdate(const String &boneName);
     
-	virtual void advanceTime(float passedTime) override;
+    virtual void advanceTime(float passedTime) override;
     
 protected:
     virtual void addObject(Object *object);

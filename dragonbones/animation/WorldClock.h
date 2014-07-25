@@ -32,7 +32,7 @@ public:
     virtual void add(IAnimatable *animatable);
     virtual void remove(IAnimatable *animatable);
     virtual void removeAll();
-    virtual void advanceTime(float passedTime);
+    virtual void advanceTime(float passedTime) override;
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(WorldClock);

@@ -34,6 +34,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &dis
     }
     if (disposeExisting)
     {
+		disposeDisplayList();
     }
     //copy
     _displayList = displayList;
@@ -114,7 +115,7 @@ Slot::~Slot()
 void Slot::dispose()
 {
     Object::dispose();
-	//
+    //
     _displayList.clear();
     _slotData = nullptr;
     _childArmature = nullptr;
@@ -282,8 +283,8 @@ void Slot::updateSlotDisplay(bool disposeExisting)
             }
         }
         updateDisplayBlendMode(_slotData->blendMode);
-        //updateDisplayColor(_slotData->blendMode);
-        //updateDisplayVisible(_slotData->blendMode);
+        //updateDisplayColor(_slotData->c);
+        updateDisplayVisible(_visible);
         updateDisplayTransform();
     }
 }

@@ -12,7 +12,7 @@
 NAME_SPACE_DRAGON_BONES_BEGIN
 class BaseFactory
 {
-private:
+protected:
     mutable String _currentSkeletonDataName;
     mutable String _currentTextureAtlasName;
     std::map<String, SkeletonData *> _skeletonDataMap;

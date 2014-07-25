@@ -277,8 +277,8 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
             {
                 if (frame->zOrder != slot->_tweenZOrder)
                 {
-                    //slot->_tweenZOrder = frame->zOrder;
-                    //_armature->_slotsZOrderChanged = true;
+                    slot->_tweenZOrder = frame->zOrder;
+                    _armature->_slotsZOrderChanged = true;
                 }
             }
         }

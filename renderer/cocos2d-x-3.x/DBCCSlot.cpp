@@ -12,15 +12,7 @@ DBCCSlot::~DBCCSlot()
 }
 void DBCCSlot::dispose()
 {
-	for(size_t i = 0, l = _displayList.size(); i < l; ++i)
-	{
-		if(_displayList[i].second != DisplayType::DT_ARMATURE)
-		{
-			cocos2d::Node* display = static_cast<cocos2d::Node *>(_displayList[i].first);
-			display->cleanup();
-			display->release();
-		}
-	}
+    disposeDisplayList();
     Slot::dispose();
     _nodeDisplay = nullptr;
 }
@@ -29,7 +21,7 @@ int DBCCSlot::getDisplayZIndex() const
 {
     if (_nodeDisplay)
     {
-        return _nodeDisplay->getZOrder();
+		return _nodeDisplay->getLocalZOrder();
     }
     return -1;
 }
@@ -41,7 +33,7 @@ void DBCCSlot::addDisplayToContainer(void *container, int zIndex)
         removeDisplayFromContainer();
         if (zIndex < 0)
         {
-            nodeContainer->addChild(_nodeDisplay);
+            nodeContainer->addChild(_nodeDisplay, nodeContainer->getChildrenCount());
         }
         else
         {
@@ -53,7 +45,25 @@ void DBCCSlot::removeDisplayFromContainer()
 {
     if (_nodeDisplay && _nodeDisplay->getParent())
     {
-        _nodeDisplay->getParent()->removeChild(_nodeDisplay);
+		_nodeDisplay->removeFromParentAndCleanup(false);
+    }
+}
+
+void DBCCSlot::disposeDisplayList()
+{
+	for (size_t i = 0, l = _displayList.size(); i < l; ++i)
+    {
+        if (_displayList[i].second == DisplayType::DT_ARMATURE)
+        {
+			Armature *armature = static_cast<Armature *>(_displayList[i].first);
+			armature->dispose();
+        }
+		else
+		{
+            cocos2d::Node *display = static_cast<cocos2d::Node *>(_displayList[i].first);
+            display->cleanup();
+            display->release();
+		}
     }
 }
 
@@ -64,6 +74,7 @@ void DBCCSlot::updateDisplay(void *display, bool disposeExisting)
         if (_nodeDisplay)
         {
             _nodeDisplay->cleanup();
+            _nodeDisplay->release();
         }
     }
     _nodeDisplay = static_cast<cocos2d::Sprite *>(display);

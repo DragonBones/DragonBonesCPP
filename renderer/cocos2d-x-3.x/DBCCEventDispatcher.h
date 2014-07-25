@@ -2,14 +2,13 @@
 #define __DBCC_EVENT_DISPATCHER_H__
 
 #include "../dragonBones/DragonBonesHeaders.h"
-
-#include "CCEventDispatcher.h"
+#include "cocos2d.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCEventDispatcher : public IEventDispatcher
 {
 public:
-    cocos2d::EventDispatcher eventDispatcher;
+    cocos2d::EventDispatcher *eventDispatcher;
     
 public:
     DBCCEventDispatcher()
@@ -21,17 +20,25 @@ public:
     }
     virtual void dispose() override
     {
-        eventDispatcher.removeAllEventListeners();
+        if (eventDispatcher)
+        {
+            eventDispatcher->removeAllEventListeners();
+            eventDispatcher->release();
+            eventDispatcher = nullptr;
+        }
     }
     
     virtual void dispatchEvent(EventData *eventData) override
     {
-        eventDispatcher.dispatchCustomEvent(EventData::getStringType(eventData->getType()), eventData);
+        if (eventDispatcher)
+        {
+            eventDispatcher->dispatchCustomEvent(EventData::getStringType(eventData->getType()), eventData);
+        }
     }
     
     virtual bool hasEvent(EventData::EventDataType eventDataType) const override
     {
-        return true;
+        return eventDispatcher != nullptr;
     }
     
 private:

@@ -7,14 +7,14 @@
 NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCSlot : public Slot
 {
-private:
+protected:
     cocos2d::Node *_nodeDisplay;
-
+    
 public:
     cocos2d::Node *getDisplay() const
-	{
-		return _nodeDisplay;
-	}
+    {
+        return _nodeDisplay;
+    }
     
 public:
     DBCCSlot(SlotData *slotData);
@@ -25,6 +25,7 @@ protected:
     virtual int getDisplayZIndex() const override;
     virtual void addDisplayToContainer(void *container, int zIndex) override;
     virtual void removeDisplayFromContainer() override;
+    virtual void disposeDisplayList() override;
     virtual void updateDisplay(void *display, bool disposeExisting) override;
     virtual void updateDisplayBlendMode(const BlendMode &blendMode) override;
     virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) override;
