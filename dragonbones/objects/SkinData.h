@@ -22,13 +22,11 @@ public:
         dispose();
         name = copyData.name;
         slotDataList.reserve(copyData.slotDataList.size());
-        
         for (size_t i = 0, l = slotDataList.size(); i < l; ++i)
         {
             slotDataList.push_back(new SlotData());
             *(slotDataList[i]) = *(copyData.slotDataList[i]);
         }
-        
         return *this;
     }
     virtual ~SkinData()
@@ -42,7 +40,6 @@ public:
             slotDataList[i]->dispose();
             delete slotDataList[i];
         }
-        
         slotDataList.clear();
     }
     
@@ -55,7 +52,6 @@ public:
                 return slotDataList[i];
             }
         }
-        
         return nullptr;
     }
 };

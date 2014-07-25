@@ -9,7 +9,6 @@ TimelineState *TimelineState::borrowObject()
     {
         return new TimelineState();
     }
-    
     TimelineState *timelinseState = _pool.back();
     _pool.pop_back();
     return timelinseState;
@@ -21,7 +20,6 @@ void TimelineState::returnObject(TimelineState *timelineState)
     {
         _pool.push_back(timelineState);
     }
-    
     timelineState->clear();
 }
 
@@ -32,7 +30,6 @@ void TimelineState::clearObjects()
         _pool[i]->clear();
         delete _pool[i];
     }
-    
     _pool.clear();
 }
 
@@ -88,22 +85,18 @@ void TimelineState::fadeIn(Bone *bone, AnimationState *animationState, Transform
     _originTransform = _timeline->originTransform;
     // copy
     _originPivot = _timeline->originPivot;
-    
     switch (_timeline->frameList.size())
     {
         case 0:
             _updateState = UpdateState::UNUPDATE;
             break;
-            
         case 1:
             _updateState = UpdateState::UPDATE_ONCE;
             break;
-            
         default:
             _updateState = UpdateState::UPDATE;
             break;
     }
-    
     _bone->addState(this);
 }
 
@@ -119,7 +112,6 @@ void TimelineState::update(float progress)
     {
         updateMultipleFrame(progress);
     }
-    
     else if (_updateState == UpdateState::UPDATE_ONCE)
     {
         updateSingleFrame();
@@ -134,86 +126,69 @@ void TimelineState::updateMultipleFrame(float progress)
     int currentTime = (int)(_totalTime * progress);
     int currentPlayTimes = 0;
     const int playTimes = _animationState->getPlayTimes();
-    
     if (playTimes == 0)
     {
         _isComplete = false;
         currentPlayTimes = (int)(ceil(abs(currentTime) / (float)(_totalTime)));
-        
         if (currentPlayTimes == 0)
         {
             currentPlayTimes = 1;
         }
-        
         currentTime -= (int)(floor(currentTime / (float)(_totalTime))) * _totalTime;
-        
         if (currentTime < 0)
         {
             currentTime += _totalTime;
         }
     }
-    
     else
     {
         int totalTimes = playTimes * _totalTime;
-        
         if (currentTime >= totalTimes)
         {
             currentTime = totalTimes;
             _isComplete = true;
         }
-        
         else if (currentTime <= -totalTimes)
         {
             currentTime = -totalTimes;
             _isComplete = true;
         }
-        
         else
         {
             _isComplete = false;
         }
-        
         if (currentTime < 0)
         {
             currentTime += totalTimes;
         }
-        
         currentPlayTimes = (int)(ceil(currentTime / (float)(_totalTime)));
-        
         if (currentPlayTimes == 0)
         {
             currentPlayTimes = 1;
         }
-        
         if (_isComplete)
         {
             currentTime = _totalTime;
         }
-        
         else
         {
             currentTime -= (int)(floor(currentTime / (float)(_totalTime))) * _totalTime;
         }
     }
-    
     if (_currentTime != currentTime)
     {
         _currentTime = currentTime;
         TransformFrame *prevFrame = nullptr;
         TransformFrame *currentFrame = nullptr;
-        
         for (size_t i = 0, l = _timeline->frameList.size(); i < l; ++i)
         {
             if (_currentFrameIndex < 0)
             {
                 _currentFrameIndex = 0;
             }
-            
             else if (_currentTime >= _currentFramePosition + _currentFrameDuration)
             {
                 ++_currentFrameIndex;
-                
                 if (_currentFrameIndex >= (int)(l))
                 {
                     if (_isComplete)
@@ -221,51 +196,41 @@ void TimelineState::updateMultipleFrame(float progress)
                         --_currentFrameIndex;
                         break;
                     }
-                    
                     else
                     {
                         _currentFrameIndex = 0;
                     }
                 }
             }
-            
             else if (_currentTime < _currentFramePosition)
             {
                 --_currentFrameIndex;
-                
                 if (_currentFrameIndex < 0)
                 {
                     _currentFrameIndex = l - 1;
                 }
             }
-            
             else
             {
                 break;
             }
-            
             currentFrame = static_cast<TransformFrame *>(_timeline->frameList[_currentFrameIndex]);
-            
             if (prevFrame)
             {
                 _bone->arriveAtFrame(prevFrame, this, _animationState, true);
             }
-            
             _currentFrameDuration = currentFrame->duration;
             _currentFramePosition = currentFrame->position;
             prevFrame = currentFrame;
         }
-        
         if (currentFrame)
         {
             _bone->arriveAtFrame(currentFrame, this, _animationState, false);
             _blendEnabled = currentFrame->displayIndex >= 0;
-            
             if (_blendEnabled)
             {
                 updateToNextFrame(currentPlayTimes);
             }
-            
             else
             {
                 _tweenEasing = NO_TWEEN_EASING;
@@ -274,7 +239,6 @@ void TimelineState::updateMultipleFrame(float progress)
                 _tweenColor = false;
             }
         }
-        
         if (_blendEnabled)
         {
             updateTween();
@@ -287,16 +251,13 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
     bool isToFirstFrame = false;
     bool tweenEnabled = false;
     int nextFrameIndex = _currentFrameIndex + 1;
-    
     if (nextFrameIndex >= (int)(_timeline->frameList.size()))
     {
         nextFrameIndex = 0;
         isToFirstFrame = true;
     }
-    
     const TransformFrame *currentFrame = static_cast<TransformFrame *>(_timeline->frameList[_currentFrameIndex]);
     const TransformFrame *nextFrame = static_cast<TransformFrame *>(_timeline->frameList[nextFrameIndex]);
-    
     if (
         isToFirstFrame &&
         (
@@ -312,62 +273,51 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
         _tweenEasing = NO_TWEEN_EASING;
         tweenEnabled = false;
     }
-    
     else if (currentFrame->displayIndex < 0 || nextFrame->displayIndex < 0)
     {
         _tweenEasing = NO_TWEEN_EASING;
         tweenEnabled = false;
     }
-    
     else if (_animationState->autoTween)
     {
         _tweenEasing = _animationState->getClip().tweenEasing;
-        
         if (_tweenEasing == USE_FRAME_TWEEN_EASING)
         {
             _tweenEasing = currentFrame->tweenEasing;
-            
             if (_tweenEasing == NO_TWEEN_EASING)    // frame no tween
             {
                 tweenEnabled = false;
             }
-            
             else
             {
                 if (_tweenEasing == AUTO_TWEEN_EASING)
                 {
                     _tweenEasing = 0.f;
                 }
-                
                 // _tweenEasing [-1, 0) 0 (0, 1] (1, 2]
                 tweenEnabled = true;
             }
         }
-        
         else    // animationData overwrite tween
         {
             // _tweenEasing [-1, 0) 0 (0, 1] (1, 2]
             tweenEnabled = true;
         }
     }
-    
     else
     {
         _tweenEasing = currentFrame->tweenEasing;
-        
         if (_tweenEasing == NO_TWEEN_EASING || _tweenEasing == AUTO_TWEEN_EASING)    // frame no tween
         {
             _tweenEasing = NO_TWEEN_EASING;
             tweenEnabled = false;
         }
-        
         else
         {
             // _tweenEasing [-1, 0) 0 (0, 1] (1, 2]
             tweenEnabled = true;
         }
     }
-    
     if (tweenEnabled)
     {
         // transform
@@ -377,16 +327,13 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
         _durationTransform.skewY = nextFrame->transform.skewY - currentFrame->transform.skewY;
         _durationTransform.scaleX = nextFrame->transform.scaleX - currentFrame->transform.scaleX + nextFrame->scaleOffset.x;
         _durationTransform.scaleY = nextFrame->transform.scaleY - currentFrame->transform.scaleY + nextFrame->scaleOffset.y;
-        
         if (isToFirstFrame)
         {
             _durationTransform.skewX = formatRadian(_durationTransform.skewX);
             _durationTransform.skewY = formatRadian(_durationTransform.skewY);
         }
-        
         _durationPivot.x = nextFrame->pivot.x - currentFrame->pivot.x;
         _durationPivot.y = nextFrame->pivot.y - currentFrame->pivot.y;
-        
         if (
             _durationTransform.x ||
             _durationTransform.y ||
@@ -401,13 +348,11 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             _tweenTransform = true;
             _tweenScale = currentFrame->tweenScale;
         }
-        
         else
         {
             _tweenTransform = false;
             _tweenScale = false;
         }
-        
         // color
         if (currentFrame->color && nextFrame->color)
         {
@@ -419,7 +364,6 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             _durationColor.redMultiplier = nextFrame->color->redMultiplier - currentFrame->color->redMultiplier;
             _durationColor.greenMultiplier = nextFrame->color->greenMultiplier - currentFrame->color->greenMultiplier;
             _durationColor.blueMultiplier = nextFrame->color->blueMultiplier - currentFrame->color->blueMultiplier;
-            
             if (
                 _durationColor.alphaOffset ||
                 _durationColor.redOffset ||
@@ -433,13 +377,11 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             {
                 _tweenColor = true;
             }
-            
             else
             {
                 _tweenColor = false;
             }
         }
-        
         else if (currentFrame->color)
         {
             _tweenColor = true;
@@ -452,7 +394,6 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             _durationColor.greenMultiplier = 1 - currentFrame->color->greenMultiplier;
             _durationColor.blueMultiplier = 1 - currentFrame->color->blueMultiplier;
         }
-        
         else if (nextFrame->color)
         {
             _tweenColor = true;
@@ -465,20 +406,17 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             _durationColor.greenMultiplier = nextFrame->color->greenMultiplier - 1;
             _durationColor.blueMultiplier = nextFrame->color->blueMultiplier - 1;
         }
-        
         else
         {
             _tweenColor = false;
         }
     }
-    
     else
     {
         _tweenTransform = false;
         _tweenScale = false;
         _tweenColor = false;
     }
-    
     if (!_tweenTransform)
     {
         if (_animationState->additiveBlending)
@@ -492,7 +430,6 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             _pivot.x = currentFrame->pivot.x;
             _pivot.y = currentFrame->pivot.y;
         }
-        
         else
         {
             _transform.x = _originTransform.x + currentFrame->transform.x;
@@ -504,10 +441,8 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             _pivot.x = _originPivot.x + currentFrame->pivot.x;
             _pivot.y = _originPivot.y + currentFrame->pivot.y;
         }
-        
         _bone->invalidUpdate();
     }
-    
     else if (!_tweenScale)
     {
         if (_animationState->additiveBlending)
@@ -515,14 +450,12 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             _transform.scaleX = currentFrame->transform.scaleX;
             _transform.scaleY = currentFrame->transform.scaleY;
         }
-        
         else
         {
             _transform.scaleX = _originTransform.scaleX + currentFrame->transform.scaleX;
             _transform.scaleY = _originTransform.scaleY + currentFrame->transform.scaleY;
         }
     }
-    
     if (!_tweenColor && _animationState->displayControl)
     {
         if (currentFrame->color)
@@ -539,7 +472,6 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
                 true
             );
         }
-        
         else if (_bone->_isColorChanged)
         {
             _bone->updateColor(0, 0, 0, 0, 1.f, 1.f, 1.f, 1.f, false);
@@ -550,21 +482,17 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
 void TimelineState::updateTween()
 {
     float progress = (_currentTime - _currentFramePosition) / (float)(_currentFrameDuration);
-    
     if (_tweenEasing && _tweenEasing != NO_TWEEN_EASING)
     {
         /*
         progress = getEaseValue(progress, _tweenEasing);
         */
     }
-    
     const TransformFrame *currentFrame = static_cast<TransformFrame *>(_timeline->frameList[_currentFrameIndex]);
-    
     if (_tweenTransform)
     {
         const Transform &currentTransform = currentFrame->transform;
         const Point &currentPivot = currentFrame->pivot;
-        
         if (_animationState->additiveBlending)
         {
             //additive blending
@@ -572,17 +500,14 @@ void TimelineState::updateTween()
             _transform.y = currentTransform.y + _durationTransform.y * progress;
             _transform.skewX = currentTransform.skewX + _durationTransform.skewX * progress;
             _transform.skewY = currentTransform.skewY + _durationTransform.skewY * progress;
-            
             if (_tweenScale)
             {
                 _transform.scaleX = currentTransform.scaleX + _durationTransform.scaleX * progress;
                 _transform.scaleY = currentTransform.scaleY + _durationTransform.scaleY * progress;
             }
-            
             _pivot.x = currentPivot.x + _durationPivot.x * progress;
             _pivot.y = currentPivot.y + _durationPivot.y * progress;
         }
-        
         else
         {
             //normal blending
@@ -590,20 +515,16 @@ void TimelineState::updateTween()
             _transform.y = _originTransform.y + currentTransform.y + _durationTransform.y * progress;
             _transform.skewX = _originTransform.skewX + currentTransform.skewX + _durationTransform.skewX * progress;
             _transform.skewY = _originTransform.skewY + currentTransform.skewY + _durationTransform.skewY * progress;
-            
             if (_tweenScale)
             {
                 _transform.scaleX = _originTransform.scaleX + currentTransform.scaleX + _durationTransform.scaleX * progress;
                 _transform.scaleY = _originTransform.scaleY + currentTransform.scaleY + _durationTransform.scaleY * progress;
             }
-            
             _pivot.x = _originPivot.x + currentPivot.x + _durationPivot.x * progress;
             _pivot.y = _originPivot.y + currentPivot.y + _durationPivot.y * progress;
         }
-        
         _bone->invalidUpdate();
     }
-    
     if (_tweenColor && _animationState->displayControl)
     {
         if (currentFrame->color)
@@ -620,7 +541,6 @@ void TimelineState::updateTween()
                 true
             );
         }
-        
         else
         {
             _bone->updateColor(
@@ -648,7 +568,6 @@ void TimelineState::updateSingleFrame()
     _tweenColor = false;
     _tweenEasing = NO_TWEEN_EASING;
     _blendEnabled = currentFrame->displayIndex >= 0;
-    
     if (_blendEnabled)
     {
         if (_animationState->additiveBlending)
@@ -664,7 +583,6 @@ void TimelineState::updateSingleFrame()
             _pivot.x = 0.f;
             _pivot.y = 0.f;
         }
-        
         else
         {
             // normal blending
@@ -674,9 +592,7 @@ void TimelineState::updateSingleFrame()
             // copy
             _pivot = _originPivot;
         }
-        
         _bone->invalidUpdate();
-        
         if (_animationState->displayControl)
         {
             if (currentFrame->color)
@@ -693,7 +609,6 @@ void TimelineState::updateSingleFrame()
                     true
                 );
             }
-            
             else if (_bone->_isColorChanged)
             {
                 _bone->updateColor(0, 0, 0, 0, 1.f, 1.f, 1.f, 1.f, false);
@@ -709,7 +624,6 @@ void TimelineState::clear()
         _bone->removeState(this);
         _bone = nullptr;
     }
-    
     _animationState = nullptr;
     _timeline = nullptr;
 }

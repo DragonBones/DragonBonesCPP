@@ -60,7 +60,6 @@ public:
             matrix.c = -scaleY * sin(skewX);
             matrix.d = scaleY * cos(skewX);
         }
-        
         else
         {
             matrix.a = cos(skewY);
@@ -68,7 +67,6 @@ public:
             matrix.c = -sin(skewX);
             matrix.d = cos(skewX);
         }
-        
         matrix.tx = x;
         matrix.ty = y;
     }

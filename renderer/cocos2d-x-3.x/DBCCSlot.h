@@ -8,7 +8,13 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCSlot : public Slot
 {
 private:
-    cocos2d::Sprite *_spriteDisplay;
+    cocos2d::Node *_nodeDisplay;
+
+public:
+    cocos2d::Node *getDisplay() const
+	{
+		return _nodeDisplay;
+	}
     
 public:
     DBCCSlot(SlotData *slotData);

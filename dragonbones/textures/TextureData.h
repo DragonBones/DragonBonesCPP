@@ -31,13 +31,11 @@ public:
         rotated = copyData.rotated;
         name = copyData.name;
         region = copyData.region;
-        
         if (copyData.frame)
         {
             frame = new Rectangle();
             *frame = *(copyData.frame);
         }
-        
         return *this;
     }
     virtual ~TextureData()

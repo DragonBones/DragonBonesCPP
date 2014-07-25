@@ -26,9 +26,7 @@ void Object::setArmature(Armature *armature)
     {
         _armature->removeObject(this);
     }
-    
     _armature = armature;
-    
     if (_armature)
     {
         _armature->addObject(this);

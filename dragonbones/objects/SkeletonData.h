@@ -22,13 +22,11 @@ public:
         dispose();
         name = copyData.name;
         armatureDataList.reserve(copyData.armatureDataList.size());
-        
         for (size_t i = 0, l = armatureDataList.size(); i < l; ++i)
         {
             armatureDataList.push_back(new ArmatureData());
             *(armatureDataList[i]) = *(copyData.armatureDataList[i]);
         }
-        
         return *this;
     }
     virtual ~SkeletonData()
@@ -42,7 +40,6 @@ public:
             armatureDataList[i]->dispose();
             delete armatureDataList[i];
         }
-        
         armatureDataList.clear();
     }
     
@@ -55,7 +52,6 @@ public:
                 return armatureDataList[i];
             }
         }
-        
         return nullptr;
     }
 };

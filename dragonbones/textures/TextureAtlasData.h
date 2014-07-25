@@ -25,13 +25,11 @@ public:
         name = copyData.name;
         imagePath = copyData.imagePath;
         textureDataList.reserve(copyData.textureDataList.size());
-        
         for (size_t i = 0, l = textureDataList.size(); i < l; ++i)
         {
             textureDataList.push_back(new TextureData());
             *(textureDataList[i]) = *(copyData.textureDataList[i]);
         }
-        
         return *this;
     }
     virtual ~TextureAtlasData()
@@ -45,7 +43,6 @@ public:
             textureDataList[i]->dispose();
             delete textureDataList[i];
         }
-        
         textureDataList.clear();
     }
     
@@ -58,7 +55,6 @@ public:
                 return textureDataList[i];
             }
         }
-        
         return nullptr;
     }
 };

@@ -124,41 +124,34 @@ inline float round(float value)
 inline float formatRadian(float radian)
 {
     radian = fmod(radian, PI * 2.f);
-    
     if (radian > PI)
     {
         radian -= PI * 2.f;
     }
-    
     if (radian < -PI)
     {
         radian += PI * 2.f;
     }
-    
     return radian;
 }
 
 inline float getEaseValue(float value, float easing)
 {
     float valueEase = 1.f;
-    
     if (easing > 1)   //ease in out
     {
         valueEase = 0.5f * (1.f - cos(value * PI));
         easing -= 1.f;
     }
-    
     else if (easing > 0)    //ease out
     {
         valueEase = 1.f - pow(1.f - value, 2);
     }
-    
     else if (easing < 0)    //ease in
     {
         easing *= -1.f;
         valueEase =  pow(value, 2);
     }
-    
     return (valueEase - value) * easing + value;
 }
 
@@ -167,7 +160,6 @@ inline T getEnumByString(const char *string)
 {
     T enumValue = static_cast<T>(-1);
     int count = sizeof(EnumName<T>::list) / sizeof(EnumName<T>::list[0]);
-    
     for (int i = 0; i < count; ++i)
     {
         if (strcmp(string, EnumName<T>::list[i]) == 0)
@@ -176,7 +168,6 @@ inline T getEnumByString(const char *string)
             break;
         }
     }
-    
     return enumValue;
 }
 
@@ -190,7 +181,6 @@ inline int indexOf(std::vector<T> &vector, const T &value)
             return i;
         }
     }
-    
     return -1;
 }
 
@@ -198,8 +188,8 @@ inline int indexOf(std::vector<T> &vector, const T &value)
 enum class DisplayType {DT_IMAGE, DT_ARMATURE, DT_1, DT_2, DT_3, DT_4, DT_5, DT_6};
 const char *EnumName<DisplayType>::list[] = {"image", "armature"};
 
-enum class BlendMode {BM_ADD, BM_ALPHA, BM_DARKEN, BM_DIFFERENCE, BM_ERASE, BM_HARDLIGHT, BM_INVERT, BM_LAYER, BM_LIGHTEN, BM_MULTIPLY, BM_NORMAL, BM_OVERLAY, BM_SCREEN, BM_SHADER, BM_SUBTRACT};
-const char *EnumName<BlendMode>::list[] = {"add", "alpha", "darken", "difference", "erase", "hardlight", "invert", "layer", "lighten", "multiply", "normal", "overlay", "screen", "shader", "subtract"};
+enum class BlendMode {BM_AUTO, BM_ADD, BM_ALPHA, BM_DARKEN, BM_DIFFERENCE, BM_ERASE, BM_HARDLIGHT, BM_INVERT, BM_LAYER, BM_LIGHTEN, BM_MULTIPLY, BM_NORMAL, BM_OVERLAY, BM_SCREEN, BM_SHADER, BM_SUBTRACT};
+const char *EnumName<BlendMode>::list[] = {"auto", "add", "alpha", "darken", "difference", "erase", "hardlight", "invert", "layer", "lighten", "multiply", "normal", "overlay", "screen", "shader", "subtract"};
 
 NAME_SPACE_DRAGON_BONES_END
 

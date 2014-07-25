@@ -27,42 +27,30 @@ public:
         {
             case EventDataType::Z_ORDER_UPDATED:
                 return "zOrderUpdate";
-                
             case EventDataType::ANIMATION_FRAME_EVENT:
                 return "animationFrameEvent";
-                
             case EventDataType::BONE_FRAME_EVENT:
                 return "boneFrameEvent";
-                
             case EventDataType::SOUND:
                 return "sound";
-                
             case EventDataType::FADE_IN:
                 return "fadeIn";
-                
             case EventDataType::FADE_OUT:
                 return "fadeOut";
-                
             case EventDataType::START:
                 return "start";
-                
             case EventDataType::COMPLETE:
                 return "complete";
-                
             case EventDataType::LOOP_COMPLETE:
                 return "loopComplete";
-                
             case EventDataType::FADE_IN_COMPLETE:
                 return "fadeInComplete";
-                
             case EventDataType::FADE_OUT_COMPLETE:
                 return "fadeOutComplete";
-                
             default:
                 // throw
                 break;
         }
-        
         return "";
     }
     

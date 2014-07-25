@@ -55,13 +55,11 @@ public:
         transform = copyData.transform;
         pivot = copyData.pivot;
         scaleOffset = copyData.scaleOffset;
-        
         if (copyData.color)
         {
             color = new ColorTransform();
             *color = *(copyData.color);
         }
-        
         return *this;
     }
     virtual ~TransformFrame()

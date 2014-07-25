@@ -9,8 +9,8 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class XMLDataParser : public BaseDataParser
 {
 private:
-    static bool getBoolean(const XMLElement *data, const String &key, bool defaultValue);
-    static float getNumber(const XMLElement *data, const String &key, float defaultValue, float nanValue);
+    static bool getBoolean(const XMLElement *data, const char *key, bool defaultValue);
+    static float getNumber(const XMLElement *data, const char *key, float defaultValue, float nanValue);
     
 private:
     mutable float _textureScale;
@@ -34,7 +34,7 @@ private:
     SlotData *parseSlotData(const XMLElement *slotXML) const;
     DisplayData *parseDisplayData(const XMLElement *displayXML) const;
     AnimationData *parseAnimationData(const XMLElement *animationXML, ArmatureData *armatureData) const;
-    TransformTimeline *parseTransformTimeline(const XMLElement *timelineXML) const;
+    TransformTimeline *parseTransformTimeline(const XMLElement *timelineXML, int duration) const;
     Frame *parseMainFrame(const XMLElement *frameXML) const;
     TransformFrame *parseTransformFrame(const XMLElement *frameXML) const;
     RectangleData *parseRectangleData(const XMLElement *rectangleXML) const;

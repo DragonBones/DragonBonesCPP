@@ -14,7 +14,6 @@ public:
     DBCCTextureAtlas(const TextureAtlasData *textureAtlasData_)
         : ITextureAtlas(textureAtlasData_)
     {
-        texture = nullptr;
     }
     virtual ~DBCCTextureAtlas()
     {

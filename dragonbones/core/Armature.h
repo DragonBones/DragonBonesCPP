@@ -51,7 +51,6 @@ public:
     virtual const ArmatureData *getArmatureData() const;
     virtual Animation *getAnimation() const;
     virtual IEventDispatcher *getEventDispatcher() const;
-    virtual void *getDisplay() const;
     
 public:
     Armature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, void *display);
@@ -76,7 +75,7 @@ public:
     virtual void invalidUpdate();
     virtual void invalidUpdate(const String &boneName);
     
-    virtual void advanceTime(float passedTime);
+	virtual void advanceTime(float passedTime) override;
     
 protected:
     virtual void addObject(Object *object);

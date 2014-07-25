@@ -43,7 +43,6 @@ public:
         global = copyData.global;
         transform = copyData.transform;
         areaDataList.reserve(copyData.areaDataList.size());
-        
         for (size_t i = 0, l = copyData.areaDataList.size(); i < l; ++i)
         {
             switch (copyData.areaDataList[i]->areaType)
@@ -52,18 +51,15 @@ public:
                     areaDataList.push_back(new EllipseData());
                     *(areaDataList[i]) = *(static_cast<EllipseData *>(copyData.areaDataList[i]));
                     break;
-                    
                 case IAreaData::AreaType::AT_RECTANGLE:
                     areaDataList.push_back(new RectangleData());
                     *(areaDataList[i]) = *(static_cast<RectangleData *>(copyData.areaDataList[i]));
                     break;
-                    
                 default:
                     // throw
                     break;
             }
         }
-        
         return *this;
     }
     virtual ~BoneData()
@@ -77,7 +73,6 @@ public:
             areaDataList[i]->dispose();
             delete areaDataList[i];
         }
-        
         areaDataList.clear();
     }
     
@@ -87,12 +82,10 @@ public:
         {
             return nullptr;
         }
-        
         if (areaName.empty())
         {
             return areaDataList.front();
         }
-        
         for (size_t i = 0, l = areaDataList.size(); i < l; ++i)
         {
             if (areaDataList[i]->name == areaName)
@@ -100,7 +93,6 @@ public:
                 return areaDataList[i];
             }
         }
-        
         return nullptr;
     }
 };

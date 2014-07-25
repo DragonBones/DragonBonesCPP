@@ -7,6 +7,9 @@
 NAME_SPACE_DRAGON_BONES_BEGIN
 class WorldClock : public IAnimatable
 {
+public:
+    static WorldClock clock;
+    
 private:
     float _time;
     float _timeScale;

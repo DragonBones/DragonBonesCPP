@@ -34,7 +34,6 @@ public:
         dispose();
         name = copyData.name;
         areaDataList.reserve(copyData.areaDataList.size());
-        
         for (size_t i = 0, l = areaDataList.size(); i < l; ++i)
         {
             switch (copyData.areaDataList[i]->areaType)
@@ -43,42 +42,33 @@ public:
                     areaDataList.push_back(new EllipseData());
                     *(areaDataList[i]) = *(static_cast<EllipseData *>(copyData.areaDataList[i]));
                     break;
-                    
                 case IAreaData::AreaType::AT_RECTANGLE:
                     areaDataList.push_back(new RectangleData());
                     *(areaDataList[i]) = *(static_cast<RectangleData *>(copyData.areaDataList[i]));
                     break;
-                    
                 default:
                     // throw
                     break;
             }
         }
-        
         boneDataList.reserve(copyData.boneDataList.size());
-        
         for (size_t i = 0, l = boneDataList.size(); i < l; ++i)
         {
             boneDataList.push_back(new BoneData());
             *(boneDataList[i]) = *(copyData.boneDataList[i]);
         }
-        
         skinDataList.reserve(copyData.skinDataList.size());
-        
         for (size_t i = 0, l = skinDataList.size(); i < l; ++i)
         {
             skinDataList.push_back(new SkinData());
             *(skinDataList[i]) = *(copyData.skinDataList[i]);
         }
-        
         animationDataList.reserve(copyData.animationDataList.size());
-        
         for (size_t i = 0, l = animationDataList.size(); i < l; ++i)
         {
             animationDataList.push_back(new AnimationData());
             *(animationDataList[i]) = *(copyData.animationDataList[i]);
         }
-        
         return *this;
     }
     virtual ~ArmatureData()
@@ -92,25 +82,21 @@ public:
             areaDataList[i]->dispose();
             delete areaDataList[i];
         }
-        
         for (size_t i = 0, l = boneDataList.size(); i < l; ++i)
         {
             boneDataList[i]->dispose();
             delete boneDataList[i];
         }
-        
         for (size_t i = 0, l = skinDataList.size(); i < l; ++i)
         {
             skinDataList[i]->dispose();
             delete skinDataList[i];
         }
-        
         for (size_t i = 0, l = animationDataList.size(); i < l; ++i)
         {
             animationDataList[i]->dispose();
             delete animationDataList[i];
         }
-        
         areaDataList.clear();
         boneDataList.clear();
         skinDataList.clear();
@@ -123,12 +109,10 @@ public:
         {
             return nullptr;
         }
-        
         if (areaName.empty())
         {
             return areaDataList.front();
         }
-        
         for (size_t i = 0, l = areaDataList.size(); i < l; ++i)
         {
             if (areaDataList[i]->name == areaName)
@@ -136,7 +120,6 @@ public:
                 return areaDataList[i];
             }
         }
-        
         return nullptr;
     }
     
@@ -149,7 +132,6 @@ public:
                 return boneDataList[i];
             }
         }
-        
         return nullptr;
     }
     
@@ -159,12 +141,10 @@ public:
         {
             return nullptr;
         }
-        
         if (skinName.empty())
         {
             return skinDataList.front();
         }
-        
         for (size_t i = 0, l = skinDataList.size(); i < l; ++i)
         {
             if (skinDataList[i]->name == skinName)
@@ -172,7 +152,6 @@ public:
                 return skinDataList[i];
             }
         }
-        
         return nullptr;
     }
     
@@ -185,7 +164,6 @@ public:
                 return animationDataList[i];
             }
         }
-        
         return nullptr;
     }
     
@@ -195,26 +173,20 @@ public:
         {
             return;
         }
-        
         std::vector<std::pair<int , BoneData *>> sortedList;
-        
         for (size_t i = 0, l = boneDataList.size(); i < l; ++i)
         {
             BoneData *boneData = boneDataList[i];
             BoneData *parentData = boneData;
             int level = 0;
-            
             while (parentData)
             {
                 parentData = (BoneData *)(getBoneData(parentData->parent));
                 level ++;
             }
-            
             sortedList.push_back(std::make_pair(level , boneData));
         }
-        
         std::sort(sortedList.begin() , sortedList.end() , sortBone);
-        
         for (size_t i = 0, l = sortedList.size(); i < l; ++i)
         {
             boneDataList[i] = sortedList[i].second;

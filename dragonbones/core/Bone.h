@@ -45,7 +45,7 @@ protected:
 public:
     Bone();
     virtual ~Bone();
-    virtual void dispose();
+    virtual void dispose() override;
     
     void invalidUpdate();
     bool contains(const Object *object) const;
