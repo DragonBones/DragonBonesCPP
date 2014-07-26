@@ -1,4 +1,4 @@
-#ifndef __ANIMATION_WORLD_CLOCK_H__
+﻿#ifndef __ANIMATION_WORLD_CLOCK_H__
 #define __ANIMATION_WORLD_CLOCK_H__
 
 #include "../DragonBones.h"

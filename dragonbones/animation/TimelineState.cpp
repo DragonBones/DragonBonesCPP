@@ -1,4 +1,4 @@
-#include "TimelineState.h"
+﻿#include "TimelineState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 std::vector<TimelineState *> TimelineState::_pool;
@@ -33,17 +33,6 @@ void TimelineState::clearObjects()
     _pool.clear();
 }
 
-
-int TimelineState::getLayer() const
-{
-    return _animationState->getLayer();
-}
-
-float TimelineState::getWeight() const
-{
-    return _animationState->_fadeWeight * _animationState->weight;
-}
-
 TimelineState::TimelineState() {}
 TimelineState::~TimelineState()
 {
@@ -62,6 +51,7 @@ void TimelineState::fadeIn(Bone *bone, AnimationState *animationState, Transform
     _tweenColor = false;
     _currentTime = -1;
     _currentFrameIndex = -1;
+    _weight = 0.f;
     _tweenEasing = USE_FRAME_TWEEN_EASING;
     _totalTime = _timeline->duration;
     name = _timeline->name;
@@ -123,7 +113,6 @@ void TimelineState::updateMultipleFrame(float progress)
 {
     progress /= _timeline->scale;
     progress += _timeline->offset;
-
     int currentTime = (int)(_totalTime * progress);
     int currentPlayTimes = 0;
     const int playTimes = _animationState->getPlayTimes();
@@ -172,7 +161,6 @@ void TimelineState::updateMultipleFrame(float progress)
     {
         currentPlayTimes = 1;
     }
-
     if (_currentTime != currentTime)
     {
         _currentTime = currentTime;
@@ -278,7 +266,7 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
     }
     else if (_animationState->autoTween)
     {
-        _tweenEasing = _animationState->getClip().tweenEasing;
+        _tweenEasing = _animationState->getClip()->tweenEasing;
         if (_tweenEasing == USE_FRAME_TWEEN_EASING)
         {
             _tweenEasing = currentFrame->tweenEasing;
@@ -316,7 +304,6 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             tweenEnabled = true;
         }
     }
-
     if (tweenEnabled)
     {
         // transform

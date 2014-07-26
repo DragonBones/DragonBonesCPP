@@ -1,4 +1,4 @@
-#ifndef __OBJECTS_I_AREA_DATA_H__
+﻿#ifndef __OBJECTS_I_AREA_DATA_H__
 #define __OBJECTS_I_AREA_DATA_H__
 
 #include "../DragonBones.h"

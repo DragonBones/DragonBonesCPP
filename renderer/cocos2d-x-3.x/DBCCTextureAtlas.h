@@ -1,4 +1,4 @@
-#ifndef __DBCC_TEXTURE_ATLAS_H__
+﻿#ifndef __DBCC_TEXTURE_ATLAS_H__
 #define __DBCC_TEXTURE_ATLAS_H__
 
 #include "../dragonBones/DragonBonesHeaders.h"

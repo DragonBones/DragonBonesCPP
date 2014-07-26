@@ -1,4 +1,4 @@
-#ifndef __DBCC_ARMATURE_H__
+﻿#ifndef __DBCC_ARMATURE_H__
 #define __DBCC_ARMATURE_H__
 
 #include "../dragonBones/DragonBonesHeaders.h"

@@ -1,4 +1,4 @@
-#ifndef __DRAGON_BONES_H__
+﻿#ifndef __DRAGON_BONES_H__
 #define __DRAGON_BONES_H__
 
 #include <algorithm>
@@ -10,8 +10,6 @@
 //#include <list>
 //#include <cstdlib>
 //#include <stdexcept>
-
-#include "cocos2d.h"
 
 // namespace dragonBones {}
 #define NAME_SPACE_DRAGON_BONES_BEGIN namespace dragonBones {

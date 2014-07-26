@@ -1,4 +1,4 @@
-#include "WorldClock.h"
+﻿#include "WorldClock.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
@@ -70,13 +70,13 @@ void WorldClock::advanceTime(float passedTime)
     if (passedTime < 0 || passedTime != passedTime)
     {
         /*
-		passedTime = getTimer() * 0.001f - _time;
+        passedTime = getTimer() * 0.001f - _time;
         if (passedTime < 0)
         {
             passedTime = 0.f;
         }
-		*/
-		passedTime = 0.f;
+        */
+        passedTime = 0.f;
     }
     passedTime *= _timeScale;
     _time += passedTime;

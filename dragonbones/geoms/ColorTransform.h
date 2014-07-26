@@ -1,4 +1,4 @@
-#ifndef __GEOMS_COLOR_TRANSFORM_H__
+﻿#ifndef __GEOMS_COLOR_TRANSFORM_H__
 #define __GEOMS_COLOR_TRANSFORM_H__
 
 #include "../DragonBones.h"

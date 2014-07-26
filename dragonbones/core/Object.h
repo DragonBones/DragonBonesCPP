@@ -1,4 +1,4 @@
-#ifndef __CORE_OBJECT_H__
+﻿#ifndef __CORE_OBJECT_H__
 #define __CORE_OBJECT_H__
 
 #include "../DragonBones.h"

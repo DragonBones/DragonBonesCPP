@@ -1,4 +1,4 @@
-#ifndef __ANIMATION_TIMELINE_STATE_H__
+﻿#ifndef __ANIMATION_TIMELINE_STATE_H__
 #define __ANIMATION_TIMELINE_STATE_H__
 
 #include "../DragonBones.h"
@@ -37,6 +37,7 @@ private:
     int _currentFramePosition;
     int _currentFrameDuration;
     int _totalTime;
+    float _weight;
     float _tweenEasing;
     
     UpdateState _updateState;
@@ -51,10 +52,6 @@ private:
     Bone *_bone;
     AnimationState *_animationState;
     TransformTimeline *_timeline;
-    
-public:
-    int getLayer() const;
-    float getWeight() const;
     
 public:
     TimelineState();

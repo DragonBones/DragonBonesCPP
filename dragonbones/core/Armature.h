@@ -1,4 +1,4 @@
-#ifndef __CORE_ARMATURE_H__
+﻿#ifndef __CORE_ARMATURE_H__
 #define __CORE_ARMATURE_H__
 
 #include "../DragonBones.h"

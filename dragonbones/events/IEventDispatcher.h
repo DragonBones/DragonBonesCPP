@@ -1,4 +1,4 @@
-#ifndef __EVENTS_I_EVENT_DISPATCHER_H__
+﻿#ifndef __EVENTS_I_EVENT_DISPATCHER_H__
 #define __EVENTS_I_EVENT_DISPATCHER_H__
 
 #include "../DragonBones.h"

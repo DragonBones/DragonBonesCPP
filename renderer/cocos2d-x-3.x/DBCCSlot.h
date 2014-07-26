@@ -1,4 +1,4 @@
-#ifndef __DBCC_SLOT_H__
+﻿#ifndef __DBCC_SLOT_H__
 #define __DBCC_SLOT_H__
 
 #include "../dragonBones/DragonBonesHeaders.h"

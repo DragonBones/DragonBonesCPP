@@ -1,4 +1,4 @@
-#include "Armature.h"
+﻿#include "Armature.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
@@ -260,7 +260,7 @@ void Armature::sortSlotsByZOrder()
         Slot *slot = _slotList[i];
         if (slot->_isShowDisplay)
         {
-			slot->removeDisplayFromContainer();
+            slot->removeDisplayFromContainer();
         }
     }
     for (size_t i = 0, l = _slotList.size(); i < l; ++i)

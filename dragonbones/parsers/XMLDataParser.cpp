@@ -1,4 +1,4 @@
-#include "XMLDataParser.h"
+﻿#include "XMLDataParser.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 bool XMLDataParser::getBoolean(const XMLElement *data, const char *key, bool defaultValue)

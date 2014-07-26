@@ -1,4 +1,4 @@
-#ifndef __TEXTURES_I_TEXTURE_ATLAS_H__
+﻿#ifndef __TEXTURES_I_TEXTURE_ATLAS_H__
 #define __TEXTURES_I_TEXTURE_ATLAS_H__
 
 #include "../DragonBones.h"

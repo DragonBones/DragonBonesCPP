@@ -1,4 +1,4 @@
-#ifndef __OBJECTS_RECTANGLE_DATA_H__
+﻿#ifndef __OBJECTS_RECTANGLE_DATA_H__
 #define __OBJECTS_RECTANGLE_DATA_H__
 
 #include "../DragonBones.h"

@@ -1,4 +1,4 @@
-#ifndef __FACTORIES_BASE_FACTORY_H__
+﻿#ifndef __FACTORIES_BASE_FACTORY_H__
 #define __FACTORIES_BASE_FACTORY_H__
 
 #include "../DragonBones.h"

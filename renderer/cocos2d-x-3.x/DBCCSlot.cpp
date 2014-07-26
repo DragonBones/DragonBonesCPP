@@ -1,4 +1,4 @@
-#include "DBCCSlot.h"
+﻿#include "DBCCSlot.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 DBCCSlot::DBCCSlot(SlotData *slotData)
@@ -21,7 +21,7 @@ int DBCCSlot::getDisplayZIndex() const
 {
     if (_nodeDisplay)
     {
-		return _nodeDisplay->getLocalZOrder();
+        return _nodeDisplay->getLocalZOrder();
     }
     return -1;
 }
@@ -33,7 +33,7 @@ void DBCCSlot::addDisplayToContainer(void *container, int zIndex)
         removeDisplayFromContainer();
         if (zIndex < 0)
         {
-			nodeContainer->addChild(_nodeDisplay, nodeContainer->getChildrenCount());
+            nodeContainer->addChild(_nodeDisplay, nodeContainer->getChildrenCount());
         }
         else
         {
@@ -45,25 +45,25 @@ void DBCCSlot::removeDisplayFromContainer()
 {
     if (_nodeDisplay && _nodeDisplay->getParent())
     {
-		_nodeDisplay->removeFromParentAndCleanup(false);
+        _nodeDisplay->removeFromParentAndCleanup(false);
     }
 }
 
 void DBCCSlot::disposeDisplayList()
 {
-	for (size_t i = 0, l = _displayList.size(); i < l; ++i)
+    for (size_t i = 0, l = _displayList.size(); i < l; ++i)
     {
         if (_displayList[i].second == DisplayType::DT_ARMATURE)
         {
-			Armature *armature = static_cast<Armature *>(_displayList[i].first);
-			armature->dispose();
+            Armature *armature = static_cast<Armature *>(_displayList[i].first);
+            armature->dispose();
         }
-		else
-		{
+        else
+        {
             cocos2d::Node *display = static_cast<cocos2d::Node *>(_displayList[i].first);
             display->cleanup();
             display->release();
-		}
+        }
     }
 }
 

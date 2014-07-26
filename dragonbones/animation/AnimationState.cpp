@@ -1,4 +1,4 @@
-#include "AnimationState.h"
+﻿#include "AnimationState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 std::vector<AnimationState *> AnimationState::_pool;
@@ -38,10 +38,12 @@ bool AnimationState::getIsComplete() const
 {
     return _isComplete;
 }
+
 bool AnimationState::getIsPlaying() const
 {
     return (_isPlaying && !_isComplete);
 }
+
 int AnimationState::getCurrentPlayTimes() const
 {
     return _currentPlayTimes;
@@ -51,9 +53,15 @@ int AnimationState::getLayer() const
 {
     return _layer;
 }
+
 float AnimationState::getTotalTime() const
 {
     return _totalTime * 0.001f;
+}
+
+float AnimationState::getCurrentWeight() const
+{
+    return _fadeWeight * weight;
 }
 
 const String &AnimationState::getGroup() const
@@ -61,16 +69,16 @@ const String &AnimationState::getGroup() const
     return _group;
 }
 
-const AnimationData &AnimationState::getClip() const
+const AnimationData *AnimationState::getClip() const
 {
-    return *_clip;
+    return _clip;
 }
 
 int AnimationState::getPlayTimes() const
 {
     return _playTimes;
 }
-AnimationState &AnimationState::setPlayTimes(int playTimes)
+AnimationState *AnimationState::setPlayTimes(int playTimes)
 {
     _playTimes = playTimes;
     if (round(_totalTime * 0.001f * _clip->frameRate) < 2)
@@ -82,32 +90,32 @@ AnimationState &AnimationState::setPlayTimes(int playTimes)
         _playTimes = playTimes < 0 ? -playTimes : playTimes;
     }
     autoFadeOut = playTimes < 0 ? true : false;
-    return *this;
+    return this;
 }
 
 float AnimationState::getCurrentTime() const
 {
     return _currentTime * 0.001f;
 }
-AnimationState &AnimationState::setCurrentTime(float currentTime)
+AnimationState *AnimationState::setCurrentTime(float currentTime)
 {
     _currentTime = static_cast<int>(currentTime * 1000);
     _time = _currentTime;
-    return *this;
+    return this;
 }
 
 float AnimationState::getTimeScale() const
 {
     return _timeScale;
 }
-AnimationState &AnimationState::setTimeScale(float timeScale)
+AnimationState *AnimationState::setTimeScale(float timeScale)
 {
     if (timeScale < 0 || timeScale != timeScale)
     {
         timeScale = 1;
     }
     _timeScale = timeScale;
-    return *this;
+    return this;
 }
 
 AnimationState::AnimationState()
@@ -161,7 +169,7 @@ void AnimationState::fadeIn(Armature *armature, AnimationData *clip, float fadeT
     updateTimelineStates();
 }
 
-AnimationState &AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
+AnimationState *AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
 {
     if (!(fadeTotalTime >= 0))
     {
@@ -172,7 +180,7 @@ AnimationState &AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
     {
         if (fadeTotalTime > _fadeTotalTime / _timeScale - (_fadeCurrentTime - _fadeBeginTime))
         {
-            return *this;
+            return this;
         }
     }
     else
@@ -190,22 +198,22 @@ AnimationState &AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
     _fadeTotalTime = _fadeTotalWeight >= 0 ? fadeTotalTime * _timeScale : 0.f;
     // default
     displayControl = false;
-    return *this;
+    return this;
 }
 
-AnimationState &AnimationState::play()
+AnimationState *AnimationState::play()
 {
     _isPlaying = true;
-    return *this;
+    return this;
 }
 
-AnimationState &AnimationState::stop()
+AnimationState *AnimationState::stop()
 {
     _isPlaying = false;
-    return *this;
+    return this;
 }
 
-AnimationState &AnimationState::addMixingTransform(const String &timelineName, bool recursive)
+AnimationState *AnimationState::addMixingTransform(const String &timelineName, bool recursive)
 {
     if (recursive)
     {
@@ -239,10 +247,10 @@ AnimationState &AnimationState::addMixingTransform(const String &timelineName, b
         _mixingTransforms.push_back(timelineName);
     }
     updateTimelineStates();
-    return *this;
+    return this;
 }
 
-AnimationState &AnimationState::removeMixingTransform(const String &timelineName, bool recursive)
+AnimationState *AnimationState::removeMixingTransform(const String &timelineName, bool recursive)
 {
     if (recursive)
     {
@@ -275,14 +283,14 @@ AnimationState &AnimationState::removeMixingTransform(const String &timelineName
         }
     }
     updateTimelineStates();
-    return *this;
+    return this;
 }
 
-AnimationState &AnimationState::removeAllMixingTransform()
+AnimationState *AnimationState::removeAllMixingTransform()
 {
     _mixingTransforms.clear();
     updateTimelineStates();
-    return *this;
+    return this;
 }
 
 bool AnimationState::advanceTime(float passedTime)
@@ -298,7 +306,7 @@ bool AnimationState::advanceTime(float passedTime)
 
 void AnimationState::updateTimelineStates()
 {
-    for (size_t i = 0, l = _timelineStateList.size(); i < l; ++i)
+    for (size_t i = _timelineStateList.size(); i--;)
     {
         TimelineState *timelineState = _timelineStateList[i];
         if (!_armature->getBone(timelineState->name))
@@ -315,7 +323,7 @@ void AnimationState::updateTimelineStates()
     }
     else
     {
-        for (size_t i = 0, l = _timelineStateList.size(); i < l; ++i)
+        for (size_t i = _timelineStateList.size(); i--;)
         {
             TimelineState *timelineState = _timelineStateList[i];
             auto iterator = std::find(_mixingTransforms.cbegin(), _mixingTransforms.cend(), timelineState->name);
@@ -497,10 +505,10 @@ void AnimationState::advanceTimelinesTime(float passedTime)
             currentTime = _totalTime;
         }
     }
-	if (currentPlayTimes == 0)
-	{
-		currentPlayTimes = 1;
-	}
+    if (currentPlayTimes == 0)
+    {
+        currentPlayTimes = 1;
+    }
     // update timeline
     _isComplete = isThisComplete;
     const float progress = _time / (float)(_totalTime);

@@ -1,4 +1,4 @@
-#include "Slot.h"
+﻿#include "Slot.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 int Slot::getDisplayIndex() const
@@ -34,7 +34,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &dis
     }
     if (disposeExisting)
     {
-		disposeDisplayList();
+        disposeDisplayList();
     }
     // copy
     _displayList = displayList;
@@ -49,7 +49,7 @@ void Slot::setDisplay(void *display, const DisplayType &displayType, bool dispos
     {
         _displayIndex = 0;
     }
-    if (_displayIndex >= _displayList.size())
+    if (_displayIndex >= (int)(_displayList.size()))
     {
         _displayList.resize(_displayIndex);
     }
@@ -175,7 +175,7 @@ void Slot::changeDisplay(int displayIndex)
     }
     else if (!_displayList.empty())
     {
-        if (displayIndex >= _displayList.size())
+        if (displayIndex >= (int)(_displayList.size()))
         {
             displayIndex = _displayList.size() - 1;
         }
@@ -188,7 +188,7 @@ void Slot::changeDisplay(int displayIndex)
             if (
                 _slotData &&
                 !_slotData->displayDataList.empty() &&
-                _displayIndex < _slotData->displayDataList.size()
+                _displayIndex < (int)(_slotData->displayDataList.size())
             )
             {
                 origin = _slotData->displayDataList[_displayIndex]->transform;

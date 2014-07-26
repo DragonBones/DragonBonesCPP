@@ -1,4 +1,4 @@
-#include "BaseFactory.h"
+﻿#include "BaseFactory.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 BaseFactory::BaseFactory() {}
@@ -272,7 +272,7 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
     {
         SlotData *slotData = skinData->slotDataList[i];
         Bone *bone = armature->getBone(slotData->parent);
-		if (!bone || slotData->displayDataList.empty())
+        if (!bone || slotData->displayDataList.empty())
         {
             continue;
         }

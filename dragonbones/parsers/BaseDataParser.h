@@ -1,4 +1,4 @@
-#ifndef __PARSERS_BASE_DATA_PARSER_H__
+﻿#ifndef __PARSERS_BASE_DATA_PARSER_H__
 #define __PARSERS_BASE_DATA_PARSER_H__
 
 #include "../DragonBones.h"

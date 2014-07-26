@@ -1,4 +1,4 @@
-#ifndef __DBCC_RENDER_HEADERS_H__
+﻿#ifndef __DBCC_RENDER_HEADERS_H__
 #define __DBCC_RENDER_HEADERS_H__
 
 #include "DBCCEventDispatcher.h"

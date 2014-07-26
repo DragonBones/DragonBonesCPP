@@ -1,4 +1,4 @@
-#ifndef __CORE_SLOT_H__
+﻿#ifndef __CORE_SLOT_H__
 #define __CORE_SLOT_H__
 
 #include "../DragonBones.h"

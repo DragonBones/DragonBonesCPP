@@ -1,4 +1,4 @@
-#ifndef __GEOMS_POINT_H__
+﻿#ifndef __GEOMS_POINT_H__
 #define __GEOMS_POINT_H__
 
 #include "../DragonBones.h"

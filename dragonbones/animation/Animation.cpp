@@ -1,4 +1,4 @@
-#include "Animation.h"
+﻿#include "Animation.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
@@ -120,6 +120,10 @@ AnimationState *Animation::gotoAndPlay(
     else
     {
         durationScale = duration * 1000 / animationData->duration;
+    }
+    if (durationScale == 0)
+    {
+        durationScale = 0.001f;
     }
     playTimes = playTimes < 0 ? animationData->playTimes : playTimes;
     switch (fadeOutMode)

@@ -1,4 +1,4 @@
-#ifndef __OBJECTS_TRANSFORM_TIMELINE_H__
+﻿#ifndef __OBJECTS_TRANSFORM_TIMELINE_H__
 #define __OBJECTS_TRANSFORM_TIMELINE_H__
 
 #include "../DragonBones.h"

@@ -1,4 +1,4 @@
-#ifndef __DBCC_FACTORY_H__
+﻿#ifndef __DBCC_FACTORY_H__
 #define __DBCC_FACTORY_H__
 
 #include "../dragonBones/DragonBonesHeaders.h"

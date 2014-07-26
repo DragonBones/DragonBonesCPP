@@ -1,4 +1,4 @@
-#ifndef __ANIMATION_ANIMATION_STATE_H__
+﻿#ifndef __ANIMATION_ANIMATION_STATE_H__
 #define __ANIMATION_ANIMATION_STATE_H__
 
 #include "../DragonBones.h"
@@ -65,27 +65,28 @@ public:
     int getCurrentPlayTimes() const;
     int getLayer() const;
     float getTotalTime() const;
+    float getCurrentWeight() const;
     const String &getGroup() const;
-    const AnimationData &getClip() const;
+    const AnimationData *getClip() const;
     
     int getPlayTimes() const;
-    AnimationState &setPlayTimes(int playTimes);
+    AnimationState *setPlayTimes(int playTimes);
     float getCurrentTime() const;
-    AnimationState &setCurrentTime(float currentTime);
+    AnimationState *setCurrentTime(float currentTime);
     float getTimeScale() const;
-    AnimationState &setTimeScale(float timeScale);
+    AnimationState *setTimeScale(float timeScale);
     
 public:
     AnimationState();
     virtual ~AnimationState();
     
-    AnimationState &fadeOut(float fadeTotalTime, bool pausePlayhead);
-    AnimationState &play();
-    AnimationState &stop();
+    AnimationState *fadeOut(float fadeTotalTime, bool pausePlayhead);
+    AnimationState *play();
+    AnimationState *stop();
     bool getMixingTransform(const String &timelineName) const;
-    AnimationState &addMixingTransform(const String &timelineName, bool recursive);
-    AnimationState &removeMixingTransform(const String &timelineName, bool recursive);
-    AnimationState &removeAllMixingTransform();
+    AnimationState *addMixingTransform(const String &timelineName, bool recursive = true);
+    AnimationState *removeMixingTransform(const String &timelineName, bool recursive = true);
+    AnimationState *removeAllMixingTransform();
     
 private:
     void fadeIn(Armature *armature, AnimationData *clip, float fadeTotalTime, float timeScale, int playTimes, bool pausePlayhead);

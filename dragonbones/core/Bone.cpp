@@ -1,9 +1,9 @@
-#include "Bone.h"
+﻿#include "Bone.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 bool Bone::sortState(const TimelineState *a, const TimelineState *b)
 {
-    return a->getLayer() < b->getLayer();
+    return a->_animationState->getLayer() < b->_animationState->getLayer();
 }
 
 Slot *Bone::getSlot() const
@@ -265,7 +265,7 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
     const bool displayControl =
         animationState->displayControl &&
         (displayController.empty() || displayController == animationState->name);
-    if (displayControl)
+    if (displayControl && timelineState->_weight > 0)
     {
         const int displayIndex = frame->displayIndex;
         for (size_t i = 0, l = _slotList.size(); i < l; ++i)
@@ -335,10 +335,11 @@ void Bone::blendingTimeline()
     size_t i = _timelineStateList.size();
     if (i == 1)
     {
-        const TimelineState *timelineState = _timelineStateList[0];
+        TimelineState *timelineState = _timelineStateList[0];
         const Transform &transform = timelineState->_transform;
         const Point &pivot = timelineState->_pivot;
-        const float weight = timelineState->getWeight();
+        timelineState->_weight = timelineState->_animationState->getCurrentWeight();
+        const float weight = timelineState->_weight;
         _tween.x = transform.x * weight;
         _tween.y = transform.y * weight;
         _tween.skewX = transform.skewX * weight;
@@ -350,7 +351,7 @@ void Bone::blendingTimeline()
     }
     else if (i > 1)
     {
-        int prevLayer = _timelineStateList[i - 1]->getLayer();
+        int prevLayer = _timelineStateList[i - 1]->_animationState->getLayer();
         int currentLayer = 0;
         float weigthLeft = 1.f;
         float layerTotalWeight = 0.f;
@@ -364,12 +365,13 @@ void Bone::blendingTimeline()
         float pivotY = 0.f;
         while (i--)
         {
-            const TimelineState *timelineState = _timelineStateList[i];
-            currentLayer = timelineState->getLayer();
+            TimelineState *timelineState = _timelineStateList[i];
+            currentLayer = timelineState->_animationState->getLayer();
             if (prevLayer != currentLayer)
             {
                 if (layerTotalWeight >= weigthLeft)
                 {
+                    timelineState->_weight = 0;
                     break;
                 }
                 else
@@ -378,7 +380,9 @@ void Bone::blendingTimeline()
                 }
             }
             prevLayer = currentLayer;
-            const float weight = timelineState->getWeight() * weigthLeft;
+            timelineState->_weight = timelineState->_animationState->getCurrentWeight() * weigthLeft;
+            const float weight = timelineState->_weight;
+            //timelineState
             if (weight && timelineState->_blendEnabled)
             {
                 const Transform &transform = timelineState->_transform;

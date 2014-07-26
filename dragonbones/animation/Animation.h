@@ -1,4 +1,4 @@
-#ifndef __ANIMATION_ANIMATION_H__
+﻿#ifndef __ANIMATION_ANIMATION_H__
 #define __ANIMATION_ANIMATION_H__
 
 #include "../DragonBones.h"

@@ -1,4 +1,4 @@
-#include "DBCCFactory.h"
+ï»¿#include "DBCCFactory.h"
 #include "DBCCEventDispatcher.h"
 #include "DBCCTextureAtlas.h"
 #include "DBCCArmature.h"
@@ -17,10 +17,10 @@ void DBCCFactory::loadDragonBonesData(const String &dragonBonesFilePath, const S
         return;
     }
     auto data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
-    // Ê¹ÓÃXML½âÎöÆ÷ÔØÈëdragonBonesµÄskeleton.xml
+    // ä½¿ç”¨XMLè§£æå™¨è½½å…¥dragonBonesçš„skeleton.xml
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
-    // ½âÎö¹Ç÷À¶¯»­Êı¾İ
+    // è§£æéª¨éª¼åŠ¨ç”»æ•°æ®
     dragonBones::XMLDataParser parser;
     DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement());
     addDragonBonesData(dragonBonesData, name);

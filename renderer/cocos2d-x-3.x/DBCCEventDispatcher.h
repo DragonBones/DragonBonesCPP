@@ -1,4 +1,4 @@
-#ifndef __DBCC_EVENT_DISPATCHER_H__
+﻿#ifndef __DBCC_EVENT_DISPATCHER_H__
 #define __DBCC_EVENT_DISPATCHER_H__
 
 #include "../dragonBones/DragonBonesHeaders.h"
