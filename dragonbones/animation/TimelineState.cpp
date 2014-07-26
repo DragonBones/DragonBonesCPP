@@ -123,6 +123,7 @@ void TimelineState::updateMultipleFrame(float progress)
 {
     progress /= _timeline->scale;
     progress += _timeline->offset;
+
     int currentTime = (int)(_totalTime * progress);
     int currentPlayTimes = 0;
     const int playTimes = _animationState->getPlayTimes();
@@ -130,10 +131,6 @@ void TimelineState::updateMultipleFrame(float progress)
     {
         _isComplete = false;
         currentPlayTimes = (int)(ceil(abs(currentTime) / (float)(_totalTime)));
-        if (currentPlayTimes == 0)
-        {
-            currentPlayTimes = 1;
-        }
         currentTime -= (int)(floor(currentTime / (float)(_totalTime))) * _totalTime;
         if (currentTime < 0)
         {
@@ -162,10 +159,6 @@ void TimelineState::updateMultipleFrame(float progress)
             currentTime += totalTimes;
         }
         currentPlayTimes = (int)(ceil(currentTime / (float)(_totalTime)));
-        if (currentPlayTimes == 0)
-        {
-            currentPlayTimes = 1;
-        }
         if (_isComplete)
         {
             currentTime = _totalTime;
@@ -175,6 +168,11 @@ void TimelineState::updateMultipleFrame(float progress)
             currentTime -= (int)(floor(currentTime / (float)(_totalTime))) * _totalTime;
         }
     }
+    if (currentPlayTimes == 0)
+    {
+        currentPlayTimes = 1;
+    }
+
     if (_currentTime != currentTime)
     {
         _currentTime = currentTime;
@@ -318,6 +316,7 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
             tweenEnabled = true;
         }
     }
+
     if (tweenEnabled)
     {
         // transform
@@ -484,9 +483,7 @@ void TimelineState::updateTween()
     float progress = (_currentTime - _currentFramePosition) / (float)(_currentFrameDuration);
     if (_tweenEasing && _tweenEasing != NO_TWEEN_EASING)
     {
-        /*
         progress = getEaseValue(progress, _tweenEasing);
-        */
     }
     const TransformFrame *currentFrame = static_cast<TransformFrame *>(_timeline->frameList[_currentFrameIndex]);
     if (_tweenTransform)
@@ -510,7 +507,7 @@ void TimelineState::updateTween()
         }
         else
         {
-            //normal blending
+            // normal blending
             _transform.x = _originTransform.x + currentTransform.x + _durationTransform.x * progress;
             _transform.y = _originTransform.y + currentTransform.y + _durationTransform.y * progress;
             _transform.skewX = _originTransform.skewX + currentTransform.skewX + _durationTransform.skewX * progress;

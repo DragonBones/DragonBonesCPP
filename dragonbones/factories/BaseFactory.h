@@ -3,7 +3,7 @@
 
 #include "../DragonBones.h"
 #include "../objects/ArmatureData.h"
-#include "../objects/SkeletonData.h"
+#include "../objects/DragonBonesData.h"
 #include "../textures/ITextureAtlas.h"
 #include "../core/Slot.h"
 #include "../core/Bone.h"
@@ -13,9 +13,9 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class BaseFactory
 {
 protected:
-    mutable String _currentSkeletonDataName;
+    mutable String _currentDragonBonesDataName;
     mutable String _currentTextureAtlasName;
-    std::map<String, SkeletonData *> _skeletonDataMap;
+    std::map<String, DragonBonesData *> _dragonBonesDataMap;
     std::map<String, ITextureAtlas *> _textureAtlasMap;
     
 public:
@@ -23,17 +23,17 @@ public:
     virtual ~BaseFactory();
     virtual void dispose(bool disposeData = true);
     
-    virtual const SkeletonData *getSkeletonData(const String &name) const;
-    virtual void addSkeletonData(SkeletonData *data, const String &name = "");
-    virtual void removeSkeletonData(const String &name, bool disposeData = true);
+    virtual const DragonBonesData *getDragonBonesData(const String &name) const;
+    virtual void addDragonBonesData(DragonBonesData *data, const String &name = "");
+    virtual void removeDragonBonesData(const String &name, bool disposeData = true);
     
     virtual const ITextureAtlas *getTextureAtlas(const String &name) const;
     virtual void addTextureAtlas(ITextureAtlas *textureAtlas, const String &name = "");
     virtual void removeTextureAtlas(const String &name, bool disposeData = true);
     
     virtual Armature *buildArmature(const String &armatureName) const;
-    virtual Armature *buildArmature(const String &armatureName, const String &skeletonName) const;
-    virtual Armature *buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &skeletonName, const String &textureAtlasName) const;
+    virtual Armature *buildArmature(const String &armatureName, const String &dragonBonesName) const;
+    virtual Armature *buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const;
     virtual void *getTextureDisplay(const String &textureName, const String &textureAtlasName = "") const;
     
 protected:

@@ -1,23 +1,23 @@
-#ifndef __OBJECTS_SKELETON_DATA_H__
-#define __OBJECTS_SKELETON_DATA_H__
+#ifndef __OBJECTS_DRADON_BONES_DATA_H__
+#define __OBJECTS_DRADON_BONES_DATA_H__
 
 #include "../DragonBones.h"
 #include "ArmatureData.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
-class SkeletonData
+class DragonBonesData
 {
 public:
     String name;
     std::vector<ArmatureData *> armatureDataList;
     
 public:
-    SkeletonData() {}
-    SkeletonData(const SkeletonData &copyData)
+    DragonBonesData() {}
+    DragonBonesData(const DragonBonesData &copyData)
     {
         operator=(copyData);
     }
-    SkeletonData &operator=(const SkeletonData &copyData)
+    DragonBonesData &operator=(const DragonBonesData &copyData)
     {
         dispose();
         name = copyData.name;
@@ -29,7 +29,7 @@ public:
         }
         return *this;
     }
-    virtual ~SkeletonData()
+    virtual ~DragonBonesData()
     {
         dispose();
     }
@@ -56,4 +56,4 @@ public:
     }
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_SKELETON_DATA_H__
+#endif  // __OBJECTS_DRADON_BONES_DATA_H__

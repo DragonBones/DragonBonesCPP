@@ -24,10 +24,8 @@ void WorldClock::setTimeScale(float timeScale)
 
 WorldClock::WorldClock(float time, float timeScale)
 {
-    //time_t rawtime;
-    //time(&rawtime);
+    // _time = (time < 0 || time != time) ? getTimer() * 0.001f : time;
     _time = 0;
-    //(time < 0 || time != time) ? std::system("time") * 0.001f : time;
     setTimeScale(timeScale);
 }
 WorldClock::~WorldClock()
@@ -71,12 +69,14 @@ void WorldClock::advanceTime(float passedTime)
 {
     if (passedTime < 0 || passedTime != passedTime)
     {
-        /*passedTime = std::system("time") * 0.001f - _time;
-        
+        /*
+		passedTime = getTimer() * 0.001f - _time;
         if (passedTime < 0)
         {
             passedTime = 0.f;
-        }*/
+        }
+		*/
+		passedTime = 0.f;
     }
     passedTime *= _timeScale;
     _time += passedTime;

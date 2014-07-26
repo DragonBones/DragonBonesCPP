@@ -24,7 +24,7 @@
 #include "../objects/SkinData.h"
 #include "../objects/BoneData.h"
 #include "../objects/ArmatureData.h"
-#include "../objects/SkeletonData.h"
+#include "../objects/DragonBonesData.h"
 
 // textures
 #include "../textures/TextureData.h"
@@ -49,7 +49,7 @@ public:
     
     virtual TextureAtlasData *parseTextureAtlasData(const void *rawTextureAtlasData, float scale = 1.f) const = 0;
     
-    virtual SkeletonData *parseSkeletonData(const void *rawSkeletonData, float scale = 1.f) const = 0;
+    virtual DragonBonesData *parseDragonBonesData(const void *rawDragonBonesData, float scale = 1.f) const = 0;
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(BaseDataParser);

@@ -6,7 +6,7 @@ IEventDispatcher *Armature::soundEventDispatcher = nullptr;
 
 bool Armature::sortBone(const std::pair<int, Bone *> &a, const std::pair<int, Bone *> &b)
 {
-    return a.first < b.first;
+    return a.first > b.first;
 }
 
 bool Armature::sortSlot(const Slot *a, const Slot *b)
@@ -260,6 +260,14 @@ void Armature::sortSlotsByZOrder()
         Slot *slot = _slotList[i];
         if (slot->_isShowDisplay)
         {
+			slot->removeDisplayFromContainer();
+        }
+    }
+    for (size_t i = 0, l = _slotList.size(); i < l; ++i)
+    {
+        Slot *slot = _slotList[i];
+        if (slot->_isShowDisplay)
+        {
             slot->addDisplayToContainer(_display, -1);
         }
     }
@@ -278,7 +286,7 @@ void Armature::invalidUpdate(const String &boneName)
 {
     if (boneName.empty())
     {
-        //throw
+        // throw
     }
     Bone *bone = getBone(boneName);
     if (bone)

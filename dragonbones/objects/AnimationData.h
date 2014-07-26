@@ -12,8 +12,8 @@ public:
     int frameRate;
     int playTimes;
     float fadeTime;
-    //use frame tweenEase, NaN
-    //overwrite frame tweenEase, [-1, 0):ease in, 0:line easing, (0, 1]:ease out, (1, 2]:ease in out
+    // use frame tweenEase, NaN
+    // overwrite frame tweenEase, [-1, 0):ease in, 0:line easing, (0, 1]:ease out, (1, 2]:ease in out
     float tweenEasing;
     
     String name;

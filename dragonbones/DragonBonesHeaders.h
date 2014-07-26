@@ -24,7 +24,7 @@
 #include "objects/SkinData.h"
 #include "objects/BoneData.h"
 #include "objects/ArmatureData.h"
-#include "objects/SkeletonData.h"
+#include "objects/DragonBonesData.h"
 
 // textures
 #include "textures/TextureData.h"

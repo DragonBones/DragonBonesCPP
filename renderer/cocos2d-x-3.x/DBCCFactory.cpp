@@ -10,20 +10,20 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 DBCCFactory::DBCCFactory() {}
 DBCCFactory::~DBCCFactory() {}
 
-void DBCCFactory::loadSkeleton(const String &skeletonFilePath, const String &name)
+void DBCCFactory::loadDragonBonesData(const String &dragonBonesFilePath, const String &name)
 {
-    if (getSkeletonData(name))
+    if (getDragonBonesData(name))
     {
         return;
     }
-    auto data = cocos2d::FileUtils::getInstance()->getDataFromFile(skeletonFilePath);
-    // 使用XML解析器载入skeleton的xml
+    auto data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
+    // 使用XML解析器载入dragonBones的skeleton.xml
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
     // 解析骨骼动画数据
     dragonBones::XMLDataParser parser;
-    SkeletonData *skeleton = parser.parseSkeletonData(doc.RootElement());
-    addSkeletonData(skeleton, name);
+    DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement());
+    addDragonBonesData(dragonBonesData, name);
 }
 
 void DBCCFactory::loadTextureAtlas(const String &textureAtlasFile, const String &name)
@@ -33,10 +33,8 @@ void DBCCFactory::loadTextureAtlas(const String &textureAtlasFile, const String 
         return;
     }
     auto data = cocos2d::FileUtils::getInstance()->getDataFromFile(textureAtlasFile);
-    // 载入皮肤数据
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
-    // 解析皮肤数据
     dragonBones::XMLDataParser parser;
     TextureAtlasData *textureAtlasData = parser.parseTextureAtlasData(doc.RootElement());
     DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas(textureAtlasData);
@@ -65,13 +63,12 @@ void DBCCFactory::refreshTextureAtlasTexture()
 Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const
 {
     Animation *animation = new Animation();
-    //eventDispatcher
+    // eventDispatcher
     DBCCEventDispatcher *eventDispatcher = new DBCCEventDispatcher();
     eventDispatcher->eventDispatcher = cocos2d::Director::getInstance()->getEventDispatcher();
     eventDispatcher->eventDispatcher->retain();
-    //sprite
+    // sprite
     cocos2d::Sprite *display = cocos2d::Sprite::create();
-	display->setOpacity(128);
     display->retain();
     Armature *armature = new DBCCArmature((ArmatureData *)(armatureData), animation, eventDispatcher, display);
     return armature;
@@ -100,7 +97,7 @@ void *DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Stri
             float width = textureData->region.width;
             float height = textureData->region.height;
             cocos2d::Rect rect(x, y, width, height);
-            //sprite
+            // sprite
             cocos2d::Sprite *display = cocos2d::Sprite::createWithTexture(dbccTextureAtlas->texture, rect, false);
             display->retain();
             float pivotX = displayData->pivot.x;

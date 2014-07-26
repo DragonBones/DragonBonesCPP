@@ -36,7 +36,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &dis
     {
 		disposeDisplayList();
     }
-    //copy
+    // copy
     _displayList = displayList;
     const int displayIndexBackup = _displayIndex;
     _displayIndex = -1;
@@ -239,7 +239,7 @@ void Slot::updateSlotDisplay(bool disposeExisting)
     int currentDisplayIndex = -1;
     if (_display)
     {
-        currentDisplayIndex = getDisplayIndex();
+        currentDisplayIndex = getDisplayZIndex();
         removeDisplayFromContainer();
     }
     void *display = _displayList[_displayIndex].first;

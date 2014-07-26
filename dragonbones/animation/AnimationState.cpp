@@ -462,7 +462,7 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     if (_playTimes == 0)
     {
         isThisComplete = false;
-        currentPlayTimes = (int)(ceil(abs(currentTime) / (float)(_totalTime))) || 1;
+        currentPlayTimes = (int)(ceil(abs(currentTime) / (float)(_totalTime)));
         currentTime -= (int)(floor(currentTime / (float)(_totalTime))) * _totalTime;
         if (currentTime < 0)
         {
@@ -490,13 +490,17 @@ void AnimationState::advanceTimelinesTime(float passedTime)
         {
             currentTime += totalTimes;
         }
-        currentPlayTimes = (int)(ceil(currentTime / (float)(_totalTime))) || 1;
+        currentPlayTimes = (int)(ceil(currentTime / (float)(_totalTime)));
         currentTime -= (int)(floor(currentTime / (float)(_totalTime))) * _totalTime;
         if (isThisComplete)
         {
             currentTime = _totalTime;
         }
     }
+	if (currentPlayTimes == 0)
+	{
+		currentPlayTimes = 1;
+	}
     // update timeline
     _isComplete = isThisComplete;
     const float progress = _time / (float)(_totalTime);

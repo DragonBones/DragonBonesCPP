@@ -51,7 +51,7 @@ float XMLDataParser::getNumber(const XMLElement *data, const char *key, float de
 XMLDataParser::XMLDataParser()
 {
     _textureScale = 1;
-    _skeletonScale = 1;
+    _armatureScale = 1;
     _frameRate = 30;
 }
 XMLDataParser::~XMLDataParser() {}
@@ -93,11 +93,11 @@ TextureData *XMLDataParser::parseTextureData(const XMLElement *textureXML) const
     return textureData;
 }
 
-SkeletonData *XMLDataParser::parseSkeletonData(const void *rawSkeletonData, float scale) const
+DragonBonesData *XMLDataParser::parseDragonBonesData(const void *rawDragonBonesData, float scale) const
 {
-    _skeletonScale = scale;
-    const XMLElement *skeletonXML = static_cast<const XMLElement *>(rawSkeletonData);
-    String version = skeletonXML->Attribute(A_VERSION);
+    _armatureScale = scale;
+    const XMLElement *dragonBonesXML = static_cast<const XMLElement *>(rawDragonBonesData);
+    String version = dragonBonesXML->Attribute(A_VERSION);
     // TODO
     /*
     switch(version)
@@ -105,15 +105,15 @@ SkeletonData *XMLDataParser::parseSkeletonData(const void *rawSkeletonData, floa
     
     }
     */
-    _frameRate = skeletonXML->IntAttribute(A_FRAME_RATE);
-    SkeletonData *skeletonData = new SkeletonData();
-    skeletonData->name = skeletonXML->Attribute(A_NAME);
-    for (const XMLElement *armatureXML = skeletonXML->FirstChildElement(ARMATURE); armatureXML; armatureXML = armatureXML->NextSiblingElement(ARMATURE))
+    _frameRate = dragonBonesXML->IntAttribute(A_FRAME_RATE);
+    DragonBonesData *dragonBonesData = new DragonBonesData();
+    dragonBonesData->name = dragonBonesXML->Attribute(A_NAME);
+    for (const XMLElement *armatureXML = dragonBonesXML->FirstChildElement(ARMATURE); armatureXML; armatureXML = armatureXML->NextSiblingElement(ARMATURE))
     {
         ArmatureData *armatureData = parseArmatureData(armatureXML);
-        skeletonData->armatureDataList.push_back(armatureData);
+        dragonBonesData->armatureDataList.push_back(armatureData);
     }
-    return skeletonData;
+    return dragonBonesData;
 }
 
 ArmatureData *XMLDataParser::parseArmatureData(const XMLElement *armatureXML) const
@@ -229,8 +229,8 @@ AnimationData *XMLDataParser::parseAnimationData(const XMLElement *animationXML,
     animationData->playTimes = animationXML->IntAttribute(A_LOOP);
     animationData->fadeTime = animationXML->FloatAttribute(A_FADE_IN_TIME);
     animationData->scale = getNumber(animationXML, A_SCALE, 1, 1);
-    //use frame tweenEase, NaN
-    //overwrite frame tweenEase, [-1, 0):ease in, 0:line easing, (0, 1]:ease out, (1, 2]:ease in out
+    // use frame tweenEase, NaN
+    // overwrite frame tweenEase, [-1, 0):ease in, 0:line easing, (0, 1]:ease out, (1, 2]:ease in out
     animationData->tweenEasing = getNumber(animationXML, A_TWEEN_EASING, USE_FRAME_TWEEN_EASING, USE_FRAME_TWEEN_EASING);
     animationData->autoTween = getBoolean(animationXML, A_AUTO_TWEEN, true);
     for (const XMLElement *frameXML = animationXML->FirstChildElement(FRAME); frameXML; frameXML = frameXML->NextSiblingElement(FRAME))
@@ -278,14 +278,14 @@ TransformFrame *XMLDataParser::parseTransformFrame(const XMLElement *frameXML) c
     TransformFrame *frame = new TransformFrame();
     parseFrame(frameXML, frame);
     frame->visible = !getBoolean(frameXML, A_HIDE, false);
-    //NaN:no tween, 10:auto tween, [-1, 0):ease in, 0:line easing, (0, 1]:ease out, (1, 2]:ease in out
-    frame->tweenEasing = getNumber(frameXML, A_TWEEN_EASING, NO_TWEEN_EASING, NO_TWEEN_EASING);
+    // NaN:no tween, 10:auto tween, [-1, 0):ease in, 0:line easing, (0, 1]:ease out, (1, 2]:ease in out
+    frame->tweenEasing = getNumber(frameXML, A_TWEEN_EASING, AUTO_TWEEN_EASING, NO_TWEEN_EASING);
     frame->tweenRotate = frameXML->IntAttribute(A_TWEEN_ROTATE);
     frame->tweenScale = getBoolean(frameXML, A_TWEEN_SCALE, true);
     frame->displayIndex = frameXML->IntAttribute(A_DISPLAY_INDEX);
     frame->zOrder = getNumber(frameXML, A_Z_ORDER, 0.f, 0.f);
     parseTransform(frameXML->FirstChildElement(TRANSFORM), &frame->global, &frame->pivot);
-    //copy
+    // copy
     frame->transform = frame->global;
     frame->scaleOffset.x = getNumber(frameXML, A_SCALE_X_OFFSET, 0.f, 0.f);
     frame->scaleOffset.y = getNumber(frameXML, A_SCALE_Y_OFFSET, 0.f, 0.f);

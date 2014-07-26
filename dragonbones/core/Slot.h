@@ -21,7 +21,7 @@ protected:
     float _tweenZOrder;
     float _offsetZOrder;
     
-    //<displayOrArmature*, DisplayType>
+    // <displayOrArmature*, DisplayType>
     std::vector<std::pair<void *, DisplayType>> _displayList;
     
     SlotData *_slotData;

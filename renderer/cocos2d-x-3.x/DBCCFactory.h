@@ -10,7 +10,7 @@ public:
     DBCCFactory();
     virtual ~DBCCFactory();
     
-    virtual void loadSkeleton(const String &skeletonFilePath, const String &name = "");
+    virtual void loadDragonBonesData(const String &dragonBonesFile, const String &name = "");
     virtual void loadTextureAtlas(const String &textureAtlasFile, const String &name = "");
     virtual void refreshTextureAtlasTexture();
     

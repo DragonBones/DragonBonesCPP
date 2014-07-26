@@ -42,7 +42,8 @@ const std::vector<String>& Animation::getAnimationList() const
             return false;
         }
     }
-    }*/
+}
+*/
 
 float Animation::getTimeScale() const
 {

@@ -14,7 +14,7 @@ private:
     
 private:
     mutable float _textureScale;
-    mutable float _skeletonScale;
+    mutable float _armatureScale;
     mutable int _frameRate;
     
 public:
@@ -23,7 +23,7 @@ public:
     
     virtual TextureAtlasData *parseTextureAtlasData(const void *rawTextureAtlasData, float scale = 1.f) const;
     
-    virtual SkeletonData *parseSkeletonData(const void *rawSkeletonData, float scale = 1.f) const;
+    virtual DragonBonesData *parseDragonBonesData(const void *rawDragonBonesData, float scale = 1.f) const;
     
 private:
     TextureData *parseTextureData(const XMLElement *textureXML) const;

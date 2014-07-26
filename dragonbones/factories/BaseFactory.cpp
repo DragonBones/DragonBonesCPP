@@ -7,10 +7,10 @@ BaseFactory::~BaseFactory()
     dispose();
 }
 
-const SkeletonData *BaseFactory::getSkeletonData(const String &name) const
+const DragonBonesData *BaseFactory::getDragonBonesData(const String &name) const
 {
-    auto iterator = _skeletonDataMap.find(name);
-    if (iterator != _skeletonDataMap.end())
+    auto iterator = _dragonBonesDataMap.find(name);
+    if (iterator != _dragonBonesDataMap.end())
     {
         return iterator->second;
     }
@@ -19,7 +19,7 @@ const SkeletonData *BaseFactory::getSkeletonData(const String &name) const
         return nullptr;
     }
 }
-void BaseFactory::addSkeletonData(SkeletonData *data, const String &name)
+void BaseFactory::addDragonBonesData(DragonBonesData *data, const String &name)
 {
     if (!data)
     {
@@ -30,24 +30,24 @@ void BaseFactory::addSkeletonData(SkeletonData *data, const String &name)
     {
         // throw
     }
-    if (_skeletonDataMap[key])
+    if (_dragonBonesDataMap[key])
     {
         // throw
-        removeSkeletonData(key, true);
+        removeDragonBonesData(key, true);
     }
-    _skeletonDataMap[key] = data;
+    _dragonBonesDataMap[key] = data;
 }
-void BaseFactory::removeSkeletonData(const String &name, bool disposeData)
+void BaseFactory::removeDragonBonesData(const String &name, bool disposeData)
 {
-    auto iterator = _skeletonDataMap.find(name);
-    if (iterator != _skeletonDataMap.end())
+    auto iterator = _dragonBonesDataMap.find(name);
+    if (iterator != _dragonBonesDataMap.end())
     {
         if (disposeData)
         {
             iterator->second->dispose();
             delete iterator->second;
         }
-        _skeletonDataMap.erase(iterator);
+        _dragonBonesDataMap.erase(iterator);
     }
 }
 
@@ -99,7 +99,7 @@ void BaseFactory::dispose(const bool disposeData)
 {
     if (disposeData)
     {
-        for (auto iterator = _skeletonDataMap.begin(); iterator != _skeletonDataMap.end(); ++iterator)
+        for (auto iterator = _dragonBonesDataMap.begin(); iterator != _dragonBonesDataMap.end(); ++iterator)
         {
             iterator->second->dispose();
             delete iterator->second;
@@ -110,7 +110,7 @@ void BaseFactory::dispose(const bool disposeData)
             delete iterator->second;
         }
     }
-    _skeletonDataMap.clear();
+    _dragonBonesDataMap.clear();
     _textureAtlasMap.clear();
 }
 
@@ -118,32 +118,32 @@ Armature *BaseFactory::buildArmature(const String &armatureName) const
 {
     return buildArmature(armatureName, "", armatureName, "", "");
 }
-Armature *BaseFactory::buildArmature(const String &armatureName, const String &skeletonName) const
+Armature *BaseFactory::buildArmature(const String &armatureName, const String &dragonBonesName) const
 {
-    return buildArmature(armatureName, "", armatureName, skeletonName, skeletonName);
+    return buildArmature(armatureName, "", armatureName, dragonBonesName, dragonBonesName);
 }
-Armature *BaseFactory::buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &skeletonName, const String &textureAtlasName) const
+Armature *BaseFactory::buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const
 {
-    SkeletonData *skeletonData = nullptr;
+    DragonBonesData *dragonBonesData = nullptr;
     ArmatureData *armatureData = nullptr;
     ArmatureData *animationArmatureData = nullptr;
     SkinData *skinData = nullptr;
     SkinData *skinDataCopy = nullptr;
-    if (!skeletonName.empty())
+    if (!dragonBonesName.empty())
     {
-        auto iterator = _skeletonDataMap.find(skeletonName);
-        if (iterator != _skeletonDataMap.end())
+        auto iterator = _dragonBonesDataMap.find(dragonBonesName);
+        if (iterator != _dragonBonesDataMap.end())
         {
-            skeletonData = iterator->second;
-            armatureData = skeletonData->getArmatureData(armatureName);
+            dragonBonesData = iterator->second;
+            armatureData = dragonBonesData->getArmatureData(armatureName);
         }
     }
     else
     {
-        for (auto iterator = _skeletonDataMap.begin(); iterator != _skeletonDataMap.end(); ++iterator)
+        for (auto iterator = _dragonBonesDataMap.begin(); iterator != _dragonBonesDataMap.end(); ++iterator)
         {
-            skeletonData = iterator->second;
-            armatureData = skeletonData->getArmatureData(armatureName);
+            dragonBonesData = iterator->second;
+            armatureData = dragonBonesData->getArmatureData(armatureName);
             if (armatureData)
             {
                 break;
@@ -154,17 +154,17 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
     {
         return nullptr;
     }
-    _currentSkeletonDataName = skeletonData->name;
-    _currentTextureAtlasName = textureAtlasName.empty() ? _currentSkeletonDataName : textureAtlasName;
+    _currentDragonBonesDataName = dragonBonesData->name;
+    _currentTextureAtlasName = textureAtlasName.empty() ? _currentDragonBonesDataName : textureAtlasName;
     if (!animationName.empty() && animationName != armatureName)
     {
-        animationArmatureData = skeletonData->getArmatureData(animationName);
+        animationArmatureData = dragonBonesData->getArmatureData(animationName);
         if (!animationArmatureData)
         {
-            for (auto iterator = _skeletonDataMap.begin(); iterator != _skeletonDataMap.end(); ++iterator)
+            for (auto iterator = _dragonBonesDataMap.begin(); iterator != _dragonBonesDataMap.end(); ++iterator)
             {
-                skeletonData = iterator->second;
-                animationArmatureData = skeletonData->getArmatureData(animationName);
+                dragonBonesData = iterator->second;
+                animationArmatureData = dragonBonesData->getArmatureData(animationName);
                 if (animationArmatureData)
                 {
                     break;
@@ -272,7 +272,7 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
     {
         SlotData *slotData = skinData->slotDataList[i];
         Bone *bone = armature->getBone(slotData->parent);
-        if (!bone)
+		if (!bone || slotData->displayDataList.empty())
         {
             continue;
         }
@@ -297,7 +297,7 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
                             displayDataCopy = slotDataCopy->displayDataList[i];
                         }
                     }
-                    Armature *childArmature = buildArmature(displayData->name, "", displayDataCopy ? displayDataCopy->name : "", _currentSkeletonDataName, _currentTextureAtlasName);
+                    Armature *childArmature = buildArmature(displayData->name, "", displayDataCopy ? displayDataCopy->name : "", _currentDragonBonesDataName, _currentTextureAtlasName);
                     displayList.push_back(std::make_pair(childArmature, DisplayType::DT_ARMATURE));
                 }
                 break;

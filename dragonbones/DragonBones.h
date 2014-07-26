@@ -11,6 +11,8 @@
 //#include <cstdlib>
 //#include <stdexcept>
 
+#include "cocos2d.h"
+
 // namespace dragonBones {}
 #define NAME_SPACE_DRAGON_BONES_BEGIN namespace dragonBones {
 #define NAME_SPACE_DRAGON_BONES_END }
@@ -91,7 +93,7 @@
 #define A_GREEN_MULTIPLIER "gM"
 #define A_BLUE_MULTIPLIER "bM"
 
-//add scale offset to frame
+// add scale offset to frame
 #define A_SCALE_X_OFFSET "scXOffset"
 #define A_SCALE_Y_OFFSET "scYOffset"
 
@@ -138,16 +140,16 @@ inline float formatRadian(float radian)
 inline float getEaseValue(float value, float easing)
 {
     float valueEase = 1.f;
-    if (easing > 1)   //ease in out
+    if (easing > 1)    // ease in out
     {
         valueEase = 0.5f * (1.f - cos(value * PI));
         easing -= 1.f;
     }
-    else if (easing > 0)    //ease out
+    else if (easing > 0)    // ease out
     {
         valueEase = 1.f - pow(1.f - value, 2);
     }
-    else if (easing < 0)    //ease in
+    else if (easing < 0)    // ease in
     {
         easing *= -1.f;
         valueEase =  pow(value, 2);

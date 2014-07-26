@@ -33,7 +33,7 @@ void DBCCSlot::addDisplayToContainer(void *container, int zIndex)
         removeDisplayFromContainer();
         if (zIndex < 0)
         {
-            nodeContainer->addChild(_nodeDisplay, nodeContainer->getChildrenCount());
+			nodeContainer->addChild(_nodeDisplay, nodeContainer->getChildrenCount());
         }
         else
         {
@@ -105,11 +105,11 @@ void DBCCSlot::updateDisplayTransform()
 {
     if (_nodeDisplay)
     {
-        _nodeDisplay->setPosition(globalTransformMatrix.tx , -globalTransformMatrix.ty);
         _nodeDisplay->setScaleX(global.scaleX);
         _nodeDisplay->setScaleY(global.scaleY);
-        _nodeDisplay->setRotationSkewX(CC_RADIANS_TO_DEGREES(global.skewX));
-        _nodeDisplay->setRotationSkewY(CC_RADIANS_TO_DEGREES(global.skewY));
+        _nodeDisplay->setRotationSkewX(global.skewX * RADIAN_TO_ANGLE);
+        _nodeDisplay->setRotationSkewY(global.skewY * RADIAN_TO_ANGLE);
+        _nodeDisplay->setPosition(global.x , -global.y);
     }
 }
 NAME_SPACE_DRAGON_BONES_END
