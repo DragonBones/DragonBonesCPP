@@ -3,6 +3,7 @@
 #include "DBCCTextureAtlas.h"
 #include "DBCCArmature.h"
 #include "DBCCSlot.h"
+
 #include "cocos2d.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
@@ -92,20 +93,25 @@ void *DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Stri
             {
                 // throw
             }
-            float x = textureData->region.x;
-            float y = textureData->region.y;
-            float width = textureData->region.width;
-            float height = textureData->region.height;
-            cocos2d::Rect rect(x, y, width, height);
+            const float x = textureData->region.x;
+            const float y = textureData->region.y;
+            const float width = textureData->region.width;
+            const float height = textureData->region.height;
+            const cocos2d::Rect rect(x, y, width, height);
             // sprite
             cocos2d::Sprite *display = cocos2d::Sprite::createWithTexture(dbccTextureAtlas->texture, rect, false);
             display->retain();
-            float pivotX = displayData->pivot.x;
-            float pivotY = displayData->pivot.y;
-            if (textureData->frame)
+            float pivotX = 0;
+            float pivotY = 0;
+            if (displayData)
             {
-                pivotX += textureData->frame->x;
-                pivotY += textureData->frame->y;
+                pivotX = displayData->pivot.x;
+                pivotY = displayData->pivot.y;
+                if (textureData->frame)
+                {
+                    pivotX += textureData->frame->x;
+                    pivotY += textureData->frame->y;
+                }
             }
             display->setAnchorPoint(cocos2d::Point(pivotX / width, 1.f - pivotY / height));
             display->setContentSize(cocos2d::Size(width, height));

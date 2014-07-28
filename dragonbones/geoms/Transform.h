@@ -76,8 +76,8 @@ public:
         Matrix matrix;
         parent.toMatrix(matrix);
         matrix.invert();
-        float x0 = x;
-        float y0 = y;
+        const float x0 = x;
+        const float y0 = y;
         x = matrix.a * x0 + matrix.c * y0 + matrix.tx;
         y = matrix.d * y0 + matrix.b * x0 + matrix.ty;
         skewX = formatRadian(skewX - parent.skewX);

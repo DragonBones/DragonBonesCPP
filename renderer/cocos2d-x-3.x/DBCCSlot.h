@@ -27,7 +27,7 @@ protected:
     virtual void removeDisplayFromContainer() override;
     virtual void disposeDisplayList() override;
     virtual void updateDisplay(void *display, bool disposeExisting) override;
-    virtual void updateDisplayBlendMode(const BlendMode &blendMode) override;
+    virtual void updateDisplayBlendMode(BlendMode blendMode) override;
     virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) override;
     virtual void updateDisplayVisible(bool visible) override;
     virtual void updateDisplayTransform() override;

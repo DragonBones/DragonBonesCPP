@@ -33,9 +33,9 @@ protected:
     std::vector<TimelineState *> _timelineStateList;
     
 public:
-    Slot *getSlot() const;
-    const std::vector<Slot *> &getSlots() const;
-    const std::vector<Bone *> &getBones() const;
+    virtual Slot *getSlot() const;
+    virtual const std::vector<Slot *> &getSlots() const;
+    virtual const std::vector<Bone *> &getBones() const;
     
     virtual void setVisible(bool vislble) override;
     
@@ -47,14 +47,14 @@ public:
     virtual ~Bone();
     virtual void dispose() override;
     
-    void invalidUpdate();
-    bool contains(const Object *object) const;
-    void addChild(Object *object);
-    void removeChild(Object *object);
+    virtual void invalidUpdate();
+    virtual bool contains(const Object *object) const;
+    virtual void addChild(Object *object);
+    virtual void removeChild(Object *object);
     
 protected:
-    void update(bool needUpdate);
-    void updateColor(
+    virtual void update(bool needUpdate);
+    virtual void updateColor(
         int aOffset,
         int rOffset,
         int gOffset,
@@ -65,11 +65,11 @@ protected:
         float bMultiplier,
         bool colorChanged
     );
-    void hideSlots();
-    void arriveAtFrame(const TransformFrame *frame, const TimelineState *timelineState, AnimationState *animationState, const bool isCross);
-    void addState(TimelineState *timelineState);
-    void removeState(TimelineState *timelineState);
-    void blendingTimeline();
+    virtual void hideSlots();
+    virtual void arriveAtFrame(const TransformFrame *frame, const TimelineState *timelineState, AnimationState *animationState, bool isCross);
+    virtual void addState(TimelineState *timelineState);
+    virtual void removeState(TimelineState *timelineState);
+    virtual void blendingTimeline();
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(Bone);

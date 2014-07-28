@@ -50,7 +50,6 @@ public:
     
     virtual const ArmatureData *getArmatureData() const;
     virtual Animation *getAnimation() const;
-    virtual IEventDispatcher *getEventDispatcher() const;
     
 public:
     Armature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, void *display);

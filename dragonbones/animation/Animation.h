@@ -21,13 +21,13 @@ public:
 public:
     bool autoTween;
     
-    std::vector<AnimationData *> animationDataList;
-    
 protected:
     bool _isFading;
     bool _isPlaying;
     float _timeScale;
     
+    std::vector<String> _animationList;
+    std::vector<AnimationData *> _animationDataList;
     std::vector<AnimationState *> _animationStateList;
     
     Armature *_armature;
@@ -36,10 +36,13 @@ protected:
 public:
     virtual bool getIsPlaying() const;
     virtual bool getIsComplete() const;
-    //virtual const std::vector<String>& getAnimationList() const;
+    virtual const std::vector<String> &getAnimationList() const;
     virtual AnimationState *getLastAnimationState() const;
     virtual float getTimeScale() const;
     virtual void setTimeScale(float timeScale);
+    
+    virtual const std::vector<AnimationData *> &getAnimationDataList() const;
+    virtual void setAnimationDataList(const std::vector<AnimationData *> &animationDataList);
     
 public:
     explicit Animation();
@@ -54,7 +57,7 @@ public:
         int playTimes = -1,
         int layer = 0,
         const String &group = "",
-        const AnimationFadeOutMode &fadeOutMode = AnimationFadeOutMode::SAME_LAYER_AND_GROUP,
+        AnimationFadeOutMode fadeOutMode = AnimationFadeOutMode::SAME_LAYER_AND_GROUP,
         bool pauseFadeOut = true,
         bool pauseFadeIn = true
     );
@@ -67,7 +70,7 @@ public:
         float duration = -1.f,
         int layer = 0,
         const String &group = "",
-        const AnimationFadeOutMode &fadeOutMode = AnimationFadeOutMode::ALL
+        AnimationFadeOutMode fadeOutMode = AnimationFadeOutMode::ALL
     );
     
     virtual void play();

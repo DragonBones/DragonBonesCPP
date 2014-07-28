@@ -25,7 +25,7 @@ void BaseFactory::addDragonBonesData(DragonBonesData *data, const String &name)
     {
         // throw
     }
-    const String key = name.empty() ? data->name : name;
+    const String &key = name.empty() ? data->name : name;
     if (key.empty())
     {
         // throw
@@ -69,7 +69,7 @@ void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const String &nam
     {
         // throw
     }
-    String key = name.empty() ? textureAtlas->textureAtlasData->name : name;
+    const String &key = name.empty() ? textureAtlas->textureAtlasData->name : name;
     if (key.empty())
     {
         // throw
@@ -95,7 +95,7 @@ void BaseFactory::removeTextureAtlas(const String &name, bool disposeData)
     }
 }
 
-void BaseFactory::dispose(const bool disposeData)
+void BaseFactory::dispose(bool disposeData)
 {
     if (disposeData)
     {
@@ -181,11 +181,11 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
     armature->name = armatureName;
     if (animationArmatureData)
     {
-        armature->getAnimation()->animationDataList = animationArmatureData->animationDataList;
+        armature->getAnimation()->setAnimationDataList(animationArmatureData->animationDataList);
     }
     else
     {
-        armature->getAnimation()->animationDataList = armatureData->animationDataList;
+        armature->getAnimation()->setAnimationDataList(armatureData->animationDataList);
     }
     //
     buildBones(armature, armatureData);
@@ -288,7 +288,7 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
             {
                 case DisplayType::DT_ARMATURE:
                 {
-                    const DisplayData *displayDataCopy = nullptr;
+                    DisplayData *displayDataCopy = nullptr;
                     if (skinDataCopy)
                     {
                         const SlotData *slotDataCopy = skinDataCopy->getSlotData(slotData->name);
@@ -304,7 +304,7 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
                 case DisplayType::DT_IMAGE:
                 default:
                 {
-                    const ITextureAtlas *textureAtlas = nullptr;
+                    ITextureAtlas *textureAtlas = nullptr;
                     auto iterator = _textureAtlasMap.find(_currentTextureAtlasName);
                     if (iterator != _textureAtlasMap.end())
                     {

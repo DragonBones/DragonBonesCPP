@@ -259,13 +259,14 @@ void Bone::hideSlots()
     }
 }
 
-void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timelineState, AnimationState *animationState, const bool isCross)
+void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timelineState, AnimationState *animationState, bool isCross)
 {
     // TODO:
-    const bool displayControl =
+    bool displayControl =
         animationState->displayControl &&
         (displayController.empty() || displayController == animationState->name);
-    if (displayControl && timelineState->_weight > 0)
+    //&& timelineState->_weight > 0
+    if (displayControl)
     {
         const int displayIndex = frame->displayIndex;
         for (size_t i = 0, l = _slotList.size(); i < l; ++i)

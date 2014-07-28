@@ -46,7 +46,7 @@ bool AnimationState::getIsPlaying() const
 
 int AnimationState::getCurrentPlayTimes() const
 {
-    return _currentPlayTimes;
+    return _currentPlayTimes < 0 ? 0 : _currentPlayTimes;
 }
 
 int AnimationState::getLayer() const
@@ -95,7 +95,7 @@ AnimationState *AnimationState::setPlayTimes(int playTimes)
 
 float AnimationState::getCurrentTime() const
 {
-    return _currentTime * 0.001f;
+    return _currentTime < 0 ? 0 : _currentTime * 0.001f;
 }
 AnimationState *AnimationState::setCurrentTime(float currentTime)
 {
@@ -142,14 +142,14 @@ void AnimationState::fadeIn(Armature *armature, AnimationData *clip, float fadeT
     _currentFrameIndex = -1;
     _isComplete = false;
     _time = 0;
-    _currentPlayTimes = 0;
+    _currentPlayTimes = -1;
     if (round(_totalTime * 0.001f * _clip->frameRate) < 2)
     {
         _currentTime = _totalTime;
     }
     else
     {
-        _currentTime = 0;
+        _currentTime = -1;
     }
     // fade start
     _isFadeOut = false;
@@ -373,7 +373,7 @@ void AnimationState::advanceFadeTime(float passedTime)
     bool fadeCompleteFlg = false;
     if (_fadeBeginTime >= 0)
     {
-        FadeState fadeState = FadeState::FADE_BEFORE;
+        FadeState fadeState = _fadeState;
         _fadeCurrentTime += passedTime < 0 ? -passedTime : passedTime;
         if (_fadeCurrentTime >= _fadeBeginTime + _fadeTotalTime)
         {
@@ -479,7 +479,7 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     }
     else
     {
-        const int totalTimes = _playTimes * _totalTime;
+        int totalTimes = _playTimes * _totalTime;
         if (currentTime >= totalTimes)
         {
             currentTime = totalTimes;
@@ -511,7 +511,7 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     }
     // update timeline
     _isComplete = isThisComplete;
-    const float progress = _time / (float)(_totalTime);
+    float progress = _time / (float)(_totalTime);
     for (size_t i = 0, l = _timelineStateList.size(); i < l; ++i)
     {
         TimelineState *timelineState = _timelineStateList[i];
@@ -519,17 +519,17 @@ void AnimationState::advanceTimelinesTime(float passedTime)
         _isComplete = timelineState->_isComplete && _isComplete;
     }
     // update main timeline
-    if (_currentTime != currentTime || _currentPlayTimes == 0)
+    if (_currentTime != currentTime)
     {
         if (_currentPlayTimes != currentPlayTimes)    // check loop complete
         {
-            _currentPlayTimes = currentPlayTimes;
-            if (_currentPlayTimes > 1)
+            if (_currentPlayTimes > 0 && currentPlayTimes > 1)
             {
                 loopCompleteFlg = true;
             }
+            _currentPlayTimes = currentPlayTimes;
         }
-        if (_currentTime == 0 && _currentPlayTimes == 1)    // check start
+        if (_currentTime < 0)    // check start
         {
             startFlg = true;
         }
@@ -585,7 +585,7 @@ void AnimationState::updateMainTimeline(bool isThisComplete)
             {
                 _currentFrameIndex = 0;
             }
-            else if (_currentTime >= _currentFramePosition + _currentFrameDuration)
+            else if (_currentTime < _currentFramePosition || _currentTime >= _currentFramePosition + _currentFrameDuration)
             {
                 ++_currentFrameIndex;
                 if (_currentFrameIndex >= (int)(l))
@@ -599,14 +599,6 @@ void AnimationState::updateMainTimeline(bool isThisComplete)
                     {
                         _currentFrameIndex = 0;
                     }
-                }
-            }
-            else if (_currentTime < _currentFramePosition)
-            {
-                --_currentFrameIndex;
-                if (_currentFrameIndex < 0)
-                {
-                    _currentFrameIndex = l - 1;
                 }
             }
             else

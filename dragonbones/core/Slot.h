@@ -21,7 +21,7 @@ protected:
     float _tweenZOrder;
     float _offsetZOrder;
     
-    // <displayOrArmature*, DisplayType>
+    // <displayOrArmature *, DisplayType>
     std::vector<std::pair<void *, DisplayType>> _displayList;
     
     SlotData *_slotData;
@@ -31,7 +31,7 @@ protected:
 public:
     virtual int getDisplayIndex() const;
     
-    virtual void setDisplay(void *display, const DisplayType &displayType, bool disposeExisting);
+    virtual void setDisplay(void *display, const DisplayType displayType, bool disposeExisting);
     
     virtual float getZOrder() const;
     virtual void setZOrder(float zorder);
@@ -63,7 +63,7 @@ protected:
     virtual void removeDisplayFromContainer() = 0;
     virtual void disposeDisplayList() = 0;
     virtual void updateDisplay(void *display, bool disposeExisting) = 0;
-    virtual void updateDisplayBlendMode(const BlendMode &blendMode) = 0;
+    virtual void updateDisplayBlendMode(BlendMode blendMode) = 0;
     virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) = 0;
     virtual void updateDisplayVisible(bool visible) = 0;
     virtual void updateDisplayTransform() = 0;

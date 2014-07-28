@@ -34,11 +34,6 @@ Animation *Armature::getAnimation() const
     return _animation;
 }
 
-IEventDispatcher *Armature::getEventDispatcher() const
-{
-    return _eventDispatcher;
-}
-
 Armature::Armature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, void *display)
 {
     _armatureData = armatureData;
@@ -300,7 +295,7 @@ void Armature::advanceTime(float passedTime)
     _lockDispose = true;
     _animation->advanceTime(passedTime);
     passedTime *= _animation->_timeScale;
-    bool isFading = _animation->_isFading;
+    const bool isFading = _animation->_isFading;
     for (size_t i = _boneList.size(); i--;)
     {
         _boneList[i]->update(isFading);
@@ -320,7 +315,6 @@ void Armature::advanceTime(float passedTime)
         if (_eventDispatcher->hasEvent(EventData::EventDataType::Z_ORDER_UPDATED))
         {
             EventData *eventData = new EventData(EventData::EventDataType::Z_ORDER_UPDATED, this);
-            eventData->armature = this;
             _eventDataList.push_back(eventData);
         }
     }

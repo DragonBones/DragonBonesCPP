@@ -38,12 +38,12 @@ void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &dis
     }
     // copy
     _displayList = displayList;
-    const int displayIndexBackup = _displayIndex;
+    int displayIndexBackup = _displayIndex;
     _displayIndex = -1;
     changeDisplay(displayIndexBackup);
 }
 
-void Slot::setDisplay(void *display, const DisplayType &displayType, bool disposeExisting)
+void Slot::setDisplay(void *display, DisplayType displayType, bool disposeExisting)
 {
     if (_displayIndex < 0)
     {
@@ -243,7 +243,7 @@ void Slot::updateSlotDisplay(bool disposeExisting)
         removeDisplayFromContainer();
     }
     void *display = _displayList[_displayIndex].first;
-    const DisplayType &displayType = _displayList[_displayIndex].second;
+    DisplayType displayType = _displayList[_displayIndex].second;
     if (disposeExisting && _childArmature)
     {
         _childArmature->dispose();

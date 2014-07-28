@@ -12,7 +12,21 @@ class AnimationState;
 class EventData
 {
 public:
-    static enum class EventDataType
+    static const String Z_ORDER_UPDATED;
+    static const String ANIMATION_FRAME_EVENT;
+    static const String BONE_FRAME_EVENT;
+    static const String SOUND;
+    static const String FADE_IN;
+    static const String FADE_OUT;
+    static const String START;
+    static const String COMPLETE;
+    static const String LOOP_COMPLETE;
+    static const String FADE_IN_COMPLETE;
+    static const String FADE_OUT_COMPLETE;
+    
+    static const String _ERROR;
+    
+    enum class EventDataType
     {
         Z_ORDER_UPDATED,
         ANIMATION_FRAME_EVENT,
@@ -20,39 +34,6 @@ public:
         SOUND,
         FADE_IN, FADE_OUT, START, COMPLETE, LOOP_COMPLETE, FADE_IN_COMPLETE, FADE_OUT_COMPLETE
     };
-    
-    static String getStringType(const EventDataType &type)
-    {
-        switch (type)
-        {
-            case EventDataType::Z_ORDER_UPDATED:
-                return "zOrderUpdate";
-            case EventDataType::ANIMATION_FRAME_EVENT:
-                return "animationFrameEvent";
-            case EventDataType::BONE_FRAME_EVENT:
-                return "boneFrameEvent";
-            case EventDataType::SOUND:
-                return "sound";
-            case EventDataType::FADE_IN:
-                return "fadeIn";
-            case EventDataType::FADE_OUT:
-                return "fadeOut";
-            case EventDataType::START:
-                return "start";
-            case EventDataType::COMPLETE:
-                return "complete";
-            case EventDataType::LOOP_COMPLETE:
-                return "loopComplete";
-            case EventDataType::FADE_IN_COMPLETE:
-                return "fadeInComplete";
-            case EventDataType::FADE_OUT_COMPLETE:
-                return "fadeOutComplete";
-            default:
-                // throw
-                break;
-        }
-        return "";
-    }
     
 public:
     String frameLabel;
@@ -66,29 +47,14 @@ private:
     EventDataType _type;
     
 public:
-    const EventDataType &getType() const
-    {
-        return _type;
-    }
+    EventDataType getType() const;
+    
+    const String &getStringType() const;
     
 public:
-    EventData(const EventDataType &type, Armature *armatureTarget)
-    {
-        _type = type;
-        armature = armatureTarget;
-        bone = nullptr;
-        animationState = nullptr;
-    }
-    virtual ~EventData()
-    {
-        dispose();
-    }
-    void dispose()
-    {
-        armature = nullptr;
-        bone = nullptr;
-        animationState = nullptr;
-    }
+    EventData(EventDataType type, Armature *armatureTarget);
+    virtual ~EventData();
+    void dispose();
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(EventData);

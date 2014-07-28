@@ -31,19 +31,10 @@ AnimationState *Animation::getLastAnimationState() const
     return _lastAnimationState;
 }
 
-/*
-const std::vector<String>& Animation::getAnimationList() const
+const std::vector<String> &Animation::getAnimationList() const
 {
-    const std::vector<String>& animationList = std::vector<String>
-    for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
-    {
-        if(!_animationStateList[i]->_isComplete)
-        {
-            return false;
-        }
-    }
+    return _animationList;
 }
-*/
 
 float Animation::getTimeScale() const
 {
@@ -56,6 +47,20 @@ void Animation::setTimeScale(float timeScale)
         timeScale = 1;
     }
     _timeScale = timeScale;
+}
+
+const std::vector<AnimationData *> &Animation::getAnimationDataList() const
+{
+    return _animationDataList;
+}
+void Animation::setAnimationDataList(const std::vector<AnimationData *> &animationDataList)
+{
+    _animationDataList = animationDataList;
+    _animationList.clear();
+    for (size_t i = 0, l = _animationDataList.size(); i < l; ++i)
+    {
+        _animationList.push_back(_animationDataList[i]->name);
+    }
 }
 
 Animation::Animation()
@@ -73,7 +78,7 @@ Animation::~Animation()
 
 void Animation::dispose()
 {
-    animationDataList.clear();
+    _animationDataList.clear();
     for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
     {
         AnimationState::returnObject(_animationStateList[i]);
@@ -90,17 +95,17 @@ AnimationState *Animation::gotoAndPlay(
     int playTimes,
     int layer,
     const String &group,
-    const AnimationFadeOutMode &fadeOutMode,
+    AnimationFadeOutMode fadeOutMode,
     bool pauseFadeOut,
     bool pauseFadeIn
 )
 {
     AnimationData *animationData = nullptr;
-    for (size_t i = 0, l = animationDataList.size(); i < l; ++i)
+    for (size_t i = 0, l = _animationDataList.size(); i < l; ++i)
     {
-        if (animationDataList[i]->name == animationName)
+        if (_animationDataList[i]->name == animationName)
         {
-            animationData = animationDataList[i];
+            animationData = _animationDataList[i];
             break;
         }
     }
@@ -184,6 +189,7 @@ AnimationState *Animation::gotoAndPlay(
             slot->getChildArmature()->_animation->gotoAndPlay(animationName, fadeInTime);
         }
     }
+
     return _lastAnimationState;
 }
 
@@ -195,7 +201,7 @@ AnimationState *Animation::gotoAndStop(
     float duration,
     int layer,
     const String &group,
-    const AnimationFadeOutMode &fadeOutMode
+    AnimationFadeOutMode fadeOutMode
 )
 {
     AnimationState *animationState = getState(animationName, layer);
@@ -217,13 +223,13 @@ AnimationState *Animation::gotoAndStop(
 
 void Animation::play()
 {
-    if (animationDataList.empty())
+    if (_animationDataList.empty())
     {
         return;
     }
     if (!_lastAnimationState)
     {
-        gotoAndPlay(animationDataList[0]->name);
+        gotoAndPlay(_animationDataList[0]->name);
     }
     else if (!_isPlaying)
     {
@@ -242,9 +248,9 @@ void Animation::stop()
 
 bool Animation::hasAnimation(const String &animationName) const
 {
-    for (size_t i = 0, l = animationDataList.size(); i < l; ++i)
+    for (size_t i = 0, l = _animationDataList.size(); i < l; ++i)
     {
-        if (animationDataList[i]->name == animationName)
+        if (_animationDataList[i]->name == animationName)
         {
             return true;
         }

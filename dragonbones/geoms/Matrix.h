@@ -41,13 +41,13 @@ public:
     
     void invert()
     {
-        float a0 = a;
-        float b0 = b;
-        float c0 = c;
-        float d0 = d;
-        float tx0 = tx;
-        float ty0 = ty;
-        float determinant = 1 / (a0 * d0 - b0 * c0);
+        const float a0 = a;
+        const float b0 = b;
+        const float c0 = c;
+        const float d0 = d;
+        const float tx0 = tx;
+        const float ty0 = ty;
+        const float determinant = 1 / (a0 * d0 - b0 * c0);
         a = determinant * d0;
         b = -determinant * b0;
         c = -determinant * c0;

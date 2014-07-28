@@ -3,6 +3,7 @@
 
 #include "../DragonBones.h"
 #include "BaseDataParser.h"
+
 #include "dbtinyxml2.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
@@ -33,7 +34,7 @@ private:
     SkinData *parseSkinData(const XMLElement *skinXML) const;
     SlotData *parseSlotData(const XMLElement *slotXML) const;
     DisplayData *parseDisplayData(const XMLElement *displayXML) const;
-    AnimationData *parseAnimationData(const XMLElement *animationXML, ArmatureData *armatureData) const;
+    AnimationData *parseAnimationData(const XMLElement *animationXML, const ArmatureData *armatureData) const;
     TransformTimeline *parseTransformTimeline(const XMLElement *timelineXML, int duration) const;
     Frame *parseMainFrame(const XMLElement *frameXML) const;
     TransformFrame *parseTransformFrame(const XMLElement *frameXML) const;

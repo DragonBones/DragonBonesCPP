@@ -80,9 +80,11 @@ void TimelineState::fadeIn(Bone *bone, AnimationState *animationState, Transform
         case 0:
             _updateState = UpdateState::UNUPDATE;
             break;
+
         case 1:
             _updateState = UpdateState::UPDATE_ONCE;
             break;
+
         default:
             _updateState = UpdateState::UPDATE;
             break;
@@ -115,7 +117,7 @@ void TimelineState::updateMultipleFrame(float progress)
     progress += _timeline->offset;
     int currentTime = (int)(_totalTime * progress);
     int currentPlayTimes = 0;
-    const int playTimes = _animationState->getPlayTimes();
+    int playTimes = _animationState->getPlayTimes();
     if (playTimes == 0)
     {
         _isComplete = false;

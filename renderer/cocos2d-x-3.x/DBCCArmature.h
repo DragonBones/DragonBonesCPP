@@ -7,30 +7,20 @@
 NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCArmature : public Armature
 {
-public:
-    cocos2d::Node *getDisplay() const
-    {
-        return static_cast<cocos2d::Node *>(_display);
-    }
+protected:
+    bool _autoUpdate;
     
 public:
-    DBCCArmature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, cocos2d::Node *display)
-        : Armature(armatureData, animation, eventDispatcher, display)
-    {
-    }
-    virtual ~DBCCArmature()
-    {
-        dispose();
-    }
-    virtual void dispose() override
-    {
-        if (_display)
-        {
-            getDisplay()->cleanup();
-            getDisplay()->release();
-        }
-        Armature::dispose();
-    }
+    virtual cocos2d::Node *getDisplay() const;
+    virtual cocos2d::EventDispatcher *getEventDispatcher() const;
+    
+    virtual bool getAutoUpdate() const;
+    virtual void setAutoUpdate(bool autoUpdate);
+    
+public:
+    DBCCArmature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, cocos2d::Node *display);
+    virtual ~DBCCArmature();
+    virtual void dispose() override;
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(DBCCArmature);

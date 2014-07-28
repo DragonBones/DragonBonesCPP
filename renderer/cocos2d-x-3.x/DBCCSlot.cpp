@@ -80,7 +80,7 @@ void DBCCSlot::updateDisplay(void *display, bool disposeExisting)
     _nodeDisplay = static_cast<cocos2d::Sprite *>(display);
 }
 
-void DBCCSlot::updateDisplayBlendMode(const BlendMode &blendMode)
+void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
 {
 }
 

@@ -10,7 +10,7 @@ void BaseDataParser::transformArmatureData(ArmatureData *armatureData)
         BoneData *boneData = armatureData->boneDataList[i];
         if (boneData && !boneData->parent.empty())
         {
-            BoneData *parentBoneData = armatureData->getBoneData(boneData->parent);
+            const BoneData *parentBoneData = armatureData->getBoneData(boneData->parent);
             if (parentBoneData)
             {
                 boneData->transform = boneData->global;
@@ -33,7 +33,7 @@ void BaseDataParser::transformAnimationData(AnimationData *animationData, const 
     SkinData *skinData = armatureData->getSkinData("");
     for (size_t i = 0, l = armatureData->boneDataList.size(); i < l; ++i)
     {
-        BoneData *boneData = armatureData->boneDataList[i];
+        const BoneData *boneData = armatureData->boneDataList[i];
         TransformTimeline *timeline = animationData->getTimeline(boneData->name);
         if (!timeline)
         {
@@ -92,7 +92,7 @@ void BaseDataParser::transformAnimationData(AnimationData *animationData, const 
             }
             if (prevFrame)
             {
-                float dLX = frame->transform.skewX - prevFrame->transform.skewX;
+                const float dLX = frame->transform.skewX - prevFrame->transform.skewX;
                 if (prevFrame->tweenRotate)
                 {
                     if (prevFrame->tweenRotate > 0)
@@ -201,8 +201,8 @@ void BaseDataParser::setFrameTransform(AnimationData *animationData, const Armat
                     globalTransform->scaleX = currentTransform.scaleX + parentTimeline->originTransform.scaleX + parentData->transform.scaleX;
                     globalTransform->scaleY = currentTransform.scaleY + parentTimeline->originTransform.scaleY + parentData->transform.scaleY;
                     //}
-                    float x = currentTransform.x + parentTimeline->originTransform.x + parentData->transform.x;
-                    float y = currentTransform.y + parentTimeline->originTransform.y + parentData->transform.y;
+                    const float x = currentTransform.x + parentTimeline->originTransform.x + parentData->transform.x;
+                    const float y = currentTransform.y + parentTimeline->originTransform.y + parentData->transform.y;
                     globalTransform->x = helpMatrix.a * x + helpMatrix.c * y + helpMatrix.tx;
                     globalTransform->y = helpMatrix.d * y + helpMatrix.b * x + helpMatrix.ty;
                 }
@@ -238,7 +238,7 @@ void BaseDataParser::getTimelineTransform(const TransformTimeline *timeline, int
             else
             {
                 float progress = (position - currentFrame->position) / (float)(currentFrame->duration);
-                float tweenEasing = currentFrame->tweenEasing;
+                const float tweenEasing = currentFrame->tweenEasing;
                 if (tweenEasing && tweenEasing != NO_TWEEN_EASING && tweenEasing != AUTO_TWEEN_EASING)
                 {
                     progress = getEaseValue(progress, tweenEasing);
