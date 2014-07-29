@@ -413,7 +413,6 @@ void Armature::arriveAtFrame(const Frame *frame, AnimationState *animationState,
     if (!frame->event.empty() && _eventDispatcher->hasEvent(EventData::EventDataType::ANIMATION_FRAME_EVENT))
     {
         EventData *eventData = new EventData(EventData::EventDataType::ANIMATION_FRAME_EVENT, this);
-        eventData->armature = this;
         eventData->animationState = animationState;
         eventData->frameLabel = frame->event;
         _eventDataList.push_back(eventData);

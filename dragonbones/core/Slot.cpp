@@ -22,27 +22,6 @@ void Slot::setZOrder(float value)
     }
 }
 
-const std::vector<std::pair<void *, DisplayType>> &Slot::getDisplayList() const
-{
-    return _displayList;
-}
-void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &displayList, bool disposeExisting)
-{
-    if (_displayIndex < 0)
-    {
-        _displayIndex = 0;
-    }
-    if (disposeExisting)
-    {
-        disposeDisplayList();
-    }
-    // copy
-    _displayList = displayList;
-    int displayIndexBackup = _displayIndex;
-    _displayIndex = -1;
-    changeDisplay(displayIndexBackup);
-}
-
 void Slot::setDisplay(void *display, DisplayType displayType, bool disposeExisting)
 {
     if (_displayIndex < 0)
@@ -70,6 +49,27 @@ Armature *Slot::getChildArmature() const
 void Slot::setChildArmature(Armature *childArmature, bool disposeExisting)
 {
     setDisplay(childArmature, DisplayType::DT_ARMATURE, disposeExisting);
+}
+
+const std::vector<std::pair<void *, DisplayType>> &Slot::getDisplayList() const
+{
+    return _displayList;
+}
+void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &displayList, bool disposeExisting)
+{
+    if (_displayIndex < 0)
+    {
+        _displayIndex = 0;
+    }
+    if (disposeExisting)
+    {
+        disposeDisplayList();
+    }
+    // copy
+    _displayList = displayList;
+    int displayIndexBackup = _displayIndex;
+    _displayIndex = -1;
+    changeDisplay(displayIndexBackup);
 }
 
 void Slot::setVisible(bool visible)

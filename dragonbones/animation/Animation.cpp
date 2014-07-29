@@ -124,7 +124,7 @@ AnimationState *Animation::gotoAndPlay(
     }
     else
     {
-        durationScale = duration * 1000 / animationData->duration;
+        durationScale = duration * 1000.f / animationData->duration;
     }
     if (durationScale == 0)
     {
@@ -189,7 +189,6 @@ AnimationState *Animation::gotoAndPlay(
             slot->getChildArmature()->_animation->gotoAndPlay(animationName, fadeInTime);
         }
     }
-
     return _lastAnimationState;
 }
 

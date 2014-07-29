@@ -28,11 +28,11 @@ void DBCCArmature::setAutoUpdate(bool autoUpdate)
     {
         if (_autoUpdate)
         {
-            //getDisplay()->schedule(schedule_selector(Armature::advanceTime), 0);
+            getDisplay()->schedule(cocos2d::SEL_SCHEDULE(&Armature::advanceTime), 0);
         }
         else
         {
-            //getDisplay()->unschedule(schedule_selector(Armature::advanceTime));
+            getDisplay()->unschedule(cocos2d::SEL_SCHEDULE(&Armature::advanceTime));
         }
     }
 }

@@ -194,8 +194,8 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
     {
         buildSlots(armature, armatureData, skinData, skinDataCopy);
     }
-    //
-    //armature->advanceTime(0);
+    // update armature pose
+    armature->advanceTime(0);
     return armature;
 }
 

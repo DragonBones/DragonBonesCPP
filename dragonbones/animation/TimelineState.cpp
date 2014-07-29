@@ -51,7 +51,7 @@ void TimelineState::fadeIn(Bone *bone, AnimationState *animationState, Transform
     _tweenColor = false;
     _currentTime = -1;
     _currentFrameIndex = -1;
-    _weight = 0.f;
+    _weight = 1.f;
     _tweenEasing = USE_FRAME_TWEEN_EASING;
     _totalTime = _timeline->duration;
     name = _timeline->name;
@@ -80,11 +80,9 @@ void TimelineState::fadeIn(Bone *bone, AnimationState *animationState, Transform
         case 0:
             _updateState = UpdateState::UNUPDATE;
             break;
-
         case 1:
             _updateState = UpdateState::UPDATE_ONCE;
             break;
-
         default:
             _updateState = UpdateState::UPDATE;
             break;
@@ -174,7 +172,7 @@ void TimelineState::updateMultipleFrame(float progress)
             {
                 _currentFrameIndex = 0;
             }
-            else if (_currentTime >= _currentFramePosition + _currentFrameDuration)
+            else if (_currentTime < _currentFramePosition || _currentTime >= _currentFramePosition + _currentFrameDuration)
             {
                 ++_currentFrameIndex;
                 if (_currentFrameIndex >= (int)(l))
@@ -188,14 +186,6 @@ void TimelineState::updateMultipleFrame(float progress)
                     {
                         _currentFrameIndex = 0;
                     }
-                }
-            }
-            else if (_currentTime < _currentFramePosition)
-            {
-                --_currentFrameIndex;
-                if (_currentFrameIndex < 0)
-                {
-                    _currentFrameIndex = l - 1;
                 }
             }
             else
@@ -236,18 +226,16 @@ void TimelineState::updateMultipleFrame(float progress)
 
 void TimelineState::updateToNextFrame(int currentPlayTimes)
 {
-    bool isToFirstFrame = false;
     bool tweenEnabled = false;
     int nextFrameIndex = _currentFrameIndex + 1;
     if (nextFrameIndex >= (int)(_timeline->frameList.size()))
     {
         nextFrameIndex = 0;
-        isToFirstFrame = true;
     }
     const TransformFrame *currentFrame = static_cast<TransformFrame *>(_timeline->frameList[_currentFrameIndex]);
     const TransformFrame *nextFrame = static_cast<TransformFrame *>(_timeline->frameList[nextFrameIndex]);
     if (
-        isToFirstFrame &&
+        nextFrameIndex == 0 &&
         (
             !_animationState->lastFrameAutoTween ||
             (
@@ -315,7 +303,7 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
         _durationTransform.skewY = nextFrame->transform.skewY - currentFrame->transform.skewY;
         _durationTransform.scaleX = nextFrame->transform.scaleX - currentFrame->transform.scaleX + nextFrame->scaleOffset.x;
         _durationTransform.scaleY = nextFrame->transform.scaleY - currentFrame->transform.scaleY + nextFrame->scaleOffset.y;
-        if (isToFirstFrame)
+        if (nextFrameIndex == 0)
         {
             _durationTransform.skewX = formatRadian(_durationTransform.skewX);
             _durationTransform.skewY = formatRadian(_durationTransform.skewY);
@@ -566,8 +554,8 @@ void TimelineState::updateSingleFrame()
                         _transform.skewY =
                             _transform.scaleX =
                                 _transform.scaleY = 0.f;
-            _pivot.x = 0.f;
-            _pivot.y = 0.f;
+            _pivot.x =
+                _pivot.y = 0.f;
         }
         else
         {

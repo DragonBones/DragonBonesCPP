@@ -31,16 +31,16 @@ protected:
 public:
     virtual int getDisplayIndex() const;
     
-    virtual void setDisplay(void *display, const DisplayType displayType, bool disposeExisting);
-    
     virtual float getZOrder() const;
     virtual void setZOrder(float zorder);
     
-    virtual const std::vector<std::pair<void *, DisplayType>> &getDisplayList() const;
-    virtual void setDisplayList(const std::vector<std::pair<void *, DisplayType>> &displayList, bool disposeExisting);
+    virtual void setDisplay(void *display, const DisplayType displayType, bool disposeExisting);
     
     virtual Armature *getChildArmature() const;
     virtual void setChildArmature(Armature *childArmature, bool disposeExisting);
+    
+    virtual const std::vector<std::pair<void *, DisplayType>> &getDisplayList() const;
+    virtual void setDisplayList(const std::vector<std::pair<void *, DisplayType>> &displayList, bool disposeExisting);
     
     virtual void setVisible(bool vislble) override;
     

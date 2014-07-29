@@ -265,8 +265,8 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
     bool displayControl =
         animationState->displayControl &&
         (displayController.empty() || displayController == animationState->name);
-    //&& timelineState->_weight > 0
-    if (displayControl)
+    //
+    if (displayControl && timelineState->_weight > 0)
     {
         const int displayIndex = frame->displayIndex;
         for (size_t i = 0, l = _slotList.size(); i < l; ++i)

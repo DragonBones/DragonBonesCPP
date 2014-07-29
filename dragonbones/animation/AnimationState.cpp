@@ -74,6 +74,35 @@ const AnimationData *AnimationState::getClip() const
     return _clip;
 }
 
+AnimationState *AnimationState::setAdditiveBlending(bool value)
+{
+    additiveBlending = value;
+    return this;
+}
+
+AnimationState *AnimationState::setAutoFadeOut(bool value, float fadeOutTime_)
+{
+    autoFadeOut = value;
+    if(fadeOutTime_ >= 0)
+    {
+        fadeOutTime = fadeOutTime_;
+    }
+    return this;
+}
+
+AnimationState *AnimationState::setWeight(float value)
+{
+    weight = value;
+    return this;
+}
+
+AnimationState *AnimationState::setFrameTween(bool autoTween_, bool lastFrameAutoTween_)
+{
+    autoTween = autoTween_;
+    lastFrameAutoTween = lastFrameAutoTween_;
+    return this;
+}
+
 int AnimationState::getPlayTimes() const
 {
     return _playTimes;
@@ -95,12 +124,16 @@ AnimationState *AnimationState::setPlayTimes(int playTimes)
 
 float AnimationState::getCurrentTime() const
 {
-    return _currentTime < 0 ? 0 : _currentTime * 0.001f;
+    return _currentTime < 0 ? 0.f : _currentTime * 0.001f;
 }
 AnimationState *AnimationState::setCurrentTime(float currentTime)
 {
-    _currentTime = static_cast<int>(currentTime * 1000);
-    _time = _currentTime;
+    if (currentTime < 0 || currentTime != currentTime)
+    {
+        currentTime = 0.f;
+    }
+    _time = currentTime;
+    _currentTime = static_cast<int>(_time * 1000.f);
     return this;
 }
 
@@ -110,9 +143,9 @@ float AnimationState::getTimeScale() const
 }
 AnimationState *AnimationState::setTimeScale(float timeScale)
 {
-    if (timeScale < 0 || timeScale != timeScale)
+    if (timeScale != timeScale)
     {
-        timeScale = 1;
+        timeScale = 1.f;
     }
     _timeScale = timeScale;
     return this;
@@ -139,9 +172,8 @@ void AnimationState::fadeIn(Armature *armature, AnimationData *clip, float fadeT
     setTimeScale(timeScale);
     setPlayTimes(playTimes);
     // reset
-    _currentFrameIndex = -1;
     _isComplete = false;
-    _time = 0;
+    _currentFrameIndex = -1;
     _currentPlayTimes = -1;
     if (round(_totalTime * 0.001f * _clip->frameRate) < 2)
     {
@@ -151,6 +183,8 @@ void AnimationState::fadeIn(Armature *armature, AnimationData *clip, float fadeT
     {
         _currentTime = -1;
     }
+    _time = 0.f;
+    _mixingTransforms.clear();
     // fade start
     _isFadeOut = false;
     _fadeWeight = 0.f;
@@ -211,6 +245,11 @@ AnimationState *AnimationState::stop()
 {
     _isPlaying = false;
     return this;
+}
+
+bool AnimationState::getMixingTransform(const String &timelineName) const
+{
+    return std::find(_mixingTransforms.cbegin(), _mixingTransforms.cend(), timelineName) != _mixingTransforms.cend();
 }
 
 AnimationState *AnimationState::addMixingTransform(const String &timelineName, bool recursive)
@@ -381,9 +420,13 @@ void AnimationState::advanceFadeTime(float passedTime)
             if (_fadeWeight == 1 || _fadeWeight == 0)
             {
                 fadeState = FadeState::FADE_COMPLETE;
+                if (_pausePlayheadInFade)
+                {
+                    _pausePlayheadInFade = false;
+                    _currentTime = -1;
+                }
             }
             _fadeWeight = _isFadeOut ? 0.f : 1.f;
-            _pausePlayheadInFade = false;
         }
         else if (_fadeCurrentTime >= _fadeBeginTime)
         {
@@ -459,14 +502,14 @@ void AnimationState::advanceTimelinesTime(float passedTime)
 {
     if (_isPlaying && !_pausePlayheadInFade)
     {
-        _time += (int)(passedTime * 1000);
+        _time += passedTime;
     }
     bool startFlg = false;
     bool completeFlg = false;
     bool loopCompleteFlg = false;
     bool isThisComplete = false;
     int currentPlayTimes = 0;
-    int currentTime = _time;
+    int currentTime = (int)(_time * 1000.f);
     if (_playTimes == 0)
     {
         isThisComplete = false;
@@ -511,12 +554,11 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     }
     // update timeline
     _isComplete = isThisComplete;
-    float progress = _time / (float)(_totalTime);
+    float progress = _time * 1000.f / (float)(_totalTime);
     for (size_t i = 0, l = _timelineStateList.size(); i < l; ++i)
     {
-        TimelineState *timelineState = _timelineStateList[i];
-        timelineState->update(progress);
-        _isComplete = timelineState->_isComplete && _isComplete;
+        _timelineStateList[i]->update(progress);
+        _isComplete = _timelineStateList[i]->_isComplete && _isComplete;
     }
     // update main timeline
     if (_currentTime != currentTime)
@@ -529,7 +571,7 @@ void AnimationState::advanceTimelinesTime(float passedTime)
             }
             _currentPlayTimes = currentPlayTimes;
         }
-        if (_currentTime < 0)    // check start
+        if (_currentTime < 0 && !_pausePlayheadInFade)    // check start
         {
             startFlg = true;
         }
@@ -625,8 +667,7 @@ void AnimationState::hideBones()
 {
     for (size_t i = 0, l = _clip->hideTimelineList.size(); i < l; ++i)
     {
-        const String &timelineName = _clip->hideTimelineList[i];
-        Bone *bone = _armature->getBone(timelineName);
+        Bone *bone = _armature->getBone(_clip->hideTimelineList[i]);
         if (bone)
         {
             bone->hideSlots();

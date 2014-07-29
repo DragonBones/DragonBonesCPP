@@ -43,6 +43,7 @@ Object::Object()
     _armature = nullptr;
     _parent = nullptr;
     offset.scaleX = offset.scaleY = 1.f;
+    userData = nullptr;
 }
 Object::~Object()
 {
@@ -52,5 +53,10 @@ void Object::dispose()
 {
     _armature = nullptr;
     _parent = nullptr;
+    if (userData)
+    {
+        delete userData;
+        userData = nullptr;
+    }
 }
 NAME_SPACE_DRAGON_BONES_END

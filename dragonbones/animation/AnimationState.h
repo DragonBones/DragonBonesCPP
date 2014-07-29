@@ -42,8 +42,8 @@ private:
     int _currentFrameIndex;
     int _currentFramePosition;
     int _currentFrameDuration;
-    int _time;
     int _totalTime;
+    float _time;
     float _timeScale;
     float _fadeWeight;
     float _fadeTotalWeight;
@@ -68,6 +68,11 @@ public:
     float getCurrentWeight() const;
     const String &getGroup() const;
     const AnimationData *getClip() const;
+    
+    AnimationState *setAdditiveBlending(bool value);
+    AnimationState *setAutoFadeOut(bool value, float fadeOutTime = -1);
+    AnimationState *setWeight(float value);
+    AnimationState *setFrameTween(bool autoTween_, bool lastFrameAutoTween_);
     
     int getPlayTimes() const;
     AnimationState *setPlayTimes(int playTimes);

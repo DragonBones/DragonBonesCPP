@@ -21,6 +21,8 @@ public:
     Transform offset;
     Matrix globalTransformMatrix;
     
+    void *userData;
+    
 protected:
     bool _visible;
     

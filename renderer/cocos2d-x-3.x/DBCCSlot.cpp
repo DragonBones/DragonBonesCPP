@@ -82,20 +82,58 @@ void DBCCSlot::updateDisplay(void *display, bool disposeExisting)
 
 void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
 {
+    if (_nodeDisplay)
+    {
+        switch (blendMode)
+        {
+            case BlendMode::BM_ADD:
+                break;
+            case BlendMode::BM_ALPHA:
+                break;
+            case BlendMode::BM_DARKEN:
+                break;
+            case BlendMode::BM_DIFFERENCE:
+                break;
+            case BlendMode::BM_ERASE:
+                break;
+            case BlendMode::BM_HARDLIGHT:
+                break;
+            case BlendMode::BM_INVERT:
+                break;
+            case BlendMode::BM_LAYER:
+                break;
+            case BlendMode::BM_LIGHTEN:
+                break;
+            case BlendMode::BM_MULTIPLY:
+                break;
+            case BlendMode::BM_NORMAL:
+                break;
+            case BlendMode::BM_OVERLAY:
+                break;
+            case BlendMode::BM_SCREEN:
+                break;
+            case BlendMode::BM_SHADER:
+                break;
+            case BlendMode::BM_SUBTRACT:
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 void DBCCSlot::updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier)
 {
     if (_nodeDisplay)
     {
-        //_spriteDisplay->setOpacity();
-        //_spriteDisplay->setColor();
+        _nodeDisplay->setOpacity(aOffset + aMultiplier * 255.f);
+        _nodeDisplay->setColor(cocos2d::Color3B(rOffset + rMultiplier * 255.f , gOffset + gMultiplier * 255.f , bOffset + bMultiplier * 255.f));
     }
 }
 
 void DBCCSlot::updateDisplayVisible(bool visible)
 {
-    if (_nodeDisplay)
+    if (_nodeDisplay && _parent)
     {
         _nodeDisplay->setVisible(_parent->getVisible() && _visible && visible);
     }
