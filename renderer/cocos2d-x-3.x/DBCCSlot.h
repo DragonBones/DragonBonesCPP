@@ -1,7 +1,7 @@
 ﻿#ifndef __DBCC_SLOT_H__
 #define __DBCC_SLOT_H__
 
-#include "../dragonBones/DragonBonesHeaders.h"
+#include "DragonBonesHeaders.h"
 #include "cocos2d.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
