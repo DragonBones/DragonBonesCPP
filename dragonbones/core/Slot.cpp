@@ -22,6 +22,10 @@ void Slot::setZOrder(float value)
     }
 }
 
+void *Slot::getDisplay() const
+{
+    return _display;
+}
 void Slot::setDisplay(void *display, DisplayType displayType, bool disposeExisting)
 {
     if (_displayIndex < 0)

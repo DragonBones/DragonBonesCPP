@@ -83,7 +83,7 @@ AnimationState *AnimationState::setAdditiveBlending(bool value)
 AnimationState *AnimationState::setAutoFadeOut(bool value, float fadeOutTime_)
 {
     autoFadeOut = value;
-    if(fadeOutTime_ >= 0)
+    if (fadeOutTime_ >= 0)
     {
         fadeOutTime = fadeOutTime_;
     }
@@ -256,12 +256,11 @@ AnimationState *AnimationState::addMixingTransform(const String &timelineName, b
 {
     if (recursive)
     {
-        const auto &boneList = _armature->getBones();
         Bone *currentBone = nullptr;
         // From root to leaf
-        for (size_t i = boneList.size(); i--;)
+        for (size_t i = _armature->getBones().size(); i--;)
         {
-            Bone *bone = boneList[i];
+            Bone *bone = _armature->getBones()[i];
             const String &boneName = bone->name;
             if (boneName == timelineName)
             {

@@ -1,6 +1,18 @@
 ﻿#include "DBCCSlot.h"
+#include "DBCCArmature.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
+
+cocos2d::Node *DBCCSlot::getCCDisplay() const
+{
+    return _nodeDisplay;
+}
+
+DBCCArmature *DBCCSlot::getCCChildArmature() const
+{
+    return static_cast<DBCCArmature *>(_childArmature);
+}
+
 DBCCSlot::DBCCSlot(SlotData *slotData)
     : Slot(slotData)
 {

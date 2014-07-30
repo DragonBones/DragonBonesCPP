@@ -4,8 +4,6 @@
 #include "DBCCArmature.h"
 #include "DBCCSlot.h"
 
-#include "cocos2d.h"
-
 NAME_SPACE_DRAGON_BONES_BEGIN
 
 DBCCFactory::DBCCFactory() {}
@@ -17,7 +15,7 @@ void DBCCFactory::loadDragonBonesData(const String &dragonBonesFilePath, const S
     {
         return;
     }
-    auto data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
+    const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
     // 使用XML解析器载入dragonBones的skeleton.xml
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
@@ -33,7 +31,7 @@ void DBCCFactory::loadTextureAtlas(const String &textureAtlasFile, const String 
     {
         return;
     }
-    auto data = cocos2d::FileUtils::getInstance()->getDataFromFile(textureAtlasFile);
+    const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(textureAtlasFile);
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
     dragonBones::XMLDataParser parser;

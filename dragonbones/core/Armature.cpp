@@ -34,6 +34,16 @@ Animation *Armature::getAnimation() const
     return _animation;
 }
 
+void *Armature::getDisplay() const
+{
+    return _display;
+}
+
+IEventDispatcher *Armature::getEventDispatcher() const
+{
+    return _eventDispatcher;
+}
+
 Armature::Armature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, void *display)
 {
     _armatureData = armatureData;
@@ -424,7 +434,7 @@ void Armature::arriveAtFrame(const Frame *frame, AnimationState *animationState,
         eventData->sound = frame->sound;
         soundEventDispatcher->dispatchEvent(eventData);
     }
-    if (frame->action.empty())
+    if (!frame->action.empty())
     {
         if (animationState->displayControl)
         {

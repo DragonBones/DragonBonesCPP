@@ -180,13 +180,12 @@ AnimationState *Animation::gotoAndPlay(
     _lastAnimationState->autoTween = autoTween;
     _lastAnimationState->fadeIn(_armature, animationData, fadeInTime, 1.f / durationScale, playTimes, pauseFadeIn);
     addState(_lastAnimationState);
-    const auto &slotList = _armature->getSlots();
-    for (size_t i = 0, l = slotList.size(); i < l; ++i)
+    for (size_t i = 0, l = _armature->getSlots().size(); i < l; ++i)
     {
-        Slot *slot = slotList[i];
-        if (slot->getChildArmature())
+        Slot *slot = _armature->getSlots()[i];
+        if (slot->_childArmature)
         {
-            slot->getChildArmature()->_animation->gotoAndPlay(animationName, fadeInTime);
+            slot->_childArmature->_animation->gotoAndPlay(animationName, fadeInTime);
         }
     }
     return _lastAnimationState;
@@ -278,13 +277,14 @@ void Animation::advanceTime(float passedTime)
     }
     bool isFading = false;
     passedTime *= _timeScale;
-    // reverse advance
-    for (size_t i = _animationStateList.size(); i--;)
+    for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
     {
         AnimationState *animationState = _animationStateList[i];
         if (animationState->advanceTime(passedTime))
         {
             removeState(animationState);
+            --i;
+            --l;
         }
         else if (animationState->_fadeState != AnimationState::FadeState::FADE_COMPLETE)
         {

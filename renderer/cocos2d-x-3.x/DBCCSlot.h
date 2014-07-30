@@ -5,16 +5,15 @@
 #include "cocos2d.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
+class DBCCArmature;
 class DBCCSlot : public Slot
 {
 protected:
     cocos2d::Node *_nodeDisplay;
     
 public:
-    cocos2d::Node *getDisplay() const
-    {
-        return _nodeDisplay;
-    }
+    virtual cocos2d::Node *getCCDisplay() const;
+    virtual DBCCArmature *getCCChildArmature() const;
     
 public:
     DBCCSlot(SlotData *slotData);

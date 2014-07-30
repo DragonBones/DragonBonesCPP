@@ -2,6 +2,7 @@
 #define __DBCC_FACTORY_H__
 
 #include "../dragonBones/DragonBonesHeaders.h"
+#include "cocos2d.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCFactory : public BaseFactory

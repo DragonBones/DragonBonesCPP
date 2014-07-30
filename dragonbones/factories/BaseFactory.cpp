@@ -30,9 +30,9 @@ void BaseFactory::addDragonBonesData(DragonBonesData *data, const String &name)
     {
         // throw
     }
-    if (_dragonBonesDataMap[key])
+    if (_dragonBonesDataMap.find(key) != _dragonBonesDataMap.end())
     {
-        // throw
+        // throw?
         removeDragonBonesData(key, true);
     }
     _dragonBonesDataMap[key] = data;
@@ -74,9 +74,9 @@ void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const String &nam
     {
         // throw
     }
-    if (_textureAtlasMap[key])
+    if (_textureAtlasMap.find(key) != _textureAtlasMap.end())
     {
-        // throw
+        // throw?
         removeTextureAtlas(key, true);
     }
     _textureAtlasMap[key] = textureAtlas;
@@ -224,22 +224,46 @@ void *BaseFactory::getTextureDisplay(const String &textureName, const String &te
     }
     if (textureAtlas)
     {
-        /*
-        if(isNaN(pivotX) || isNaN(pivotY))
+        DisplayData *displayData = nullptr;
+        auto iterator = _dragonBonesDataMap.find(textureAtlas->textureAtlasData->name);
+        if (iterator != _dragonBonesDataMap.end())
         {
-            var data:SkeletonData = _dataDic[textureAtlasName];
-            if(data)
+            DragonBonesData *dragonBonesData = iterator->second;
+            for (size_t i = 0, l = dragonBonesData->armatureDataList.size(); i < l; ++i)
             {
-                var pivot:Point = data.getSubTexturePivot(textureName);
-                if(pivot)
+                for (size_t j = 0, l = dragonBonesData->armatureDataList[i]->skinDataList.size(); j < l; ++j)
                 {
-                    pivotX = pivot.x;
-                    pivotY = pivot.y;
+                    for (size_t k = 0, l = dragonBonesData->armatureDataList[i]->skinDataList[j]->slotDataList.size(); k < l; ++k)
+                    {
+                        for (size_t m = 0, l = dragonBonesData->armatureDataList[i]->skinDataList[j]->slotDataList[k]->displayDataList.size(); m < l; ++m)
+                        {
+                            displayData = dragonBonesData->armatureDataList[i]->skinDataList[j]->slotDataList[k]->displayDataList[m];
+                            if (displayData->name != textureName)
+                            {
+                                displayData = nullptr;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        if (displayData)
+                        {
+                            break;
+                        }
+                    }
+                    if (displayData)
+                    {
+                        break;
+                    }
+                }
+                if (displayData)
+                {
+                    break;
                 }
             }
         }
-        */
-        return generateDisplay(textureAtlas, textureName, nullptr);
+        return generateDisplay(textureAtlas, textureName, displayData);
     }
     return nullptr;
 }

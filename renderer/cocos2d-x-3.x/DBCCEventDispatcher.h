@@ -32,10 +32,6 @@ public:
     {
         if (eventDispatcher)
         {
-            if (eventData->animationState)
-            {
-                cocos2d::log("animation: %s eventType: %s", eventData->animationState->name.c_str(), eventData->getStringType().c_str());
-            }
             eventDispatcher->dispatchCustomEvent(eventData->getStringType(), eventData);
         }
     }

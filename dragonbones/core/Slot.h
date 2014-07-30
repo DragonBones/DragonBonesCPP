@@ -11,6 +11,7 @@ class Slot : public Object
 {
     friend class Armature;
     friend class Bone;
+    friend class Animation;
     
     friend class BaseFactory;
     
@@ -34,13 +35,14 @@ public:
     virtual float getZOrder() const;
     virtual void setZOrder(float zorder);
     
-    virtual void setDisplay(void *display, const DisplayType displayType, bool disposeExisting);
+    virtual void *getDisplay() const;
+    virtual void setDisplay(void *display, const DisplayType displayType = DisplayType::DT_IMAGE, bool disposeExisting = true);
     
     virtual Armature *getChildArmature() const;
-    virtual void setChildArmature(Armature *childArmature, bool disposeExisting);
+    virtual void setChildArmature(Armature *childArmature, bool disposeExisting = true);
     
     virtual const std::vector<std::pair<void *, DisplayType>> &getDisplayList() const;
-    virtual void setDisplayList(const std::vector<std::pair<void *, DisplayType>> &displayList, bool disposeExisting);
+    virtual void setDisplayList(const std::vector<std::pair<void *, DisplayType>> &displayList, bool disposeExisting = true);
     
     virtual void setVisible(bool vislble) override;
     

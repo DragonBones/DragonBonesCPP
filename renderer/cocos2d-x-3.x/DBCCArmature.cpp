@@ -1,14 +1,15 @@
 #include "DBCCArmature.h"
 #include "DBCCEventDispatcher.h"
+#include "DBCCSlot.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
-cocos2d::Node *DBCCArmature::getDisplay() const
+cocos2d::Node *DBCCArmature::getCCDisplay() const
 {
     return static_cast<cocos2d::Node *>(_display);
 }
 
-cocos2d::EventDispatcher *DBCCArmature::getEventDispatcher() const
+cocos2d::EventDispatcher *DBCCArmature::getCCEventDispatcher() const
 {
     return static_cast<DBCCEventDispatcher *>(_eventDispatcher)->eventDispatcher;
 }
@@ -28,11 +29,11 @@ void DBCCArmature::setAutoUpdate(bool autoUpdate)
     {
         if (_autoUpdate)
         {
-            getDisplay()->schedule(cocos2d::SEL_SCHEDULE(&Armature::advanceTime), 0);
+            getCCDisplay()->schedule(cocos2d::SEL_SCHEDULE(&Armature::advanceTime), 0);
         }
         else
         {
-            getDisplay()->unschedule(cocos2d::SEL_SCHEDULE(&Armature::advanceTime));
+            getCCDisplay()->unschedule(cocos2d::SEL_SCHEDULE(&Armature::advanceTime));
         }
     }
 }
@@ -50,10 +51,16 @@ void DBCCArmature::dispose()
 {
     if (_display)
     {
-        getDisplay()->cleanup();
-        getDisplay()->release();
+        getCCDisplay()->cleanup();
+        getCCDisplay()->release();
     }
     Armature::dispose();
+}
+
+DBCCSlot *DBCCArmature::getCCSlot(const String &slotName) const
+{
+    Slot *slot = getSlot(slotName);
+    return slot ? static_cast<DBCCSlot *>(slot) : nullptr;
 }
 
 NAME_SPACE_DRAGON_BONES_END
