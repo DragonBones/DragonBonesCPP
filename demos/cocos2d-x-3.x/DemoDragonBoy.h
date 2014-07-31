@@ -17,7 +17,6 @@ public:
     CREATE_FUNC(DemoDragonBoy);
     
 private:
-    dragonBones::DBCCFactory *_factory;
     dragonBones::DBCCArmature *_armature;
     
     bool _isLeft;
@@ -35,11 +34,10 @@ protected:
     virtual void demoInit() override
     {
         // factory
-        _factory = new dragonBones::DBCCFactory();
-        _factory->loadDragonBonesData("armatures/DragonBoy/skeleton.xml");
-        _factory->loadTextureAtlas("armatures/DragonBoy/texture.xml");
+        dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/DragonBoy/skeleton.xml");
+        dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/DragonBoy/texture.xml");
         // armature
-        _armature = (dragonBones::DBCCArmature *)(_factory->buildArmature("dragonBoy"));
+        _armature = (dragonBones::DBCCArmature *)(dragonBones::DBCCFactory::factory.buildArmature("dragonBoy"));
         _armature->getCCDisplay()->setPosition(480.f, 200.f);
         _armature->getCCDisplay()->setScale(0.5f);
         this->addChild(_armature->getCCDisplay());
@@ -239,7 +237,7 @@ private:
         }
         if (_currentClotheIndex < (int)(_clothesList.size()))
         {
-            _armature->getCCSlot("clothes")->setDisplay(_factory->getTextureDisplay(_clothesList[_currentClotheIndex]));
+            _armature->getCCSlot("clothes")->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(_clothesList[_currentClotheIndex]));
         }
         else
         {

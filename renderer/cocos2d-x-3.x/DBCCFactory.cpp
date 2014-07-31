@@ -6,6 +6,8 @@
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
+DBCCFactory DBCCFactory::factory;
+
 DBCCFactory::DBCCFactory() {}
 DBCCFactory::~DBCCFactory() {}
 

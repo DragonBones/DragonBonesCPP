@@ -287,7 +287,7 @@ void Slot::updateSlotDisplay(bool disposeExisting)
             }
         }
         updateDisplayBlendMode(_slotData->blendMode);
-        //updateDisplayColor(_slotData->c);
+        //updateDisplayColor();
         updateDisplayVisible(_visible);
         updateDisplayTransform();
     }

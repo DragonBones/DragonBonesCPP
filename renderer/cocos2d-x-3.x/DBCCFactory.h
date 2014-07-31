@@ -8,6 +8,9 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCFactory : public BaseFactory
 {
 public:
+    static DBCCFactory factory;
+    
+public:
     DBCCFactory();
     virtual ~DBCCFactory();
     

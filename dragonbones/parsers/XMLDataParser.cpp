@@ -297,12 +297,22 @@ TransformFrame *XMLDataParser::parseTransformFrame(const XMLElement *frameXML) c
 
 RectangleData *XMLDataParser::parseRectangleData(const XMLElement *rectangleXML) const
 {
-    return nullptr;
+    RectangleData *rectangleData = new RectangleData();
+    rectangleData->name = rectangleXML->Attribute(ConstValues::A_NAME.c_str());
+    rectangleData->width = rectangleXML->FloatAttribute(ConstValues::A_WIDTH.c_str());
+    rectangleData->height = rectangleXML->FloatAttribute(ConstValues::A_HEIGHT.c_str());
+    parseTransform(rectangleXML->FirstChildElement(ConstValues::TRANSFORM.c_str()), &rectangleData->transform, &rectangleData->pivot);
+    return rectangleData;
 }
 
 EllipseData *XMLDataParser:: parseEllipseData(const XMLElement *ellipseXML) const
 {
-    return nullptr;
+    EllipseData *ellipseData = new EllipseData();
+    ellipseData->name = ellipseXML->Attribute(ConstValues::A_NAME.c_str());
+    ellipseData->width = ellipseXML->FloatAttribute(ConstValues::A_WIDTH.c_str());
+    ellipseData->height = ellipseXML->FloatAttribute(ConstValues::A_HEIGHT.c_str());
+    parseTransform(ellipseXML->FirstChildElement(ConstValues::TRANSFORM.c_str()), &ellipseData->transform, &ellipseData->pivot);
+    return ellipseData;
 }
 
 void XMLDataParser::parseTimeline(const XMLElement *timelineXML, Timeline *timeline) const

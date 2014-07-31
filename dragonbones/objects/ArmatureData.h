@@ -77,7 +77,7 @@ public:
     }
     void dispose()
     {
-        for (size_t i = 0, l = boneDataList.size(); i < l; ++i)
+        for (size_t i = 0, l = areaDataList.size(); i < l; ++i)
         {
             areaDataList[i]->dispose();
             delete areaDataList[i];

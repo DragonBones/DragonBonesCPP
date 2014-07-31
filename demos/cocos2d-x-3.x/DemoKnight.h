@@ -17,7 +17,6 @@ public:
     CREATE_FUNC(DemoKnight);
     
 private:
-    dragonBones::DBCCFactory *_factory;
     dragonBones::DBCCArmature *_armature;
     dragonBones::DBCCArmature *_armArmature;
     
@@ -41,11 +40,10 @@ protected:
     virtual void demoInit() override
     {
         // factory
-        _factory = new dragonBones::DBCCFactory();
-        _factory->loadDragonBonesData("armatures/Knight/skeleton.xml");
-        _factory->loadTextureAtlas("armatures/Knight/texture.xml");
+        dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/Knight/skeleton.xml");
+        dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/Knight/texture.xml");
         // armature
-        _armature = (dragonBones::DBCCArmature *)(_factory->buildArmature("knight"));
+        _armature = (dragonBones::DBCCArmature *)(dragonBones::DBCCFactory::factory.buildArmature("knight"));
         _armArmature = _armature->getCCSlot("armOutside")->getCCChildArmature();
         _armature->getCCDisplay()->setPosition(480.f, 200.f);
         this->addChild(_armature->getCCDisplay());
@@ -55,6 +53,7 @@ protected:
         _armArmature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
         // update
         dragonBones::WorldClock::clock.add(_armature);
+        //_armature->setAutoUpdate(true);
         // key
         cocos2d::EventListenerKeyboard *listener = cocos2d::EventListenerKeyboard::create();
         listener->onKeyPressed = std::bind(&DemoKnight::keyPressHandler, this, std::placeholders::_1, std::placeholders::_2);
@@ -246,7 +245,7 @@ private:
                 dragonBones::DBCCSlot *weaponSlot = _armArmature->getCCSlot("weapon");
                 char weaponTextureName[512];
                 sprintf(weaponTextureName, "knightFolder/%s_%d", weaponName.c_str(), weaponLevel + 1);
-                weaponSlot->setDisplay(_factory->getTextureDisplay(weaponTextureName));
+                weaponSlot->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(weaponTextureName));
                 break;
             }
             case 3:
@@ -258,16 +257,16 @@ private:
                 dragonBones::DBCCSlot *bowArrowB = bowSlot->getCCChildArmature()->getCCSlot("arrowBackup");
                 char bowBATextureName[512];
                 sprintf(bowBATextureName, "knightFolder/%s_%d", weaponName.c_str(), weaponLevel + 1);
-                bowBA->setDisplay(_factory->getTextureDisplay(bowBATextureName));
+                bowBA->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(bowBATextureName));
                 char bowBBextureName[512];
                 sprintf(bowBBextureName, "knightFolder/%s_%d", weaponName.c_str(), weaponLevel + 1);
-                bowBB->setDisplay(_factory->getTextureDisplay(bowBBextureName));
+                bowBB->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(bowBBextureName));
                 char bowATextureName[512];
                 sprintf(bowATextureName, "knightFolder/arrow_%d", weaponLevel + 1);
-                bowArrow->setDisplay(_factory->getTextureDisplay(bowATextureName));
+                bowArrow->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(bowATextureName));
                 char bowABTextureName[512];
                 sprintf(bowABTextureName, "knightFolder/arrow_%d", weaponLevel + 1);
-                bowArrowB->setDisplay(_factory->getTextureDisplay(bowABTextureName));
+                bowArrowB->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(bowABTextureName));
                 break;
             }
         }
@@ -351,7 +350,7 @@ private:
     
     void createArrow(float r, const cocos2d::Point &point)
     {
-        cocos2d::Node *arrowNode = static_cast<cocos2d::Node *>(_factory->getTextureDisplay("knightFolder/arrow_1"));
+        cocos2d::Node *arrowNode = static_cast<cocos2d::Node *>(dragonBones::DBCCFactory::factory.getTextureDisplay("knightFolder/arrow_1"));
         arrowNode->setPosition(point);
         arrowNode->setRotation(CC_RADIANS_TO_DEGREES(r));
         cocos2d::Point *speedPoint = new cocos2d::Point();
