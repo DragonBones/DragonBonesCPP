@@ -62,13 +62,15 @@ void DBCCFactory::refreshTextureAtlasTexture()
 Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const
 {
     Animation *animation = new Animation();
-    // eventDispatcher
-    DBCCEventDispatcher *eventDispatcher = new DBCCEventDispatcher();
-    eventDispatcher->eventDispatcher = cocos2d::Director::getInstance()->getEventDispatcher();
-    eventDispatcher->eventDispatcher->retain();
     // sprite
     cocos2d::Sprite *display = cocos2d::Sprite::create();
+    display->setCascadeColorEnabled(true);
+    display->setCascadeOpacityEnabled(true);
     display->retain();
+    // eventDispatcher
+    DBCCEventDispatcher *eventDispatcher = new DBCCEventDispatcher();
+    eventDispatcher->eventDispatcher = display->getEventDispatcher();
+    // armature
     Armature *armature = new DBCCArmature((ArmatureData *)(armatureData), animation, eventDispatcher, display);
     return armature;
 }
