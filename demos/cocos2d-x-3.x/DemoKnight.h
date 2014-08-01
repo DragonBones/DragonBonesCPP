@@ -1,4 +1,4 @@
-#ifndef __DEMO_KNIGHT_H__
+﻿#ifndef __DEMO_KNIGHT_H__
 #define __DEMO_KNIGHT_H__
 
 #include "DemoBase.h"
@@ -53,7 +53,6 @@ protected:
         _armArmature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
         // update
         dragonBones::WorldClock::clock.add(_armature);
-        //_armature->setAutoUpdate(true);
         // key
         cocos2d::EventListenerKeyboard *listener = cocos2d::EventListenerKeyboard::create();
         listener->onKeyPressed = std::bind(&DemoKnight::keyPressHandler, this, std::placeholders::_1, std::placeholders::_2);

@@ -1,4 +1,4 @@
-#ifndef __CONST_VALUES_H__
+﻿#ifndef __CONST_VALUES_H__
 #define __CONST_VALUES_H__
 
 #include "../DragonBones.h"

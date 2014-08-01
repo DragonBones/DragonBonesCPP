@@ -292,12 +292,11 @@ AnimationState *AnimationState::removeMixingTransform(const String &timelineName
 {
     if (recursive)
     {
-        const auto &boneList = _armature->getBones();
         Bone *currentBone = nullptr;
         // From root to leaf
-        for (size_t i = boneList.size(); i--;)
+        for (size_t i = _armature->getBones().size(); i--;)
         {
-            Bone *bone = boneList[i];
+            Bone *bone = _armature->getBones()[i];
             if (bone->name == timelineName)
             {
                 currentBone = bone;

@@ -1,4 +1,4 @@
-#ifndef __DEMO_BASE_H__
+﻿#ifndef __DEMO_BASE_H__
 #define __DEMO_BASE_H__
 
 #include "cocos2d.h"

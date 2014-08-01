@@ -13,10 +13,23 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class BaseFactory
 {
 protected:
+    enum class AutoSearchType {AST_ALL, AST_AUTO, AST_NONE};
+    
+public:
+    bool autoSearchDragonBonesData;
+    bool autoSearchTexture;
+    
+protected:
     mutable String _currentDragonBonesDataName;
     mutable String _currentTextureAtlasName;
     std::map<String, DragonBonesData *> _dragonBonesDataMap;
     std::map<String, ITextureAtlas *> _textureAtlasMap;
+    
+    
+    
+public:
+    const std::map<String, DragonBonesData *> &getDragonBonesDataMap() const;
+    const std::map<String, ITextureAtlas *> &getTextureAtlasMap() const;
     
 public:
     BaseFactory();
@@ -34,7 +47,7 @@ public:
     virtual Armature *buildArmature(const String &armatureName) const;
     virtual Armature *buildArmature(const String &armatureName, const String &dragonBonesName) const;
     virtual Armature *buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const;
-    virtual void *getTextureDisplay(const String &textureName, const String &textureAtlasName = "") const;
+    virtual void *getTextureDisplay(const String &textureName, const String &textureAtlasName = "", const DisplayData *displayData = nullptr) const;
     
 protected:
 
@@ -43,7 +56,7 @@ protected:
     
     virtual Armature *generateArmature(const ArmatureData *armatureData) const = 0;
     virtual Slot *generateSlot(const SlotData *slotData) const = 0;
-    virtual void *generateDisplay(const ITextureAtlas *textureAtlas, const String &textureName, const DisplayData *displayData) const = 0;
+    virtual void *generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const = 0;
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(BaseFactory);

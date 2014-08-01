@@ -1,4 +1,4 @@
-#ifndef __DEMO_DRAGON_BOY_H__
+﻿#ifndef __DEMO_DRAGON_BOY_H__
 #define __DEMO_DRAGON_BOY_H__
 
 #include "DemoBase.h"

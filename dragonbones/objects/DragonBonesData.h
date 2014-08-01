@@ -8,11 +8,15 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class DragonBonesData
 {
 public:
+    bool autoSearch;
     String name;
     std::vector<ArmatureData *> armatureDataList;
     
 public:
-    DragonBonesData() {}
+    DragonBonesData()
+    {
+        autoSearch = false;
+    }
     DragonBonesData(const DragonBonesData &copyData)
     {
         operator=(copyData);
@@ -20,6 +24,7 @@ public:
     DragonBonesData &operator=(const DragonBonesData &copyData)
     {
         dispose();
+        autoSearch = copyData.autoSearch;
         name = copyData.name;
         armatureDataList.reserve(copyData.armatureDataList.size());
         for (size_t i = 0, l = armatureDataList.size(); i < l; ++i)

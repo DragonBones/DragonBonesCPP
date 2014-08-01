@@ -8,13 +8,17 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class TextureAtlasData
 {
 public:
+    bool autoSearch;
     String name;
     String imagePath;
     
     std::vector<TextureData *> textureDataList;
     
 public:
-    TextureAtlasData() {}
+    TextureAtlasData()
+    {
+        autoSearch = false;
+    }
     TextureAtlasData(const TextureAtlasData &copyData)
     {
         operator=(copyData);
@@ -22,6 +26,7 @@ public:
     TextureAtlasData &operator=(const TextureAtlasData &copyData)
     {
         dispose();
+        autoSearch = copyData.autoSearch;
         name = copyData.name;
         imagePath = copyData.imagePath;
         textureDataList.reserve(copyData.textureDataList.size());

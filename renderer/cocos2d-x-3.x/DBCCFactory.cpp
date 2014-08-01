@@ -1,8 +1,8 @@
 ﻿#include "DBCCFactory.h"
-#include "DBCCEventDispatcher.h"
 #include "DBCCTextureAtlas.h"
-#include "DBCCArmature.h"
 #include "DBCCSlot.h"
+#include "DBCCEventDispatcher.h"
+#include "DBCCArmature.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
@@ -11,7 +11,7 @@ DBCCFactory DBCCFactory::factory;
 DBCCFactory::DBCCFactory() {}
 DBCCFactory::~DBCCFactory() {}
 
-void DBCCFactory::loadDragonBonesData(const String &dragonBonesFilePath, const String &name)
+void DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
 {
     if (getDragonBonesData(name))
     {
@@ -27,7 +27,7 @@ void DBCCFactory::loadDragonBonesData(const String &dragonBonesFilePath, const S
     addDragonBonesData(dragonBonesData, name);
 }
 
-void DBCCFactory::loadTextureAtlas(const String &textureAtlasFile, const String &name)
+void DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name)
 {
     if (getTextureAtlas(name))
     {
@@ -65,7 +65,7 @@ Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const
 {
     Animation *animation = new Animation();
     // sprite
-    cocos2d::Sprite *display = cocos2d::Sprite::create();
+    cocos2d::Node *display = cocos2d::Sprite::create();
     display->setCascadeColorEnabled(true);
     display->setCascadeOpacityEnabled(true);
     display->retain();
@@ -79,46 +79,42 @@ Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const
 
 Slot *DBCCFactory::generateSlot(const SlotData *slotData) const
 {
-    DBCCSlot *dbccSlot = new DBCCSlot((SlotData *)(slotData));
-    return dbccSlot;
+    Slot *slot = new DBCCSlot((SlotData *)(slotData));
+    return slot;
 }
 
-void *DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const String &textureName, const DisplayData *displayData) const
+void *DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const
 {
     DBCCTextureAtlas *dbccTextureAtlas = (DBCCTextureAtlas *)(textureAtlas);
-    if (dbccTextureAtlas)
+    if (dbccTextureAtlas && textureData)
     {
-        TextureData *textureData = dbccTextureAtlas->textureAtlasData->getTextureData(textureName);
-        if (textureData)
+        if (!dbccTextureAtlas->texture)
         {
-            if (!dbccTextureAtlas->texture)
-            {
-                // throw
-            }
-            const float x = textureData->region.x;
-            const float y = textureData->region.y;
-            const float width = textureData->region.width;
-            const float height = textureData->region.height;
-            const cocos2d::Rect rect(x, y, width, height);
-            // sprite
-            cocos2d::Sprite *display = cocos2d::Sprite::createWithTexture(dbccTextureAtlas->texture, rect, false);
-            display->retain();
-            float pivotX = 0;
-            float pivotY = 0;
-            if (displayData)
-            {
-                pivotX = displayData->pivot.x;
-                pivotY = displayData->pivot.y;
-                if (textureData->frame)
-                {
-                    pivotX += textureData->frame->x;
-                    pivotY += textureData->frame->y;
-                }
-            }
-            display->setAnchorPoint(cocos2d::Point(pivotX / width, 1.f - pivotY / height));
-            display->setContentSize(cocos2d::Size(width, height));
-            return display;
+            // throw
         }
+        const float x = textureData->region.x;
+        const float y = textureData->region.y;
+        const float width = textureData->region.width;
+        const float height = textureData->region.height;
+        const cocos2d::Rect rect(x, y, width, height);
+        // sprite
+        cocos2d::Node *display = cocos2d::Sprite::createWithTexture(dbccTextureAtlas->texture, rect, false);
+        display->retain();
+        float pivotX = 0;
+        float pivotY = 0;
+        if (displayData)
+        {
+            pivotX = displayData->pivot.x;
+            pivotY = displayData->pivot.y;
+            if (textureData->frame)
+            {
+                pivotX += textureData->frame->x;
+                pivotY += textureData->frame->y;
+            }
+        }
+        display->setAnchorPoint(cocos2d::Point(pivotX / width, 1.f - pivotY / height));
+        display->setContentSize(cocos2d::Size(width, height));
+        return display;
     }
     return nullptr;
 }

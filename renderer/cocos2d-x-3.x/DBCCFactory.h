@@ -14,14 +14,14 @@ public:
     DBCCFactory();
     virtual ~DBCCFactory();
     
-    virtual void loadDragonBonesData(const String &dragonBonesFile, const String &name = "");
-    virtual void loadTextureAtlas(const String &textureAtlasFile, const String &name = "");
+    virtual void loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
+    virtual void loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
     virtual void refreshTextureAtlasTexture();
     
 protected:
     virtual Armature *generateArmature(const ArmatureData *armatureData) const override;
     virtual Slot *generateSlot(const SlotData *slotData) const override;
-    virtual void *generateDisplay(const ITextureAtlas *textureAtlas, const String &textureName, const DisplayData *displayData) const override;
+    virtual void *generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const override;
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(DBCCFactory);

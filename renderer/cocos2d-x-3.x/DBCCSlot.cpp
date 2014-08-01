@@ -63,6 +63,7 @@ void DBCCSlot::removeDisplayFromContainer()
 
 void DBCCSlot::disposeDisplayList()
 {
+    std::vector<cocos2d::Node *> releasedNodeList;
     for (size_t i = 0, l = _displayList.size(); i < l; ++i)
     {
         if (_displayList[i].second == DisplayType::DT_ARMATURE)
@@ -73,10 +74,15 @@ void DBCCSlot::disposeDisplayList()
         else
         {
             cocos2d::Node *display = static_cast<cocos2d::Node *>(_displayList[i].first);
-            display->cleanup();
-            display->release();
+            if (display && std::find(releasedNodeList.cbegin(), releasedNodeList.cend(), display) == releasedNodeList.cend())
+            {
+                display->cleanup();
+                display->release();
+                releasedNodeList.push_back(display);
+            }
         }
     }
+    releasedNodeList.clear();
 }
 
 void DBCCSlot::updateDisplay(void *display, bool disposeExisting)

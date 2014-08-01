@@ -1,7 +1,21 @@
 ﻿#include "BaseFactory.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
-BaseFactory::BaseFactory() {}
+
+const std::map<String, DragonBonesData *> &BaseFactory::getDragonBonesDataMap() const
+{
+    return _dragonBonesDataMap;
+}
+const std::map<String, ITextureAtlas *> &BaseFactory::getTextureAtlasMap() const
+{
+    return _textureAtlasMap;
+}
+
+BaseFactory::BaseFactory()
+{
+    autoSearchDragonBonesData = false;
+    autoSearchTexture = false;
+}
 BaseFactory::~BaseFactory()
 {
     dispose();
@@ -136,17 +150,28 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
         {
             dragonBonesData = iterator->second;
             armatureData = dragonBonesData->getArmatureData(armatureName);
+            _currentDragonBonesDataName = dragonBonesName;
+            _currentTextureAtlasName = textureAtlasName.empty() ? _currentDragonBonesDataName : textureAtlasName;
         }
     }
-    else
+    if (!armatureData)
     {
-        for (auto iterator = _dragonBonesDataMap.begin(); iterator != _dragonBonesDataMap.end(); ++iterator)
+        AutoSearchType searchType = (dragonBonesName.empty() ? AutoSearchType::AST_ALL : (autoSearchDragonBonesData ? AutoSearchType::AST_AUTO : AutoSearchType::AST_NONE));
+        if (searchType != AutoSearchType::AST_NONE)
         {
-            dragonBonesData = iterator->second;
-            armatureData = dragonBonesData->getArmatureData(armatureName);
-            if (armatureData)
+            for (auto iterator = _dragonBonesDataMap.begin(); iterator != _dragonBonesDataMap.end(); ++iterator)
             {
-                break;
+                dragonBonesData = iterator->second;
+                if (searchType == AutoSearchType::AST_ALL || dragonBonesData->autoSearch)
+                {
+                    armatureData = dragonBonesData->getArmatureData(armatureName);
+                    if (armatureData)
+                    {
+                        _currentDragonBonesDataName = iterator->first;
+                        _currentTextureAtlasName = _currentDragonBonesDataName;
+                        break;
+                    }
+                }
             }
         }
     }
@@ -154,8 +179,6 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
     {
         return nullptr;
     }
-    _currentDragonBonesDataName = dragonBonesData->name;
-    _currentTextureAtlasName = textureAtlasName.empty() ? _currentDragonBonesDataName : textureAtlasName;
     if (!animationName.empty() && animationName != armatureName)
     {
         animationArmatureData = dragonBonesData->getArmatureData(animationName);
@@ -199,32 +222,44 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
     return armature;
 }
 
-void *BaseFactory::getTextureDisplay(const String &textureName, const String &textureAtlasName) const
+void *BaseFactory::getTextureDisplay(const String &textureName, const String &textureAtlasName, const DisplayData *displayData) const
 {
     ITextureAtlas *textureAtlas = nullptr;
+    TextureData *textureData = nullptr;
     if (!textureAtlasName.empty())
     {
         auto iterator = _textureAtlasMap.find(textureAtlasName);
         if (iterator != _textureAtlasMap.end())
         {
             textureAtlas = iterator->second;
+            textureData = textureAtlas->textureAtlasData->getTextureData(textureName);
         }
     }
-    else
+    if (!textureData)
     {
-        for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
+        AutoSearchType searchType = (textureAtlasName.empty() ? AutoSearchType::AST_ALL : (autoSearchTexture ? AutoSearchType::AST_AUTO : AutoSearchType::AST_NONE));
+        if (searchType != AutoSearchType::AST_NONE)
         {
-            textureAtlas = iterator->second;
-            const TextureData *textureData = textureAtlas->textureAtlasData->getTextureData(textureName);
-            if (textureData)
+            for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
             {
-                break;
+                textureAtlas = iterator->second;
+                if (searchType == AutoSearchType::AST_ALL || textureAtlas->textureAtlasData->autoSearch)
+                {
+                    textureData = textureAtlas->textureAtlasData->getTextureData(textureName);
+                    if (textureData)
+                    {
+                        break;
+                    }
+                }
             }
         }
     }
-    if (textureAtlas)
+    if (!textureData)
     {
-        DisplayData *displayData = nullptr;
+        return nullptr;
+    }
+    if (!displayData)
+    {
         auto iterator = _dragonBonesDataMap.find(textureAtlas->textureAtlasData->name);
         if (iterator != _dragonBonesDataMap.end())
         {
@@ -263,9 +298,8 @@ void *BaseFactory::getTextureDisplay(const String &textureName, const String &te
                 }
             }
         }
-        return generateDisplay(textureAtlas, textureName, displayData);
     }
-    return nullptr;
+    return generateDisplay(textureAtlas, textureData, displayData);
 }
 
 void BaseFactory::buildBones(Armature *armature, const ArmatureData *armatureData) const
@@ -328,13 +362,7 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
                 case DisplayType::DT_IMAGE:
                 default:
                 {
-                    ITextureAtlas *textureAtlas = nullptr;
-                    auto iterator = _textureAtlasMap.find(_currentTextureAtlasName);
-                    if (iterator != _textureAtlasMap.end())
-                    {
-                        textureAtlas = iterator->second;
-                    }
-                    void *display = generateDisplay(textureAtlas, displayData->name, displayData);
+                    void *display = getTextureDisplay(displayData->name, _currentTextureAtlasName, displayData);
                     displayList.push_back(std::make_pair(display, DisplayType::DT_IMAGE));
                 }
                 break;
