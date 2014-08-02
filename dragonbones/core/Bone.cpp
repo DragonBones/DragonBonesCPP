@@ -283,17 +283,17 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
                 }
             }
         }
-        if (!frame->event.empty() && _armature->_eventDispatcher->hasEvent(EventData::EventDataType::BONE_FRAME_EVENT))
+        if (!frame->event.empty() && _armature->_eventDispatcher->hasEvent(EventData::EventType::BONE_FRAME_EVENT))
         {
-            EventData *eventData = new EventData(EventData::EventDataType::BONE_FRAME_EVENT, _armature);
+            EventData *eventData = new EventData(EventData::EventType::BONE_FRAME_EVENT, _armature);
             eventData->bone = this;
             eventData->animationState = animationState;
             eventData->frameLabel = frame->event;
             _armature->_eventDataList.push_back(eventData);
         }
-        if (!frame->sound.empty() && Armature::soundEventDispatcher && Armature::soundEventDispatcher->hasEvent(EventData::EventDataType::SOUND))
+        if (!frame->sound.empty() && Armature::soundEventDispatcher && Armature::soundEventDispatcher->hasEvent(EventData::EventType::SOUND))
         {
-            EventData *eventData = new EventData(EventData::EventDataType::SOUND, _armature);
+            EventData *eventData = new EventData(EventData::EventType::SOUND, _armature);
             eventData->bone = this;
             eventData->animationState = animationState;
             eventData->sound = frame->sound;

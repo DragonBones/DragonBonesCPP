@@ -339,6 +339,8 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
         slot->_originZOrder = slotData->zOrder;
         slot->_slotData = slotData;
         std::vector<std::pair<void *, DisplayType>> displayList;
+
+        void* frameDisplay = nullptr;
         for (size_t j = 0, l = slotData->displayDataList.size(); j < l; ++j)
         {
             const DisplayData *displayData = slotData->displayDataList[j];
@@ -357,14 +359,21 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
                     }
                     Armature *childArmature = buildArmature(displayData->name, "", displayDataCopy ? displayDataCopy->name : "", _currentDragonBonesDataName, _currentTextureAtlasName);
                     displayList.push_back(std::make_pair(childArmature, DisplayType::DT_ARMATURE));
+                    break;
                 }
-                break;
                 case DisplayType::DT_IMAGE:
-                default:
                 {
                     void *display = getTextureDisplay(displayData->name, _currentTextureAtlasName, displayData);
                     displayList.push_back(std::make_pair(display, DisplayType::DT_IMAGE));
+                    break;
                 }
+                case DisplayType::DT_FRAME:
+                {
+                    //j
+                    //frameDisplay = ;
+                    break;
+                }
+                default:
                 break;
             }
         }

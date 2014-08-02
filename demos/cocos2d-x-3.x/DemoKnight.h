@@ -289,10 +289,10 @@ private:
         dragonBones::EventData *eventData = (dragonBones::EventData *)(event->getUserData());
         switch (eventData->getType())
         {
-            case dragonBones::EventData::EventDataType::FADE_IN:
+            case dragonBones::EventData::EventType::FADE_IN:
                 _isComboAttack = false;
                 break;
-            case dragonBones::EventData::EventDataType::COMPLETE:
+            case dragonBones::EventData::EventType::COMPLETE:
                 if (_isComboAttack)
                 {
                     armReady();
@@ -304,7 +304,7 @@ private:
                     _isComboAttack = false;
                 }
                 break;
-            case dragonBones::EventData::EventDataType::ANIMATION_FRAME_EVENT:
+            case dragonBones::EventData::EventType::ANIMATION_FRAME_EVENT:
             {
                 if (eventData->frameLabel == "fire")
                 {

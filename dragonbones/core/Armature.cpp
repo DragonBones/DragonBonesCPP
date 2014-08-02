@@ -322,9 +322,9 @@ void Armature::advanceTime(float passedTime)
     if (_slotsZOrderChanged)
     {
         sortSlotsByZOrder();
-        if (_eventDispatcher->hasEvent(EventData::EventDataType::Z_ORDER_UPDATED))
+        if (_eventDispatcher->hasEvent(EventData::EventType::Z_ORDER_UPDATED))
         {
-            EventData *eventData = new EventData(EventData::EventDataType::Z_ORDER_UPDATED, this);
+            EventData *eventData = new EventData(EventData::EventType::Z_ORDER_UPDATED, this);
             _eventDataList.push_back(eventData);
         }
     }
@@ -420,16 +420,16 @@ void Armature::sortBones()
 
 void Armature::arriveAtFrame(const Frame *frame, AnimationState *animationState, bool isCross)
 {
-    if (!frame->event.empty() && _eventDispatcher->hasEvent(EventData::EventDataType::ANIMATION_FRAME_EVENT))
+    if (!frame->event.empty() && _eventDispatcher->hasEvent(EventData::EventType::ANIMATION_FRAME_EVENT))
     {
-        EventData *eventData = new EventData(EventData::EventDataType::ANIMATION_FRAME_EVENT, this);
+        EventData *eventData = new EventData(EventData::EventType::ANIMATION_FRAME_EVENT, this);
         eventData->animationState = animationState;
         eventData->frameLabel = frame->event;
         _eventDataList.push_back(eventData);
     }
-    if (!frame->sound.empty() && soundEventDispatcher && soundEventDispatcher->hasEvent(EventData::EventDataType::SOUND))
+    if (!frame->sound.empty() && soundEventDispatcher && soundEventDispatcher->hasEvent(EventData::EventType::SOUND))
     {
-        EventData *eventData = new EventData(EventData::EventDataType::SOUND, this);
+        EventData *eventData = new EventData(EventData::EventType::SOUND, this);
         eventData->animationState = animationState;
         eventData->sound = frame->sound;
         soundEventDispatcher->dispatchEvent(eventData);

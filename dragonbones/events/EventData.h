@@ -26,7 +26,7 @@ public:
     
     static const String _ERROR;
     
-    enum class EventDataType
+    enum class EventType
     {
         Z_ORDER_UPDATED,
         ANIMATION_FRAME_EVENT,
@@ -34,6 +34,8 @@ public:
         SOUND,
         FADE_IN, FADE_OUT, START, COMPLETE, LOOP_COMPLETE, FADE_IN_COMPLETE, FADE_OUT_COMPLETE
     };
+
+    static const String &typeToString(EventType eventType);
     
 public:
     String frameLabel;
@@ -44,15 +46,15 @@ public:
     AnimationState *animationState;
     
 private:
-    EventDataType _type;
+    EventType _type;
     
 public:
-    EventDataType getType() const;
+    EventType getType() const;
     
     const String &getStringType() const;
     
 public:
-    EventData(EventDataType type, Armature *armatureTarget);
+    EventData(EventType type, Armature *armatureTarget);
     virtual ~EventData();
     void dispose();
     

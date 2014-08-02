@@ -36,7 +36,7 @@ public:
         }
     }
     
-    virtual bool hasEvent(EventData::EventDataType eventDataType) const override
+    virtual bool hasEvent(EventData::EventType eventDataType) const override
     {
         return eventDispatcher != nullptr;
     }

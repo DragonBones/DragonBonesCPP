@@ -16,36 +16,31 @@ const String EventData::FADE_OUT_COMPLETE = "fadeOutComplete";
 
 const String EventData::_ERROR = "error";
 
-EventData::EventDataType EventData::getType() const
+const String &EventData::typeToString(EventData::EventType eventType)
 {
-    return _type;
-}
-
-const String &EventData::getStringType() const
-{
-    switch (_type)
+    switch (eventType)
     {
-        case EventDataType::Z_ORDER_UPDATED:
+        case EventType::Z_ORDER_UPDATED:
             return Z_ORDER_UPDATED;
-        case EventDataType::ANIMATION_FRAME_EVENT:
+        case EventType::ANIMATION_FRAME_EVENT:
             return ANIMATION_FRAME_EVENT;
-        case EventDataType::BONE_FRAME_EVENT:
+        case EventType::BONE_FRAME_EVENT:
             return BONE_FRAME_EVENT;
-        case EventDataType::SOUND:
+        case EventType::SOUND:
             return SOUND;
-        case EventDataType::FADE_IN:
+        case EventType::FADE_IN:
             return FADE_IN;
-        case EventDataType::FADE_OUT:
+        case EventType::FADE_OUT:
             return FADE_OUT;
-        case EventDataType::START:
+        case EventType::START:
             return START;
-        case EventDataType::COMPLETE:
+        case EventType::COMPLETE:
             return COMPLETE;
-        case EventDataType::LOOP_COMPLETE:
+        case EventType::LOOP_COMPLETE:
             return LOOP_COMPLETE;
-        case EventDataType::FADE_IN_COMPLETE:
+        case EventType::FADE_IN_COMPLETE:
             return FADE_IN_COMPLETE;
-        case EventDataType::FADE_OUT_COMPLETE:
+        case EventType::FADE_OUT_COMPLETE:
             return FADE_OUT_COMPLETE;
         default:
             break;
@@ -54,7 +49,17 @@ const String &EventData::getStringType() const
     return _ERROR;
 }
 
-EventData::EventData(EventDataType type, Armature *armatureTarget)
+EventData::EventType EventData::getType() const
+{
+    return _type;
+}
+
+const String &EventData::getStringType() const
+{
+    return typeToString(_type);
+}
+
+EventData::EventData(EventType type, Armature *armatureTarget)
 {
     _type = type;
     armature = armatureTarget;

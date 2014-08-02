@@ -459,15 +459,15 @@ void AnimationState::advanceFadeTime(float passedTime)
     }
     if (fadeStartFlg)
     {
-        EventData::EventDataType eventDataType;
+        EventData::EventType eventDataType;
         if (_isFadeOut)
         {
-            eventDataType = EventData::EventDataType::FADE_OUT;
+            eventDataType = EventData::EventType::FADE_OUT;
         }
         else
         {
             hideBones();
-            eventDataType = EventData::EventDataType::FADE_IN;
+            eventDataType = EventData::EventType::FADE_IN;
         }
         if (_armature->_eventDispatcher->hasEvent(eventDataType))
         {
@@ -478,14 +478,14 @@ void AnimationState::advanceFadeTime(float passedTime)
     }
     if (fadeCompleteFlg)
     {
-        EventData::EventDataType eventDataType;
+        EventData::EventType eventDataType;
         if (_isFadeOut)
         {
-            eventDataType = EventData::EventDataType::FADE_OUT_COMPLETE;
+            eventDataType = EventData::EventType::FADE_OUT_COMPLETE;
         }
         else
         {
-            eventDataType = EventData::EventDataType::FADE_IN_COMPLETE;
+            eventDataType = EventData::EventType::FADE_IN_COMPLETE;
         }
         if (_armature->_eventDispatcher->hasEvent(eventDataType))
         {
@@ -582,18 +582,18 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     }
     if (startFlg)
     {
-        if (_armature->_eventDispatcher->hasEvent(EventData::EventDataType::START))
+        if (_armature->_eventDispatcher->hasEvent(EventData::EventType::START))
         {
-            EventData *eventData = new EventData(EventData::EventDataType::START, _armature);
+            EventData *eventData = new EventData(EventData::EventType::START, _armature);
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }
     }
     if (completeFlg)
     {
-        if (_armature->_eventDispatcher->hasEvent(EventData::EventDataType::COMPLETE))
+        if (_armature->_eventDispatcher->hasEvent(EventData::EventType::COMPLETE))
         {
-            EventData *eventData = new EventData(EventData::EventDataType::COMPLETE, _armature);
+            EventData *eventData = new EventData(EventData::EventType::COMPLETE, _armature);
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }
@@ -604,9 +604,9 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     }
     else if (loopCompleteFlg)
     {
-        if (_armature->_eventDispatcher->hasEvent(EventData::EventDataType::LOOP_COMPLETE))
+        if (_armature->_eventDispatcher->hasEvent(EventData::EventType::LOOP_COMPLETE))
         {
-            EventData *eventData = new EventData(EventData::EventDataType::LOOP_COMPLETE, _armature);
+            EventData *eventData = new EventData(EventData::EventType::LOOP_COMPLETE, _armature);
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }

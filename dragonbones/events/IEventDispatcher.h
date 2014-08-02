@@ -13,7 +13,7 @@ public:
     virtual void dispose() = 0;
     
     virtual void dispatchEvent(EventData *eventData) = 0;
-    virtual bool hasEvent(EventData::EventDataType eventDataType) const = 0;
+    virtual bool hasEvent(EventData::EventType eventDataType) const = 0;
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(IEventDispatcher);
