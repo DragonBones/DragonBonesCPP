@@ -279,10 +279,12 @@ private:
             int newAllocated = cap * 2;
             T *newMem = new T[newAllocated];
             memcpy(newMem, _mem, sizeof(T)*_size);      // warning: not using constructors, only works for PODs
+            
             if (_mem != _pool)
             {
                 delete [] _mem;
             }
+            
             _mem = newMem;
             _allocated = newAllocated;
         }
@@ -345,20 +347,25 @@ public:
             // Need a new block.
             Block *block = new Block();
             _blockPtrs.Push(block);
+            
             for (int i = 0; i < COUNT - 1; ++i)
             {
                 block->chunk[i].next = &block->chunk[i + 1];
             }
+            
             block->chunk[COUNT - 1].next = 0;
             _root = block->chunk;
         }
+        
         void *result = _root;
         _root = _root->next;
         ++_currentAllocs;
+        
         if (_currentAllocs > _maxAllocs)
         {
             _maxAllocs = _currentAllocs;
         }
+        
         _nAllocs++;
         _nUntracked++;
         return result;
@@ -369,6 +376,7 @@ public:
         {
             return;
         }
+        
         --_currentAllocs;
         Chunk *chunk = (Chunk *)mem;
 #ifdef DEBUG
@@ -499,6 +507,7 @@ public:
         {
             ++p;
         }
+        
         return p;
     }
     static char *SkipWhiteSpace(char *p)
@@ -507,6 +516,7 @@ public:
         {
             ++p;
         }
+        
         return p;
     }
     static bool IsWhiteSpace(char p)
@@ -517,20 +527,24 @@ public:
     inline static bool StringEqual(const char *p, const char *q, int nChar = INT_MAX)
     {
         int n = 0;
+        
         if (p == q)
         {
             return true;
         }
+        
         while (*p && *q && *p == *q && n < nChar)
         {
             ++p;
             ++q;
             ++n;
         }
+        
         if ((n == nChar) || (*p == 0 && *q == 0))
         {
             return true;
         }
+        
         return false;
     }
     inline static int IsUTF8Continuation(const char p)
@@ -1285,50 +1299,60 @@ public:
     XMLError QueryIntAttribute(const char *name, int *value) const
     {
         const XMLAttribute *a = FindAttribute(name);
+        
         if (!a)
         {
             return XML_NO_ATTRIBUTE;
         }
+        
         return a->QueryIntValue(value);
     }
     /// See QueryIntAttribute()
     XMLError QueryUnsignedAttribute(const char *name, unsigned int *value) const
     {
         const XMLAttribute *a = FindAttribute(name);
+        
         if (!a)
         {
             return XML_NO_ATTRIBUTE;
         }
+        
         return a->QueryUnsignedValue(value);
     }
     /// See QueryIntAttribute()
     XMLError QueryBoolAttribute(const char *name, bool *value) const
     {
         const XMLAttribute *a = FindAttribute(name);
+        
         if (!a)
         {
             return XML_NO_ATTRIBUTE;
         }
+        
         return a->QueryBoolValue(value);
     }
     /// See QueryIntAttribute()
     XMLError QueryDoubleAttribute(const char *name, double *value) const
     {
         const XMLAttribute *a = FindAttribute(name);
+        
         if (!a)
         {
             return XML_NO_ATTRIBUTE;
         }
+        
         return a->QueryDoubleValue(value);
     }
     /// See QueryIntAttribute()
     XMLError QueryFloatAttribute(const char *name, float *value) const
     {
         const XMLAttribute *a = FindAttribute(name);
+        
         if (!a)
         {
             return XML_NO_ATTRIBUTE;
         }
+        
         return a->QueryFloatValue(value);
     }
     

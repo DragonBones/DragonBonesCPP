@@ -34,7 +34,7 @@ public:
         SOUND,
         FADE_IN, FADE_OUT, START, COMPLETE, LOOP_COMPLETE, FADE_IN_COMPLETE, FADE_OUT_COMPLETE
     };
-
+    
     static const String &typeToString(EventType eventType);
     
 public:

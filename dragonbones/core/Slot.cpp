@@ -15,6 +15,7 @@ void Slot::setZOrder(float value)
     if (getZOrder() != value)
     {
         _offsetZOrder = value - _originZOrder - _tweenZOrder;
+        
         if (_armature)
         {
             _armature->_slotsZOrderChanged = true;
@@ -32,14 +33,17 @@ void Slot::setDisplay(void *display, DisplayType displayType, bool disposeExisti
     {
         _displayIndex = 0;
     }
+    
     if (_displayIndex >= (int)(_displayList.size()))
     {
         _displayList.resize(_displayIndex);
     }
+    
     if (_displayList[_displayIndex].first == display)
     {
         return;
     }
+    
     _displayList[_displayIndex].first = display;
     _displayList[_displayIndex].second = displayType;
     updateSlotDisplay(disposeExisting);
@@ -65,10 +69,12 @@ void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &dis
     {
         _displayIndex = 0;
     }
+    
     if (disposeExisting)
     {
         disposeDisplayList();
     }
+    
     // copy
     _displayList = displayList;
     int displayIndexBackup = _displayIndex;
@@ -88,6 +94,7 @@ void Slot::setVisible(bool visible)
 void Slot::setArmature(Armature *armature)
 {
     Object::setArmature(armature);
+    
     if (_armature)
     {
         _armature->_slotsZOrderChanged = true;
@@ -132,6 +139,7 @@ void Slot::update()
     {
         return;
     }
+    
     const float x = origin.x + offset.x + _parent->_tweenPivot.x;
     const float y = origin.y + offset.y + _parent->_tweenPivot.y;
     const Matrix &parentMatrix = _parent->globalTransformMatrix;
@@ -139,6 +147,7 @@ void Slot::update()
     //globalTransformMatrix.ty = global.y = parentMatrix.d * y + parentMatrix.b * x + parentMatrix.ty;
     globalTransformMatrix.tx = global.x = parentMatrix.a * x * _parent->global.scaleX + parentMatrix.c * y * _parent->global.scaleY + parentMatrix.tx;
     globalTransformMatrix.ty = global.y = parentMatrix.d * y * _parent->global.scaleY + parentMatrix.b * x * _parent->global.scaleX + parentMatrix.ty;
+    
     if (inheritRotation)
     {
         global.skewX = origin.skewX + offset.skewX + _parent->global.skewX;
@@ -149,6 +158,7 @@ void Slot::update()
         global.skewX = origin.skewX + offset.skewX;
         global.skewY = origin.skewY + offset.skewY;
     }
+    
     if (inheritScale)
     {
         global.scaleX = origin.scaleX * offset.scaleX * _parent->global.scaleX;
@@ -159,6 +169,7 @@ void Slot::update()
         global.scaleX = origin.scaleX * offset.scaleX;
         global.scaleY = origin.scaleY * offset.scaleY;
     }
+    
     globalTransformMatrix.a = global.scaleX * cos(global.skewY);
     globalTransformMatrix.b = global.scaleX * sin(global.skewY);
     globalTransformMatrix.c = -global.scaleY * sin(global.skewX);
@@ -183,12 +194,14 @@ void Slot::changeDisplay(int displayIndex)
         {
             displayIndex = _displayList.size() - 1;
         }
+        
         if (_displayIndex != displayIndex)
         {
             _isShowDisplay = true;
             _displayIndex = displayIndex;
             updateSlotDisplay(false);
             updateChildArmatureAnimation();
+            
             if (
                 _slotData &&
                 !_slotData->displayDataList.empty() &&
@@ -201,11 +214,13 @@ void Slot::changeDisplay(int displayIndex)
         else if (!_isShowDisplay)
         {
             _isShowDisplay = true;
+            
             if (_armature)
             {
                 _armature->_slotsZOrderChanged = true;
                 addDisplayToContainer(_armature->_display, -1);
             }
+            
             updateChildArmatureAnimation();
         }
     }
@@ -241,18 +256,22 @@ void Slot::updateChildArmatureAnimation()
 void Slot::updateSlotDisplay(bool disposeExisting)
 {
     int currentDisplayIndex = -1;
+    
     if (_display)
     {
         currentDisplayIndex = getDisplayZIndex();
         removeDisplayFromContainer();
     }
+    
     void *display = _displayList[_displayIndex].first;
     DisplayType displayType = _displayList[_displayIndex].second;
+    
     if (disposeExisting && _childArmature)
     {
         _childArmature->dispose();
         delete _childArmature;
     }
+    
     if (display)
     {
         if (displayType == DisplayType::DT_ARMATURE)
@@ -271,7 +290,9 @@ void Slot::updateSlotDisplay(bool disposeExisting)
         _display = nullptr;
         _childArmature = nullptr;
     }
+    
     updateDisplay(_display, disposeExisting);
+    
     if (_display)
     {
         if (_armature && _isShowDisplay)
@@ -286,6 +307,7 @@ void Slot::updateSlotDisplay(bool disposeExisting)
                 addDisplayToContainer(_armature->_display, currentDisplayIndex);
             }
         }
+        
         updateDisplayBlendMode(_slotData->blendMode);
         //updateDisplayColor();
         updateDisplayVisible(_visible);

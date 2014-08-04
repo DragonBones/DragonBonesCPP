@@ -35,14 +35,17 @@ int DBCCSlot::getDisplayZIndex() const
     {
         return _nodeDisplay->getLocalZOrder();
     }
+    
     return -1;
 }
 void DBCCSlot::addDisplayToContainer(void *container, int zIndex)
 {
     cocos2d::Node *nodeContainer = static_cast<cocos2d::Node *>(container);
+    
     if (_nodeDisplay && nodeContainer)
     {
         removeDisplayFromContainer();
+        
         if (zIndex < 0)
         {
             nodeContainer->addChild(_nodeDisplay, nodeContainer->getChildrenCount());
@@ -64,6 +67,7 @@ void DBCCSlot::removeDisplayFromContainer()
 void DBCCSlot::disposeDisplayList()
 {
     std::vector<cocos2d::Node *> releasedNodeList;
+    
     for (size_t i = 0, l = _displayList.size(); i < l; ++i)
     {
         if (_displayList[i].second == DisplayType::DT_ARMATURE)
@@ -74,6 +78,7 @@ void DBCCSlot::disposeDisplayList()
         else
         {
             cocos2d::Node *display = static_cast<cocos2d::Node *>(_displayList[i].first);
+            
             if (display && std::find(releasedNodeList.cbegin(), releasedNodeList.cend(), display) == releasedNodeList.cend())
             {
                 display->cleanup();
@@ -82,6 +87,7 @@ void DBCCSlot::disposeDisplayList()
             }
         }
     }
+    
     releasedNodeList.clear();
 }
 
@@ -95,6 +101,7 @@ void DBCCSlot::updateDisplay(void *display, bool disposeExisting)
             _nodeDisplay->release();
         }
     }
+    
     _nodeDisplay = static_cast<cocos2d::Sprite *>(display);
 }
 
@@ -106,34 +113,49 @@ void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
         {
             case BlendMode::BM_ADD:
                 break;
+                
             case BlendMode::BM_ALPHA:
                 break;
+                
             case BlendMode::BM_DARKEN:
                 break;
+                
             case BlendMode::BM_DIFFERENCE:
                 break;
+                
             case BlendMode::BM_ERASE:
                 break;
+                
             case BlendMode::BM_HARDLIGHT:
                 break;
+                
             case BlendMode::BM_INVERT:
                 break;
+                
             case BlendMode::BM_LAYER:
                 break;
+                
             case BlendMode::BM_LIGHTEN:
                 break;
+                
             case BlendMode::BM_MULTIPLY:
                 break;
+                
             case BlendMode::BM_NORMAL:
                 break;
+                
             case BlendMode::BM_OVERLAY:
                 break;
+                
             case BlendMode::BM_SCREEN:
                 break;
+                
             case BlendMode::BM_SHADER:
                 break;
+                
             case BlendMode::BM_SUBTRACT:
                 break;
+                
             default:
                 break;
         }

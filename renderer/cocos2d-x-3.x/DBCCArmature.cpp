@@ -1,8 +1,7 @@
-﻿#include "DBCCArmature.h"
+#include "DBCCArmature.h"
 #include "DBCCEventDispatcher.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
-
 cocos2d::Node *DBCCArmature::getCCDisplay() const
 {
     return static_cast<cocos2d::Node *>(_display);
@@ -28,6 +27,7 @@ void DBCCArmature::dispose()
         getCCDisplay()->cleanup();
         getCCDisplay()->release();
     }
+    
     Armature::dispose();
 }
 
@@ -36,5 +36,4 @@ DBCCSlot *DBCCArmature::getCCSlot(const std::string &slotName) const
     Slot *slot = getSlot(slotName);
     return slot ? static_cast<DBCCSlot *>(slot) : nullptr;
 }
-
 NAME_SPACE_DRAGON_BONES_END

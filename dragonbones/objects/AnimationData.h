@@ -44,11 +44,13 @@ public:
         tweenEasing = copyData.tweenEasing;
         name = copyData.name;
         timelineList.reserve(copyData.timelineList.size());
+        
         for (size_t i = 0, l = timelineList.size(); i < l; ++i)
         {
             timelineList.push_back(new TransformTimeline());
             *(timelineList[i]) = *(copyData.timelineList[i]);
         }
+        
         // copy
         hideTimelineList = copyData.hideTimelineList;
         return *this;
@@ -72,6 +74,7 @@ public:
                 return timelineList[i];
             }
         }
+        
         return nullptr;
     }
     
@@ -83,6 +86,7 @@ private:
             timelineList[i]->dispose();
             delete timelineList[i];
         }
+        
         timelineList.clear();
         hideTimelineList.clear();
     }

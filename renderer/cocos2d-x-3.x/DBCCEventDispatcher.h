@@ -22,8 +22,9 @@ public:
     {
         if (eventDispatcher)
         {
-            //eventDispatcher->removeAllEventListeners();
-            //eventDispatcher->release();
+            eventDispatcher->removeAllEventListeners();
+            eventDispatcher->setEnabled(false);
+            delete eventDispatcher;
             eventDispatcher = nullptr;
         }
     }

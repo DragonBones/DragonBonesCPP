@@ -102,21 +102,26 @@ private:
             case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
                 jump();
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
             case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
                 upgradeWeaponLevel();
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
                 move(-1, true);
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
                 move(1, true);
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
                 changeWeapon();
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_K:
                 attack();
                 break;
@@ -130,13 +135,16 @@ private:
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
             case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
                 move(-1, false);
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
                 move(1, false);
@@ -150,6 +158,7 @@ private:
         {
             return;
         }
+        
         _isJump = true;
         _speedY = 24.f;
         _armature->getAnimation()->gotoAndPlay("jump");
@@ -165,7 +174,9 @@ private:
         {
             _isRight = isDown;
         }
+        
         int moveDir = 0;
+        
         if (_isLeft && _isRight)
         {
             moveDir = _moveDir;
@@ -182,10 +193,12 @@ private:
         {
             moveDir = 0;
         }
+        
         if (_moveDir == moveDir)
         {
             return;
         }
+        
         _moveDir = moveDir;
         updateAnimation();
     }
@@ -218,10 +231,12 @@ private:
     void changeWeapon()
     {
         ++_weaponIndex;
+        
         if (_weaponIndex >= (int)(_weaponList.size()))
         {
             _weaponIndex = 0;
         }
+        
         armReady();
     }
     
@@ -229,12 +244,15 @@ private:
     {
         int weaponLevel = _weaponLevelList[_weaponIndex];
         ++weaponLevel;
+        
         if (weaponLevel >= 3)
         {
             weaponLevel = 0;
         }
+        
         _weaponLevelList[_weaponIndex] = weaponLevel;
         const std::string &weaponName = _weaponList[_weaponIndex];
+        
         switch (_weaponIndex)
         {
             case 0:
@@ -247,6 +265,7 @@ private:
                 weaponSlot->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(weaponTextureName));
                 break;
             }
+            
             case 3:
             {
                 dragonBones::DBCCSlot *bowSlot = _armArmature->getCCSlot("bow");
@@ -277,6 +296,7 @@ private:
         {
             return;
         }
+        
         _isAttacking = true;
         const std::string &weaponName = _weaponList[_weaponIndex];
         char animationName[512];
@@ -287,12 +307,16 @@ private:
     void armAnimationHandler(cocos2d::EventCustom *event)
     {
         dragonBones::EventData *eventData = (dragonBones::EventData *)(event->getUserData());
+        
         switch (eventData->getType())
         {
             case dragonBones::EventData::EventType::FADE_IN:
                 _isComboAttack = false;
+                cocos2d::log("animation fade in: %s", eventData->animationState->name.c_str());
                 break;
+                
             case dragonBones::EventData::EventType::COMPLETE:
+                cocos2d::log("animation complete: %s _isComboAttack: %d", eventData->animationState->name.c_str(), _isComboAttack);
                 if (_isComboAttack)
                 {
                     armReady();
@@ -303,7 +327,9 @@ private:
                     _hitCount = 1;
                     _isComboAttack = false;
                 }
+                
                 break;
+                
             case dragonBones::EventData::EventType::ANIMATION_FRAME_EVENT:
             {
                 if (eventData->frameLabel == "fire")
@@ -311,6 +337,7 @@ private:
                     dragonBones::Bone *bowBone = _armArmature->getBone("bow");
                     cocos2d::Point resultPoint = _armArmature->getCCDisplay()->convertToWorldSpace(cocos2d::Point(bowBone->global.x, -bowBone->global.y));
                     float r = 0.f;
+                    
                     if (_armature->getCCDisplay()->getScaleX() > 0)
                     {
                         r = CC_DEGREES_TO_RADIANS(-_armature->getCCDisplay()->getRotation()) + bowBone->global.getRotation();
@@ -319,21 +346,25 @@ private:
                     {
                         r = CC_DEGREES_TO_RADIANS(-_armature->getCCDisplay()->getRotation()) - bowBone->global.getRotation() + dragonBones::PI;
                     }
+                    
                     switch (_weaponLevelList[_weaponIndex])
                     {
                         case 0:
                             createArrow(r, resultPoint);
                             break;
+                            
                         case 1:
                             createArrow(3.f / 180.f * dragonBones::PI + r, resultPoint);
                             createArrow(-3.f / 180.f * dragonBones::PI + r, resultPoint);
                             break;
+                            
                         case 2:
                             createArrow(6.f / 180.f * dragonBones::PI + r, resultPoint);
                             createArrow(r, resultPoint);
                             createArrow(-6.f / 180.f * dragonBones::PI + r, resultPoint);
                             break;
                     }
+                    
                     cocos2d::log("frameEvent: %s", eventData->frameLabel.c_str());
                 }
                 else if (eventData->frameLabel == "ready")
@@ -341,7 +372,9 @@ private:
                     _isAttacking = false;
                     _isComboAttack = true;
                     ++_hitCount;
+                    cocos2d::log("attack ready: %s", eventData->animationState->name.c_str());
                 }
+                
                 break;
             }
         }
@@ -366,6 +399,7 @@ private:
         {
             cocos2d::Node *arrowNode = _arrowList[i];
             cocos2d::Point *speedPoint = static_cast<cocos2d::Point *>(arrowNode->getUserData());
+            
             if (arrowNode->getPositionY() < -400)
             {
                 if (i == l - 1)
@@ -389,9 +423,11 @@ private:
         float timeScale = _armature->getAnimation()->getTimeScale();
         float x = _armature->getCCDisplay()->getPositionX();
         float y = _armature->getCCDisplay()->getPositionY();
+        
         if (_speedX != 0)
         {
             x += _speedX * timeScale;
+            
             if (x < 0)
             {
                 x = 0.f;
@@ -401,15 +437,19 @@ private:
                 x = 960.f;
             }
         }
+        
         if (_isJump)
         {
             float speedG = -1.f * timeScale;
+            
             if (_speedY >= 0 && _speedY + speedG < 0)
             {
                 _armature->getAnimation()->gotoAndPlay("fall", 0.2f);
             }
+            
             _speedY += speedG;
             y += _speedY * timeScale;
+            
             if (y < 200)
             {
                 y = 200.f;
@@ -424,6 +464,7 @@ private:
                 _armature->getCCDisplay()->setRotation(-_speedY * _armature->getCCDisplay()->getScaleX());
             }
         }
+        
         _armature->getCCDisplay()->setPosition(x, y);
     }
 };

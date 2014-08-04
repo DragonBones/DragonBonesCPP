@@ -48,20 +48,24 @@ inline float round(float value)
 inline float formatRadian(float radian)
 {
     radian = fmod(radian, PI * 2.f);
+    
     if (radian > PI)
     {
         radian -= PI * 2.f;
     }
+    
     if (radian < -PI)
     {
         radian += PI * 2.f;
     }
+    
     return radian;
 }
 
 inline float getEaseValue(float value, float easing)
 {
     float valueEase = 1.f;
+    
     if (easing > 1)    // ease in out
     {
         valueEase = 0.5f * (1.f - cos(value * PI));
@@ -76,6 +80,7 @@ inline float getEaseValue(float value, float easing)
         easing *= -1.f;
         valueEase =  pow(value, 2);
     }
+    
     return (valueEase - value) * easing + value;
 }
 
@@ -84,6 +89,7 @@ inline T getEnumByString(const char *string)
 {
     T enumValue = static_cast<T>(-1);
     int count = sizeof(EnumName<T>::list) / sizeof(EnumName<T>::list[0]);
+    
     for (int i = 0; i < count; ++i)
     {
         if (strcmp(string, EnumName<T>::list[i]) == 0)
@@ -92,6 +98,7 @@ inline T getEnumByString(const char *string)
             break;
         }
     }
+    
     return enumValue;
 }
 
@@ -105,6 +112,7 @@ inline int indexOf(std::vector<T> &vector, const T &value)
             return i;
         }
     }
+    
     return -1;
 }
 

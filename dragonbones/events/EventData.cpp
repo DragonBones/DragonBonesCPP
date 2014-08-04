@@ -22,29 +22,41 @@ const String &EventData::typeToString(EventData::EventType eventType)
     {
         case EventType::Z_ORDER_UPDATED:
             return Z_ORDER_UPDATED;
+            
         case EventType::ANIMATION_FRAME_EVENT:
             return ANIMATION_FRAME_EVENT;
+            
         case EventType::BONE_FRAME_EVENT:
             return BONE_FRAME_EVENT;
+            
         case EventType::SOUND:
             return SOUND;
+            
         case EventType::FADE_IN:
             return FADE_IN;
+            
         case EventType::FADE_OUT:
             return FADE_OUT;
+            
         case EventType::START:
             return START;
+            
         case EventType::COMPLETE:
             return COMPLETE;
+            
         case EventType::LOOP_COMPLETE:
             return LOOP_COMPLETE;
+            
         case EventType::FADE_IN_COMPLETE:
             return FADE_IN_COMPLETE;
+            
         case EventType::FADE_OUT_COMPLETE:
             return FADE_OUT_COMPLETE;
+            
         default:
             break;
     }
+    
     // throw
     return _ERROR;
 }

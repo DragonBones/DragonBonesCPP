@@ -26,6 +26,7 @@ void Bone::setVisible(bool visible)
     if (_visible != visible)
     {
         _visible = visible;
+        
         for (size_t i = 0, l = _slotList.size(); i < l; ++i)
         {
             _slotList[i]->updateDisplayVisible(_visible);
@@ -36,10 +37,12 @@ void Bone::setVisible(bool visible)
 void Bone::setArmature(Armature *armature)
 {
     Object::setArmature(armature);
+    
     for (size_t i = 0, l = _boneList.size(); i < l; ++i)
     {
         _boneList[i]->setArmature(armature);
     }
+    
     for (size_t i = 0, l = _slotList.size(); i < l; ++i)
     {
         _slotList[i]->setArmature(armature);
@@ -61,22 +64,6 @@ Bone::~Bone()
 void Bone::dispose()
 {
     Object::dispose();
-    for (size_t i = 0, l = _boneList.size(); i < l; ++i)
-    {
-        if (_boneList[i])
-        {
-            _boneList[i]->dispose();
-            delete _boneList[i];
-        }
-    }
-    for (size_t i = 0, l = _slotList.size(); i < l; ++i)
-    {
-        if (_slotList[i])
-        {
-            _slotList[i]->dispose();
-            delete _slotList[i];
-        }
-    }
     _boneList.clear();
     _slotList.clear();
     _timelineStateList.clear();
@@ -93,15 +80,19 @@ bool Bone::contains(const Object *object) const
     {
         // throw
     }
+    
     if (object == this)
     {
         return false;
     }
+    
     const Object *ancestor = object;
+    
     while (!(ancestor == this || ancestor == nullptr))
     {
         ancestor = ancestor->getParent();
     }
+    
     return ancestor == this;
 }
 
@@ -111,16 +102,20 @@ void Bone::addChild(Object *object)
     {
         // throw
     }
+    
     Bone *bone = dynamic_cast<Bone *>(object);
     Slot *slot = dynamic_cast<Slot *>(object);
+    
     if (object == this || (bone && bone->contains(this)))
     {
         throw std::invalid_argument("An Bone cannot be added as a child to itself or one of its children (or children's children, etc.)");
     }
+    
     if (object && object->getParent())
     {
         object->getParent()->removeChild(object);
     }
+    
     if (bone)
     {
         _boneList.push_back(bone);
@@ -141,11 +136,14 @@ void Bone::removeChild(Object *object)
     {
         // throw
     }
+    
     Bone *bone = dynamic_cast<Bone *>(object);
     Slot *slot = dynamic_cast<Slot *>(object);
+    
     if (bone)
     {
         auto iterator = std::find(_boneList.begin(), _boneList.end(), bone);
+        
         if (iterator != _boneList.end())
         {
             _boneList.erase(iterator);
@@ -160,6 +158,7 @@ void Bone::removeChild(Object *object)
     else if (slot)
     {
         auto iterator = std::find(_slotList.begin(), _slotList.end(), slot);
+        
         if (iterator != _slotList.end())
         {
             _slotList.erase(iterator);
@@ -176,6 +175,7 @@ void Bone::removeChild(Object *object)
 void Bone::update(bool needUpdate)
 {
     _needUpdate --;
+    
     if (needUpdate || _needUpdate > 0 || (_parent && _parent->_needUpdate > 0))
     {
         _needUpdate = 1;
@@ -184,9 +184,11 @@ void Bone::update(bool needUpdate)
     {
         return;
     }
+    
     blendingTimeline();
     global.scaleX = (origin.scaleX + _tween.scaleX) * offset.scaleX;
     global.scaleY = (origin.scaleY + _tween.scaleY) * offset.scaleY;
+    
     if (_parent)
     {
         const float x = origin.x + offset.x + _tween.x;
@@ -194,6 +196,7 @@ void Bone::update(bool needUpdate)
         const Matrix &parentMatrix = _parent->globalTransformMatrix;
         globalTransformMatrix.tx = global.x = parentMatrix.a * x + parentMatrix.c * y + parentMatrix.tx;
         globalTransformMatrix.ty = global.y = parentMatrix.d * y + parentMatrix.b * x + parentMatrix.ty;
+        
         if (inheritRotation)
         {
             global.skewX = origin.skewX + offset.skewX + _tween.skewX + _parent->global.skewX;
@@ -204,6 +207,7 @@ void Bone::update(bool needUpdate)
             global.skewX = origin.skewX + offset.skewX + _tween.skewX;
             global.skewY = origin.skewY + offset.skewY + _tween.skewY;
         }
+        
         if (inheritScale)
         {
             global.scaleX *= _parent->global.scaleX;
@@ -217,6 +221,7 @@ void Bone::update(bool needUpdate)
         global.skewX = origin.skewX + offset.skewX + _tween.skewX;
         global.skewY = origin.skewY + offset.skewY + _tween.skewY;
     }
+    
     /*
     globalTransformMatrix.a = global.scaleX * cos(global.skewY);
     globalTransformMatrix.b = global.scaleX * sin(global.skewY);
@@ -248,6 +253,7 @@ void Bone::updateColor(
             aMultiplier, rMultiplier, gMultiplier, bMultiplier
         );
     }
+    
     _isColorChanged = colorChanged;
 }
 
@@ -265,15 +271,18 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
     bool displayControl =
         animationState->displayControl &&
         (displayController.empty() || displayController == animationState->name);
+        
     //
     if (displayControl && timelineState->_weight > 0)
     {
         const int displayIndex = frame->displayIndex;
+        
         for (size_t i = 0, l = _slotList.size(); i < l; ++i)
         {
             Slot *slot = _slotList[i];
             slot->changeDisplay(displayIndex);
             slot->updateDisplayVisible(frame->visible);
+            
             if (displayIndex >= 0)
             {
                 if (frame->zOrder != slot->_tweenZOrder)
@@ -283,6 +292,7 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
                 }
             }
         }
+        
         if (!frame->event.empty() && _armature->_eventDispatcher->hasEvent(EventData::EventType::BONE_FRAME_EVENT))
         {
             EventData *eventData = new EventData(EventData::EventType::BONE_FRAME_EVENT, _armature);
@@ -291,6 +301,7 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
             eventData->frameLabel = frame->event;
             _armature->_eventDataList.push_back(eventData);
         }
+        
         if (!frame->sound.empty() && Armature::soundEventDispatcher && Armature::soundEventDispatcher->hasEvent(EventData::EventType::SOUND))
         {
             EventData *eventData = new EventData(EventData::EventType::SOUND, _armature);
@@ -299,6 +310,7 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
             eventData->sound = frame->sound;
             Armature::soundEventDispatcher->dispatchEvent(eventData);
         }
+        
         if (!frame->action.empty())
         {
             for (size_t i = 0, l = _slotList.size(); i < l; ++i)
@@ -315,6 +327,7 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
 void Bone::addState(TimelineState *timelineState)
 {
     auto iterator = std::find(_timelineStateList.cbegin(), _timelineStateList.cend(), timelineState);
+    
     if (iterator == _timelineStateList.cend())
     {
         _timelineStateList.push_back(timelineState);
@@ -325,6 +338,7 @@ void Bone::addState(TimelineState *timelineState)
 void Bone::removeState(TimelineState *timelineState)
 {
     auto iterator = std::find(_timelineStateList.begin(), _timelineStateList.end(), timelineState);
+    
     if (iterator != _timelineStateList.end())
     {
         _timelineStateList.erase(iterator);
@@ -334,6 +348,7 @@ void Bone::removeState(TimelineState *timelineState)
 void Bone::blendingTimeline()
 {
     size_t i = _timelineStateList.size();
+    
     if (i == 1)
     {
         TimelineState *timelineState = _timelineStateList[0];
@@ -364,10 +379,12 @@ void Bone::blendingTimeline()
         float scaleY = 0.f;
         float pivotX = 0.f;
         float pivotY = 0.f;
+        
         while (i--)
         {
             TimelineState *timelineState = _timelineStateList[i];
             currentLayer = timelineState->_animationState->getLayer();
+            
             if (prevLayer != currentLayer)
             {
                 if (layerTotalWeight >= weigthLeft)
@@ -380,9 +397,11 @@ void Bone::blendingTimeline()
                     weigthLeft -= layerTotalWeight;
                 }
             }
+            
             prevLayer = currentLayer;
             timelineState->_weight = timelineState->_animationState->getCurrentWeight() * weigthLeft;
             const float weight = timelineState->_weight;
+            
             //timelineState
             if (weight && timelineState->_blendEnabled)
             {
@@ -399,6 +418,7 @@ void Bone::blendingTimeline()
                 layerTotalWeight += weight;
             }
         }
+        
         _tween.x = x;
         _tween.y = y;
         _tween.skewX = skewX;

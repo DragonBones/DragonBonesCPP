@@ -26,7 +26,9 @@ void Object::setArmature(Armature *armature)
     {
         _armature->removeObject(this);
     }
+    
     _armature = armature;
+    
     if (_armature)
     {
         _armature->addObject(this);
@@ -53,6 +55,7 @@ void Object::dispose()
 {
     _armature = nullptr;
     _parent = nullptr;
+    
     if (userData)
     {
         delete userData;

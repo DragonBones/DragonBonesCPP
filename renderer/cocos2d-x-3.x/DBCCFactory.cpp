@@ -1,11 +1,9 @@
-﻿#include "DBCCFactory.h"
+#include "DBCCFactory.h"
 #include "DBCCTextureAtlas.h"
 #include "DBCCSlot.h"
 #include "DBCCEventDispatcher.h"
 #include "DBCCArmature.h"
-
 NAME_SPACE_DRAGON_BONES_BEGIN
-
 DBCCFactory DBCCFactory::factory;
 
 DBCCFactory::DBCCFactory() {}
@@ -17,6 +15,7 @@ void DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, co
     {
         return;
     }
+    
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
     // 使用XML解析器载入dragonBones的skeleton.xml
     dragonBones::XMLDocument doc;
@@ -33,6 +32,7 @@ void DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const st
     {
         return;
     }
+    
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(textureAtlasFile);
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
@@ -41,11 +41,13 @@ void DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const st
     DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas(textureAtlasData);
     //
     int pos = textureAtlasFile.find_last_of("/");
+    
     if (String::npos != pos)
     {
         String base_path = textureAtlasFile.substr(0, pos + 1);
         textureAtlasData->imagePath = base_path + textureAtlasData->imagePath;
     }
+    
     //
     textureAtlas->texture = cocos2d::Director::getInstance()->getTextureCache()->addImage(textureAtlasData->imagePath.c_str());
     addTextureAtlas(textureAtlas, name);
@@ -71,7 +73,9 @@ Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const
     display->retain();
     // eventDispatcher
     DBCCEventDispatcher *eventDispatcher = new DBCCEventDispatcher();
-    eventDispatcher->eventDispatcher = display->getEventDispatcher();
+    //eventDispatcher->eventDispatcher = display->getEventDispatcher();
+    eventDispatcher->eventDispatcher = new cocos2d::EventDispatcher();
+    eventDispatcher->eventDispatcher->setEnabled(true);
     // armature
     Armature *armature = new DBCCArmature((ArmatureData *)(armatureData), animation, eventDispatcher, display);
     return armature;
@@ -86,12 +90,14 @@ Slot *DBCCFactory::generateSlot(const SlotData *slotData) const
 void *DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const
 {
     DBCCTextureAtlas *dbccTextureAtlas = (DBCCTextureAtlas *)(textureAtlas);
+    
     if (dbccTextureAtlas && textureData)
     {
         if (!dbccTextureAtlas->texture)
         {
             // throw
         }
+        
         const float x = textureData->region.x;
         const float y = textureData->region.y;
         const float width = textureData->region.width;
@@ -102,20 +108,24 @@ void *DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
         display->retain();
         float pivotX = 0;
         float pivotY = 0;
+        
         if (displayData)
         {
             pivotX = displayData->pivot.x;
             pivotY = displayData->pivot.y;
+            
             if (textureData->frame)
             {
                 pivotX += textureData->frame->x;
                 pivotY += textureData->frame->y;
             }
         }
+        
         display->setAnchorPoint(cocos2d::Point(pivotX / width, 1.f - pivotY / height));
         display->setContentSize(cocos2d::Size(width, height));
         return display;
     }
+    
     return nullptr;
 }
 NAME_SPACE_DRAGON_BONES_END

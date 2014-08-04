@@ -2,6 +2,7 @@
 #define __GEOMS_MATRIX_H__
 
 #include "../DragonBones.h"
+#include "Point.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 class Matrix
@@ -54,6 +55,14 @@ public:
         d = determinant * a0;
         tx = determinant * (c0 * ty0 - d0 * tx0);
         ty = determinant * (b0 * tx0 - a0 * ty0);
+    }
+    
+    void transformPoint(Point &point)
+    {
+        float x = point.x;
+        float y = point.y;
+        point.x = a * x + c * y + tx;
+        point.y = d * y + b * x + ty;
     }
 };
 NAME_SPACE_DRAGON_BONES_END

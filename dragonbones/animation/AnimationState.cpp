@@ -9,6 +9,7 @@ AnimationState *AnimationState::borrowObject()
     {
         return new AnimationState();
     }
+    
     AnimationState *animationState = _pool.back();
     _pool.pop_back();
     return animationState;
@@ -17,10 +18,12 @@ AnimationState *AnimationState::borrowObject()
 void AnimationState::returnObject(AnimationState *animationState)
 {
     auto iterator = std::find(_pool.cbegin(), _pool.cend(), animationState);
+    
     if (iterator != _pool.end())
     {
         _pool.push_back(animationState);
     }
+    
     animationState->clear();
 }
 
@@ -31,6 +34,7 @@ void AnimationState::clearObjects()
         _pool[i]->clear();
         delete _pool[i];
     }
+    
     _pool.clear();
 }
 
@@ -83,10 +87,12 @@ AnimationState *AnimationState::setAdditiveBlending(bool value)
 AnimationState *AnimationState::setAutoFadeOut(bool value, float fadeOutTime_)
 {
     autoFadeOut = value;
+    
     if (fadeOutTime_ >= 0)
     {
         fadeOutTime = fadeOutTime_;
     }
+    
     return this;
 }
 
@@ -110,6 +116,7 @@ int AnimationState::getPlayTimes() const
 AnimationState *AnimationState::setPlayTimes(int playTimes)
 {
     _playTimes = playTimes;
+    
     if (round(_totalTime * 0.001f * _clip->frameRate) < 2)
     {
         _playTimes = playTimes < 0 ? -1 : 1;
@@ -118,6 +125,7 @@ AnimationState *AnimationState::setPlayTimes(int playTimes)
     {
         _playTimes = playTimes < 0 ? -playTimes : playTimes;
     }
+    
     autoFadeOut = playTimes < 0 ? true : false;
     return this;
 }
@@ -132,6 +140,7 @@ AnimationState *AnimationState::setCurrentTime(float currentTime)
     {
         currentTime = 0.f;
     }
+    
     _time = currentTime;
     _currentTime = static_cast<int>(_time * 1000.f);
     return this;
@@ -147,6 +156,7 @@ AnimationState *AnimationState::setTimeScale(float timeScale)
     {
         timeScale = 1.f;
     }
+    
     _timeScale = timeScale;
     return this;
 }
@@ -175,6 +185,7 @@ void AnimationState::fadeIn(Armature *armature, AnimationData *clip, float fadeT
     _isComplete = false;
     _currentFrameIndex = -1;
     _currentPlayTimes = -1;
+    
     if (round(_totalTime * 0.001f * _clip->frameRate) < 2)
     {
         _currentTime = _totalTime;
@@ -183,6 +194,7 @@ void AnimationState::fadeIn(Armature *armature, AnimationData *clip, float fadeT
     {
         _currentTime = -1;
     }
+    
     _time = 0.f;
     _mixingTransforms.clear();
     // fade start
@@ -209,7 +221,9 @@ AnimationState *AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
     {
         fadeTotalTime = 0.f;
     }
+    
     _pausePlayheadInFade = pausePlayhead;
+    
     if (_isFadeOut)
     {
         if (fadeTotalTime > _fadeTotalTime / _timeScale - (_fadeCurrentTime - _fadeBeginTime))
@@ -224,6 +238,7 @@ AnimationState *AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
             _timelineStateList[i]->fadeOut();
         }
     }
+    
     // fade start
     _isFadeOut = true;
     _fadeTotalWeight = _fadeWeight;
@@ -257,15 +272,18 @@ AnimationState *AnimationState::addMixingTransform(const String &timelineName, b
     if (recursive)
     {
         Bone *currentBone = nullptr;
+        
         // From root to leaf
         for (size_t i = _armature->getBones().size(); i--;)
         {
             Bone *bone = _armature->getBones()[i];
             const String &boneName = bone->name;
+            
             if (boneName == timelineName)
             {
                 currentBone = bone;
             }
+            
             if (
                 currentBone &&
                 (currentBone == bone || currentBone->contains(bone)) &&
@@ -284,6 +302,7 @@ AnimationState *AnimationState::addMixingTransform(const String &timelineName, b
     {
         _mixingTransforms.push_back(timelineName);
     }
+    
     updateTimelineStates();
     return this;
 }
@@ -293,17 +312,21 @@ AnimationState *AnimationState::removeMixingTransform(const String &timelineName
     if (recursive)
     {
         Bone *currentBone = nullptr;
+        
         // From root to leaf
         for (size_t i = _armature->getBones().size(); i--;)
         {
             Bone *bone = _armature->getBones()[i];
+            
             if (bone->name == timelineName)
             {
                 currentBone = bone;
             }
+            
             if (currentBone && (currentBone == bone || currentBone->contains(bone)))
             {
                 auto iterator = std::find(_mixingTransforms.begin(), _mixingTransforms.end(), bone->name);
+                
                 if (iterator != _mixingTransforms.end())
                 {
                     _mixingTransforms.erase(iterator);
@@ -314,11 +337,13 @@ AnimationState *AnimationState::removeMixingTransform(const String &timelineName
     else
     {
         auto iterator = std::find(_mixingTransforms.begin(), _mixingTransforms.end(), timelineName);
+        
         if (iterator != _mixingTransforms.end())
         {
             _mixingTransforms.erase(iterator);
         }
     }
+    
     updateTimelineStates();
     return this;
 }
@@ -334,10 +359,12 @@ bool AnimationState::advanceTime(float passedTime)
 {
     passedTime *= _timeScale;
     advanceFadeTime(passedTime);
+    
     if (_fadeWeight)
     {
         advanceTimelinesTime(passedTime);
     }
+    
     return _isFadeOut && _fadeState == FadeState::FADE_COMPLETE;
 }
 
@@ -346,11 +373,13 @@ void AnimationState::updateTimelineStates()
     for (size_t i = _timelineStateList.size(); i--;)
     {
         TimelineState *timelineState = _timelineStateList[i];
+        
         if (!_armature->getBone(timelineState->name))
         {
             removeTimelineState(timelineState);
         }
     }
+    
     if (_mixingTransforms.empty())
     {
         for (size_t i = 0, l = _clip->timelineList.size(); i < l; ++i)
@@ -364,11 +393,13 @@ void AnimationState::updateTimelineStates()
         {
             TimelineState *timelineState = _timelineStateList[i];
             auto iterator = std::find(_mixingTransforms.cbegin(), _mixingTransforms.cend(), timelineState->name);
+            
             if (iterator == _mixingTransforms.cend())
             {
                 removeTimelineState(timelineState);
             }
         }
+        
         for (size_t i = 0, l = _mixingTransforms.size(); i < l; ++i)
         {
             addTimelineState(_mixingTransforms[i]);
@@ -379,6 +410,7 @@ void AnimationState::updateTimelineStates()
 void AnimationState::addTimelineState(const String &timelineName)
 {
     Bone *bone = _armature->getBone(timelineName);
+    
     if (bone)
     {
         for (size_t i = 0, l = _timelineStateList.size(); i < l; ++i)
@@ -388,6 +420,7 @@ void AnimationState::addTimelineState(const String &timelineName)
                 return;
             }
         }
+        
         TimelineState *timelineState = TimelineState::borrowObject();
         timelineState->fadeIn(bone, this, _clip->getTimeline(timelineName));
         _timelineStateList.push_back(timelineState);
@@ -397,6 +430,7 @@ void AnimationState::addTimelineState(const String &timelineName)
 void AnimationState::removeTimelineState(TimelineState *timelineState)
 {
     auto iterator = std::find(_timelineStateList.begin(), _timelineStateList.end(), timelineState);
+    
     if (iterator != _timelineStateList.end())
     {
         TimelineState::returnObject(timelineState);
@@ -408,22 +442,26 @@ void AnimationState::advanceFadeTime(float passedTime)
 {
     bool fadeStartFlg = false;
     bool fadeCompleteFlg = false;
+    
     if (_fadeBeginTime >= 0)
     {
         FadeState fadeState = _fadeState;
         _fadeCurrentTime += passedTime < 0 ? -passedTime : passedTime;
+        
         if (_fadeCurrentTime >= _fadeBeginTime + _fadeTotalTime)
         {
             // fade complete
             if (_fadeWeight == 1 || _fadeWeight == 0)
             {
                 fadeState = FadeState::FADE_COMPLETE;
+                
                 if (_pausePlayheadInFade)
                 {
                     _pausePlayheadInFade = false;
                     _currentTime = -1;
                 }
             }
+            
             _fadeWeight = _isFadeOut ? 0.f : 1.f;
         }
         else if (_fadeCurrentTime >= _fadeBeginTime)
@@ -431,6 +469,7 @@ void AnimationState::advanceFadeTime(float passedTime)
             // fading
             fadeState = FadeState::FADING;
             _fadeWeight = (_fadeCurrentTime - _fadeBeginTime) / _fadeTotalTime * _fadeTotalWeight;
+            
             if (_isFadeOut)
             {
                 _fadeWeight = _fadeTotalWeight - _fadeWeight;
@@ -442,6 +481,7 @@ void AnimationState::advanceFadeTime(float passedTime)
             fadeState = FadeState::FADE_BEFORE;
             _fadeWeight = _isFadeOut ? 1.f : 0.f;
         }
+        
         if (_fadeState != fadeState)
         {
             // _fadeState == FadeState::FADE_BEFORE && (fadeState == FadeState::FADING || fadeState == FadeState::FADE_COMPLETE)
@@ -449,17 +489,21 @@ void AnimationState::advanceFadeTime(float passedTime)
             {
                 fadeStartFlg = true;
             }
+            
             // (_fadeState == FadeState::FADE_BEFORE || _fadeState == FadeState::FADING) && fadeState == FadeState::FADE_COMPLETE
             if (fadeState == FadeState::FADE_COMPLETE)
             {
                 fadeCompleteFlg = true;
             }
+            
             _fadeState = fadeState;
         }
     }
+    
     if (fadeStartFlg)
     {
         EventData::EventType eventDataType;
+        
         if (_isFadeOut)
         {
             eventDataType = EventData::EventType::FADE_OUT;
@@ -469,6 +513,7 @@ void AnimationState::advanceFadeTime(float passedTime)
             hideBones();
             eventDataType = EventData::EventType::FADE_IN;
         }
+        
         if (_armature->_eventDispatcher->hasEvent(eventDataType))
         {
             EventData *eventData = new EventData(eventDataType, _armature);
@@ -476,9 +521,11 @@ void AnimationState::advanceFadeTime(float passedTime)
             _armature->_eventDataList.push_back(eventData);
         }
     }
+    
     if (fadeCompleteFlg)
     {
         EventData::EventType eventDataType;
+        
         if (_isFadeOut)
         {
             eventDataType = EventData::EventType::FADE_OUT_COMPLETE;
@@ -487,6 +534,7 @@ void AnimationState::advanceFadeTime(float passedTime)
         {
             eventDataType = EventData::EventType::FADE_IN_COMPLETE;
         }
+        
         if (_armature->_eventDispatcher->hasEvent(eventDataType))
         {
             EventData *eventData = new EventData(eventDataType, _armature);
@@ -502,17 +550,20 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     {
         _time += passedTime;
     }
+    
     bool startFlg = false;
     bool completeFlg = false;
     bool loopCompleteFlg = false;
     bool isThisComplete = false;
     int currentPlayTimes = 0;
     int currentTime = (int)(_time * 1000.f);
+    
     if (_playTimes == 0)
     {
         isThisComplete = false;
         currentPlayTimes = (int)(ceil(abs(currentTime) / (float)(_totalTime)));
         currentTime -= (int)(floor(currentTime / (float)(_totalTime))) * _totalTime;
+        
         if (currentTime < 0)
         {
             currentTime += _totalTime;
@@ -521,6 +572,7 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     else
     {
         int totalTimes = _playTimes * _totalTime;
+        
         if (currentTime >= totalTimes)
         {
             currentTime = totalTimes;
@@ -535,29 +587,36 @@ void AnimationState::advanceTimelinesTime(float passedTime)
         {
             isThisComplete = false;
         }
+        
         if (currentTime < 0)
         {
             currentTime += totalTimes;
         }
+        
         currentPlayTimes = (int)(ceil(currentTime / (float)(_totalTime)));
         currentTime -= (int)(floor(currentTime / (float)(_totalTime))) * _totalTime;
+        
         if (isThisComplete)
         {
             currentTime = _totalTime;
         }
     }
+    
     if (currentPlayTimes == 0)
     {
         currentPlayTimes = 1;
     }
+    
     // update timeline
     _isComplete = isThisComplete;
     float progress = _time * 1000.f / (float)(_totalTime);
+    
     for (size_t i = 0, l = _timelineStateList.size(); i < l; ++i)
     {
         _timelineStateList[i]->update(progress);
         _isComplete = _timelineStateList[i]->_isComplete && _isComplete;
     }
+    
     // update main timeline
     if (_currentTime != currentTime)
     {
@@ -567,19 +626,24 @@ void AnimationState::advanceTimelinesTime(float passedTime)
             {
                 loopCompleteFlg = true;
             }
+            
             _currentPlayTimes = currentPlayTimes;
         }
+        
         if (_currentTime < 0 && !_pausePlayheadInFade)    // check start
         {
             startFlg = true;
         }
+        
         if (_isComplete)    // check complete
         {
             completeFlg = true;
         }
+        
         _currentTime = currentTime;
         updateMainTimeline(isThisComplete);
     }
+    
     if (startFlg)
     {
         if (_armature->_eventDispatcher->hasEvent(EventData::EventType::START))
@@ -589,6 +653,7 @@ void AnimationState::advanceTimelinesTime(float passedTime)
             _armature->_eventDataList.push_back(eventData);
         }
     }
+    
     if (completeFlg)
     {
         if (_armature->_eventDispatcher->hasEvent(EventData::EventType::COMPLETE))
@@ -597,6 +662,7 @@ void AnimationState::advanceTimelinesTime(float passedTime)
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }
+        
         if (autoFadeOut)
         {
             fadeOut(fadeOutTime, true);
@@ -619,6 +685,7 @@ void AnimationState::updateMainTimeline(bool isThisComplete)
     {
         Frame *prevFrame = nullptr;
         Frame *currentFrame = nullptr;
+        
         for (size_t i = 0, l = _clip->frameList.size(); i < l; ++i)
         {
             if (_currentFrameIndex < 0)
@@ -628,6 +695,7 @@ void AnimationState::updateMainTimeline(bool isThisComplete)
             else if (_currentTime < _currentFramePosition || _currentTime >= _currentFramePosition + _currentFrameDuration)
             {
                 ++_currentFrameIndex;
+                
                 if (_currentFrameIndex >= (int)(l))
                 {
                     if (isThisComplete)
@@ -645,15 +713,19 @@ void AnimationState::updateMainTimeline(bool isThisComplete)
             {
                 break;
             }
+            
             currentFrame = _clip->frameList[_currentFrameIndex];
+            
             if (prevFrame)
             {
                 _armature->arriveAtFrame(prevFrame, this, true);
             }
+            
             _currentFrameDuration = currentFrame->duration;
             _currentFramePosition = currentFrame->position;
             prevFrame = currentFrame;
         }
+        
         if (currentFrame)
         {
             _armature->arriveAtFrame(currentFrame, this, false);
@@ -666,6 +738,7 @@ void AnimationState::hideBones()
     for (size_t i = 0, l = _clip->hideTimelineList.size(); i < l; ++i)
     {
         Bone *bone = _armature->getBone(_clip->hideTimelineList[i]);
+        
         if (bone)
         {
             bone->hideSlots();
@@ -680,6 +753,7 @@ void AnimationState::clear()
     {
         TimelineState::returnObject(_timelineStateList[i]);
     }
+    
     _timelineStateList.clear();
     _mixingTransforms.clear();
     _armature = nullptr;

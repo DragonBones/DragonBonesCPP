@@ -24,6 +24,7 @@ BaseFactory::~BaseFactory()
 const DragonBonesData *BaseFactory::getDragonBonesData(const String &name) const
 {
     auto iterator = _dragonBonesDataMap.find(name);
+    
     if (iterator != _dragonBonesDataMap.end())
     {
         return iterator->second;
@@ -39,21 +40,26 @@ void BaseFactory::addDragonBonesData(DragonBonesData *data, const String &name)
     {
         // throw
     }
+    
     const String &key = name.empty() ? data->name : name;
+    
     if (key.empty())
     {
         // throw
     }
+    
     if (_dragonBonesDataMap.find(key) != _dragonBonesDataMap.end())
     {
         // throw?
         removeDragonBonesData(key, true);
     }
+    
     _dragonBonesDataMap[key] = data;
 }
 void BaseFactory::removeDragonBonesData(const String &name, bool disposeData)
 {
     auto iterator = _dragonBonesDataMap.find(name);
+    
     if (iterator != _dragonBonesDataMap.end())
     {
         if (disposeData)
@@ -61,6 +67,7 @@ void BaseFactory::removeDragonBonesData(const String &name, bool disposeData)
             iterator->second->dispose();
             delete iterator->second;
         }
+        
         _dragonBonesDataMap.erase(iterator);
     }
 }
@@ -68,6 +75,7 @@ void BaseFactory::removeDragonBonesData(const String &name, bool disposeData)
 const ITextureAtlas *BaseFactory::getTextureAtlas(const String &name) const
 {
     auto iterator = _textureAtlasMap.find(name);
+    
     if (iterator != _textureAtlasMap.end())
     {
         return iterator->second;
@@ -83,21 +91,26 @@ void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const String &nam
     {
         // throw
     }
+    
     const String &key = name.empty() ? textureAtlas->textureAtlasData->name : name;
+    
     if (key.empty())
     {
         // throw
     }
+    
     if (_textureAtlasMap.find(key) != _textureAtlasMap.end())
     {
         // throw?
         removeTextureAtlas(key, true);
     }
+    
     _textureAtlasMap[key] = textureAtlas;
 }
 void BaseFactory::removeTextureAtlas(const String &name, bool disposeData)
 {
     auto iterator = _textureAtlasMap.find(name);
+    
     if (iterator != _textureAtlasMap.end())
     {
         if (disposeData)
@@ -105,6 +118,7 @@ void BaseFactory::removeTextureAtlas(const String &name, bool disposeData)
             iterator->second->dispose();
             delete iterator->second;
         }
+        
         _textureAtlasMap.erase(iterator);
     }
 }
@@ -118,12 +132,14 @@ void BaseFactory::dispose(bool disposeData)
             iterator->second->dispose();
             delete iterator->second;
         }
+        
         for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
         {
             iterator->second->dispose();
             delete iterator->second;
         }
     }
+    
     _dragonBonesDataMap.clear();
     _textureAtlasMap.clear();
 }
@@ -143,9 +159,11 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
     ArmatureData *animationArmatureData = nullptr;
     SkinData *skinData = nullptr;
     SkinData *skinDataCopy = nullptr;
+    
     if (!dragonBonesName.empty())
     {
         auto iterator = _dragonBonesDataMap.find(dragonBonesName);
+        
         if (iterator != _dragonBonesDataMap.end())
         {
             dragonBonesData = iterator->second;
@@ -154,17 +172,21 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
             _currentTextureAtlasName = textureAtlasName.empty() ? _currentDragonBonesDataName : textureAtlasName;
         }
     }
+    
     if (!armatureData)
     {
         AutoSearchType searchType = (dragonBonesName.empty() ? AutoSearchType::AST_ALL : (autoSearchDragonBonesData ? AutoSearchType::AST_AUTO : AutoSearchType::AST_NONE));
+        
         if (searchType != AutoSearchType::AST_NONE)
         {
             for (auto iterator = _dragonBonesDataMap.begin(); iterator != _dragonBonesDataMap.end(); ++iterator)
             {
                 dragonBonesData = iterator->second;
+                
                 if (searchType == AutoSearchType::AST_ALL || dragonBonesData->autoSearch)
                 {
                     armatureData = dragonBonesData->getArmatureData(armatureName);
+                    
                     if (armatureData)
                     {
                         _currentDragonBonesDataName = iterator->first;
@@ -175,33 +197,40 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
             }
         }
     }
+    
     if (!armatureData)
     {
         return nullptr;
     }
+    
     if (!animationName.empty() && animationName != armatureName)
     {
         animationArmatureData = dragonBonesData->getArmatureData(animationName);
+        
         if (!animationArmatureData)
         {
             for (auto iterator = _dragonBonesDataMap.begin(); iterator != _dragonBonesDataMap.end(); ++iterator)
             {
                 dragonBonesData = iterator->second;
                 animationArmatureData = dragonBonesData->getArmatureData(animationName);
+                
                 if (animationArmatureData)
                 {
                     break;
                 }
             }
         }
+        
         if (animationArmatureData)
         {
             skinDataCopy = animationArmatureData->getSkinData("");
         }
     }
+    
     skinData = armatureData->getSkinData(skinName);
     Armature *armature = generateArmature(armatureData);
     armature->name = armatureName;
+    
     if (animationArmatureData)
     {
         armature->getAnimation()->setAnimationDataList(animationArmatureData->animationDataList);
@@ -210,13 +239,16 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
     {
         armature->getAnimation()->setAnimationDataList(armatureData->animationDataList);
     }
+    
     //
     buildBones(armature, armatureData);
+    
     //
     if (skinData)
     {
         buildSlots(armature, armatureData, skinData, skinDataCopy);
     }
+    
     // update armature pose
     armature->advanceTime(0);
     return armature;
@@ -226,26 +258,32 @@ void *BaseFactory::getTextureDisplay(const String &textureName, const String &te
 {
     ITextureAtlas *textureAtlas = nullptr;
     TextureData *textureData = nullptr;
+    
     if (!textureAtlasName.empty())
     {
         auto iterator = _textureAtlasMap.find(textureAtlasName);
+        
         if (iterator != _textureAtlasMap.end())
         {
             textureAtlas = iterator->second;
             textureData = textureAtlas->textureAtlasData->getTextureData(textureName);
         }
     }
+    
     if (!textureData)
     {
         AutoSearchType searchType = (textureAtlasName.empty() ? AutoSearchType::AST_ALL : (autoSearchTexture ? AutoSearchType::AST_AUTO : AutoSearchType::AST_NONE));
+        
         if (searchType != AutoSearchType::AST_NONE)
         {
             for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
             {
                 textureAtlas = iterator->second;
+                
                 if (searchType == AutoSearchType::AST_ALL || textureAtlas->textureAtlasData->autoSearch)
                 {
                     textureData = textureAtlas->textureAtlasData->getTextureData(textureName);
+                    
                     if (textureData)
                     {
                         break;
@@ -254,16 +292,20 @@ void *BaseFactory::getTextureDisplay(const String &textureName, const String &te
             }
         }
     }
+    
     if (!textureData)
     {
         return nullptr;
     }
+    
     if (!displayData)
     {
         auto iterator = _dragonBonesDataMap.find(textureAtlas->textureAtlasData->name);
+        
         if (iterator != _dragonBonesDataMap.end())
         {
             DragonBonesData *dragonBonesData = iterator->second;
+            
             for (size_t i = 0, l = dragonBonesData->armatureDataList.size(); i < l; ++i)
             {
                 for (size_t j = 0, l = dragonBonesData->armatureDataList[i]->skinDataList.size(); j < l; ++j)
@@ -273,6 +315,7 @@ void *BaseFactory::getTextureDisplay(const String &textureName, const String &te
                         for (size_t m = 0, l = dragonBonesData->armatureDataList[i]->skinDataList[j]->slotDataList[k]->displayDataList.size(); m < l; ++m)
                         {
                             displayData = dragonBonesData->armatureDataList[i]->skinDataList[j]->slotDataList[k]->displayDataList[m];
+                            
                             if (displayData->name != textureName)
                             {
                                 displayData = nullptr;
@@ -282,16 +325,19 @@ void *BaseFactory::getTextureDisplay(const String &textureName, const String &te
                                 break;
                             }
                         }
+                        
                         if (displayData)
                         {
                             break;
                         }
                     }
+                    
                     if (displayData)
                     {
                         break;
                     }
                 }
+                
                 if (displayData)
                 {
                     break;
@@ -299,6 +345,7 @@ void *BaseFactory::getTextureDisplay(const String &textureName, const String &te
             }
         }
     }
+    
     return generateDisplay(textureAtlas, textureData, displayData);
 }
 
@@ -313,6 +360,7 @@ void BaseFactory::buildBones(Armature *armature, const ArmatureData *armatureDat
         bone->inheritScale = boneData->inheritScale;
         // copy
         bone->origin = boneData->transform;
+        
         if (armatureData->getBoneData(boneData->parent))
         {
             armature->addBone(bone, boneData->parent);
@@ -330,53 +378,63 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
     {
         SlotData *slotData = skinData->slotDataList[i];
         Bone *bone = armature->getBone(slotData->parent);
+        
         if (!bone || slotData->displayDataList.empty())
         {
             continue;
         }
+        
         Slot *slot = generateSlot(slotData);
         slot->name = slotData->name;
         slot->_originZOrder = slotData->zOrder;
         slot->_slotData = slotData;
         std::vector<std::pair<void *, DisplayType>> displayList;
-
-        void* frameDisplay = nullptr;
+        void *frameDisplay = nullptr;
+        
         for (size_t j = 0, l = slotData->displayDataList.size(); j < l; ++j)
         {
             const DisplayData *displayData = slotData->displayDataList[j];
+            
             switch (displayData->type)
             {
                 case DisplayType::DT_ARMATURE:
                 {
                     DisplayData *displayDataCopy = nullptr;
+                    
                     if (skinDataCopy)
                     {
                         const SlotData *slotDataCopy = skinDataCopy->getSlotData(slotData->name);
+                        
                         if (slotDataCopy)
                         {
                             displayDataCopy = slotDataCopy->displayDataList[i];
                         }
                     }
+                    
                     Armature *childArmature = buildArmature(displayData->name, "", displayDataCopy ? displayDataCopy->name : "", _currentDragonBonesDataName, _currentTextureAtlasName);
                     displayList.push_back(std::make_pair(childArmature, DisplayType::DT_ARMATURE));
                     break;
                 }
+                
                 case DisplayType::DT_IMAGE:
                 {
                     void *display = getTextureDisplay(displayData->name, _currentTextureAtlasName, displayData);
                     displayList.push_back(std::make_pair(display, DisplayType::DT_IMAGE));
                     break;
                 }
+                
                 case DisplayType::DT_FRAME:
                 {
                     //j
                     //frameDisplay = ;
                     break;
                 }
+                
                 default:
-                break;
+                    break;
             }
         }
+        
         bone->addChild(slot);
         slot->setDisplayList(displayList, false);
     }

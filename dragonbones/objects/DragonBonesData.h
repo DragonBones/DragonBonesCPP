@@ -27,11 +27,13 @@ public:
         autoSearch = copyData.autoSearch;
         name = copyData.name;
         armatureDataList.reserve(copyData.armatureDataList.size());
+        
         for (size_t i = 0, l = armatureDataList.size(); i < l; ++i)
         {
             armatureDataList.push_back(new ArmatureData());
             *(armatureDataList[i]) = *(copyData.armatureDataList[i]);
         }
+        
         return *this;
     }
     virtual ~DragonBonesData()
@@ -45,6 +47,7 @@ public:
             armatureDataList[i]->dispose();
             delete armatureDataList[i];
         }
+        
         armatureDataList.clear();
     }
     
@@ -57,6 +60,7 @@ public:
                 return armatureDataList[i];
             }
         }
+        
         return nullptr;
     }
 };

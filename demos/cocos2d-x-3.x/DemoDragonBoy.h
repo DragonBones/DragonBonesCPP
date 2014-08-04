@@ -97,18 +97,22 @@ private:
             case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
                 jump();
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
             case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
                 squat(true);
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
                 move(-1, true);
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
                 move(1, true);
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
                 changeClothe();
                 break;
@@ -122,14 +126,17 @@ private:
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
             case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
                 squat(false);
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
             case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
                 move(-1, false);
                 break;
+                
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
             case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
                 move(1, false);
@@ -140,6 +147,7 @@ private:
     void eventHandler(cocos2d::EventCustom *event)
     {
         dragonBones::EventData *eventData = (dragonBones::EventData *)(event->getUserData());
+        
         if (eventData->animationState)
         {
             cocos2d::log("Animation name: %s, Event type: %s",
@@ -155,6 +163,7 @@ private:
         {
             return;
         }
+        
         _isJump = true;
         _speedY = 24.f;
         _armature->getAnimation()->gotoAndPlay("jump");
@@ -166,6 +175,7 @@ private:
         {
             return;
         }
+        
         _isSquat = isSquat;
         updateAnimation();
     }
@@ -180,7 +190,9 @@ private:
         {
             _isRight = isDown;
         }
+        
         int moveDir = 0;
+        
         if (_isLeft && _isRight)
         {
             moveDir = _moveDir;
@@ -197,10 +209,12 @@ private:
         {
             moveDir = 0;
         }
+        
         if (_moveDir == moveDir)
         {
             return;
         }
+        
         _moveDir = moveDir;
         updateAnimation();
     }
@@ -231,10 +245,12 @@ private:
     void changeClothe()
     {
         ++_currentClotheIndex;
+        
         if (_currentClotheIndex > (int)(_clothesList.size()))
         {
             _currentClotheIndex = 0;
         }
+        
         if (_currentClotheIndex < (int)(_clothesList.size()))
         {
             _armature->getCCSlot("clothes")->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(_clothesList[_currentClotheIndex]));
@@ -251,9 +267,11 @@ private:
         float timeScale = _armature->getAnimation()->getTimeScale();
         float x = _armature->getCCDisplay()->getPositionX();
         float y = _armature->getCCDisplay()->getPositionY();
+        
         if (_speedX != 0)
         {
             x += _speedX * timeScale;
+            
             if (x < 0)
             {
                 x = 0.f;
@@ -263,15 +281,19 @@ private:
                 x = 960.f;
             }
         }
+        
         if (_isJump)
         {
             float speedG = -1.f * timeScale;
+            
             if (_speedY >= 0 && _speedY + speedG < 0)
             {
                 _armature->getAnimation()->gotoAndPlay("fall", 0.2f);
             }
+            
             _speedY += speedG;
             y += _speedY * timeScale;
+            
             if (y < 200)
             {
                 y = 200.f;
@@ -285,6 +307,7 @@ private:
                 _armature->getAnimation()->gotoAndPlay("fallEnd");
             }
         }
+        
         _armature->getCCDisplay()->setPosition(x, y);
     }
     

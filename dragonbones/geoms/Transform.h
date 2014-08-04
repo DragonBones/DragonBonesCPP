@@ -67,6 +67,7 @@ public:
             matrix.c = -sin(skewX);
             matrix.d = cos(skewX);
         }
+        
         matrix.tx = x;
         matrix.ty = y;
     }

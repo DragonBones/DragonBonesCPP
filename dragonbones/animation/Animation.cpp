@@ -14,6 +14,7 @@ bool Animation::getIsComplete() const
         {
             return false;
         }
+        
         for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
         {
             if (!_animationStateList[i]->_isComplete)
@@ -21,8 +22,10 @@ bool Animation::getIsComplete() const
                 return false;
             }
         }
+        
         return true;
     }
+    
     return true;
 }
 
@@ -46,6 +49,7 @@ void Animation::setTimeScale(float timeScale)
     {
         timeScale = 1;
     }
+    
     _timeScale = timeScale;
 }
 
@@ -57,6 +61,7 @@ void Animation::setAnimationDataList(const std::vector<AnimationData *> &animati
 {
     _animationDataList = animationDataList;
     _animationList.clear();
+    
     for (size_t i = 0, l = _animationDataList.size(); i < l; ++i)
     {
         _animationList.push_back(_animationDataList[i]->name);
@@ -79,10 +84,12 @@ Animation::~Animation()
 void Animation::dispose()
 {
     _animationDataList.clear();
+    
     for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
     {
         AnimationState::returnObject(_animationStateList[i]);
     }
+    
     _animationStateList.clear();
     _armature = nullptr;
     _lastAnimationState = nullptr;
@@ -101,6 +108,7 @@ AnimationState *Animation::gotoAndPlay(
 )
 {
     AnimationData *animationData = nullptr;
+    
     for (size_t i = 0, l = _animationDataList.size(); i < l; ++i)
     {
         if (_animationDataList[i]->name == animationName)
@@ -109,15 +117,18 @@ AnimationState *Animation::gotoAndPlay(
             break;
         }
     }
+    
     if (!animationData)
     {
         // throw
         return nullptr;
     }
+    
     _isPlaying = true;
     _isFading = true;
     fadeInTime = fadeInTime < 0 ? (animationData->fadeTime < 0 ? 0.3f : animationData->fadeTime) : fadeInTime;
     float durationScale;
+    
     if (duration < 0)
     {
         durationScale = animationData->scale < 0 ? 1.f : animationData->scale;
@@ -126,68 +137,86 @@ AnimationState *Animation::gotoAndPlay(
     {
         durationScale = duration * 1000.f / animationData->duration;
     }
+    
     if (durationScale == 0)
     {
         durationScale = 0.001f;
     }
+    
     playTimes = playTimes < 0 ? animationData->playTimes : playTimes;
+    
     switch (fadeOutMode)
     {
         case AnimationFadeOutMode::NONE:
             break;
+            
         case AnimationFadeOutMode::SAME_LAYER:
             for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
             {
                 AnimationState *animationState = _animationStateList[i];
+                
                 if (animationState->_layer == layer)
                 {
                     animationState->fadeOut(fadeInTime, pauseFadeOut);
                 }
             }
+            
             break;
+            
         case AnimationFadeOutMode::SAME_GROUP:
             for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
             {
                 AnimationState *animationState = _animationStateList[i];
+                
                 if (animationState->_group == group)
                 {
                     animationState->fadeOut(fadeInTime, pauseFadeOut);
                 }
             }
+            
             break;
+            
         case AnimationFadeOutMode::ALL:
             for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
             {
                 AnimationState *animationState = _animationStateList[i];
                 animationState->fadeOut(fadeInTime, pauseFadeOut);
             }
+            
             break;
+            
         case AnimationFadeOutMode::SAME_LAYER_AND_GROUP:
         default:
             for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
             {
                 AnimationState *animationState = _animationStateList[i];
+                
                 if (animationState->_layer == layer && animationState->_group == group)
                 {
                     animationState->fadeOut(fadeInTime, pauseFadeOut);
                 }
             }
+            
             break;
     }
+    
     _lastAnimationState = AnimationState::borrowObject();
     _lastAnimationState->_layer = layer;
     _lastAnimationState->_group = group;
     _lastAnimationState->autoTween = autoTween;
     _lastAnimationState->fadeIn(_armature, animationData, fadeInTime, 1.f / durationScale, playTimes, pauseFadeIn);
     addState(_lastAnimationState);
+    
     for (size_t i = 0, l = _armature->getSlots().size(); i < l; ++i)
     {
         Slot *slot = _armature->getSlots()[i];
+        
         if (slot->_childArmature)
         {
             slot->_childArmature->_animation->gotoAndPlay(animationName, fadeInTime);
         }
     }
+    
     return _lastAnimationState;
 }
 
@@ -203,10 +232,12 @@ AnimationState *Animation::gotoAndStop(
 )
 {
     AnimationState *animationState = getState(animationName, layer);
+    
     if (!animationState)
     {
         animationState = gotoAndPlay(animationName, fadeInTime, duration, -1, layer, group, fadeOutMode);
     }
+    
     if (normalizedTime >= 0)
     {
         animationState->setCurrentTime(animationState->getTotalTime() * normalizedTime);
@@ -215,6 +246,7 @@ AnimationState *Animation::gotoAndStop(
     {
         animationState->setCurrentTime(time);
     }
+    
     animationState->stop();
     return animationState;
 }
@@ -225,6 +257,7 @@ void Animation::play()
     {
         return;
     }
+    
     if (!_lastAnimationState)
     {
         gotoAndPlay(_animationDataList[0]->name);
@@ -253,6 +286,7 @@ bool Animation::hasAnimation(const String &animationName) const
             return true;
         }
     }
+    
     return false;
 }
 
@@ -261,11 +295,13 @@ AnimationState *Animation::getState(const String &name, int layer) const
     for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
     {
         AnimationState *animationState = _animationStateList[i];
+        
         if (animationState->name == name && animationState->_layer == layer)
         {
             return animationState;
         }
     }
+    
     return nullptr;
 }
 
@@ -275,11 +311,14 @@ void Animation::advanceTime(float passedTime)
     {
         return;
     }
+    
     bool isFading = false;
     passedTime *= _timeScale;
+    
     for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
     {
         AnimationState *animationState = _animationStateList[i];
+        
         if (animationState->advanceTime(passedTime))
         {
             removeState(animationState);
@@ -291,6 +330,7 @@ void Animation::advanceTime(float passedTime)
             isFading = true;
         }
     }
+    
     _isFading = isFading;
 }
 
@@ -305,6 +345,7 @@ void Animation::updateAnimationStates()
 void Animation::addState(AnimationState *animationState)
 {
     auto iterator = std::find(_animationStateList.cbegin(), _animationStateList.cend(), animationState);
+    
     if (iterator == _animationStateList.cend())
     {
         _animationStateList.push_back(animationState);
@@ -314,10 +355,12 @@ void Animation::addState(AnimationState *animationState)
 void Animation::removeState(AnimationState *animationState)
 {
     auto iterator = std::find(_animationStateList.begin(), _animationStateList.end(), animationState);
+    
     if (iterator != _animationStateList.end())
     {
         _animationStateList.erase(iterator);
         AnimationState::returnObject(animationState);
+        
         if (_lastAnimationState == animationState)
         {
             if (_animationStateList.empty())

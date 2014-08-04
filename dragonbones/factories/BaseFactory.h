@@ -25,8 +25,6 @@ protected:
     std::map<String, DragonBonesData *> _dragonBonesDataMap;
     std::map<String, ITextureAtlas *> _textureAtlasMap;
     
-    
-    
 public:
     const std::map<String, DragonBonesData *> &getDragonBonesDataMap() const;
     const std::map<String, ITextureAtlas *> &getTextureAtlasMap() const;

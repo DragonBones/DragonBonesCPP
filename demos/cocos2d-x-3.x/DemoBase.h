@@ -13,6 +13,7 @@ public:
         {
             return false;
         }
+        
         demoInit();
         cocos2d::Director::getInstance()->getScheduler()->schedule(schedule_selector(DemoBase::updateHandler), this, 0, false);
         return true;
