@@ -20,7 +20,7 @@ public:
     virtual ITextureAtlas *loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
     virtual void refreshTextureAtlasTexture(const std::string &name);
     virtual void refreshAllTextureAtlasTexture();
-    virtual bool hasSkeleton(const std::string &skeletonName, const std::string &armatureName = "", const std::string &animationName = "");
+    virtual bool hasDragonBones(const std::string &skeletonName, const std::string &armatureName = "", const std::string &animationName = "");
     
 protected:
     virtual Armature *generateArmature(const ArmatureData *armatureData) const override;

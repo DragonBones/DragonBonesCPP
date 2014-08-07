@@ -5,6 +5,7 @@
 #include "DBCCSlot.h"
 #include "DBCCEventDispatcher.h"
 #include "DBCCArmature.h"
+#include "DBCCArmatureNode.h"
 #include "DBCCFactory.h"
 
 #endif  // __DBCC_RENDER_HEADERS_H__

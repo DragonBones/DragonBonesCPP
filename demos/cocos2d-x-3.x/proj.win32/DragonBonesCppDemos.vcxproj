@@ -148,6 +148,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\..\..\dragonbones\parsers\dbtinyxml2.cpp" />
     <ClCompile Include="..\..\..\dragonbones\parsers\XMLDataParser.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmature.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmatureNode.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCFactory.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
@@ -195,6 +196,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\..\..\dragonbones\textures\TextureAtlasData.h" />
     <ClInclude Include="..\..\..\dragonbones\textures\TextureData.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmature.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmatureNode.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCEventDispatcher.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCFactory.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCRenderHeaders.h" />
