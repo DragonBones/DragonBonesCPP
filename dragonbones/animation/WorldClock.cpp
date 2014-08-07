@@ -24,8 +24,9 @@ void WorldClock::setTimeScale(float timeScale)
 }
 
 WorldClock::WorldClock(float time, float timeScale)
+    :_dirty(false)
+    , _isPlaying(true)
 {
-    _isPlaying = true;
     // _time = (time < 0 || time != time) ? getTimer() * 0.001f : time;
     _time = 0;
     setTimeScale(timeScale);
@@ -55,11 +56,13 @@ void WorldClock::add(IAnimatable *animatable)
 
 void WorldClock::remove(IAnimatable *animatable)
 {
+    if (!animatable) return;
+
     auto iterator = std::find(_animatableList.begin(), _animatableList.end(), animatable);
-    
     if (iterator != _animatableList.end())
     {
-        _animatableList.erase(iterator);
+        _animatableList[iterator - _animatableList.begin()] = nullptr;
+        _dirty = true;
     }
 }
 
@@ -105,34 +108,31 @@ void WorldClock::advanceTime(float passedTime)
         return;
     }
     
-    size_t currentIndex = 0;
-    size_t i = 0;
-    
-    for (size_t l = _animatableList.size(); i < l; ++i)
+    for (size_t i = 0, l = _animatableList.size(); i < l; ++i)
     {
-        IAnimatable *animatable = _animatableList[i];
-        
-        if (animatable)
+        if (_animatableList[i])
         {
-            if (currentIndex != i)
-            {
-                _animatableList[currentIndex] = animatable;
-                _animatableList[i] = nullptr;
-            }
-            
-            animatable->advanceTime(passedTime);
-            ++ currentIndex;
+            _animatableList[i]->advanceTime(passedTime);
         }
     }
-    
-    if (currentIndex != i)
+
+    if (_dirty)
     {
-        for (size_t l = _animatableList.size(); i < l;)
+        size_t curIdx = 0;
+        for (size_t i = 0, l = _animatableList.size(); i < l; ++i)
         {
-            _animatableList[currentIndex++] = _animatableList[i++];
+            if (_animatableList[i])
+            {
+                if (curIdx != i)
+                {
+                    _animatableList[curIdx] = _animatableList[i];
+                    _animatableList[i] = nullptr;
+                }
+                curIdx++;
+            }
         }
-        
-        _animatableList.reserve(currentIndex);
+        _animatableList.resize(curIdx);
+        _dirty = false;
     }
 }
 NAME_SPACE_DRAGON_BONES_END
