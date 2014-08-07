@@ -71,6 +71,13 @@ const String &EventData::getStringType() const
     return typeToString(_type);
 }
 
+EventData::EventData()
+{
+    _type = EventType::_ERROR;
+    armature = nullptr;
+    bone = nullptr;
+    animationState = nullptr;
+}
 EventData::EventData(EventType type, Armature *armatureTarget)
 {
     _type = type;
@@ -87,6 +94,16 @@ void EventData::dispose()
     armature = nullptr;
     bone = nullptr;
     animationState = nullptr;
+}
+
+void EventData::copy(const EventData &copyData)
+{
+    _type = copyData._type;
+    frameLabel = copyData.frameLabel;
+    sound = copyData.sound;
+    armature = copyData.armature;
+    bone = copyData.bone;
+    animationState = copyData.animationState;
 }
 
 NAME_SPACE_DRAGON_BONES_END

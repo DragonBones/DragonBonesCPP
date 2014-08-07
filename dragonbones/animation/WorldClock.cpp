@@ -25,6 +25,7 @@ void WorldClock::setTimeScale(float timeScale)
 
 WorldClock::WorldClock(float time, float timeScale)
 {
+    _isPlaying = true;
     // _time = (time < 0 || time != time) ? getTimer() * 0.001f : time;
     _time = 0;
     setTimeScale(timeScale);
@@ -67,8 +68,23 @@ void WorldClock::removeAll()
     _animatableList.clear();
 }
 
+void WorldClock::play()
+{
+    _isPlaying = true;
+}
+
+void WorldClock::stop()
+{
+    _isPlaying = false;
+}
+
 void WorldClock::advanceTime(float passedTime)
 {
+    if (!_isPlaying)
+    {
+        return;
+    }
+    
     if (passedTime < 0 || passedTime != passedTime)
     {
         /*

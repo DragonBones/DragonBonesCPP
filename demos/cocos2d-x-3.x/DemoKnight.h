@@ -317,6 +317,7 @@ private:
                 
             case dragonBones::EventData::EventType::COMPLETE:
                 cocos2d::log("animation complete: %s _isComboAttack: %d", eventData->animationState->name.c_str(), _isComboAttack);
+                
                 if (_isComboAttack)
                 {
                     armReady();

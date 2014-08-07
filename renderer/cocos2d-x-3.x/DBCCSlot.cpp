@@ -90,18 +90,18 @@ void DBCCSlot::disposeDisplayList()
     
     releasedNodeList.clear();
 }
-
-void DBCCSlot::updateDisplay(void *display, bool disposeExisting)
+void DBCCSlot::disposeDisplay()
 {
-    if (disposeExisting)
+    if (_nodeDisplay)
     {
-        if (_nodeDisplay)
-        {
-            _nodeDisplay->cleanup();
-            _nodeDisplay->release();
-        }
+        _nodeDisplay->cleanup();
+        _nodeDisplay->release();
+        _nodeDisplay = nullptr;
     }
-    
+}
+
+void DBCCSlot::updateDisplay(void *display)
+{
     _nodeDisplay = static_cast<cocos2d::Sprite *>(display);
 }
 

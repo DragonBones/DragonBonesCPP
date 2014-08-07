@@ -9,11 +9,13 @@ DBCCFactory DBCCFactory::factory;
 DBCCFactory::DBCCFactory() {}
 DBCCFactory::~DBCCFactory() {}
 
-void DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
+DragonBonesData *DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
 {
-    if (getDragonBonesData(name))
+    DragonBonesData *existDragonBonesData = getDragonBonesData(name);
+    
+    if (existDragonBonesData)
     {
-        return;
+        return existDragonBonesData;
     }
     
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
@@ -24,36 +26,55 @@ void DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, co
     dragonBones::XMLDataParser parser;
     DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement());
     addDragonBonesData(dragonBonesData, name);
+    return dragonBonesData;
 }
 
-void DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name)
+ITextureAtlas *DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name)
 {
-    if (getTextureAtlas(name))
+    ITextureAtlas *existTextureAtlas = getTextureAtlas(name);
+    
+    if (existTextureAtlas)
     {
-        return;
+        refreshTextureAtlasTexture(name.empty() ? existTextureAtlas->textureAtlasData->name : name);
+        return existTextureAtlas;
     }
     
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(textureAtlasFile);
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
     dragonBones::XMLDataParser parser;
-    TextureAtlasData *textureAtlasData = parser.parseTextureAtlasData(doc.RootElement());
-    DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas(textureAtlasData);
+    DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas();
+    textureAtlas->textureAtlasData = parser.parseTextureAtlasData(doc.RootElement());
     //
     int pos = textureAtlasFile.find_last_of("/");
     
     if (String::npos != pos)
     {
         String base_path = textureAtlasFile.substr(0, pos + 1);
-        textureAtlasData->imagePath = base_path + textureAtlasData->imagePath;
+        textureAtlas->textureAtlasData->imagePath = base_path + textureAtlas->textureAtlasData->imagePath;
     }
     
     //
-    textureAtlas->texture = cocos2d::Director::getInstance()->getTextureCache()->addImage(textureAtlasData->imagePath.c_str());
     addTextureAtlas(textureAtlas, name);
+    refreshTextureAtlasTexture(name.empty() ? textureAtlas->textureAtlasData->name : name);
+    return textureAtlas;
 }
 
-void DBCCFactory::refreshTextureAtlasTexture()
+void DBCCFactory::refreshTextureAtlasTexture(const std::string &name)
+{
+    for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
+    {
+        DBCCTextureAtlas *textureAtlas = static_cast<DBCCTextureAtlas *>(iterator->second);
+        const TextureAtlasData *textureAtlasData = textureAtlas->textureAtlasData;
+        
+        if (iterator->first == name)
+        {
+            textureAtlas->texture = cocos2d::Director::getInstance()->getTextureCache()->addImage(textureAtlasData->imagePath.c_str());
+        }
+    }
+}
+
+void DBCCFactory::refreshAllTextureAtlasTexture()
 {
     for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
     {
@@ -73,7 +94,6 @@ Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const
     display->retain();
     // eventDispatcher
     DBCCEventDispatcher *eventDispatcher = new DBCCEventDispatcher();
-    //eventDispatcher->eventDispatcher = display->getEventDispatcher();
     eventDispatcher->eventDispatcher = new cocos2d::EventDispatcher();
     eventDispatcher->eventDispatcher->setEnabled(true);
     // armature

@@ -253,11 +253,11 @@ private:
         
         if (_currentClotheIndex < (int)(_clothesList.size()))
         {
-            _armature->getCCSlot("clothes")->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(_clothesList[_currentClotheIndex]));
+            _armature->getCCSlot("head")->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(_clothesList[_currentClotheIndex]));
         }
         else
         {
-            _armature->getCCSlot("clothes")->setDisplay(nullptr);
+            _armature->getCCSlot("head")->setDisplay(nullptr);
         }
     }
     

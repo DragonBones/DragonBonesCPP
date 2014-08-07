@@ -31,12 +31,13 @@ void Slot::setDisplay(void *display, DisplayType displayType, bool disposeExisti
 {
     if (_displayIndex < 0)
     {
+        _isShowDisplay = true;
         _displayIndex = 0;
     }
     
     if (_displayIndex >= (int)(_displayList.size()))
     {
-        _displayList.resize(_displayIndex);
+        _displayList.resize(_displayIndex + 1);
     }
     
     if (_displayList[_displayIndex].first == display)
@@ -67,12 +68,15 @@ void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &dis
 {
     if (_displayIndex < 0)
     {
+        _isShowDisplay = true;
         _displayIndex = 0;
     }
     
     if (disposeExisting)
     {
         disposeDisplayList();
+        _childArmature = nullptr;
+        _display = nullptr;
     }
     
     // copy
@@ -263,14 +267,23 @@ void Slot::updateSlotDisplay(bool disposeExisting)
         removeDisplayFromContainer();
     }
     
+    if (disposeExisting)
+    {
+        if (_childArmature)
+        {
+            _childArmature->dispose();
+            delete _childArmature;
+            _childArmature = nullptr;
+        }
+        else if (_display)
+        {
+            disposeDisplay();
+            _display = nullptr;
+        }
+    }
+    
     void *display = _displayList[_displayIndex].first;
     DisplayType displayType = _displayList[_displayIndex].second;
-    
-    if (disposeExisting && _childArmature)
-    {
-        _childArmature->dispose();
-        delete _childArmature;
-    }
     
     if (display)
     {
@@ -291,7 +304,7 @@ void Slot::updateSlotDisplay(bool disposeExisting)
         _childArmature = nullptr;
     }
     
-    updateDisplay(_display, disposeExisting);
+    updateDisplay(_display);
     
     if (_display)
     {
@@ -308,7 +321,11 @@ void Slot::updateSlotDisplay(bool disposeExisting)
             }
         }
         
-        updateDisplayBlendMode(_slotData->blendMode);
+        if (_slotData)
+        {
+            updateDisplayBlendMode(_slotData->blendMode);
+        }
+        
         //updateDisplayColor();
         updateDisplayVisible(_visible);
         updateDisplayTransform();

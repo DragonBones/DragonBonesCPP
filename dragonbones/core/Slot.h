@@ -63,8 +63,9 @@ protected:
     virtual int getDisplayZIndex() const = 0;
     virtual void addDisplayToContainer(void *container, int zIndex) = 0;
     virtual void removeDisplayFromContainer() = 0;
+    virtual void disposeDisplay() = 0;
     virtual void disposeDisplayList() = 0;
-    virtual void updateDisplay(void *display, bool disposeExisting) = 0;
+    virtual void updateDisplay(void *display) = 0;
     virtual void updateDisplayBlendMode(BlendMode blendMode) = 0;
     virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) = 0;
     virtual void updateDisplayVisible(bool visible) = 0;

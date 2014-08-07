@@ -14,9 +14,10 @@ public:
     DBCCFactory();
     virtual ~DBCCFactory();
     
-    virtual void loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
-    virtual void loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
-    virtual void refreshTextureAtlasTexture();
+    virtual DragonBonesData *loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
+    virtual ITextureAtlas *loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
+    virtual void refreshTextureAtlasTexture(const std::string &name);
+    virtual void refreshAllTextureAtlasTexture();
     
 protected:
     virtual Armature *generateArmature(const ArmatureData *armatureData) const override;

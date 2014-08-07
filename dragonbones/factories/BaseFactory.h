@@ -34,11 +34,11 @@ public:
     virtual ~BaseFactory();
     virtual void dispose(bool disposeData = true);
     
-    virtual const DragonBonesData *getDragonBonesData(const String &name) const;
+    virtual DragonBonesData *getDragonBonesData(const String &name) const;
     virtual void addDragonBonesData(DragonBonesData *data, const String &name = "");
     virtual void removeDragonBonesData(const String &name, bool disposeData = true);
     
-    virtual const ITextureAtlas *getTextureAtlas(const String &name) const;
+    virtual ITextureAtlas *getTextureAtlas(const String &name) const;
     virtual void addTextureAtlas(ITextureAtlas *textureAtlas, const String &name = "");
     virtual void removeTextureAtlas(const String &name, bool disposeData = true);
     
