@@ -11,12 +11,15 @@ public:
     static DBCCFactory factory;
     
 public:
+	static DBCCFactory* getInstance();
+
     DBCCFactory();
     virtual ~DBCCFactory();
-    
+
     virtual void loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
     virtual void loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
     virtual void refreshTextureAtlasTexture();
+	virtual bool hasSkeleton(const std::string &skeletonName, const std::string &armatureName = "", const std::string &animationName = "");
     
 protected:
     virtual Armature *generateArmature(const ArmatureData *armatureData) const override;
