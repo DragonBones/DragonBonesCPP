@@ -75,6 +75,12 @@
     <ClCompile Include="..\..\..\dragonbones\parsers\XMLDataParser.cpp">
       <Filter>DragonBones</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmatureNode.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -229,6 +235,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\dragonbones\textures\TextureData.h">
       <Filter>DragonBones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmatureNode.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
