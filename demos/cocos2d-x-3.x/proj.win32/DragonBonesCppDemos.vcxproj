@@ -152,7 +152,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCFactory.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -207,7 +206,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\DemoBase.h" />
     <ClInclude Include="..\Classes\DemoDragonBoy.h" />
     <ClInclude Include="..\Classes\DemoKnight.h" />
-    <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
