@@ -1,6 +1,5 @@
 #include "HelloWorldScene.h"
-#include "CCDragonBones.h"
-#include "AnimationEvent.h"
+
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -18,15 +17,32 @@ Scene* HelloWorld::createScene()
     return scene;
 }
 
+void HelloWorld::updateHandler(float passTime)
+{
+	dragonBones::WorldClock::clock.advanceTime(passTime);
+	Rect rect = _armature->getBoundingBox();
+	Vec2 vec2s[4];
+	vec2s[0].x = rect.getMidX();
+	vec2s[0].y = rect.getMidY();
+	vec2s[1].x = rect.getMidX();
+	vec2s[1].y = rect.getMaxY();
+	vec2s[2].x = rect.getMaxX();
+	vec2s[2].y = rect.getMaxY();
+	vec2s[3].x = rect.getMaxX();
+	vec2s[3].y = rect.getMidY();
+
+	log("rect = x=%f, y=%f, w=%f, h=%f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+	log("rect: left=%f, right=%f, top=%f, bottom=%f", rect.getMinX(), rect.getMaxX(), rect.getMaxY(), rect.getMinY());
+
+	drawnode->clear();
+	drawnode->drawPolygon(vec2s, 4, Color4F::WHITE, 1, Color4F::RED);
+
+}
+
 // on "init" you need to initialize your instance
-bool HelloWorld::init()
+void HelloWorld::demoInit()
 {
     //////////////////////////////
-    // 1. super init first
-    if ( !Layer::init() )
-    {
-        return false;
-    }
     
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Point origin = Director::getInstance()->getVisibleOrigin();
@@ -64,28 +80,75 @@ bool HelloWorld::init()
     // add the label as a child to this layer
     this->addChild(label, 1);
 
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
 
-    // position the sprite on the center of the screen
-    sprite->setPosition(Point(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+	// factory
+	dragonBones::DBCCFactory::factory.loadDragonBonesData("zhugeliang/zhugeliang_skeleton.xml");
+	dragonBones::DBCCFactory::factory.loadTextureAtlas("zhugeliang/zhugeliang.xml");
+	// armature
+	auto armature = (dragonBones::DBCCArmature *)(dragonBones::DBCCFactory::factory.buildArmature("main", "zhugeliang"));
+	_armature = dragonBones::DBCCArmatureNode::create(armature);
 
-    // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
+	drawnode = DrawNode::create();
+	//_armature->addChild(drawnode, -1);
+	this->addChild(drawnode);
+	
+	_armature->getAnimation()->gotoAndPlay("walk");
+	_armature->setPosition(480.f, 200.f);
+	this->addChild(_armature);
+	// armature event
+	_armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::START, std::bind(&HelloWorld::armAnimationHandler, this, std::placeholders::_1));
+	_armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN, std::bind(&HelloWorld::armAnimationHandler, this, std::placeholders::_1));
+	_armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::COMPLETE, std::bind(&HelloWorld::armAnimationHandler, this, std::placeholders::_1));
+	_armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, std::bind(&HelloWorld::armAnimationHandler, this, std::placeholders::_1));
+	// update
+	dragonBones::WorldClock::clock.add(_armature->getArmature());
 
+	// key
+	cocos2d::EventListenerKeyboard *listener = cocos2d::EventListenerKeyboard::create();
+	listener->onKeyPressed = [&](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event){
+		log("key pressed code=%d", keyCode);
+		switch (keyCode)
+		{
+		case cocos2d::EventKeyboard::KeyCode::KEY_A:
+			_armature->getAnimation()->gotoAndPlay("wait");
+			_armature->getAnimation()->gotoAndPlay("skill1");
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_S:
+			_armature->getAnimation()->gotoAndPlay("wait");
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_D:
+			_armature->getAnimation()->gotoAndPlay("atk");
+			break;
+		default:
+			break;
+		}
+	};
+	//listener->onKeyReleased = std::bind(&DemoKnight::keyReleaseHandler, this, std::placeholders::_1, std::placeholders::_2);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+}
 
-	DragonBonesNode *dbNode = DragonBonesNode::create("dragon/skeleton.xml", "dragon/texture.xml", "Dragon", "Dragon", "");
-	this->addChild(dbNode);
-	dbNode->addEventListener(dragonBones::AnimationEvent::LOOP_COMPLETE , [](dragonBones::Event *event){CCLOG("Event Triggered:%s", event->getType().c_str());} , "");
-	dbNode->addEventListener(dragonBones::AnimationEvent::MOVEMENT_CHANGE , [](dragonBones::Event *event){CCLOG("Event Triggered:%s", event->getType().c_str());} , "");
-	dbNode->addEventListener(dragonBones::AnimationEvent::START , [](dragonBones::Event *event){CCLOG("Event Triggered:%s", event->getType().c_str());} , "");
-	dbNode->addEventListener(dragonBones::AnimationEvent::COMPLETE , [](dragonBones::Event *event){CCLOG("Event Triggered:%s", event->getType().c_str());} , "");
+void HelloWorld::armAnimationHandler(cocos2d::EventCustom *event)
+{
+	dragonBones::EventData *eventData = (dragonBones::EventData *)(event->getUserData());
 
-	dbNode->getDisplayNode()->setPosition(CCPoint(200, 200));
-	dbNode->gotoAndPlay("walk");
+	switch (eventData->getType())
+	{
+	case dragonBones::EventData::EventType::START:
+		cocos2d::log("animation start: %s %f", eventData->animationState->name.c_str(), utils::gettime());
+		break;
+	case dragonBones::EventData::EventType::FADE_IN:
+		cocos2d::log("animation fade in: %s %f", eventData->animationState->name.c_str(), utils::gettime());
+		break;
 
-    
-    return true;
+	case dragonBones::EventData::EventType::COMPLETE:
+		cocos2d::log("animation complete: %s  %f", eventData->animationState->name.c_str(), utils::gettime());
+		
+		break;
+
+	case dragonBones::EventData::EventType::ANIMATION_FRAME_EVENT:
+		cocos2d::log("animation frame event: %s %s %f", eventData->animationState->name.c_str(), eventData->frameLabel, utils::gettime());
+		break;
+	}
 }
 
 
