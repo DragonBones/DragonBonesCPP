@@ -89,7 +89,7 @@ void DBCCFactory::refreshAllTextureAtlasTexture()
     }
 }
 
-bool DBCCFactory::hasSkeleton(const std::string &skeletonName, const std::string &armatureName, const std::string &animationName)
+bool DBCCFactory::hasDragonBones(const std::string &skeletonName, const std::string &armatureName, const std::string &animationName)
 {
 	auto dragonbonesData = getDragonBonesData(skeletonName);
 	if (!dragonbonesData) return false;
