@@ -39,6 +39,7 @@ void BaseFactory::addDragonBonesData(DragonBonesData *data, const String &name)
     if (!data)
     {
         // throw
+        throw std::invalid_argument("Invalid data.");
     }
     
     const String &key = name.empty() ? data->name : name;
@@ -46,12 +47,13 @@ void BaseFactory::addDragonBonesData(DragonBonesData *data, const String &name)
     if (key.empty())
     {
         // throw
+        throw std::runtime_error("Name is empty.");
     }
     
     if (_dragonBonesDataMap.find(key) != _dragonBonesDataMap.end())
     {
-        // throw?
-        removeDragonBonesData(key, true);
+        // throw
+        throw std::runtime_error("Data has been added.");
     }
     
     _dragonBonesDataMap[key] = data;
@@ -90,6 +92,7 @@ void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const String &nam
     if (!textureAtlas)
     {
         // throw
+        throw std::invalid_argument("Invalid textureAtlas.");
     }
     
     const String &key = name.empty() ? textureAtlas->textureAtlasData->name : name;
@@ -97,12 +100,13 @@ void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const String &nam
     if (key.empty())
     {
         // throw
+        throw std::runtime_error("Name is empty.");
     }
     
     if (_textureAtlasMap.find(key) != _textureAtlasMap.end())
     {
         // throw?
-        removeTextureAtlas(key, true);
+        throw std::runtime_error("Data has been added.");
     }
     
     _textureAtlasMap[key] = textureAtlas;

@@ -73,7 +73,10 @@ void DBCCSlot::disposeDisplayList()
         if (_displayList[i].second == DisplayType::DT_ARMATURE)
         {
             Armature *armature = static_cast<Armature *>(_displayList[i].first);
-            armature->dispose();
+            if(armature)
+            {
+                armature->dispose();
+            }
         }
         else
         {
