@@ -32,7 +32,8 @@ public:
         ANIMATION_FRAME_EVENT,
         BONE_FRAME_EVENT,
         SOUND,
-        FADE_IN, FADE_OUT, START, COMPLETE, LOOP_COMPLETE, FADE_IN_COMPLETE, FADE_OUT_COMPLETE
+        FADE_IN, FADE_OUT, START, COMPLETE, LOOP_COMPLETE, FADE_IN_COMPLETE, FADE_OUT_COMPLETE,
+        _ERROR
     };
     
     static const String &typeToString(EventType eventType);
@@ -54,12 +55,11 @@ public:
     const String &getStringType() const;
     
 public:
+    EventData();
     EventData(EventType type, Armature *armatureTarget);
     virtual ~EventData();
     void dispose();
-    
-private:
-    DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(EventData);
+    void copy(const EventData &copyData);
 };
 NAME_SPACE_DRAGON_BONES_END
 #endif  // __EVENTS_EVENT_DATA_H__

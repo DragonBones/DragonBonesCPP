@@ -21,7 +21,7 @@ BaseFactory::~BaseFactory()
     dispose();
 }
 
-const DragonBonesData *BaseFactory::getDragonBonesData(const String &name) const
+DragonBonesData *BaseFactory::getDragonBonesData(const String &name) const
 {
     auto iterator = _dragonBonesDataMap.find(name);
     
@@ -72,7 +72,7 @@ void BaseFactory::removeDragonBonesData(const String &name, bool disposeData)
     }
 }
 
-const ITextureAtlas *BaseFactory::getTextureAtlas(const String &name) const
+ITextureAtlas *BaseFactory::getTextureAtlas(const String &name) const
 {
     auto iterator = _textureAtlasMap.find(name);
     
@@ -379,7 +379,7 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
         SlotData *slotData = skinData->slotDataList[i];
         Bone *bone = armature->getBone(slotData->parent);
         
-        if (!bone || slotData->displayDataList.empty())
+        if (!bone)
         {
             continue;
         }
@@ -436,7 +436,11 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
         }
         
         bone->addChild(slot);
-        slot->setDisplayList(displayList, false);
+        
+        if (!displayList.empty())
+        {
+            slot->setDisplayList(displayList, false);
+        }
     }
 }
 NAME_SPACE_DRAGON_BONES_END

@@ -11,6 +11,7 @@ public:
     static WorldClock clock;
     
 private:
+    bool _isPlaying;
     float _time;
     float _timeScale;
     
@@ -32,6 +33,8 @@ public:
     virtual void add(IAnimatable *animatable);
     virtual void remove(IAnimatable *animatable);
     virtual void removeAll();
+    virtual void play();
+    virtual void stop();
     virtual void advanceTime(float passedTime) override;
     
 private:

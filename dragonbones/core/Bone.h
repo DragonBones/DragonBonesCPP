@@ -39,6 +39,8 @@ public:
     
     virtual void setVisible(bool vislble) override;
     
+    
+    
 protected:
     virtual void setArmature(Armature *armature) override;
     

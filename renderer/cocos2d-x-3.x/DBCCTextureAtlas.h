@@ -11,9 +11,10 @@ public:
     cocos2d::Texture2D *texture;
     
 public:
-    DBCCTextureAtlas(const TextureAtlasData *textureAtlasData_)
-        : ITextureAtlas(textureAtlasData_)
+    DBCCTextureAtlas()
     {
+        texture = nullptr;
+        textureAtlasData = nullptr;
     }
     virtual ~DBCCTextureAtlas()
     {
@@ -21,6 +22,12 @@ public:
     }
     virtual void dispose() override
     {
+        if (textureAtlasData)
+        {
+            textureAtlasData->dispose();
+            textureAtlasData = nullptr;
+        }
+        
         texture = nullptr;
     }
     

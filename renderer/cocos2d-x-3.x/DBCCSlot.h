@@ -24,8 +24,9 @@ protected:
     virtual int getDisplayZIndex() const override;
     virtual void addDisplayToContainer(void *container, int zIndex) override;
     virtual void removeDisplayFromContainer() override;
+    virtual void disposeDisplay() override;
     virtual void disposeDisplayList() override;
-    virtual void updateDisplay(void *display, bool disposeExisting) override;
+    virtual void updateDisplay(void *display) override;
     virtual void updateDisplayBlendMode(BlendMode blendMode) override;
     virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) override;
     virtual void updateDisplayVisible(bool visible) override;

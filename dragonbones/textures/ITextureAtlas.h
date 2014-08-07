@@ -8,11 +8,10 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class ITextureAtlas
 {
 public:
-    const TextureAtlasData *textureAtlasData;
+    TextureAtlasData *textureAtlasData;
     
 public:
-    ITextureAtlas(const TextureAtlasData *textureAtlasData_)
-        : textureAtlasData(textureAtlasData_)
+    ITextureAtlas()
     {
     }
     virtual ~ITextureAtlas() {};
