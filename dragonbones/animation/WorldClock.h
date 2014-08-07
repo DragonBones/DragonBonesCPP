@@ -11,9 +11,12 @@ public:
     static WorldClock clock;
     
 private:
+    bool _dirty;
     bool _isPlaying;
     float _time;
     float _timeScale;
+    
+    
     
     std::vector<IAnimatable *> _animatableList;
     
