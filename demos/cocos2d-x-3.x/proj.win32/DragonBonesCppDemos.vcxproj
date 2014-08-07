@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{76A39BB2-9B84-4C65-98A5-654D86B86F2A}</ProjectGuid>
+    <RootNamespace>test_win32</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '10.0'">v100</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '11.0'">v110</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '11.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v110_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '10.0'">v100</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '11.0'">v110</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '11.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v110_xp</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2dx.props" />
+    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2d_headers.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2dx.props" />
+    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2d_headers.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration).win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration).win32\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration).win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration).win32\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos;$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;..\..\..\dragonbones;..\..\..\renderer\cocos2d-x-3.x;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>if not exist "$(OutDir)" mkdir "$(OutDir)"
+xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</Command>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;..\..\..\renderer\cocos2d-x-3.x;..\..\..\library;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcurl_imp.lib;websockets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>if not exist "$(OutDir)" mkdir "$(OutDir)"
+xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</Command>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\dragonbones\animation\Animation.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\animation\AnimationState.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\animation\TimelineState.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\animation\WorldClock.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\core\Armature.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\core\Bone.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\core\Object.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\core\Slot.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\events\EventData.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\factories\BaseFactory.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\parsers\BaseDataParser.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\parsers\ConstValues.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\parsers\dbtinyxml2.cpp" />
+    <ClCompile Include="..\..\..\dragonbones\parsers\XMLDataParser.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmature.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCFactory.cpp" />
+    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.cpp" />
+    <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\dragonbones\animation\Animation.h" />
+    <ClInclude Include="..\..\..\dragonbones\animation\AnimationState.h" />
+    <ClInclude Include="..\..\..\dragonbones\animation\IAnimatable.h" />
+    <ClInclude Include="..\..\..\dragonbones\animation\TimelineState.h" />
+    <ClInclude Include="..\..\..\dragonbones\animation\WorldClock.h" />
+    <ClInclude Include="..\..\..\dragonbones\core\Armature.h" />
+    <ClInclude Include="..\..\..\dragonbones\core\Bone.h" />
+    <ClInclude Include="..\..\..\dragonbones\core\Object.h" />
+    <ClInclude Include="..\..\..\dragonbones\core\Slot.h" />
+    <ClInclude Include="..\..\..\dragonbones\DragonBones.h" />
+    <ClInclude Include="..\..\..\dragonbones\DragonBonesHeaders.h" />
+    <ClInclude Include="..\..\..\dragonbones\events\EventData.h" />
+    <ClInclude Include="..\..\..\dragonbones\events\IEventDispatcher.h" />
+    <ClInclude Include="..\..\..\dragonbones\factories\BaseFactory.h" />
+    <ClInclude Include="..\..\..\dragonbones\geoms\ColorTransform.h" />
+    <ClInclude Include="..\..\..\dragonbones\geoms\Matrix.h" />
+    <ClInclude Include="..\..\..\dragonbones\geoms\Point.h" />
+    <ClInclude Include="..\..\..\dragonbones\geoms\Rectangle.h" />
+    <ClInclude Include="..\..\..\dragonbones\geoms\Transform.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\AnimationData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\ArmatureData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\BoneData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\DisplayData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\DragonBonesData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\EllipseData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\Frame.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\IAreaData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\RectangleData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\SkinData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\SlotData.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\Timeline.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\TransformFrame.h" />
+    <ClInclude Include="..\..\..\dragonbones\objects\TransformTimeline.h" />
+    <ClInclude Include="..\..\..\dragonbones\parsers\BaseDataParser.h" />
+    <ClInclude Include="..\..\..\dragonbones\parsers\ConstValues.h" />
+    <ClInclude Include="..\..\..\dragonbones\parsers\dbtinyxml2.h" />
+    <ClInclude Include="..\..\..\dragonbones\parsers\XMLDataParser.h" />
+    <ClInclude Include="..\..\..\dragonbones\textures\ITextureAtlas.h" />
+    <ClInclude Include="..\..\..\dragonbones\textures\TextureAtlasData.h" />
+    <ClInclude Include="..\..\..\dragonbones\textures\TextureData.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmature.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCEventDispatcher.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCFactory.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCRenderHeaders.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.h" />
+    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCTextureAtlas.h" />
+    <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\DemoBase.h" />
+    <ClInclude Include="..\Classes\DemoDragonBoy.h" />
+    <ClInclude Include="..\Classes\DemoKnight.h" />
+    <ClInclude Include="main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\cocos\2d\libcocos2d.vcxproj">
+      <Project>{98a51ba8-fc3a-415b-ac8f-8c7bd464e93e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\cocos\audio\proj.win32\libcocosdenshion.vcxproj">
+      <Project>{f8edd7fa-9a51-4e80-baeb-860825d2eac6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\external\chipmunk\proj.win32\chipmunk.vcxproj">
+      <Project>{207bc7a9-ccf1-4f2f-a04d-45f72242ae25}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
