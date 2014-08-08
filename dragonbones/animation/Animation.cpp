@@ -266,10 +266,6 @@ void Animation::play()
     {
         _isPlaying = true;
     }
-    else
-    {
-        gotoAndPlay(_lastAnimationState->name);
-    }
 }
 
 void Animation::stop()
