@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{e07a3b72-c924-49c4-8ce1-5c4382bc57d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dragonbones">
+      <UniqueIdentifier>{dc99a2f7-7beb-4446-93e6-27ebe77423e9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\animation\Animation.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\animation\AnimationState.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\animation\TimelineState.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\animation\WorldClock.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\Armature.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\Bone.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\Object.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\Slot.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\events\EventData.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\factories\BaseFactory.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\parsers\BaseDataParser.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\parsers\ConstValues.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\parsers\dbtinyxml2.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\parsers\XMLDataParser.cpp">
+      <Filter>dragonbones</Filter>
+    </ClCompile>
+    <ClCompile Include="..\renderer\DBCCArmature.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\renderer\DBCCFactory.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\renderer\DBCCSlot.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\animation\Animation.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\animation\AnimationState.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\animation\IAnimatable.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\animation\TimelineState.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\animation\WorldClock.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\Armature.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\Bone.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\Object.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\Slot.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\events\EventData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\events\IEventDispatcher.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\factories\BaseFactory.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\geoms\ColorTransform.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\geoms\Matrix.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\geoms\Point.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\geoms\Rectangle.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\geoms\Transform.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\AnimationData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\ArmatureData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\BoneData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\DisplayData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\DragonBonesData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\EllipseData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\Frame.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\IAreaData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\RectangleData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\SkinData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\SlotData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\Timeline.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\TransformFrame.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\objects\TransformTimeline.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\parsers\BaseDataParser.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\parsers\ConstValues.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\parsers\dbtinyxml2.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\parsers\XMLDataParser.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\textures\ITextureAtlas.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\textures\TextureAtlasData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\textures\TextureData.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DragonBones.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DragonBonesHeaders.h">
+      <Filter>dragonbones</Filter>
+    </ClInclude>
+    <ClInclude Include="..\renderer\DBCCArmature.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\renderer\DBCCEventDispatcher.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\renderer\DBCCFactory.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\renderer\DBCCRenderHeaders.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\renderer\DBCCSlot.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\renderer\DBCCTextureAtlas.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
