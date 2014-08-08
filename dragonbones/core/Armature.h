@@ -6,8 +6,16 @@
 #include "../animation/IAnimatable.h"
 #include "../animation/Animation.h"
 #include "../events/IEventDispatcher.h"
+#include "Slot.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
+
+class Object;
+class Bone;
+class Slot;
+class Animation;
+class AnimationState;
+
 class Armature : public IAnimatable
 {
     friend class Object;

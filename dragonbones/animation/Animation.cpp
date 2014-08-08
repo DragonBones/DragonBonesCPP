@@ -45,7 +45,7 @@ float Animation::getTimeScale() const
 }
 void Animation::setTimeScale(float timeScale)
 {
-    if (timeScale < 0 || timeScale != timeScale)
+    if (timeScale < 0)
     {
         timeScale = 1;
     }
