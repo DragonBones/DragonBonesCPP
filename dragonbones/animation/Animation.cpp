@@ -1,4 +1,4 @@
-#include "objects/AnimationData.h"
+﻿#include "objects/AnimationData.h"
 #include "Animation.h"
 #include "AnimationState.h"
 #include "Slot.h"
@@ -347,10 +347,6 @@ namespace dragonBones
             else if (!_isPlaying)
             {
                 _isPlaying = true;
-            }
-            else
-            {
-                gotoAndPlay(_lastAnimationState->name);
             }
         }
         
