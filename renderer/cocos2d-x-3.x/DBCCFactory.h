@@ -11,11 +11,11 @@ public:
     static DBCCFactory factory;
     
 public:
-	static DBCCFactory* getInstance();
-
+    static DBCCFactory *getInstance();
+    
     DBCCFactory();
     virtual ~DBCCFactory();
-
+    
     virtual DragonBonesData *loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
     virtual ITextureAtlas *loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
     virtual void refreshTextureAtlasTexture(const std::string &name);

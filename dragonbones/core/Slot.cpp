@@ -321,12 +321,12 @@ void Slot::updateSlotDisplay(bool disposeExisting)
                 addDisplayToContainer(_armature->_display, currentDisplayIndex);
             }
         }
-
+        
         if (_blendMode != BlendMode::BM_NORMAL)
         {
             updateDisplayBlendMode(_blendMode);
         }
-        else if(_slotData)
+        else if (_slotData)
         {
             updateDisplayBlendMode(_slotData->blendMode);
         }

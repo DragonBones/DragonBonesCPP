@@ -73,7 +73,8 @@ void DBCCSlot::disposeDisplayList()
         if (_displayList[i].second == DisplayType::DT_ARMATURE)
         {
             Armature *armature = static_cast<Armature *>(_displayList[i].first);
-            if(armature)
+            
+            if (armature)
             {
                 armature->dispose();
             }
@@ -111,6 +112,7 @@ void DBCCSlot::updateDisplay(void *display)
 void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
 {
     cocos2d::Sprite *spriteDisplay = dynamic_cast<cocos2d::Sprite *>(_nodeDisplay);
+    
     if (spriteDisplay)
     {
         switch (blendMode)
@@ -118,54 +120,54 @@ void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
             case BlendMode::BM_ADD:
                 spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
                 break;
-
+                
             case BlendMode::BM_ALPHA:
                 break;
-
+                
             case BlendMode::BM_DARKEN:
                 break;
-
+                
             case BlendMode::BM_DIFFERENCE:
                 break;
-
+                
             case BlendMode::BM_ERASE:
                 break;
-
+                
             case BlendMode::BM_HARDLIGHT:
                 break;
-
+                
             case BlendMode::BM_INVERT:
                 break;
-
+                
             case BlendMode::BM_LAYER:
                 break;
-
+                
             case BlendMode::BM_LIGHTEN:
                 break;
-
+                
             case BlendMode::BM_MULTIPLY:
                 break;
-
+                
             case BlendMode::BM_NORMAL:
                 break;
-
+                
             case BlendMode::BM_OVERLAY:
                 break;
-
+                
             case BlendMode::BM_SCREEN:
                 break;
-
+                
             case BlendMode::BM_SHADER:
                 break;
-
+                
             case BlendMode::BM_SUBTRACT:
                 break;
-
+                
             default:
                 break;
         }
-
-        if(_childArmature)
+        
+        if (_childArmature)
         {
             for (size_t i = 0, l = _childArmature->getSlots().size(); i < l; ++i)
             {
