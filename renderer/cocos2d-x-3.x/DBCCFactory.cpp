@@ -6,9 +6,9 @@
 NAME_SPACE_DRAGON_BONES_BEGIN
 DBCCFactory DBCCFactory::factory;
 
-DBCCFactory* DBCCFactory::getInstance()
+DBCCFactory *DBCCFactory::getInstance()
 {
-	return &factory;
+    return &factory;
 }
 
 DBCCFactory::DBCCFactory() {}
@@ -91,19 +91,24 @@ void DBCCFactory::refreshAllTextureAtlasTexture()
 
 bool DBCCFactory::hasDragonBones(const std::string &skeletonName, const std::string &armatureName, const std::string &animationName)
 {
-	auto dragonbonesData = getDragonBonesData(skeletonName);
-	if (!dragonbonesData) return false;
-	if (!armatureName.empty())
-	{
-		auto armatureData = dragonbonesData->getArmatureData(armatureName);
-		if (!armatureData) return false;
-		if (!animationName.empty())
-		{
-			auto animationData = armatureData->getAnimationData(animationName);
-			return animationData != nullptr;
-		}
-	}
-	return true;
+    auto dragonbonesData = getDragonBonesData(skeletonName);
+    
+    if (!dragonbonesData) { return false; }
+    
+    if (!armatureName.empty())
+    {
+        auto armatureData = dragonbonesData->getArmatureData(armatureName);
+        
+        if (!armatureData) { return false; }
+        
+        if (!animationName.empty())
+        {
+            auto animationData = armatureData->getAnimationData(animationName);
+            return animationData != nullptr;
+        }
+    }
+    
+    return true;
 }
 
 Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const

@@ -21,6 +21,7 @@ protected:
     float _originZOrder;
     float _tweenZOrder;
     float _offsetZOrder;
+    BlendMode _blendMode;
     
     // <displayOrArmature *, DisplayType>
     std::vector<std::pair<void *, DisplayType>> _displayList;
@@ -66,8 +67,8 @@ protected:
     virtual void disposeDisplay() = 0;
     virtual void disposeDisplayList() = 0;
     virtual void updateDisplay(void *display) = 0;
-    virtual void updateDisplayBlendMode(BlendMode blendMode) = 0;
     virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) = 0;
+    virtual void updateDisplayBlendMode(BlendMode blendMode) = 0;
     virtual void updateDisplayVisible(bool visible) = 0;
     virtual void updateDisplayTransform() = 0;
     

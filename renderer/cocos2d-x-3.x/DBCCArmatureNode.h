@@ -16,8 +16,8 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCArmatureNode : public cocos2d::Node
 {
 public:
-	virtual cocos2d::Node *getCCDisplay() const { return _armature->getCCDisplay(); };
-	virtual cocos2d::EventDispatcher *getCCEventDispatcher() const { return _armature->getCCEventDispatcher(); };
+	virtual cocos2d::Node* getCCDisplay() const { return _armature->getCCDisplay(); };
+	virtual cocos2d::EventDispatcher* getCCEventDispatcher() const { return _armature->getCCEventDispatcher(); };
 	virtual cocos2d::Rect getBoundingBox() const override;
 
 #if (DRAGON_BONES_ENABLE_LUA == 1)
@@ -27,20 +27,22 @@ public:
 	virtual void unregisterMovementEventHandler();
 #endif // DRAGON_BONES_ENABLE_LUA
 
+
 public:
 
-	static DBCCArmatureNode* create(DBCCArmature* armature);
-	virtual bool initWithDBCCArmature(DBCCArmature* armature);
-
+    static DBCCArmatureNode *create(DBCCArmature *armature);
+    virtual bool initWithDBCCArmature(DBCCArmature *armature);
+    
     DBCCArmatureNode();
     virtual ~DBCCArmatureNode();
+
 	DBCCArmature* getArmature() const { return _armature; };
 	Animation* getAnimation() const { return _armature->getAnimation(); };
 
 	virtual void update(float dt) override;
 
 protected:
-	DBCCArmature* _armature;
+    DBCCArmature *_armature;
     
 private:
 	int _frameEventHandler;

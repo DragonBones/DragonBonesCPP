@@ -24,7 +24,7 @@ void WorldClock::setTimeScale(float timeScale)
 }
 
 WorldClock::WorldClock(float time, float timeScale)
-    :_dirty(false)
+    : _dirty(false)
     , _isPlaying(true)
 {
     // _time = (time < 0 || time != time) ? getTimer() * 0.001f : time;
@@ -56,9 +56,10 @@ void WorldClock::add(IAnimatable *animatable)
 
 void WorldClock::remove(IAnimatable *animatable)
 {
-    if (!animatable) return;
-
+    if (!animatable) { return; }
+    
     auto iterator = std::find(_animatableList.begin(), _animatableList.end(), animatable);
+    
     if (iterator != _animatableList.end())
     {
         _animatableList[iterator - _animatableList.begin()] = nullptr;
@@ -115,10 +116,11 @@ void WorldClock::advanceTime(float passedTime)
             _animatableList[i]->advanceTime(passedTime);
         }
     }
-
+    
     if (_dirty)
     {
         size_t curIdx = 0;
+        
         for (size_t i = 0, l = _animatableList.size(); i < l; ++i)
         {
             if (_animatableList[i])
@@ -128,9 +130,11 @@ void WorldClock::advanceTime(float passedTime)
                     _animatableList[curIdx] = _animatableList[i];
                     _animatableList[i] = nullptr;
                 }
+                
                 curIdx++;
             }
         }
+        
         _animatableList.resize(curIdx);
         _dirty = false;
     }

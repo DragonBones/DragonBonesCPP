@@ -73,7 +73,11 @@ void DBCCSlot::disposeDisplayList()
         if (_displayList[i].second == DisplayType::DT_ARMATURE)
         {
             Armature *armature = static_cast<Armature *>(_displayList[i].first);
-            armature->dispose();
+            
+            if (armature)
+            {
+                armature->dispose();
+            }
         }
         else
         {
@@ -107,11 +111,14 @@ void DBCCSlot::updateDisplay(void *display)
 
 void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
 {
-    if (_nodeDisplay)
+    cocos2d::Sprite *spriteDisplay = dynamic_cast<cocos2d::Sprite *>(_nodeDisplay);
+    
+    if (spriteDisplay)
     {
         switch (blendMode)
         {
             case BlendMode::BM_ADD:
+                spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
                 break;
                 
             case BlendMode::BM_ALPHA:
@@ -158,6 +165,16 @@ void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
                 
             default:
                 break;
+        }
+        
+        if (_childArmature)
+        {
+            for (size_t i = 0, l = _childArmature->getSlots().size(); i < l; ++i)
+            {
+                DBCCSlot *slot = static_cast<DBCCSlot *>(_childArmature->getSlots()[i]);
+                slot->_blendMode = blendMode;
+                slot->updateDisplayBlendMode(blendMode);
+            }
         }
     }
 }
