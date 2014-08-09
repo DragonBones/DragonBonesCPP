@@ -117,6 +117,7 @@ Slot::Slot(SlotData *slotData)
     _originZOrder = 0.f;
     _tweenZOrder = 0.f;
     _offsetZOrder = 0.f;
+    _blendMode = BlendMode::BM_NORMAL;
     _slotData = slotData;
     _childArmature = nullptr;
     _display = nullptr;
@@ -320,8 +321,12 @@ void Slot::updateSlotDisplay(bool disposeExisting)
                 addDisplayToContainer(_armature->_display, currentDisplayIndex);
             }
         }
-        
-        if (_slotData)
+
+        if (_blendMode != BlendMode::BM_NORMAL)
+        {
+            updateDisplayBlendMode(_blendMode);
+        }
+        else if(_slotData)
         {
             updateDisplayBlendMode(_slotData->blendMode);
         }
