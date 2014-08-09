@@ -118,9 +118,11 @@ inline int indexOf(std::vector<T> &vector, const T &value)
 
 
 enum class DisplayType {DT_IMAGE, DT_ARMATURE, DT_FRAME, DT_1, DT_2, DT_3, DT_4, DT_5};
+template<>
 const char *EnumName<DisplayType>::list[] = {"image", "armature", "frame"};
 
 enum class BlendMode {BM_ADD, BM_ALPHA, BM_DARKEN, BM_DIFFERENCE, BM_ERASE, BM_HARDLIGHT, BM_INVERT, BM_LAYER, BM_LIGHTEN, BM_MULTIPLY, BM_NORMAL, BM_OVERLAY, BM_SCREEN, BM_SHADER, BM_SUBTRACT};
+template<>
 const char *EnumName<BlendMode>::list[] = {"add", "alpha", "darken", "difference", "erase", "hardlight", "invert", "layer", "lighten", "multiply", "normal", "overlay", "screen", "shader", "subtract"};
 
 NAME_SPACE_DRAGON_BONES_END
