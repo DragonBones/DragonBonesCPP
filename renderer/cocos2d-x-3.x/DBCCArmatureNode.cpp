@@ -8,7 +8,7 @@
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
-DBCCArmatureNode* BCCArmatureNode::create(DBCCArmature *armature)
+DBCCArmatureNode* DBCCArmatureNode::create(DBCCArmature *armature)
 {
     DBCCArmatureNode *ret = new DBCCArmatureNode();
     
