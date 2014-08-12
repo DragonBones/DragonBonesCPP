@@ -1,4 +1,5 @@
-﻿#include "AnimationState.h"
+﻿#include <cstdlib>
+#include "AnimationState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 std::vector<AnimationState *> AnimationState::_pool;

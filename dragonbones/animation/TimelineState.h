@@ -7,9 +7,12 @@
 #include "../geoms/Transform.h"
 #include "../objects/TransformTimeline.h"
 #include "../core/Bone.h"
-#include "AnimationState.h"
+#include "../animation/AnimationState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
+
+class AnimationState;
+
 class TimelineState
 {
     friend class AnimationState;
