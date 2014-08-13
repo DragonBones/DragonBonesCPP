@@ -60,6 +60,8 @@ protected:
     virtual void changeDisplay(int displayIndex);
     virtual void updateSlotDisplay(bool disposeExisting);
     virtual void updateChildArmatureAnimation();
+    virtual void playChildArmatureAnimation();
+    virtual void stopChildArmatureAnimation();
     
     virtual int getDisplayZIndex() const = 0;
     virtual void addDisplayToContainer(void *container, int zIndex) = 0;

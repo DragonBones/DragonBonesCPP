@@ -48,7 +48,6 @@ void Slot::setDisplay(void *display, DisplayType displayType, bool disposeExisti
     _displayList[_displayIndex].first = display;
     _displayList[_displayIndex].second = displayType;
     updateSlotDisplay(disposeExisting);
-    updateChildArmatureAnimation();
 }
 
 Armature *Slot::getChildArmature() const
@@ -205,7 +204,6 @@ void Slot::changeDisplay(int displayIndex)
             _isShowDisplay = true;
             _displayIndex = displayIndex;
             updateSlotDisplay(false);
-            updateChildArmatureAnimation();
             
             if (
                 _slotData &&
@@ -233,28 +231,41 @@ void Slot::changeDisplay(int displayIndex)
 
 void Slot::updateChildArmatureAnimation()
 {
+    if (_isShowDisplay)
+    {
+        playChildArmatureAnimation();
+    }
+    else
+    {
+        stopChildArmatureAnimation();
+    }
+}
+
+void Slot::playChildArmatureAnimation()
+{
     if (_childArmature)
     {
-        if (_isShowDisplay)
-        {
-            if (
-                _armature &&
-                _armature->_animation->_lastAnimationState &&
-                _childArmature->_animation->hasAnimation(_armature->_animation->_lastAnimationState->name)
+        if (
+            _armature &&
+            _armature->_animation->_lastAnimationState &&
+            _childArmature->_animation->hasAnimation(_armature->_animation->_lastAnimationState->name)
             )
-            {
-                _childArmature->_animation->gotoAndPlay(_armature->_animation->_lastAnimationState->name);
-            }
-            else
-            {
-                _childArmature->_animation->play();
-            }
+        {
+            _childArmature->_animation->gotoAndPlay(_armature->_animation->_lastAnimationState->name);
         }
         else
         {
-            _childArmature->_animation->stop();
-            _childArmature->_animation->_lastAnimationState = nullptr;
+            _childArmature->_animation->play();
         }
+    }
+}
+
+void Slot::stopChildArmatureAnimation()
+{
+    if (_childArmature)
+    {
+        _childArmature->_animation->stop();
+        _childArmature->_animation->_lastAnimationState = nullptr;
     }
 }
 
@@ -267,7 +278,7 @@ void Slot::updateSlotDisplay(bool disposeExisting)
         currentDisplayIndex = getDisplayZIndex();
         removeDisplayFromContainer();
     }
-    
+
     if (disposeExisting)
     {
         if (_childArmature)
@@ -282,7 +293,9 @@ void Slot::updateSlotDisplay(bool disposeExisting)
             _display = nullptr;
         }
     }
-    
+
+    stopChildArmatureAnimation();
+
     void *display = _displayList[_displayIndex].first;
     DisplayType displayType = _displayList[_displayIndex].second;
     
@@ -304,6 +317,8 @@ void Slot::updateSlotDisplay(bool disposeExisting)
         _display = nullptr;
         _childArmature = nullptr;
     }
+
+    playChildArmatureAnimation();
     
     updateDisplay(_display);
     
