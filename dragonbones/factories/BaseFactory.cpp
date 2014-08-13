@@ -414,9 +414,12 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
                             displayDataCopy = slotDataCopy->displayDataList[i];
                         }
                     }
-                    
-                    Armature *childArmature = buildArmature(displayData->name, "", displayDataCopy ? displayDataCopy->name : "", _currentDragonBonesDataName, _currentTextureAtlasName);
+                    std::string currentDragonBonesDataName = _currentDragonBonesDataName;
+                    std::string currentTextureAtlasName = _currentTextureAtlasName;
+                    Armature *childArmature = buildArmature(displayData->name, "", displayDataCopy ? displayDataCopy->name : "", currentDragonBonesDataName, currentTextureAtlasName);
                     displayList.push_back(std::make_pair(childArmature, DisplayType::DT_ARMATURE));
+                    _currentDragonBonesDataName = currentDragonBonesDataName;
+                    _currentTextureAtlasName = currentTextureAtlasName;
                     break;
                 }
                 
