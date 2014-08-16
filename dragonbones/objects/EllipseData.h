@@ -25,7 +25,7 @@ public:
     {
         operator=(copyData);
     }
-    EllipseData &operator=(const EllipseData &copyData)
+    EllipseData& operator=(const EllipseData &copyData)
     {
         IAreaData::operator=(copyData);
         dispose();

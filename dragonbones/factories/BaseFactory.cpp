@@ -2,11 +2,11 @@
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
-const std::map<String, DragonBonesData *> &BaseFactory::getDragonBonesDataMap() const
+const std::map<String, DragonBonesData*>& BaseFactory::getDragonBonesDataMap() const
 {
     return _dragonBonesDataMap;
 }
-const std::map<String, ITextureAtlas *> &BaseFactory::getTextureAtlasMap() const
+const std::map<String, ITextureAtlas*>& BaseFactory::getTextureAtlasMap() const
 {
     return _textureAtlasMap;
 }
@@ -21,7 +21,7 @@ BaseFactory::~BaseFactory()
     dispose();
 }
 
-DragonBonesData *BaseFactory::getDragonBonesData(const String &name) const
+DragonBonesData* BaseFactory::getDragonBonesData(const String &name) const
 {
     auto iterator = _dragonBonesDataMap.find(name);
     
@@ -74,7 +74,7 @@ void BaseFactory::removeDragonBonesData(const String &name, bool disposeData)
     }
 }
 
-ITextureAtlas *BaseFactory::getTextureAtlas(const String &name) const
+ITextureAtlas* BaseFactory::getTextureAtlas(const String &name) const
 {
     auto iterator = _textureAtlasMap.find(name);
     
@@ -148,15 +148,15 @@ void BaseFactory::dispose(bool disposeData)
     _textureAtlasMap.clear();
 }
 
-Armature *BaseFactory::buildArmature(const String &armatureName) const
+Armature* BaseFactory::buildArmature(const String &armatureName) const
 {
     return buildArmature(armatureName, "", armatureName, "", "");
 }
-Armature *BaseFactory::buildArmature(const String &armatureName, const String &dragonBonesName) const
+Armature* BaseFactory::buildArmature(const String &armatureName, const String &dragonBonesName) const
 {
     return buildArmature(armatureName, "", armatureName, dragonBonesName, dragonBonesName);
 }
-Armature *BaseFactory::buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const
+Armature* BaseFactory::buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const
 {
     DragonBonesData *dragonBonesData = nullptr;
     ArmatureData *armatureData = nullptr;
@@ -258,7 +258,7 @@ Armature *BaseFactory::buildArmature(const String &armatureName, const String &s
     return armature;
 }
 
-void *BaseFactory::getTextureDisplay(const String &textureName, const String &textureAtlasName, const DisplayData *displayData) const
+void* BaseFactory::getTextureDisplay(const String &textureName, const String &textureAtlasName, const DisplayData *displayData) const
 {
     ITextureAtlas *textureAtlas = nullptr;
     TextureData *textureData = nullptr;
@@ -392,7 +392,7 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
         slot->name = slotData->name;
         slot->_originZOrder = slotData->zOrder;
         slot->_slotData = slotData;
-        std::vector<std::pair<void *, DisplayType>> displayList;
+        std::vector<std::pair<void*, DisplayType>> displayList;
         void *frameDisplay = nullptr;
         
         for (size_t j = 0, l = slotData->displayDataList.size(); j < l; ++j)

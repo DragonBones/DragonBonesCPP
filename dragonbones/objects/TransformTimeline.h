@@ -27,7 +27,7 @@ public:
     {
         operator=(copyData);
     }
-    TransformTimeline &operator=(const TransformTimeline &copyData)
+    TransformTimeline& operator=(const TransformTimeline &copyData)
     {
         Timeline::operator=(copyData);
         //_dispose();

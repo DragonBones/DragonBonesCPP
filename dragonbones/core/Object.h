@@ -33,8 +33,8 @@ public:
     virtual bool getVisible() const;
     virtual void setVisible(bool vislble);
     
-    virtual Armature *getArmature() const;
-    virtual Bone *getParent() const;
+    virtual Armature* getArmature() const;
+    virtual Bone* getParent() const;
     
 protected:
     virtual void setArmature(Armature *armature);

@@ -65,7 +65,7 @@ void BaseDataParser::transformAnimationData(AnimationData *animationData, const 
         
         for (size_t i = 0, l = timeline->frameList.size(); i < l; ++i)
         {
-            TransformFrame *frame = static_cast<TransformFrame *>(timeline->frameList[i]);
+            TransformFrame *frame = static_cast<TransformFrame*>(timeline->frameList[i]);
             setFrameTransform(animationData, armatureData, boneData, frame);
             frame->transform.x -= boneData->transform.x;
             frame->transform.y -= boneData->transform.y;
@@ -184,8 +184,8 @@ void BaseDataParser::setFrameTransform(AnimationData *animationData, const Armat
         
         if (parentTimeline)
         {
-            std::vector<TransformTimeline *> parentTimelineList;
-            std::vector<BoneData *> parentDataList;
+            std::vector<TransformTimeline*> parentTimelineList;
+            std::vector<BoneData*> parentDataList;
             
             while (parentTimeline)
             {
@@ -259,7 +259,7 @@ void BaseDataParser::getTimelineTransform(const TransformTimeline *timeline, int
 {
     for (size_t i = 0, l = timeline->frameList.size(); i < l; ++i)
     {
-        const TransformFrame *currentFrame = static_cast<const TransformFrame *>(timeline->frameList[i]);
+        const TransformFrame *currentFrame = static_cast<const TransformFrame*>(timeline->frameList[i]);
         
         if (currentFrame->position <= position && currentFrame->position + currentFrame->duration > position)
         {
@@ -278,7 +278,7 @@ void BaseDataParser::getTimelineTransform(const TransformTimeline *timeline, int
                     progress = getEaseValue(progress, tweenEasing);
                 }
                 
-                const TransformFrame *nextFrame = static_cast<const TransformFrame *>(timeline->frameList[i + 1]);
+                const TransformFrame *nextFrame = static_cast<const TransformFrame*>(timeline->frameList[i + 1]);
                 const Transform *currentTransform = isGlobal ? &currentFrame->global : &currentFrame->transform;
                 const Transform *nextTransform = isGlobal ? &nextFrame->global : &nextFrame->transform;
                 retult->x = currentTransform->x + (nextTransform->x - currentTransform->x) * progress;

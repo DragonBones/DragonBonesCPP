@@ -13,7 +13,7 @@ public:
     String name;
     String parent;
     BlendMode blendMode;
-    std::vector<DisplayData *> displayDataList;
+    std::vector<DisplayData*> displayDataList;
     
 public:
     SlotData()
@@ -25,7 +25,7 @@ public:
     {
         operator=(copyData);
     }
-    SlotData &operator=(const SlotData &copyData)
+    SlotData& operator=(const SlotData &copyData)
     {
         dispose();
         name = copyData.name;
@@ -53,7 +53,7 @@ public:
         displayDataList.clear();
     }
     
-    const DisplayData *getDisplayData(const String &displayName) const
+    const DisplayData* getDisplayData(const String &displayName) const
     {
         for (size_t i = 0, l = displayDataList.size(); i < l; ++i)
         {

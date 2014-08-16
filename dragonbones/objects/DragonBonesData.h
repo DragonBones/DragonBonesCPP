@@ -10,7 +10,7 @@ class DragonBonesData
 public:
     bool autoSearch;
     String name;
-    std::vector<ArmatureData *> armatureDataList;
+    std::vector<ArmatureData*> armatureDataList;
     
 public:
     DragonBonesData()
@@ -21,7 +21,7 @@ public:
     {
         operator=(copyData);
     }
-    DragonBonesData &operator=(const DragonBonesData &copyData)
+    DragonBonesData& operator=(const DragonBonesData &copyData)
     {
         dispose();
         autoSearch = copyData.autoSearch;
@@ -51,7 +51,7 @@ public:
         armatureDataList.clear();
     }
     
-    ArmatureData *getArmatureData(const String &armatureName) const
+    ArmatureData* getArmatureData(const String &armatureName) const
     {
         for (size_t i = 0, l = armatureDataList.size(); i < l; ++i)
         {

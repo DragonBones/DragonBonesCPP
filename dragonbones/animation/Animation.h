@@ -27,8 +27,8 @@ protected:
     float _timeScale;
     
     std::vector<String> _animationList;
-    std::vector<AnimationData *> _animationDataList;
-    std::vector<AnimationState *> _animationStateList;
+    std::vector<AnimationData*> _animationDataList;
+    std::vector<AnimationState*> _animationStateList;
     
     Armature *_armature;
     AnimationState *_lastAnimationState;
@@ -36,13 +36,13 @@ protected:
 public:
     virtual bool getIsPlaying() const;
     virtual bool getIsComplete() const;
-    virtual const std::vector<String> &getAnimationList() const;
-    virtual AnimationState *getLastAnimationState() const;
+    virtual const std::vector<String>& getAnimationList() const;
+    virtual AnimationState* getLastAnimationState() const;
     virtual float getTimeScale() const;
     virtual void setTimeScale(float timeScale);
     
-    virtual const std::vector<AnimationData *> &getAnimationDataList() const;
-    virtual void setAnimationDataList(const std::vector<AnimationData *> &animationDataList);
+    virtual const std::vector<AnimationData*>& getAnimationDataList() const;
+    virtual void setAnimationDataList(const std::vector<AnimationData*> &animationDataList);
     
 public:
     explicit Animation();
@@ -50,7 +50,7 @@ public:
     
     virtual void dispose();
     
-    virtual AnimationState *gotoAndPlay(
+    virtual AnimationState* gotoAndPlay(
         const String &animationName,
         float fadeInTime = -1.f,
         float duration = -1.f,
@@ -62,7 +62,7 @@ public:
         bool pauseFadeIn = true
     );
     
-    virtual AnimationState *gotoAndStop(
+    virtual AnimationState* gotoAndStop(
         const String &animationName,
         float time,
         float normalizedTime = -1.f,
@@ -78,7 +78,7 @@ public:
     virtual void advanceTime(float passedTime);
     
     virtual bool hasAnimation(const String &animationName) const;
-    virtual AnimationState *getState(const String &name, int layer = 0) const;
+    virtual AnimationState* getState(const String &name, int layer = 0) const;
     
 protected:
     virtual void addState(AnimationState *animationState);

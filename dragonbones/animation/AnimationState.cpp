@@ -2,9 +2,9 @@
 #include "AnimationState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
-std::vector<AnimationState *> AnimationState::_pool;
+std::vector<AnimationState*> AnimationState::_pool;
 
-AnimationState *AnimationState::borrowObject()
+AnimationState* AnimationState::borrowObject()
 {
     if (_pool.empty())
     {
@@ -69,23 +69,23 @@ float AnimationState::getCurrentWeight() const
     return _fadeWeight * weight;
 }
 
-const String &AnimationState::getGroup() const
+const String& AnimationState::getGroup() const
 {
     return _group;
 }
 
-const AnimationData *AnimationState::getClip() const
+const AnimationData* AnimationState::getClip() const
 {
     return _clip;
 }
 
-AnimationState *AnimationState::setAdditiveBlending(bool value)
+AnimationState* AnimationState::setAdditiveBlending(bool value)
 {
     additiveBlending = value;
     return this;
 }
 
-AnimationState *AnimationState::setAutoFadeOut(bool value, float fadeOutTime_)
+AnimationState* AnimationState::setAutoFadeOut(bool value, float fadeOutTime_)
 {
     autoFadeOut = value;
     
@@ -97,13 +97,13 @@ AnimationState *AnimationState::setAutoFadeOut(bool value, float fadeOutTime_)
     return this;
 }
 
-AnimationState *AnimationState::setWeight(float value)
+AnimationState* AnimationState::setWeight(float value)
 {
     weight = value;
     return this;
 }
 
-AnimationState *AnimationState::setFrameTween(bool autoTween_, bool lastFrameAutoTween_)
+AnimationState* AnimationState::setFrameTween(bool autoTween_, bool lastFrameAutoTween_)
 {
     autoTween = autoTween_;
     lastFrameAutoTween = lastFrameAutoTween_;
@@ -114,7 +114,7 @@ int AnimationState::getPlayTimes() const
 {
     return _playTimes;
 }
-AnimationState *AnimationState::setPlayTimes(int playTimes)
+AnimationState* AnimationState::setPlayTimes(int playTimes)
 {
     _playTimes = playTimes;
     
@@ -135,7 +135,7 @@ float AnimationState::getCurrentTime() const
 {
     return _currentTime < 0 ? 0.f : _currentTime * 0.001f;
 }
-AnimationState *AnimationState::setCurrentTime(float currentTime)
+AnimationState* AnimationState::setCurrentTime(float currentTime)
 {
     if (currentTime < 0 || currentTime != currentTime)
     {
@@ -151,7 +151,7 @@ float AnimationState::getTimeScale() const
 {
     return _timeScale;
 }
-AnimationState *AnimationState::setTimeScale(float timeScale)
+AnimationState* AnimationState::setTimeScale(float timeScale)
 {
     if (timeScale != timeScale)
     {
@@ -216,7 +216,7 @@ void AnimationState::fadeIn(Armature *armature, AnimationData *clip, float fadeT
     updateTimelineStates();
 }
 
-AnimationState *AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
+AnimationState* AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
 {
     if (!(fadeTotalTime >= 0))
     {
@@ -251,13 +251,13 @@ AnimationState *AnimationState::fadeOut(float fadeTotalTime, bool pausePlayhead)
     return this;
 }
 
-AnimationState *AnimationState::play()
+AnimationState* AnimationState::play()
 {
     _isPlaying = true;
     return this;
 }
 
-AnimationState *AnimationState::stop()
+AnimationState* AnimationState::stop()
 {
     _isPlaying = false;
     return this;
@@ -268,7 +268,7 @@ bool AnimationState::getMixingTransform(const String &timelineName) const
     return std::find(_mixingTransforms.cbegin(), _mixingTransforms.cend(), timelineName) != _mixingTransforms.cend();
 }
 
-AnimationState *AnimationState::addMixingTransform(const String &timelineName, bool recursive)
+AnimationState* AnimationState::addMixingTransform(const String &timelineName, bool recursive)
 {
     if (recursive)
     {
@@ -308,7 +308,7 @@ AnimationState *AnimationState::addMixingTransform(const String &timelineName, b
     return this;
 }
 
-AnimationState *AnimationState::removeMixingTransform(const String &timelineName, bool recursive)
+AnimationState* AnimationState::removeMixingTransform(const String &timelineName, bool recursive)
 {
     if (recursive)
     {
@@ -349,7 +349,7 @@ AnimationState *AnimationState::removeMixingTransform(const String &timelineName
     return this;
 }
 
-AnimationState *AnimationState::removeAllMixingTransform()
+AnimationState* AnimationState::removeAllMixingTransform()
 {
     _mixingTransforms.clear();
     updateTimelineStates();

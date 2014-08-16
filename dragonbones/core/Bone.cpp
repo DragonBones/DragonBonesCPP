@@ -6,17 +6,17 @@ bool Bone::sortState(const TimelineState *a, const TimelineState *b)
     return a->_animationState->getLayer() < b->_animationState->getLayer();
 }
 
-Slot *Bone::getSlot() const
+Slot* Bone::getSlot() const
 {
     return _slotList.empty() ? nullptr : _slotList.front();
 }
 
-const std::vector<Slot *> &Bone::getSlots() const
+const std::vector<Slot*>& Bone::getSlots() const
 {
     return _slotList;
 }
 
-const std::vector<Bone *> &Bone::getBones() const
+const std::vector<Bone*>& Bone::getBones() const
 {
     return _boneList;
 }
@@ -103,8 +103,8 @@ void Bone::addChild(Object *object)
         // throw
     }
     
-    Bone *bone = dynamic_cast<Bone *>(object);
-    Slot *slot = dynamic_cast<Slot *>(object);
+    Bone *bone = dynamic_cast<Bone*>(object);
+    Slot *slot = dynamic_cast<Slot*>(object);
     
     if (object == this || (bone && bone->contains(this)))
     {
@@ -137,8 +137,8 @@ void Bone::removeChild(Object *object)
         // throw
     }
     
-    Bone *bone = dynamic_cast<Bone *>(object);
-    Slot *slot = dynamic_cast<Slot *>(object);
+    Bone *bone = dynamic_cast<Bone*>(object);
+    Slot *slot = dynamic_cast<Slot*>(object);
     
     if (bone)
     {

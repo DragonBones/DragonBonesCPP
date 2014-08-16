@@ -34,14 +34,14 @@ protected:
     
     Point _tweenPivot;
     Transform _tween;
-    std::vector<Bone *> _boneList;
-    std::vector<Slot *> _slotList;
-    std::vector<TimelineState *> _timelineStateList;
+    std::vector<Bone*> _boneList;
+    std::vector<Slot*> _slotList;
+    std::vector<TimelineState*> _timelineStateList;
     
 public:
-    virtual Slot *getSlot() const;
-    virtual const std::vector<Slot *> &getSlots() const;
-    virtual const std::vector<Bone *> &getBones() const;
+    virtual Slot* getSlot() const;
+    virtual const std::vector<Slot*>& getSlots() const;
+    virtual const std::vector<Bone*>& getBones() const;
     
     virtual void setVisible(bool vislble) override;
     

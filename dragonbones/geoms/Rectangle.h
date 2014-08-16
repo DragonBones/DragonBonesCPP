@@ -24,7 +24,7 @@ public:
     {
         operator=(copyData);
     }
-    Rectangle &operator=(const Rectangle &copyData)
+    Rectangle& operator=(const Rectangle &copyData)
     {
         x = copyData.x;
         y = copyData.y;

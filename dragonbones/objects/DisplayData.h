@@ -24,7 +24,7 @@ public:
     {
         operator=(copyData);
     }
-    DisplayData &operator=(const DisplayData &copyData)
+    DisplayData& operator=(const DisplayData &copyData)
     {
         name = copyData.name;
         type = copyData.type;

@@ -2,14 +2,14 @@
 #include "DBCCEventDispatcher.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
-cocos2d::Node *DBCCArmature::getCCDisplay() const
+cocos2d::Node* DBCCArmature::getCCDisplay() const
 {
-    return static_cast<cocos2d::Node *>(_display);
+    return static_cast<cocos2d::Node*>(_display);
 }
 
-cocos2d::EventDispatcher *DBCCArmature::getCCEventDispatcher() const
+cocos2d::EventDispatcher* DBCCArmature::getCCEventDispatcher() const
 {
-    return static_cast<DBCCEventDispatcher *>(_eventDispatcher)->eventDispatcher;
+    return static_cast<DBCCEventDispatcher*>(_eventDispatcher)->eventDispatcher;
 }
 
 DBCCArmature::DBCCArmature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, cocos2d::Node *display)
@@ -31,9 +31,9 @@ void DBCCArmature::dispose()
     Armature::dispose();
 }
 
-DBCCSlot *DBCCArmature::getCCSlot(const std::string &slotName) const
+DBCCSlot* DBCCArmature::getCCSlot(const std::string &slotName) const
 {
     Slot *slot = getSlot(slotName);
-    return slot ? static_cast<DBCCSlot *>(slot) : nullptr;
+    return slot ? static_cast<DBCCSlot*>(slot) : nullptr;
 }
 NAME_SPACE_DRAGON_BONES_END

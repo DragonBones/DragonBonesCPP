@@ -6,7 +6,7 @@
 NAME_SPACE_DRAGON_BONES_BEGIN
 DBCCFactory DBCCFactory::factory;
 
-DBCCFactory *DBCCFactory::getInstance()
+DBCCFactory* DBCCFactory::getInstance()
 {
     return &factory;
 }
@@ -14,7 +14,7 @@ DBCCFactory *DBCCFactory::getInstance()
 DBCCFactory::DBCCFactory() {}
 DBCCFactory::~DBCCFactory() {}
 
-DragonBonesData *DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
+DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
 {
     DragonBonesData *existDragonBonesData = getDragonBonesData(name);
     
@@ -26,7 +26,7 @@ DragonBonesData *DBCCFactory::loadDragonBonesData(const std::string &dragonBones
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
     // 使用XML解析器载入dragonBones的skeleton.xml
     dragonBones::XMLDocument doc;
-    doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
+    doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
     // 解析骨骼动画数据
     dragonBones::XMLDataParser parser;
     DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement());
@@ -34,7 +34,7 @@ DragonBonesData *DBCCFactory::loadDragonBonesData(const std::string &dragonBones
     return dragonBonesData;
 }
 
-ITextureAtlas *DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name)
+ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name)
 {
     ITextureAtlas *existTextureAtlas = getTextureAtlas(name);
     
@@ -46,7 +46,7 @@ ITextureAtlas *DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile
     
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(textureAtlasFile);
     dragonBones::XMLDocument doc;
-    doc.Parse(reinterpret_cast<char *>(data.getBytes()), data.getSize());
+    doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
     dragonBones::XMLDataParser parser;
     DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas();
     textureAtlas->textureAtlasData = parser.parseTextureAtlasData(doc.RootElement());
@@ -69,7 +69,7 @@ void DBCCFactory::refreshTextureAtlasTexture(const std::string &name)
 {
     for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
     {
-        DBCCTextureAtlas *textureAtlas = static_cast<DBCCTextureAtlas *>(iterator->second);
+        DBCCTextureAtlas *textureAtlas = static_cast<DBCCTextureAtlas*>(iterator->second);
         const TextureAtlasData *textureAtlasData = textureAtlas->textureAtlasData;
         
         if (iterator->first == name)
@@ -83,7 +83,7 @@ void DBCCFactory::refreshAllTextureAtlasTexture()
 {
     for (auto iterator = _textureAtlasMap.begin(); iterator != _textureAtlasMap.end(); ++iterator)
     {
-        DBCCTextureAtlas *textureAtlas = static_cast<DBCCTextureAtlas *>(iterator->second);
+        DBCCTextureAtlas *textureAtlas = static_cast<DBCCTextureAtlas*>(iterator->second);
         const TextureAtlasData *textureAtlasData = textureAtlas->textureAtlasData;
         textureAtlas->texture = cocos2d::Director::getInstance()->getTextureCache()->addImage(textureAtlasData->imagePath.c_str());
     }
@@ -111,7 +111,7 @@ bool DBCCFactory::hasDragonBones(const std::string &skeletonName, const std::str
     return true;
 }
 
-Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const
+Armature* DBCCFactory::generateArmature(const ArmatureData *armatureData) const
 {
     Animation *animation = new Animation();
     // sprite
@@ -124,19 +124,19 @@ Armature *DBCCFactory::generateArmature(const ArmatureData *armatureData) const
     eventDispatcher->eventDispatcher = new cocos2d::EventDispatcher();
     eventDispatcher->eventDispatcher->setEnabled(true);
     // armature
-    Armature *armature = new DBCCArmature((ArmatureData *)(armatureData), animation, eventDispatcher, display);
+    Armature *armature = new DBCCArmature((ArmatureData*)(armatureData), animation, eventDispatcher, display);
     return armature;
 }
 
-Slot *DBCCFactory::generateSlot(const SlotData *slotData) const
+Slot* DBCCFactory::generateSlot(const SlotData *slotData) const
 {
-    Slot *slot = new DBCCSlot((SlotData *)(slotData));
+    Slot *slot = new DBCCSlot((SlotData*)(slotData));
     return slot;
 }
 
-void *DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const
+void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const
 {
-    DBCCTextureAtlas *dbccTextureAtlas = (DBCCTextureAtlas *)(textureAtlas);
+    DBCCTextureAtlas *dbccTextureAtlas = (DBCCTextureAtlas*)(textureAtlas);
     
     if (dbccTextureAtlas && textureData)
     {

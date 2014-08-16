@@ -18,7 +18,7 @@ private:
     
     
     
-    std::vector<IAnimatable *> _animatableList;
+    std::vector<IAnimatable*> _animatableList;
     
 public:
     float getTime() const;

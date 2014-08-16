@@ -6,7 +6,7 @@
 class DemoDragonBoy : public DemoBase
 {
 public:
-    static cocos2d::Scene *createScene()
+    static cocos2d::Scene* createScene()
     {
         auto scene = cocos2d::Scene::create();
         auto layer = DemoDragonBoy::create();
@@ -37,7 +37,7 @@ protected:
         dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/DragonBoy/skeleton.xml");
         dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/DragonBoy/texture.xml");
         // armature
-        _armature = (dragonBones::DBCCArmature *)(dragonBones::DBCCFactory::factory.buildArmature("dragonBoy"));
+        _armature = (dragonBones::DBCCArmature*)(dragonBones::DBCCFactory::factory.buildArmature("dragonBoy"));
         _armature->getCCDisplay()->setPosition(480.f, 200.f);
         _armature->getCCDisplay()->setScale(0.5f);
         this->addChild(_armature->getCCDisplay());
@@ -146,7 +146,7 @@ private:
     
     void eventHandler(cocos2d::EventCustom *event)
     {
-        dragonBones::EventData *eventData = (dragonBones::EventData *)(event->getUserData());
+        dragonBones::EventData *eventData = (dragonBones::EventData*)(event->getUserData());
         
         if (eventData->animationState)
         {

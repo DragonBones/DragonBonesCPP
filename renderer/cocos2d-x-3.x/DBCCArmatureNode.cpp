@@ -68,7 +68,7 @@ for (const auto slot : _armature->getSlots())
     {
         if (! slot->getVisible()) { continue; }
         
-        auto node = static_cast<cocos2d::Node *>(slot->getDisplay());
+        auto node = static_cast<cocos2d::Node*>(slot->getDisplay());
         auto r = node->getBoundingBox();
         
         if (first)
@@ -116,7 +116,7 @@ void DBCCArmatureNode::registerFrameEventHandler(cocos2d::LUA_FUNCTION func)
 
 	auto f = [this](cocos2d::EventCustom *event)
 	{
-		auto eventData = (dragonBones::EventData *)(event->getUserData());
+		auto eventData = (dragonBones::EventData*)(event->getUserData());
 		int type = (int) eventData->getType();
 		std::string movementId = eventData->animationState->name;
 		std::string frameLabel = eventData->frameLabel;
@@ -141,7 +141,7 @@ void DBCCArmatureNode::registerMovementEventHandler(cocos2d::LUA_FUNCTION func)
 
 	auto f = [this](cocos2d::EventCustom *event)
 	{
-		auto eventData = (dragonBones::EventData *)(event->getUserData());
+		auto eventData = (dragonBones::EventData*)(event->getUserData());
 		int type = (int) eventData->getType();
 		std::string movementId = eventData->animationState->name;
 		std::string frameLabel = eventData->frameLabel;

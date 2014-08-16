@@ -30,7 +30,7 @@ public:
 
 public:
 
-    static DBCCArmatureNode *create(DBCCArmature *armature);
+    static DBCCArmatureNode* create(DBCCArmature *armature);
     virtual bool initWithDBCCArmature(DBCCArmature *armature);
     
     DBCCArmatureNode();

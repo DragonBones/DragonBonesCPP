@@ -29,7 +29,7 @@ public:
     static IEventDispatcher *soundEventDispatcher;
     
 private:
-    static bool sortBone(const std::pair<int, Bone *> &a, const std::pair<int, Bone *> &b);
+    static bool sortBone(const std::pair<int, Bone*> &a, const std::pair<int, Bone*> &b);
     static bool sortSlot(const Slot *a, const Slot *b);
     
 public:
@@ -43,9 +43,9 @@ protected:
     bool _delayDispose;
     bool _lockDispose;
     
-    std::vector<Bone *> _boneList;
-    std::vector<Slot *> _slotList;
-    std::vector<EventData *> _eventDataList;
+    std::vector<Bone*> _boneList;
+    std::vector<Slot*> _slotList;
+    std::vector<EventData*> _eventDataList;
     
     ArmatureData *_armatureData;
     Animation *_animation;
@@ -53,13 +53,13 @@ protected:
     void *_display;
     
 public:
-    virtual const std::vector<Bone *> &getBones() const;
-    virtual const std::vector<Slot *> &getSlots() const;
+    virtual const std::vector<Bone*>& getBones() const;
+    virtual const std::vector<Slot*>& getSlots() const;
     
-    virtual const ArmatureData *getArmatureData() const;
-    virtual Animation *getAnimation() const;
-    virtual void *getDisplay() const;
-    virtual IEventDispatcher *getEventDispatcher() const;
+    virtual const ArmatureData* getArmatureData() const;
+    virtual Animation* getAnimation() const;
+    virtual void* getDisplay() const;
+    virtual IEventDispatcher* getEventDispatcher() const;
     
 public:
     Armature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, void *display);
@@ -67,18 +67,18 @@ public:
     virtual void dispose();
     
 public:
-    virtual Bone *getBone(const String &boneName) const;
-    virtual Bone *getBoneByDisplay(const void *display) const;
+    virtual Bone* getBone(const String &boneName) const;
+    virtual Bone* getBoneByDisplay(const void *display) const;
     virtual void addBone(Bone *bone);
     virtual void addBone(Bone *bone, const String &parentBoneName);
     virtual void removeBone(Bone *bone);
-    virtual Bone *removeBone(const String &boneName);
+    virtual Bone* removeBone(const String &boneName);
     
-    virtual Slot *getSlot(const String &slotName) const;
-    virtual Slot *getSlotByDisplay(const void *display) const;
+    virtual Slot* getSlot(const String &slotName) const;
+    virtual Slot* getSlotByDisplay(const void *display) const;
     virtual void addSlot(Slot *slot, const String &parentBoneName);
     virtual void removeSlot(Slot *slot);
-    virtual Slot *removeSlot(const String &slotName);
+    virtual Slot* removeSlot(const String &slotName);
     virtual void sortSlotsByZOrder();
     
     virtual void invalidUpdate();

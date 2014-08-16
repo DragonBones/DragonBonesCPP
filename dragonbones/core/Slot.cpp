@@ -23,7 +23,7 @@ void Slot::setZOrder(float value)
     }
 }
 
-void *Slot::getDisplay() const
+void* Slot::getDisplay() const
 {
     return _display;
 }
@@ -50,7 +50,7 @@ void Slot::setDisplay(void *display, DisplayType displayType, bool disposeExisti
     updateSlotDisplay(disposeExisting);
 }
 
-Armature *Slot::getChildArmature() const
+Armature* Slot::getChildArmature() const
 {
     return _childArmature;
 }
@@ -59,11 +59,11 @@ void Slot::setChildArmature(Armature *childArmature, bool disposeExisting)
     setDisplay(childArmature, DisplayType::DT_ARMATURE, disposeExisting);
 }
 
-const std::vector<std::pair<void *, DisplayType>> &Slot::getDisplayList() const
+const std::vector<std::pair<void*, DisplayType>>& Slot::getDisplayList() const
 {
     return _displayList;
 }
-void Slot::setDisplayList(const std::vector<std::pair<void *, DisplayType>> &displayList, bool disposeExisting)
+void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>> &displayList, bool disposeExisting)
 {
     if (_displayIndex < 0)
     {
@@ -303,7 +303,7 @@ void Slot::updateSlotDisplay(bool disposeExisting)
     {
         if (displayType == DisplayType::DT_ARMATURE)
         {
-            _childArmature = static_cast<Armature *>(display);
+            _childArmature = static_cast<Armature*>(display);
             _display = _childArmature->_display;
         }
         else

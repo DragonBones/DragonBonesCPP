@@ -2,9 +2,9 @@
 #include "TimelineState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
-std::vector<TimelineState *> TimelineState::_pool;
+std::vector<TimelineState*> TimelineState::_pool;
 
-TimelineState *TimelineState::borrowObject()
+TimelineState* TimelineState::borrowObject()
 {
     if (_pool.empty())
     {
@@ -211,7 +211,7 @@ void TimelineState::updateMultipleFrame(float progress)
                 break;
             }
             
-            currentFrame = static_cast<TransformFrame *>(_timeline->frameList[_currentFrameIndex]);
+            currentFrame = static_cast<TransformFrame*>(_timeline->frameList[_currentFrameIndex]);
             
             if (prevFrame)
             {
@@ -258,8 +258,8 @@ void TimelineState::updateToNextFrame(int currentPlayTimes)
         nextFrameIndex = 0;
     }
     
-    const TransformFrame *currentFrame = static_cast<TransformFrame *>(_timeline->frameList[_currentFrameIndex]);
-    const TransformFrame *nextFrame = static_cast<TransformFrame *>(_timeline->frameList[nextFrameIndex]);
+    const TransformFrame *currentFrame = static_cast<TransformFrame*>(_timeline->frameList[_currentFrameIndex]);
+    const TransformFrame *nextFrame = static_cast<TransformFrame*>(_timeline->frameList[nextFrameIndex]);
     
     if (
         nextFrameIndex == 0 &&
@@ -504,7 +504,7 @@ void TimelineState::updateTween()
         progress = getEaseValue(progress, _tweenEasing);
     }
     
-    const TransformFrame *currentFrame = static_cast<TransformFrame *>(_timeline->frameList[_currentFrameIndex]);
+    const TransformFrame *currentFrame = static_cast<TransformFrame*>(_timeline->frameList[_currentFrameIndex]);
     
     if (_tweenTransform)
     {
@@ -584,7 +584,7 @@ void TimelineState::updateTween()
 
 void TimelineState::updateSingleFrame()
 {
-    const TransformFrame *currentFrame = static_cast<TransformFrame *>(_timeline->frameList.front());
+    const TransformFrame *currentFrame = static_cast<TransformFrame*>(_timeline->frameList.front());
     _bone->arriveAtFrame(currentFrame, this, _animationState, false);
     _isComplete = true;
     _tweenTransform = false;

@@ -12,7 +12,7 @@ public:
     String name;
     String imagePath;
     
-    std::vector<TextureData *> textureDataList;
+    std::vector<TextureData*> textureDataList;
     
 public:
     TextureAtlasData()
@@ -54,7 +54,7 @@ public:
         textureDataList.clear();
     }
     
-    TextureData *getTextureData(const String &textureName) const
+    TextureData* getTextureData(const String &textureName) const
     {
         for (size_t i = 0, l = textureDataList.size(); i < l; ++i)
         {

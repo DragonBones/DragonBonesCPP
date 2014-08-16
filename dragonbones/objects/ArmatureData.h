@@ -11,17 +11,17 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class ArmatureData
 {
 private:
-    static bool sortBone(const std::pair<int, BoneData *> &a, const std::pair<int, BoneData *> &b)
+    static bool sortBone(const std::pair<int, BoneData*> &a, const std::pair<int, BoneData*> &b)
     {
         return a.first < b.first;
     }
     
 public:
     String name;
-    std::vector<IAreaData *> areaDataList;
-    std::vector<BoneData *> boneDataList;
-    std::vector<SkinData *> skinDataList;
-    std::vector<AnimationData *> animationDataList;
+    std::vector<IAreaData*> areaDataList;
+    std::vector<BoneData*> boneDataList;
+    std::vector<SkinData*> skinDataList;
+    std::vector<AnimationData*> animationDataList;
     
 public:
     ArmatureData() {}
@@ -29,7 +29,7 @@ public:
     {
         operator=(copyData);
     }
-    ArmatureData &operator=(const ArmatureData &copyData)
+    ArmatureData& operator=(const ArmatureData &copyData)
     {
         dispose();
         name = copyData.name;
@@ -41,12 +41,12 @@ public:
             {
                 case IAreaData::AreaType::AT_ELLIPSE:
                     areaDataList.push_back(new EllipseData());
-                    *(areaDataList[i]) = *(static_cast<EllipseData *>(copyData.areaDataList[i]));
+                    *(areaDataList[i]) = *(static_cast<EllipseData*>(copyData.areaDataList[i]));
                     break;
                     
                 case IAreaData::AreaType::AT_RECTANGLE:
                     areaDataList.push_back(new RectangleData());
-                    *(areaDataList[i]) = *(static_cast<RectangleData *>(copyData.areaDataList[i]));
+                    *(areaDataList[i]) = *(static_cast<RectangleData*>(copyData.areaDataList[i]));
                     break;
                     
                 default:
@@ -117,7 +117,7 @@ public:
         animationDataList.clear();
     }
     
-    IAreaData *getAreaData(const String &areaName) const
+    IAreaData* getAreaData(const String &areaName) const
     {
         if (areaDataList.empty())
         {
@@ -140,7 +140,7 @@ public:
         return nullptr;
     }
     
-    BoneData *getBoneData(const String &boneName) const
+    BoneData* getBoneData(const String &boneName) const
     {
         for (size_t i = 0, l = boneDataList.size(); i < l; ++i)
         {
@@ -153,7 +153,7 @@ public:
         return nullptr;
     }
     
-    SkinData *getSkinData(const String &skinName) const
+    SkinData* getSkinData(const String &skinName) const
     {
         if (skinDataList.empty())
         {
@@ -176,7 +176,7 @@ public:
         return nullptr;
     }
     
-    AnimationData *getAnimationData(const String &animationName) const
+    AnimationData* getAnimationData(const String &animationName) const
     {
         for (size_t i = 0, l = animationDataList.size(); i < l; ++i)
         {
@@ -196,7 +196,7 @@ public:
             return;
         }
         
-        std::vector<std::pair<int , BoneData *>> sortedList;
+        std::vector<std::pair<int , BoneData*>> sortedList;
         
         for (size_t i = 0, l = boneDataList.size(); i < l; ++i)
         {
@@ -206,7 +206,7 @@ public:
             
             while (parentData)
             {
-                parentData = (BoneData *)(getBoneData(parentData->parent));
+                parentData = getBoneData(parentData->parent);
                 level ++;
             }
             

@@ -3,14 +3,14 @@
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
-cocos2d::Node *DBCCSlot::getCCDisplay() const
+cocos2d::Node* DBCCSlot::getCCDisplay() const
 {
     return _nodeDisplay;
 }
 
-DBCCArmature *DBCCSlot::getCCChildArmature() const
+DBCCArmature* DBCCSlot::getCCChildArmature() const
 {
-    return static_cast<DBCCArmature *>(_childArmature);
+    return static_cast<DBCCArmature*>(_childArmature);
 }
 
 DBCCSlot::DBCCSlot(SlotData *slotData)
@@ -40,7 +40,7 @@ int DBCCSlot::getDisplayZIndex() const
 }
 void DBCCSlot::addDisplayToContainer(void *container, int zIndex)
 {
-    cocos2d::Node *nodeContainer = static_cast<cocos2d::Node *>(container);
+    cocos2d::Node *nodeContainer = static_cast<cocos2d::Node*>(container);
     
     if (_nodeDisplay && nodeContainer)
     {
@@ -66,13 +66,13 @@ void DBCCSlot::removeDisplayFromContainer()
 
 void DBCCSlot::disposeDisplayList()
 {
-    std::vector<cocos2d::Node *> releasedNodeList;
+    std::vector<cocos2d::Node*> releasedNodeList;
     
     for (size_t i = 0, l = _displayList.size(); i < l; ++i)
     {
         if (_displayList[i].second == DisplayType::DT_ARMATURE)
         {
-            Armature *armature = static_cast<Armature *>(_displayList[i].first);
+            Armature *armature = static_cast<Armature*>(_displayList[i].first);
             
             if (armature)
             {
@@ -81,7 +81,7 @@ void DBCCSlot::disposeDisplayList()
         }
         else
         {
-            cocos2d::Node *display = static_cast<cocos2d::Node *>(_displayList[i].first);
+            cocos2d::Node *display = static_cast<cocos2d::Node*>(_displayList[i].first);
             
             if (display && std::find(releasedNodeList.cbegin(), releasedNodeList.cend(), display) == releasedNodeList.cend())
             {
@@ -106,12 +106,12 @@ void DBCCSlot::disposeDisplay()
 
 void DBCCSlot::updateDisplay(void *display)
 {
-    _nodeDisplay = static_cast<cocos2d::Sprite *>(display);
+    _nodeDisplay = static_cast<cocos2d::Sprite*>(display);
 }
 
 void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
 {
-    cocos2d::Sprite *spriteDisplay = dynamic_cast<cocos2d::Sprite *>(_nodeDisplay);
+    cocos2d::Sprite *spriteDisplay = dynamic_cast<cocos2d::Sprite*>(_nodeDisplay);
     
     if (spriteDisplay)
     {
@@ -171,7 +171,7 @@ void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
         {
             for (size_t i = 0, l = _childArmature->getSlots().size(); i < l; ++i)
             {
-                DBCCSlot *slot = static_cast<DBCCSlot *>(_childArmature->getSlots()[i]);
+                DBCCSlot *slot = static_cast<DBCCSlot*>(_childArmature->getSlots()[i]);
                 slot->_blendMode = blendMode;
                 slot->updateDisplayBlendMode(blendMode);
             }

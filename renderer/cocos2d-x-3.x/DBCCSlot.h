@@ -12,8 +12,8 @@ protected:
     cocos2d::Node *_nodeDisplay;
     
 public:
-    virtual cocos2d::Node *getCCDisplay() const;
-    virtual DBCCArmature *getCCChildArmature() const;
+    virtual cocos2d::Node* getCCDisplay() const;
+    virtual DBCCArmature* getCCChildArmature() const;
     
 public:
     DBCCSlot(SlotData *slotData);

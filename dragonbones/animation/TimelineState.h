@@ -19,8 +19,8 @@ class TimelineState
     friend class Bone;
     
 private:
-    static std::vector<TimelineState *> _pool;
-    static TimelineState *borrowObject();
+    static std::vector<TimelineState*> _pool;
+    static TimelineState* borrowObject();
     static void returnObject(TimelineState *timelineState);
     static void clearObjects();
     

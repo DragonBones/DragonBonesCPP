@@ -29,7 +29,7 @@ public:
     {
         operator=(copyData);
     }
-    Frame &operator=(const Frame &copyData)
+    Frame& operator=(const Frame &copyData)
     {
         dispose();
         position = copyData.position;

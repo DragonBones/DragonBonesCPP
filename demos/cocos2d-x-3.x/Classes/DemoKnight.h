@@ -6,7 +6,7 @@
 class DemoKnight : public DemoBase
 {
 public:
-    static cocos2d::Scene *createScene()
+    static cocos2d::Scene* createScene()
     {
         auto scene = cocos2d::Scene::create();
         auto layer = DemoKnight::create();
@@ -34,7 +34,7 @@ private:
     
     std::vector<std::string> _weaponList;
     std::vector<int> _weaponLevelList;
-    std::vector<cocos2d::Node *> _arrowList;
+    std::vector<cocos2d::Node*> _arrowList;
     
 protected:
     virtual void demoInit() override
@@ -43,7 +43,7 @@ protected:
         dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/Knight/skeleton.xml");
         dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/Knight/texture.xml");
         // armature
-        _armature = (dragonBones::DBCCArmature *)(dragonBones::DBCCFactory::factory.buildArmature("knight"));
+        _armature = (dragonBones::DBCCArmature*)(dragonBones::DBCCFactory::factory.buildArmature("knight"));
         _armArmature = _armature->getCCSlot("armOutside")->getCCChildArmature();
         _armature->getCCDisplay()->setPosition(480.f, 200.f);
         this->addChild(_armature->getCCDisplay());
@@ -306,7 +306,7 @@ private:
     
     void armAnimationHandler(cocos2d::EventCustom *event)
     {
-        dragonBones::EventData *eventData = (dragonBones::EventData *)(event->getUserData());
+        dragonBones::EventData *eventData = (dragonBones::EventData*)(event->getUserData());
         
         switch (eventData->getType())
         {
@@ -383,7 +383,7 @@ private:
     
     void createArrow(float r, const cocos2d::Point &point)
     {
-        cocos2d::Node *arrowNode = static_cast<cocos2d::Node *>(dragonBones::DBCCFactory::factory.getTextureDisplay("knightFolder/arrow_1"));
+        cocos2d::Node *arrowNode = static_cast<cocos2d::Node*>(dragonBones::DBCCFactory::factory.getTextureDisplay("knightFolder/arrow_1"));
         arrowNode->setPosition(point);
         arrowNode->setRotation(CC_RADIANS_TO_DEGREES(r));
         cocos2d::Point *speedPoint = new cocos2d::Point();
@@ -399,7 +399,7 @@ private:
         for (size_t i = 0, l = _arrowList.size(); i < l; ++i)
         {
             cocos2d::Node *arrowNode = _arrowList[i];
-            cocos2d::Point *speedPoint = static_cast<cocos2d::Point *>(arrowNode->getUserData());
+            cocos2d::Point *speedPoint = static_cast<cocos2d::Point*>(arrowNode->getUserData());
             
             if (arrowNode->getPositionY() < -400)
             {

@@ -9,7 +9,7 @@ class SkinData
 {
 public:
     String name;
-    std::vector<SlotData *> slotDataList;
+    std::vector<SlotData*> slotDataList;
     
 public:
     SkinData() {}
@@ -17,7 +17,7 @@ public:
     {
         operator=(copyData);
     }
-    SkinData &operator=(const SkinData &copyData)
+    SkinData& operator=(const SkinData &copyData)
     {
         dispose();
         name = copyData.name;
@@ -46,7 +46,7 @@ public:
         slotDataList.clear();
     }
     
-    SlotData *getSlotData(const String &slotName) const
+    SlotData* getSlotData(const String &slotName) const
     {
         for (size_t i = 0, l = slotDataList.size(); i < l; ++i)
         {

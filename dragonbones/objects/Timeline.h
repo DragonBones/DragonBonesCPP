@@ -11,7 +11,7 @@ class Timeline
 public:
     int duration;
     float scale;
-    std::vector<Frame *> frameList;
+    std::vector<Frame*> frameList;
     
 public:
     Timeline()
@@ -23,7 +23,7 @@ public:
     {
         operator=(copyData);
     }
-    Timeline &operator=(const Timeline &copyData)
+    Timeline& operator=(const Timeline &copyData)
     {
         dispose();
         duration = copyData.duration;
@@ -36,12 +36,12 @@ public:
             {
                 case Frame::FrameType::FT_FRAME:
                     frameList.push_back(new Frame());
-                    *(frameList[i]) = *(static_cast<Frame *>(copyData.frameList[i]));
+                    *(frameList[i]) = *(static_cast<Frame*>(copyData.frameList[i]));
                     break;
                     
                 case Frame::FrameType::FT_TRANSFORM_FRAME:
                     frameList.push_back(new TransformFrame());
-                    *(frameList[i]) = *(static_cast<TransformFrame *>(copyData.frameList[i]));
+                    *(frameList[i]) = *(static_cast<TransformFrame*>(copyData.frameList[i]));
                     break;
                     
                 default:

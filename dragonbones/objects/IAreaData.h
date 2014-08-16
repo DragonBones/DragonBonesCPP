@@ -19,7 +19,7 @@ public:
     {
         operator=(copyData);
     }
-    IAreaData &operator=(const IAreaData &copyData)
+    IAreaData& operator=(const IAreaData &copyData)
     {
         areaType = copyData.areaType;
         name = copyData.name;

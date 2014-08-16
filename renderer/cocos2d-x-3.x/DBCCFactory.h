@@ -11,21 +11,21 @@ public:
     static DBCCFactory factory;
     
 public:
-    static DBCCFactory *getInstance();
+    static DBCCFactory* getInstance();
     
     DBCCFactory();
     virtual ~DBCCFactory();
     
-    virtual DragonBonesData *loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
-    virtual ITextureAtlas *loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
+    virtual DragonBonesData* loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
+    virtual ITextureAtlas* loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
     virtual void refreshTextureAtlasTexture(const std::string &name);
     virtual void refreshAllTextureAtlasTexture();
     virtual bool hasDragonBones(const std::string &skeletonName, const std::string &armatureName = "", const std::string &animationName = "");
     
 protected:
-    virtual Armature *generateArmature(const ArmatureData *armatureData) const override;
-    virtual Slot *generateSlot(const SlotData *slotData) const override;
-    virtual void *generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const override;
+    virtual Armature* generateArmature(const ArmatureData *armatureData) const override;
+    virtual Slot* generateSlot(const SlotData *slotData) const override;
+    virtual void* generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const override;
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(DBCCFactory);

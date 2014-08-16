@@ -17,7 +17,7 @@ public:
     float tweenEasing;
     
     String name;
-    std::vector<TransformTimeline *> timelineList;
+    std::vector<TransformTimeline*> timelineList;
     std::vector<String> hideTimelineList;
     
 public:
@@ -33,7 +33,7 @@ public:
     {
         operator=(copyData);
     }
-    AnimationData &operator=(const AnimationData &copyData)
+    AnimationData& operator=(const AnimationData &copyData)
     {
         Timeline::operator=(copyData);
         _dispose();

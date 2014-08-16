@@ -29,12 +29,12 @@ bool Animation::getIsComplete() const
     return true;
 }
 
-AnimationState *Animation::getLastAnimationState() const
+AnimationState* Animation::getLastAnimationState() const
 {
     return _lastAnimationState;
 }
 
-const std::vector<String> &Animation::getAnimationList() const
+const std::vector<String>& Animation::getAnimationList() const
 {
     return _animationList;
 }
@@ -53,11 +53,11 @@ void Animation::setTimeScale(float timeScale)
     _timeScale = timeScale;
 }
 
-const std::vector<AnimationData *> &Animation::getAnimationDataList() const
+const std::vector<AnimationData*>& Animation::getAnimationDataList() const
 {
     return _animationDataList;
 }
-void Animation::setAnimationDataList(const std::vector<AnimationData *> &animationDataList)
+void Animation::setAnimationDataList(const std::vector<AnimationData*> &animationDataList)
 {
     _animationDataList = animationDataList;
     _animationList.clear();
@@ -95,7 +95,7 @@ void Animation::dispose()
     _lastAnimationState = nullptr;
 }
 
-AnimationState *Animation::gotoAndPlay(
+AnimationState* Animation::gotoAndPlay(
     const String &animationName,
     float fadeInTime,
     float duration,
@@ -220,7 +220,7 @@ AnimationState *Animation::gotoAndPlay(
     return _lastAnimationState;
 }
 
-AnimationState *Animation::gotoAndStop(
+AnimationState* Animation::gotoAndStop(
     const String &animationName,
     float time,
     float normalizedTime,
@@ -286,7 +286,7 @@ bool Animation::hasAnimation(const String &animationName) const
     return false;
 }
 
-AnimationState *Animation::getState(const String &name, int layer) const
+AnimationState* Animation::getState(const String &name, int layer) const
 {
     for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
     {

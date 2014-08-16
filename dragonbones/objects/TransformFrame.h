@@ -41,7 +41,7 @@ public:
     {
         operator=(copyData);
     }
-    TransformFrame &operator=(const TransformFrame &copyData)
+    TransformFrame& operator=(const TransformFrame &copyData)
     {
         Frame::operator=(copyData);
         _dispose();

@@ -16,7 +16,7 @@ const String EventData::FADE_OUT_COMPLETE = "fadeOutComplete";
 
 const String EventData::_ERROR = "error";
 
-const String &EventData::typeToString(EventData::EventType eventType)
+const String& EventData::typeToString(EventData::EventType eventType)
 {
     switch (eventType)
     {
@@ -66,7 +66,7 @@ EventData::EventType EventData::getType() const
     return _type;
 }
 
-const String &EventData::getStringType() const
+const String& EventData::getStringType() const
 {
     return typeToString(_type);
 }

@@ -36,7 +36,7 @@ public:
         _ERROR
     };
     
-    static const String &typeToString(EventType eventType);
+    static const String& typeToString(EventType eventType);
     
 public:
     String frameLabel;
@@ -52,7 +52,7 @@ private:
 public:
     EventType getType() const;
     
-    const String &getStringType() const;
+    const String& getStringType() const;
     
 public:
     EventData();

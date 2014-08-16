@@ -19,7 +19,7 @@ public:
     String parent;
     Transform global;
     Transform transform;
-    std::vector<IAreaData *> areaDataList;
+    std::vector<IAreaData*> areaDataList;
     
 public:
     BoneData()
@@ -32,7 +32,7 @@ public:
     {
         operator=(copyData);
     }
-    BoneData &operator=(const BoneData &copyData)
+    BoneData& operator=(const BoneData &copyData)
     {
         dispose();
         inheritScale = copyData.inheritScale;
@@ -50,12 +50,12 @@ public:
             {
                 case IAreaData::AreaType::AT_ELLIPSE:
                     areaDataList.push_back(new EllipseData());
-                    *(areaDataList[i]) = *(static_cast<EllipseData *>(copyData.areaDataList[i]));
+                    *(areaDataList[i]) = *(static_cast<EllipseData*>(copyData.areaDataList[i]));
                     break;
                     
                 case IAreaData::AreaType::AT_RECTANGLE:
                     areaDataList.push_back(new RectangleData());
-                    *(areaDataList[i]) = *(static_cast<RectangleData *>(copyData.areaDataList[i]));
+                    *(areaDataList[i]) = *(static_cast<RectangleData*>(copyData.areaDataList[i]));
                     break;
                     
                 default:
@@ -81,7 +81,7 @@ public:
         areaDataList.clear();
     }
     
-    IAreaData *getAreaData(const String &areaName) const
+    IAreaData* getAreaData(const String &areaName) const
     {
         if (areaDataList.empty())
         {

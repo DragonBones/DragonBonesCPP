@@ -61,10 +61,10 @@ XMLDataParser::XMLDataParser()
 }
 XMLDataParser::~XMLDataParser() {}
 
-TextureAtlasData *XMLDataParser::parseTextureAtlasData(const void *rawTextureAtlasData, float scale) const
+TextureAtlasData* XMLDataParser::parseTextureAtlasData(const void *rawTextureAtlasData, float scale) const
 {
     _textureScale = scale;
-    const XMLElement *textureAtlasXML = static_cast<const XMLElement *>(rawTextureAtlasData);
+    const XMLElement *textureAtlasXML = static_cast<const XMLElement*>(rawTextureAtlasData);
     TextureAtlasData *textureAtlasData = new TextureAtlasData();
     textureAtlasData->name = textureAtlasXML->Attribute(ConstValues::A_NAME.c_str());
     textureAtlasData->imagePath = textureAtlasXML->Attribute(ConstValues::A_IMAGE_PATH.c_str());
@@ -78,7 +78,7 @@ TextureAtlasData *XMLDataParser::parseTextureAtlasData(const void *rawTextureAtl
     return textureAtlasData;
 }
 
-TextureData *XMLDataParser::parseTextureData(const XMLElement *textureXML) const
+TextureData* XMLDataParser::parseTextureData(const XMLElement *textureXML) const
 {
     TextureData *textureData = new TextureData();
     textureData->name = textureXML->Attribute(ConstValues::A_NAME.c_str());
@@ -102,10 +102,10 @@ TextureData *XMLDataParser::parseTextureData(const XMLElement *textureXML) const
     return textureData;
 }
 
-DragonBonesData *XMLDataParser::parseDragonBonesData(const void *rawDragonBonesData, float scale) const
+DragonBonesData* XMLDataParser::parseDragonBonesData(const void *rawDragonBonesData, float scale) const
 {
     _armatureScale = scale;
-    const XMLElement *dragonBonesXML = static_cast<const XMLElement *>(rawDragonBonesData);
+    const XMLElement *dragonBonesXML = static_cast<const XMLElement*>(rawDragonBonesData);
     String version = dragonBonesXML->Attribute(ConstValues::A_VERSION.c_str());
     // TODO
     /*
@@ -127,7 +127,7 @@ DragonBonesData *XMLDataParser::parseDragonBonesData(const void *rawDragonBonesD
     return dragonBonesData;
 }
 
-ArmatureData *XMLDataParser::parseArmatureData(const XMLElement *armatureXML) const
+ArmatureData* XMLDataParser::parseArmatureData(const XMLElement *armatureXML) const
 {
     ArmatureData *armatureData = new ArmatureData();
     armatureData->name = armatureXML->Attribute(ConstValues::A_NAME.c_str());
@@ -168,7 +168,7 @@ ArmatureData *XMLDataParser::parseArmatureData(const XMLElement *armatureXML) co
     return armatureData;
 }
 
-BoneData *XMLDataParser::parseBoneData(const XMLElement *boneXML) const
+BoneData* XMLDataParser::parseBoneData(const XMLElement *boneXML) const
 {
     BoneData *boneData = new BoneData();
     boneData->name = boneXML->Attribute(ConstValues::A_NAME.c_str());
@@ -200,7 +200,7 @@ BoneData *XMLDataParser::parseBoneData(const XMLElement *boneXML) const
     return boneData;
 }
 
-SkinData *XMLDataParser::parseSkinData(const XMLElement *skinXML) const
+SkinData* XMLDataParser::parseSkinData(const XMLElement *skinXML) const
 {
     SkinData *skinData = new SkinData();
     skinData->name = skinXML->Attribute(ConstValues::A_NAME.c_str());
@@ -214,7 +214,7 @@ SkinData *XMLDataParser::parseSkinData(const XMLElement *skinXML) const
     return skinData;
 }
 
-SlotData *XMLDataParser::parseSlotData(const XMLElement *slotXML) const
+SlotData* XMLDataParser::parseSlotData(const XMLElement *slotXML) const
 {
     SlotData *slotData = new SlotData();
     slotData->name = slotXML->Attribute(ConstValues::A_NAME.c_str());
@@ -235,7 +235,7 @@ SlotData *XMLDataParser::parseSlotData(const XMLElement *slotXML) const
     return slotData;
 }
 
-DisplayData *XMLDataParser::parseDisplayData(const XMLElement *displayXML) const
+DisplayData* XMLDataParser::parseDisplayData(const XMLElement *displayXML) const
 {
     DisplayData *displayData = new DisplayData();
     displayData->name = displayXML->Attribute(ConstValues::A_NAME.c_str());
@@ -244,7 +244,7 @@ DisplayData *XMLDataParser::parseDisplayData(const XMLElement *displayXML) const
     return displayData;
 }
 
-AnimationData *XMLDataParser::parseAnimationData(const XMLElement *animationXML, const ArmatureData *armatureData) const
+AnimationData* XMLDataParser::parseAnimationData(const XMLElement *animationXML, const ArmatureData *armatureData) const
 {
     AnimationData *animationData = new AnimationData();
     animationData->name = animationXML->Attribute(ConstValues::A_NAME.c_str());
@@ -278,7 +278,7 @@ AnimationData *XMLDataParser::parseAnimationData(const XMLElement *animationXML,
 }
 
 
-TransformTimeline *XMLDataParser::parseTransformTimeline(const XMLElement *timelineXML, int duration) const
+TransformTimeline* XMLDataParser::parseTransformTimeline(const XMLElement *timelineXML, int duration) const
 {
     TransformTimeline *timeline = new TransformTimeline();
     timeline->name = timelineXML->Attribute(ConstValues::A_NAME.c_str());
@@ -296,14 +296,14 @@ TransformTimeline *XMLDataParser::parseTransformTimeline(const XMLElement *timel
     return timeline;
 }
 
-Frame *XMLDataParser::parseMainFrame(const XMLElement *frameXML) const
+Frame* XMLDataParser::parseMainFrame(const XMLElement *frameXML) const
 {
     Frame *frame = new Frame();
     parseFrame(frameXML, frame);
     return frame;
 }
 
-TransformFrame *XMLDataParser::parseTransformFrame(const XMLElement *frameXML) const
+TransformFrame* XMLDataParser::parseTransformFrame(const XMLElement *frameXML) const
 {
     TransformFrame *frame = new TransformFrame();
     parseFrame(frameXML, frame);
@@ -330,7 +330,7 @@ TransformFrame *XMLDataParser::parseTransformFrame(const XMLElement *frameXML) c
     return frame;
 }
 
-RectangleData *XMLDataParser::parseRectangleData(const XMLElement *rectangleXML) const
+RectangleData* XMLDataParser::parseRectangleData(const XMLElement *rectangleXML) const
 {
     RectangleData *rectangleData = new RectangleData();
     rectangleData->name = rectangleXML->Attribute(ConstValues::A_NAME.c_str());
@@ -340,7 +340,7 @@ RectangleData *XMLDataParser::parseRectangleData(const XMLElement *rectangleXML)
     return rectangleData;
 }
 
-EllipseData *XMLDataParser:: parseEllipseData(const XMLElement *ellipseXML) const
+EllipseData* XMLDataParser:: parseEllipseData(const XMLElement *ellipseXML) const
 {
     EllipseData *ellipseData = new EllipseData();
     ellipseData->name = ellipseXML->Attribute(ConstValues::A_NAME.c_str());

@@ -22,24 +22,24 @@ public:
     XMLDataParser();
     virtual ~XMLDataParser();
     
-    virtual TextureAtlasData *parseTextureAtlasData(const void *rawTextureAtlasData, float scale = 1.f) const;
+    virtual TextureAtlasData* parseTextureAtlasData(const void *rawTextureAtlasData, float scale = 1.f) const;
     
-    virtual DragonBonesData *parseDragonBonesData(const void *rawDragonBonesData, float scale = 1.f) const;
+    virtual DragonBonesData* parseDragonBonesData(const void *rawDragonBonesData, float scale = 1.f) const;
     
 private:
-    TextureData *parseTextureData(const XMLElement *textureXML) const;
+    TextureData* parseTextureData(const XMLElement *textureXML) const;
     
-    ArmatureData *parseArmatureData(const XMLElement *armatureXML) const;
-    BoneData *parseBoneData(const XMLElement *boneXML) const;
-    SkinData *parseSkinData(const XMLElement *skinXML) const;
-    SlotData *parseSlotData(const XMLElement *slotXML) const;
-    DisplayData *parseDisplayData(const XMLElement *displayXML) const;
-    AnimationData *parseAnimationData(const XMLElement *animationXML, const ArmatureData *armatureData) const;
-    TransformTimeline *parseTransformTimeline(const XMLElement *timelineXML, int duration) const;
-    Frame *parseMainFrame(const XMLElement *frameXML) const;
-    TransformFrame *parseTransformFrame(const XMLElement *frameXML) const;
-    RectangleData *parseRectangleData(const XMLElement *rectangleXML) const;
-    EllipseData *parseEllipseData(const XMLElement *ellipseXML) const;
+    ArmatureData* parseArmatureData(const XMLElement *armatureXML) const;
+    BoneData* parseBoneData(const XMLElement *boneXML) const;
+    SkinData* parseSkinData(const XMLElement *skinXML) const;
+    SlotData* parseSlotData(const XMLElement *slotXML) const;
+    DisplayData* parseDisplayData(const XMLElement *displayXML) const;
+    AnimationData* parseAnimationData(const XMLElement *animationXML, const ArmatureData *armatureData) const;
+    TransformTimeline* parseTransformTimeline(const XMLElement *timelineXML, int duration) const;
+    Frame* parseMainFrame(const XMLElement *frameXML) const;
+    TransformFrame* parseTransformFrame(const XMLElement *frameXML) const;
+    RectangleData* parseRectangleData(const XMLElement *rectangleXML) const;
+    EllipseData* parseEllipseData(const XMLElement *ellipseXML) const;
     
     void parseTimeline(const XMLElement *timelineXML, Timeline *timeline) const;
     void parseFrame(const XMLElement *frameXML, Frame *frame) const;

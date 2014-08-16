@@ -252,7 +252,7 @@ const char *StrPair::GetStr()
                     {
                         char buf[10] = { 0 };
                         int len;
-                        p = const_cast<char *>(XMLUtil::GetCharacterRef(p, buf, &len));
+                        p = const_cast<char*>(XMLUtil::GetCharacterRef(p, buf, &len));
                         
                         for (int i = 0; i < len; ++i)
                         {
@@ -959,7 +959,7 @@ char *XMLNode::ParseDeep(char *p, StrPair *parentEnd)
         {
             if (parentEnd)
             {
-                *parentEnd = static_cast<XMLElement *>(node)->_value;
+                *parentEnd = static_cast<XMLElement*>(node)->_value;
             }
             
             node->_memPool->SetTracked();    // created and then immediately deleted.

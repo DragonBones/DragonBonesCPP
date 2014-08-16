@@ -16,8 +16,8 @@ class AnimationState
     friend class TimelineState;
     
 private:
-    static std::vector<AnimationState *> _pool;
-    static AnimationState *borrowObject();
+    static std::vector<AnimationState*> _pool;
+    static AnimationState* borrowObject();
     static void returnObject(AnimationState *animationState);
     static void clearObjects();
     
@@ -56,7 +56,7 @@ private:
     String _group;
     FadeState _fadeState;
     
-    std::vector<TimelineState *> _timelineStateList;
+    std::vector<TimelineState*> _timelineStateList;
     std::vector<String> _mixingTransforms;
     
     AnimationData *_clip;
@@ -69,32 +69,32 @@ public:
     int getLayer() const;
     float getTotalTime() const;
     float getCurrentWeight() const;
-    const String &getGroup() const;
-    const AnimationData *getClip() const;
+    const String& getGroup() const;
+    const AnimationData* getClip() const;
     
-    AnimationState *setAdditiveBlending(bool value);
-    AnimationState *setAutoFadeOut(bool value, float fadeOutTime = -1);
-    AnimationState *setWeight(float value);
-    AnimationState *setFrameTween(bool autoTween_, bool lastFrameAutoTween_);
+    AnimationState* setAdditiveBlending(bool value);
+    AnimationState* setAutoFadeOut(bool value, float fadeOutTime = -1);
+    AnimationState* setWeight(float value);
+    AnimationState* setFrameTween(bool autoTween_, bool lastFrameAutoTween_);
     
     int getPlayTimes() const;
-    AnimationState *setPlayTimes(int playTimes);
+    AnimationState* setPlayTimes(int playTimes);
     float getCurrentTime() const;
-    AnimationState *setCurrentTime(float currentTime);
+    AnimationState* setCurrentTime(float currentTime);
     float getTimeScale() const;
-    AnimationState *setTimeScale(float timeScale);
+    AnimationState* setTimeScale(float timeScale);
     
 public:
     AnimationState();
     virtual ~AnimationState();
     
-    AnimationState *fadeOut(float fadeTotalTime, bool pausePlayhead);
-    AnimationState *play();
-    AnimationState *stop();
+    AnimationState* fadeOut(float fadeTotalTime, bool pausePlayhead);
+    AnimationState* play();
+    AnimationState* stop();
     bool getMixingTransform(const String &timelineName) const;
-    AnimationState *addMixingTransform(const String &timelineName, bool recursive = true);
-    AnimationState *removeMixingTransform(const String &timelineName, bool recursive = true);
-    AnimationState *removeAllMixingTransform();
+    AnimationState* addMixingTransform(const String &timelineName, bool recursive = true);
+    AnimationState* removeMixingTransform(const String &timelineName, bool recursive = true);
+    AnimationState* removeAllMixingTransform();
     
 private:
     void fadeIn(Armature *armature, AnimationData *clip, float fadeTotalTime, float timeScale, int playTimes, bool pausePlayhead);

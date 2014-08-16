@@ -4,7 +4,7 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 
 IEventDispatcher *Armature::soundEventDispatcher = nullptr;
 
-bool Armature::sortBone(const std::pair<int, Bone *> &a, const std::pair<int, Bone *> &b)
+bool Armature::sortBone(const std::pair<int, Bone*> &a, const std::pair<int, Bone*> &b)
 {
     return a.first > b.first;
 }
@@ -14,32 +14,32 @@ bool Armature::sortSlot(const Slot *a, const Slot *b)
     return a->getZOrder() < b->getZOrder();
 }
 
-const std::vector<Bone *> &Armature::getBones() const
+const std::vector<Bone*>& Armature::getBones() const
 {
     return _boneList;
 }
 
-const std::vector<Slot *> &Armature::getSlots() const
+const std::vector<Slot*>& Armature::getSlots() const
 {
     return _slotList;
 }
 
-const ArmatureData *Armature::getArmatureData() const
+const ArmatureData* Armature::getArmatureData() const
 {
     return _armatureData;
 }
 
-Animation *Armature::getAnimation() const
+Animation* Armature::getAnimation() const
 {
     return _animation;
 }
 
-void *Armature::getDisplay() const
+void* Armature::getDisplay() const
 {
     return _display;
 }
 
-IEventDispatcher *Armature::getEventDispatcher() const
+IEventDispatcher* Armature::getEventDispatcher() const
 {
     return _eventDispatcher;
 }
@@ -126,7 +126,7 @@ void Armature::dispose()
     }
 }
 
-Bone *Armature::getBone(const String &boneName) const
+Bone* Armature::getBone(const String &boneName) const
 {
     if (boneName.empty())
     {
@@ -144,7 +144,7 @@ Bone *Armature::getBone(const String &boneName) const
     return nullptr;
 }
 
-Bone *Armature::getBoneByDisplay(const void *display) const
+Bone* Armature::getBoneByDisplay(const void *display) const
 {
     if (!display)
     {
@@ -221,7 +221,7 @@ Bone *Armature::removeBone(const String &boneName)
     return bone;
 }
 
-Slot *Armature::getSlot(const String &slotName) const
+Slot* Armature::getSlot(const String &slotName) const
 {
     if (slotName.empty())
     {
@@ -239,7 +239,7 @@ Slot *Armature::getSlot(const String &slotName) const
     return nullptr;
 }
 
-Slot *Armature::getSlotByDisplay(const void *display) const
+Slot* Armature::getSlotByDisplay(const void *display) const
 {
     if (!display)
     {
@@ -279,7 +279,7 @@ void Armature::removeSlot(Slot *slot)
     slot->_parent->removeChild(slot);
 }
 
-Slot *Armature::removeSlot(const String &slotName)
+Slot* Armature::removeSlot(const String &slotName)
 {
     Slot *slot = getSlot(slotName);
     
@@ -397,8 +397,8 @@ void Armature::advanceTime(float passedTime)
 
 void Armature::addObject(Object *object)
 {
-    Bone *bone = dynamic_cast<Bone *>(object);
-    Slot *slot = dynamic_cast<Slot *>(object);
+    Bone *bone = dynamic_cast<Bone*>(object);
+    Slot *slot = dynamic_cast<Slot*>(object);
     
     if (bone)
     {
@@ -424,8 +424,8 @@ void Armature::addObject(Object *object)
 
 void Armature::removeObject(Object *object)
 {
-    Bone *bone = dynamic_cast<Bone *>(object);
-    Slot *slot = dynamic_cast<Slot *>(object);
+    Bone *bone = dynamic_cast<Bone*>(object);
+    Slot *slot = dynamic_cast<Slot*>(object);
     
     if (bone)
     {
@@ -455,7 +455,7 @@ void Armature::sortBones()
         return;
     }
     
-    std::vector<std::pair<int , Bone *>> sortedList;
+    std::vector<std::pair<int , Bone*>> sortedList;
     
     for (size_t i = 0, l = _boneList.size(); i < l; ++i)
     {

@@ -39,7 +39,7 @@ public:
     {
         operator=(copyData);
     }
-    Transform &operator=(const Transform &copyData)
+    Transform& operator=(const Transform &copyData)
     {
         x = copyData.x;
         y = copyData.y;

@@ -11,11 +11,11 @@ void Object::setVisible(bool visible)
     _visible = visible;
 }
 
-Armature *Object::getArmature() const
+Armature* Object::getArmature() const
 {
     return _armature;
 }
-Bone *Object::getParent() const
+Bone* Object::getParent() const
 {
     return _parent;
 }

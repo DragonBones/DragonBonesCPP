@@ -25,7 +25,7 @@ public:
     {
         operator=(copyData);
     }
-    RectangleData &operator=(const RectangleData &copyData)
+    RectangleData& operator=(const RectangleData &copyData)
     {
         IAreaData::operator=(copyData);
         width = copyData.width;
