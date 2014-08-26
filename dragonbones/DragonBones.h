@@ -6,8 +6,8 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <cstdlib>
 //#include <cfloat>
-//#include <cstdlib>
 //#include <stdexcept>
 
 // namespace dragonBones {}
@@ -31,13 +31,6 @@ const float RADIAN_TO_ANGLE = 180.f / PI;
 const float AUTO_TWEEN_EASING = 10.f;
 const float NO_TWEEN_EASING = 20.f;
 const float USE_FRAME_TWEEN_EASING = 30.f;
-
-
-template <typename EnumType>
-struct EnumName
-{
-    static const char *list[];
-};
 
 
 inline float round(float value)
@@ -98,8 +91,6 @@ inline int indexOf(std::vector<T> &vector, const T &value)
 }
 
 enum class DisplayType {DT_IMAGE, DT_ARMATURE, DT_FRAME, DT_1, DT_2, DT_3, DT_4, DT_5};
-enum class BlendMode {BM_ADD, BM_ALPHA, BM_DARKEN, BM_DIFFERENCE, BM_ERASE, BM_HARDLIGHT, BM_INVERT, BM_LAYER, BM_LIGHTEN, BM_MULTIPLY, BM_NORMAL, BM_OVERLAY, BM_SCREEN, BM_SHADER, BM_SUBTRACT};
-
 inline DisplayType getDisplayTypeByString(String displayType)
 {
     if (displayType == "image")
@@ -120,6 +111,7 @@ inline DisplayType getDisplayTypeByString(String displayType)
     return DisplayType::DT_IMAGE;
 }
 
+enum class BlendMode {BM_ADD, BM_ALPHA, BM_DARKEN, BM_DIFFERENCE, BM_ERASE, BM_HARDLIGHT, BM_INVERT, BM_LAYER, BM_LIGHTEN, BM_MULTIPLY, BM_NORMAL, BM_OVERLAY, BM_SCREEN, BM_SHADER, BM_SUBTRACT};
 inline BlendMode getBlendModeByString(String blendMode)
 {
     if (blendMode == "add")

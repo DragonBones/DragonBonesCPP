@@ -1,5 +1,4 @@
-﻿#include <cstdlib>
-#include "TimelineState.h"
+﻿#include "TimelineState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 std::vector<TimelineState*> TimelineState::_pool;
