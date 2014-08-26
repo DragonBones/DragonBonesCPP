@@ -288,7 +288,7 @@ bool Animation::hasAnimation(const String &animationName) const
 
 AnimationState* Animation::getState(const String &name, int layer) const
 {
-    for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
+    for (size_t i = _animationStateList.size(); i--; )
     {
         AnimationState *animationState = _animationStateList[i];
         

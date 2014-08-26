@@ -5,8 +5,8 @@
 #include "Object.h"
 #include "../objects/TransformFrame.h"
 #include "Slot.h"
-#include "animation/AnimationState.h"
-#include "animation/TimelineState.h"
+#include "../animation/AnimationState.h"
+#include "../animation/TimelineState.h"
 #include "Armature.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN

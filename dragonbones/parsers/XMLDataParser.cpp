@@ -223,7 +223,7 @@ SlotData* XMLDataParser::parseSlotData(const XMLElement *slotXML) const
     
     if (slotXML->FindAttribute(ConstValues::A_BLENDMODE.c_str()))
     {
-        slotData->blendMode = getEnumByString<BlendMode>(slotXML->Attribute(ConstValues::A_BLENDMODE.c_str()));
+        slotData->blendMode = getBlendModeByString(slotXML->Attribute(ConstValues::A_BLENDMODE.c_str()));
     }
     
     for (const XMLElement *displayXML = slotXML->FirstChildElement(ConstValues::DISPLAY.c_str()); displayXML; displayXML = displayXML->NextSiblingElement(ConstValues::DISPLAY.c_str()))
@@ -239,7 +239,7 @@ DisplayData* XMLDataParser::parseDisplayData(const XMLElement *displayXML) const
 {
     DisplayData *displayData = new DisplayData();
     displayData->name = displayXML->Attribute(ConstValues::A_NAME.c_str());
-    displayData->type = getEnumByString<DisplayType>(displayXML->Attribute(ConstValues::A_TYPE.c_str()));
+    displayData->type = getDisplayTypeByString(displayXML->Attribute(ConstValues::A_TYPE.c_str()));
     parseTransform(displayXML->FirstChildElement(ConstValues::TRANSFORM.c_str()), &displayData->transform, &displayData->pivot);
     return displayData;
 }

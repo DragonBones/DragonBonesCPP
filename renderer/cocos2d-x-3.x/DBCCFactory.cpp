@@ -24,6 +24,11 @@ DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBones
     }
     
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
+    if (data.getSize() == 0)
+    {
+        return nullptr;
+    }
+
     // 使用XML解析器载入dragonBones的skeleton.xml
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
@@ -45,6 +50,11 @@ ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile
     }
     
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(textureAtlasFile);
+    if (data.getSize() == 0)
+    {
+        return nullptr;
+    }
+
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
     dragonBones::XMLDataParser parser;
