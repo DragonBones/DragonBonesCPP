@@ -1,4 +1,5 @@
-﻿#include "AnimationState.h"
+﻿#include <cstdlib>
+#include "AnimationState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 std::vector<AnimationState*> AnimationState::_pool;
@@ -19,7 +20,7 @@ void AnimationState::returnObject(AnimationState *animationState)
 {
     auto iterator = std::find(_pool.cbegin(), _pool.cend(), animationState);
     
-    if (iterator != _pool.end())
+    if (iterator == _pool.end())
     {
         _pool.push_back(animationState);
     }
