@@ -265,7 +265,7 @@ void Bone::hideSlots()
     }
 }
 
-void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timelineState, AnimationState *animationState, bool isCross)
+void Bone::arriveAtFrame(TransformFrame *frame, const TimelineState *timelineState, AnimationState *animationState, bool isCross)
 {
     // TODO:
     bool displayControl =
@@ -299,6 +299,7 @@ void Bone::arriveAtFrame(const TransformFrame *frame, const TimelineState *timel
             eventData->bone = this;
             eventData->animationState = animationState;
             eventData->frameLabel = frame->event;
+            eventData->frame = frame;
             _armature->_eventDataList.push_back(eventData);
         }
         

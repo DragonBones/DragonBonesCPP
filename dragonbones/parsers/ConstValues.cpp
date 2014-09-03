@@ -38,6 +38,7 @@ const String ConstValues::A_SCALE = "scale";
 const String ConstValues::A_OFFSET = "offset";
 const String ConstValues::A_LOOP = "loop";
 const String ConstValues::A_EVENT = "event";
+const String ConstValues::A_EVENT_PARAMETERS = "eventParameters";
 const String ConstValues::A_SOUND = "sound";
 const String ConstValues::A_ACTION = "action";
 const String ConstValues::A_HIDE = "hide";

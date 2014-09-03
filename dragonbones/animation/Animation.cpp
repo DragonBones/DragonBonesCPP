@@ -120,7 +120,7 @@ AnimationState* Animation::gotoAndPlay(
     
     if (!animationData)
     {
-        // throw
+        throw std::runtime_error("No animation data.");
         return nullptr;
     }
     

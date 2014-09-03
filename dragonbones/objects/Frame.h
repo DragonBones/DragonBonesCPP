@@ -17,6 +17,9 @@ public:
     String action;
     String event;
     String sound;
+    String eventParameters;
+
+    void* eventParametersParsed;
     
 public:
     Frame()
@@ -24,6 +27,8 @@ public:
         position = 0;
         duration = 0;
         frameType = FrameType::FT_FRAME;
+
+        eventParametersParsed = nullptr;
     }
     Frame(const Frame &copyData)
     {
@@ -37,13 +42,22 @@ public:
         action = copyData.action;
         event = copyData.event;
         sound = copyData.sound;
+        eventParameters = copyData.eventParameters;
+        // eventParamsParsed
         return *this;
     }
     virtual ~Frame()
     {
         dispose();
     }
-    virtual void dispose() {}
+    virtual void dispose() 
+    {
+        if (eventParametersParsed)
+        {
+            delete eventParametersParsed;
+            eventParametersParsed = nullptr;
+        }
+    }
 };
 NAME_SPACE_DRAGON_BONES_END
 #endif  // __OBJECTS_FRAME_H__

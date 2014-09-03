@@ -584,7 +584,7 @@ void TimelineState::updateTween()
 
 void TimelineState::updateSingleFrame()
 {
-    const TransformFrame *currentFrame = static_cast<TransformFrame*>(_timeline->frameList.front());
+    TransformFrame *currentFrame = static_cast<TransformFrame*>(_timeline->frameList.front());
     _bone->arriveAtFrame(currentFrame, this, _animationState, false);
     _isComplete = true;
     _tweenTransform = false;

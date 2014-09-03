@@ -74,7 +74,7 @@ protected:
         bool colorChanged
     );
     virtual void hideSlots();
-    virtual void arriveAtFrame(const TransformFrame *frame, const TimelineState *timelineState, AnimationState *animationState, bool isCross);
+    virtual void arriveAtFrame(TransformFrame *frame, const TimelineState *timelineState, AnimationState *animationState, bool isCross);
     virtual void addState(TimelineState *timelineState);
     virtual void removeState(TimelineState *timelineState);
     virtual void blendingTimeline();

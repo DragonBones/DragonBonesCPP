@@ -97,13 +97,11 @@ inline DisplayType getDisplayTypeByString(String displayType)
     {
         return DisplayType::DT_IMAGE;
     }
-
-    if (displayType == "armature")
+    else if (displayType == "armature")
     {
         return DisplayType::DT_ARMATURE;
     }
-
-    if (displayType == "frame")
+    else if (displayType == "frame")
     {
         return DisplayType::DT_FRAME;
     }
@@ -114,77 +112,63 @@ inline DisplayType getDisplayTypeByString(String displayType)
 enum class BlendMode {BM_ADD, BM_ALPHA, BM_DARKEN, BM_DIFFERENCE, BM_ERASE, BM_HARDLIGHT, BM_INVERT, BM_LAYER, BM_LIGHTEN, BM_MULTIPLY, BM_NORMAL, BM_OVERLAY, BM_SCREEN, BM_SHADER, BM_SUBTRACT};
 inline BlendMode getBlendModeByString(String blendMode)
 {
-    if (blendMode == "add")
-    {
-        return BlendMode::BM_ADD;
-    }
-
-    if (blendMode == "alpha")
-    {
-        return BlendMode::BM_ALPHA;
-    }
-
-    if (blendMode == "darken")
-    {
-        return BlendMode::BM_DARKEN;
-    }
-
-    if (blendMode == "difference")
-    {
-        return BlendMode::BM_DIFFERENCE;
-    }
-
-    if (blendMode == "erase")
-    {
-        return BlendMode::BM_ERASE;
-    }
-
-    if (blendMode == "hardlight")
-    {
-        return BlendMode::BM_HARDLIGHT;
-    }
-
-    if (blendMode == "invert")
-    {
-        return BlendMode::BM_INVERT;
-    }
-
-    if (blendMode == "layer")
-    {
-        return BlendMode::BM_LAYER;
-    }
-
-    if (blendMode == "lighten")
-    {
-        return BlendMode::BM_LIGHTEN;
-    }
-
-    if (blendMode == "multiply")
-    {
-        return BlendMode::BM_MULTIPLY;
-    }
-
     if (blendMode == "normal")
     {
         return BlendMode::BM_NORMAL;
     }
-
-    if (blendMode == "overlay")
+    else if (blendMode == "add")
+    {
+        return BlendMode::BM_ADD;
+    }
+    else if (blendMode == "alpha")
+    {
+        return BlendMode::BM_ALPHA;
+    }
+    else if (blendMode == "darken")
+    {
+        return BlendMode::BM_DARKEN;
+    }
+    else if (blendMode == "difference")
+    {
+        return BlendMode::BM_DIFFERENCE;
+    }
+    else if (blendMode == "erase")
+    {
+        return BlendMode::BM_ERASE;
+    }
+    else if (blendMode == "hardlight")
+    {
+        return BlendMode::BM_HARDLIGHT;
+    }
+    else if (blendMode == "invert")
+    {
+        return BlendMode::BM_INVERT;
+    }
+    else if (blendMode == "layer")
+    {
+        return BlendMode::BM_LAYER;
+    }
+    else if (blendMode == "lighten")
+    {
+        return BlendMode::BM_LIGHTEN;
+    }
+    else if (blendMode == "multiply")
+    {
+        return BlendMode::BM_MULTIPLY;
+    }
+    else if (blendMode == "overlay")
     {
         return BlendMode::BM_OVERLAY;
     }
-
-    if (blendMode == "screen")
+    else if (blendMode == "screen")
     {
         return BlendMode::BM_SCREEN;
     }
-
-    if (blendMode == "shader")
+    else if (blendMode == "shader")
     {
         return BlendMode::BM_SHADER;
     }
-
-    if (blendMode == "subtract")
+    else if (blendMode == "subtract")
     {
         return BlendMode::BM_SUBTRACT;
     }

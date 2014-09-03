@@ -480,13 +480,14 @@ void Armature::sortBones()
     }
 }
 
-void Armature::arriveAtFrame(const Frame *frame, AnimationState *animationState, bool isCross)
+void Armature::arriveAtFrame(Frame *frame, AnimationState *animationState, bool isCross)
 {
     if (!frame->event.empty() && _eventDispatcher->hasEvent(EventData::EventType::ANIMATION_FRAME_EVENT))
     {
         EventData *eventData = new EventData(EventData::EventType::ANIMATION_FRAME_EVENT, this);
         eventData->animationState = animationState;
         eventData->frameLabel = frame->event;
+        eventData->frame = frame;
         _eventDataList.push_back(eventData);
     }
     

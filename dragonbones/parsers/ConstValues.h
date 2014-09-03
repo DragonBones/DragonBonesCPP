@@ -43,6 +43,7 @@ public:
     static const String A_OFFSET;
     static const String A_LOOP;
     static const String A_EVENT;
+    static const String A_EVENT_PARAMETERS;
     static const String A_SOUND;
     static const String A_ACTION;
     static const String A_HIDE;
