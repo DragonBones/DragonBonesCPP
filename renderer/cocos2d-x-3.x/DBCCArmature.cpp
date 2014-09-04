@@ -22,6 +22,12 @@ DBCCArmature::~DBCCArmature()
 }
 void DBCCArmature::dispose()
 {
+    _delayDispose = true;
+    if(!_animation || _lockDispose)
+    {
+        return;
+    }
+
     if (_display)
     {
         getCCDisplay()->cleanup();

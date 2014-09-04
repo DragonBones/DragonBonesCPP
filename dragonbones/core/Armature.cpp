@@ -63,6 +63,12 @@ Armature::~Armature()
 }
 void Armature::dispose()
 {
+    _delayDispose = true;
+    if(!_animation || _lockDispose)
+    {
+        return;
+    }
+
     if (_animation)
     {
         _animation->dispose();
@@ -293,6 +299,20 @@ Slot* Armature::removeSlot(const String &slotName)
 
 void Armature::sortSlotsByZOrder()
 {
+	for (size_t i = 0, l = _slotList.size(); i < l; ++i)
+	{
+		Slot *slot = _slotList[i];
+
+		if (slot->_isShowDisplay)
+		{
+			slot->addDisplayToContainer(_display, i);
+		}
+	}
+
+	_slotsZOrderChanged = false;
+
+
+	/* old
     std::sort(_slotList.begin() , _slotList.end() , sortSlot);
     
     for (size_t i = 0, l = _slotList.size(); i < l; ++i)
@@ -316,6 +336,7 @@ void Armature::sortSlotsByZOrder()
     }
     
     _slotsZOrderChanged = false;
+	*/
 }
 
 void Armature::invalidUpdate()
@@ -367,18 +388,21 @@ void Armature::advanceTime(float passedTime)
     if (_slotsZOrderChanged)
     {
         sortSlotsByZOrder();
-        
+
+#ifdef NEED_Z_ORDER_UPDATED_EVENT
         if (_eventDispatcher->hasEvent(EventData::EventType::Z_ORDER_UPDATED))
         {
             EventData *eventData = new EventData(EventData::EventType::Z_ORDER_UPDATED, this);
             _eventDataList.push_back(eventData);
         }
+#endif
     }
     
     if (!_eventDataList.empty())
     {
         for (size_t i = 0, l = _eventDataList.size(); i < l; ++i)
         {
+			//TODO
             _eventDispatcher->dispatchEvent(_eventDataList[i]);
             _eventDataList[i]->dispose();
             delete _eventDataList[i];

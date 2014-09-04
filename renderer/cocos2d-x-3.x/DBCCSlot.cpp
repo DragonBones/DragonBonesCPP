@@ -77,6 +77,8 @@ void DBCCSlot::disposeDisplayList()
             if (armature)
             {
                 armature->dispose();
+                delete armature;
+                _displayList[i].first = NULL;
             }
         }
         else
