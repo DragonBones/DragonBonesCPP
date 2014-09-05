@@ -367,7 +367,7 @@ namespace dragonBones
                 }
                 
                 //
-                if(_clip->frameList.size() > 0)
+                if(_clip->frameList.size() > 0 && !isComplete)
                 {
                     Number playedTime = _totalTime * (progress - currentLoopCount);
                     bool isArrivedFrame = false;
