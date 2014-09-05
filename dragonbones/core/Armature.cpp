@@ -299,20 +299,18 @@ Slot* Armature::removeSlot(const String &slotName)
 
 void Armature::sortSlotsByZOrder()
 {
-	for (size_t i = 0, l = _slotList.size(); i < l; ++i)
-	{
-		Slot *slot = _slotList[i];
+    /*
+    for (size_t i = 0, l = _slotList.size(); i < l; ++i)
+    {
+        Slot *slot = _slotList[i];
 
-		if (slot->_isShowDisplay)
-		{
-			slot->addDisplayToContainer(_display, i);
-		}
-	}
+        if (slot->_isShowDisplay)
+        {
+            slot->addDisplayToContainer(_display, i);
+        }
+    }
+    */
 
-	_slotsZOrderChanged = false;
-
-
-	/* old
     std::sort(_slotList.begin() , _slotList.end() , sortSlot);
     
     for (size_t i = 0, l = _slotList.size(); i < l; ++i)
@@ -336,7 +334,6 @@ void Armature::sortSlotsByZOrder()
     }
     
     _slotsZOrderChanged = false;
-	*/
 }
 
 void Armature::invalidUpdate()
@@ -402,7 +399,7 @@ void Armature::advanceTime(float passedTime)
     {
         for (size_t i = 0, l = _eventDataList.size(); i < l; ++i)
         {
-			//TODO
+            //TODO
             _eventDispatcher->dispatchEvent(_eventDataList[i]);
             _eventDataList[i]->dispose();
             delete _eventDataList[i];
