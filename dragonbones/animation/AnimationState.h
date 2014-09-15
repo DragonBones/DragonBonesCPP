@@ -16,12 +16,12 @@ class AnimationState
     friend class TimelineState;
     
 private:
+    enum class FadeState {FADE_BEFORE, FADING, FADE_COMPLETE};
+
     static std::vector<AnimationState*> _pool;
     static AnimationState* borrowObject();
     static void returnObject(AnimationState *animationState);
     static void clearObjects();
-    
-    static enum class FadeState {FADE_BEFORE, FADING, FADE_COMPLETE};
     
 public:
     bool additiveBlending;

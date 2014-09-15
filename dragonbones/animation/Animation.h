@@ -16,7 +16,7 @@ class Animation
     friend class Slot;
     
 public:
-    static enum class AnimationFadeOutMode {NONE, SAME_LAYER, SAME_GROUP, SAME_LAYER_AND_GROUP, ALL};
+    enum class AnimationFadeOutMode {NONE, SAME_LAYER, SAME_GROUP, SAME_LAYER_AND_GROUP, ALL};
     
 public:
     bool autoTween;

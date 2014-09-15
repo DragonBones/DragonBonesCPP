@@ -517,7 +517,8 @@ void AnimationState::advanceFadeTime(float passedTime)
         
         if (_armature->_eventDispatcher->hasEvent(eventDataType))
         {
-            EventData *eventData = new EventData(eventDataType, _armature);
+            EventData *eventData = EventData::borrowObject(eventDataType);
+            eventData->armature = armature;
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }
@@ -538,7 +539,8 @@ void AnimationState::advanceFadeTime(float passedTime)
         
         if (_armature->_eventDispatcher->hasEvent(eventDataType))
         {
-            EventData *eventData = new EventData(eventDataType, _armature);
+            EventData *eventData = EventData::borrowObject(eventDataType);
+            eventData->armature = _armature;
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }
@@ -649,7 +651,8 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     {
         if (_armature->_eventDispatcher->hasEvent(EventData::EventType::START))
         {
-            EventData *eventData = new EventData(EventData::EventType::START, _armature);
+            EventData *eventData = EventData::borrowObject(EventData::EventType::START);
+            eventData->armature = _armature;
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }
@@ -659,7 +662,8 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     {
         if (_armature->_eventDispatcher->hasEvent(EventData::EventType::COMPLETE))
         {
-            EventData *eventData = new EventData(EventData::EventType::COMPLETE, _armature);
+            EventData *eventData = EventData::borrowObject(EventData::EventType::COMPLETE);
+            eventData->armature = _armature;
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }
@@ -673,7 +677,8 @@ void AnimationState::advanceTimelinesTime(float passedTime)
     {
         if (_armature->_eventDispatcher->hasEvent(EventData::EventType::LOOP_COMPLETE))
         {
-            EventData *eventData = new EventData(EventData::EventType::LOOP_COMPLETE, _armature);
+            EventData *eventData = EventData::borrowObject(EventData::EventType::LOOP_COMPLETE);
+            eventData->armature = _armature;
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }

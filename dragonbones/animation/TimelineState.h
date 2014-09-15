@@ -19,12 +19,12 @@ class TimelineState
     friend class Bone;
     
 private:
+    enum class UpdateState {UPDATE, UPDATE_ONCE, UNUPDATE};
+
     static std::vector<TimelineState*> _pool;
     static TimelineState* borrowObject();
     static void returnObject(TimelineState *timelineState);
     static void clearObjects();
-    
-    static enum class UpdateState {UPDATE, UPDATE_ONCE, UNUPDATE};
     
 public:
     String name;
