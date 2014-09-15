@@ -8,6 +8,7 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class Armature;
 class Bone;
 class AnimationState;
+class Frame;
 
 class EventData
 {
@@ -45,6 +46,7 @@ public:
     Armature *armature;
     Bone *bone;
     AnimationState *animationState;
+    Frame *frame;
     
 private:
     EventType _type;

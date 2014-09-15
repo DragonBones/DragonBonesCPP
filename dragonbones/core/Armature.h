@@ -92,7 +92,7 @@ protected:
     virtual void removeObject(Object *object);
     virtual void sortBones();
     
-    virtual void arriveAtFrame(const Frame *frame, AnimationState *animationState, bool isCross);
+    virtual void arriveAtFrame(Frame *frame, AnimationState *animationState, bool isCross);
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(Armature);

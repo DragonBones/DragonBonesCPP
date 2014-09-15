@@ -63,6 +63,12 @@ Armature::~Armature()
 }
 void Armature::dispose()
 {
+    _delayDispose = true;
+    if(!_animation || _lockDispose)
+    {
+        return;
+    }
+
     if (_animation)
     {
         _animation->dispose();
@@ -310,6 +316,18 @@ void Armature::replaceSlot(const String &boneName, const String &oldSlotName, Sl
 
 void Armature::sortSlotsByZOrder()
 {
+    /*
+    for (size_t i = 0, l = _slotList.size(); i < l; ++i)
+    {
+        Slot *slot = _slotList[i];
+
+        if (slot->_isShowDisplay)
+        {
+            slot->addDisplayToContainer(_display, i);
+        }
+    }
+    */
+
     std::sort(_slotList.begin() , _slotList.end() , sortSlot);
     
     for (size_t i = 0, l = _slotList.size(); i < l; ++i)
@@ -384,18 +402,21 @@ void Armature::advanceTime(float passedTime)
     if (_slotsZOrderChanged)
     {
         sortSlotsByZOrder();
-        
+
+#ifdef NEED_Z_ORDER_UPDATED_EVENT
         if (_eventDispatcher->hasEvent(EventData::EventType::Z_ORDER_UPDATED))
         {
             EventData *eventData = new EventData(EventData::EventType::Z_ORDER_UPDATED, this);
             _eventDataList.push_back(eventData);
         }
+#endif
     }
     
     if (!_eventDataList.empty())
     {
         for (size_t i = 0, l = _eventDataList.size(); i < l; ++i)
         {
+            //TODO
             _eventDispatcher->dispatchEvent(_eventDataList[i]);
             _eventDataList[i]->dispose();
             delete _eventDataList[i];
@@ -497,13 +518,14 @@ void Armature::sortBones()
     }
 }
 
-void Armature::arriveAtFrame(const Frame *frame, AnimationState *animationState, bool isCross)
+void Armature::arriveAtFrame(Frame *frame, AnimationState *animationState, bool isCross)
 {
     if (!frame->event.empty() && _eventDispatcher->hasEvent(EventData::EventType::ANIMATION_FRAME_EVENT))
     {
         EventData *eventData = new EventData(EventData::EventType::ANIMATION_FRAME_EVENT, this);
         eventData->animationState = animationState;
         eventData->frameLabel = frame->event;
+        eventData->frame = frame;
         _eventDataList.push_back(eventData);
     }
     

@@ -1,4 +1,5 @@
-﻿#include "TimelineState.h"
+﻿#include <cstdlib>
+#include "TimelineState.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 std::vector<TimelineState*> TimelineState::_pool;
@@ -17,7 +18,7 @@ TimelineState* TimelineState::borrowObject()
 
 void TimelineState::returnObject(TimelineState *timelineState)
 {
-    if (std::find(_pool.cbegin(), _pool.cend(), timelineState) != _pool.end())
+    if (std::find(_pool.cbegin(), _pool.cend(), timelineState) == _pool.end())
     {
         _pool.push_back(timelineState);
     }
@@ -583,7 +584,7 @@ void TimelineState::updateTween()
 
 void TimelineState::updateSingleFrame()
 {
-    const TransformFrame *currentFrame = static_cast<TransformFrame*>(_timeline->frameList.front());
+    TransformFrame *currentFrame = static_cast<TransformFrame*>(_timeline->frameList.front());
     _bone->arriveAtFrame(currentFrame, this, _animationState, false);
     _isComplete = true;
     _tweenTransform = false;

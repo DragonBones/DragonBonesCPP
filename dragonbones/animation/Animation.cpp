@@ -120,7 +120,7 @@ AnimationState* Animation::gotoAndPlay(
     
     if (!animationData)
     {
-        // throw
+        throw std::runtime_error("No animation data.");
         return nullptr;
     }
     
@@ -211,7 +211,7 @@ AnimationState* Animation::gotoAndPlay(
     {
         Slot *slot = _armature->getSlots()[i];
         
-        if (slot->_childArmature)
+        if (slot->_childArmature && slot->_childArmature->_animation->hasAnimation(animationName))
         {
             slot->_childArmature->_animation->gotoAndPlay(animationName, fadeInTime);
         }

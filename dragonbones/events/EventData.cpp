@@ -77,6 +77,7 @@ EventData::EventData()
     armature = nullptr;
     bone = nullptr;
     animationState = nullptr;
+    frame = nullptr;
 }
 EventData::EventData(EventType type, Armature *armatureTarget)
 {
@@ -84,6 +85,7 @@ EventData::EventData(EventType type, Armature *armatureTarget)
     armature = armatureTarget;
     bone = nullptr;
     animationState = nullptr;
+    frame = nullptr;
 }
 EventData::~EventData()
 {
@@ -94,6 +96,7 @@ void EventData::dispose()
     armature = nullptr;
     bone = nullptr;
     animationState = nullptr;
+    frame = nullptr;
 }
 
 void EventData::copy(const EventData &copyData)
@@ -104,6 +107,7 @@ void EventData::copy(const EventData &copyData)
     armature = copyData.armature;
     bone = copyData.bone;
     animationState = copyData.animationState;
+    frame = copyData.frame;
 }
 
 NAME_SPACE_DRAGON_BONES_END
