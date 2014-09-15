@@ -8,6 +8,12 @@ cocos2d::Node* DBCCSlot::getCCDisplay() const
     return _nodeDisplay;
 }
 
+void DBCCSlot::setCCDisplay(cocos2d::Node* display, bool disposeExisting)
+{
+    Slot::setDisplay(display, DisplayType::DT_IMAGE, disposeExisting);
+    _nodeDisplay = display;
+}
+
 DBCCArmature* DBCCSlot::getCCChildArmature() const
 {
     return static_cast<DBCCArmature*>(_childArmature);

@@ -117,15 +117,15 @@ void DBCCArmatureNode::registerFrameEventHandler(cocos2d::LUA_FUNCTION func)
 	auto f = [this](cocos2d::EventCustom *event)
 	{
 		auto eventData = (dragonBones::EventData*)(event->getUserData());
-		int type = (int) eventData->getType();
-		std::string movementId = eventData->animationState->name;
-		std::string frameLabel = eventData->frameLabel;
+		auto type = (int) eventData->getType();
+		auto movementId = eventData->animationState->name;
+		auto frameLabel = eventData->frameLabel;
 
 		auto stack = cocos2d::LuaEngine::getInstance()->getLuaStack();
 		stack->pushObject(this, "db.DBCCArmatureNode");
 		stack->pushInt(type);
-		stack->pushString(movementId.c_str(), movementId.size());
-		stack->pushString(frameLabel.c_str(), frameLabel.size());
+        stack->pushString(movementId.c_str(), movementId.size());
+        stack->pushString(frameLabel.c_str(), frameLabel.size());
 		stack->executeFunctionByHandler(_frameEventHandler, 4);
 	};
 
@@ -142,15 +142,17 @@ void DBCCArmatureNode::registerMovementEventHandler(cocos2d::LUA_FUNCTION func)
 	auto f = [this](cocos2d::EventCustom *event)
 	{
 		auto eventData = (dragonBones::EventData*)(event->getUserData());
-		int type = (int) eventData->getType();
-		std::string movementId = eventData->animationState->name;
-		std::string frameLabel = eventData->frameLabel;
+		auto type = (int) eventData->getType();
+		auto movementId = eventData->animationState->name;
+        auto lastState = eventData->armature->getAnimation()->getLastAnimationState();
 
 		auto stack = cocos2d::LuaEngine::getInstance()->getLuaStack();
 		stack->pushObject(this, "db.DBCCArmatureNode");
 		stack->pushInt(type);
 		stack->pushString(movementId.c_str(), movementId.size());
-		stack->executeFunctionByHandler(_movementEventHandler, 3);
+        stack->pushBoolean(lastState == eventData->animationState);
+        
+		stack->executeFunctionByHandler(_movementEventHandler, 4);
 	};
 
 	dispatcher->addCustomEventListener(dragonBones::EventData::COMPLETE, f);

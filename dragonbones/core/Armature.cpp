@@ -291,6 +291,23 @@ Slot* Armature::removeSlot(const String &slotName)
     return slot;
 }
 
+void Armature::replaceSlot(const String &boneName, const String &oldSlotName, Slot* newSlot)
+{
+    auto bone = getBone(boneName);
+    if (!bone) return;
+
+    auto slots = bone->getSlots();
+    auto it = std::find_if(slots.begin(), slots.end(), 
+        [&oldSlotName](Slot* tmp){return oldSlotName == tmp->name;});
+    if (it != slots.end())
+    {
+        removeSlot(*it);
+    }
+
+    newSlot->name = oldSlotName;
+    bone->addChild(newSlot);
+}
+
 void Armature::sortSlotsByZOrder()
 {
     std::sort(_slotList.begin() , _slotList.end() , sortSlot);

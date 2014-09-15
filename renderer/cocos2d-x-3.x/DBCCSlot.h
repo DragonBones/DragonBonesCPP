@@ -13,6 +13,7 @@ protected:
     
 public:
     virtual cocos2d::Node* getCCDisplay() const;
+    virtual void setCCDisplay(cocos2d::Node* display, bool disposeExisting = true);
     virtual DBCCArmature* getCCChildArmature() const;
     
 public:
