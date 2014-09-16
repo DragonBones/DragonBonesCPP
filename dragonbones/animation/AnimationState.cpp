@@ -518,7 +518,7 @@ void AnimationState::advanceFadeTime(float passedTime)
         if (_armature->_eventDispatcher->hasEvent(eventDataType))
         {
             EventData *eventData = EventData::borrowObject(eventDataType);
-            eventData->armature = armature;
+            eventData->armature = _armature;
             eventData->animationState = this;
             _armature->_eventDataList.push_back(eventData);
         }
