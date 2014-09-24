@@ -24,7 +24,7 @@ private:
     static void returnObject(TimelineState *timelineState);
     static void clearObjects();
     
-    static enum class UpdateState {UPDATE, UPDATE_ONCE, UNUPDATE};
+    enum class UpdateState {UPDATE, UPDATE_ONCE, UNUPDATE};
     
 public:
     String name;

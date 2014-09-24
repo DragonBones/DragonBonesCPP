@@ -21,7 +21,7 @@ private:
     static void returnObject(AnimationState *animationState);
     static void clearObjects();
     
-    static enum class FadeState {FADE_BEFORE, FADING, FADE_COMPLETE};
+    enum class FadeState {FADE_BEFORE, FADING, FADE_COMPLETE};
     
 public:
     bool additiveBlending;
