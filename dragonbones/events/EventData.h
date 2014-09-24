@@ -38,6 +38,13 @@ public:
     };
     
     static const String& typeToString(EventType eventType);
+
+    static EventData* borrowObject(EventType eventType);
+    static void returnObject(EventData *eventData);
+    static void clearObjects();
+
+private:
+    static std::vector<EventData*> _pool;
     
 public:
     String frameLabel;
@@ -60,8 +67,11 @@ public:
     EventData();
     EventData(EventType type, Armature *armatureTarget);
     virtual ~EventData();
-    void dispose();
+    void clear();
     void copy(const EventData &copyData);
+
+private:
+    DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(EventData);
 };
 NAME_SPACE_DRAGON_BONES_END
 #endif  // __EVENTS_EVENT_DATA_H__

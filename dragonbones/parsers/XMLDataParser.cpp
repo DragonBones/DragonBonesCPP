@@ -21,7 +21,7 @@ bool XMLDataParser::getBoolean(const XMLElement *data, const char *key, bool def
         }
         else
         {
-            return true;
+            return data->BoolAttribute(key);
         }
     }
     

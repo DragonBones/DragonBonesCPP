@@ -103,8 +103,7 @@ void Armature::dispose()
     {
         if (_eventDataList[i])
         {
-            _eventDataList[i]->dispose();
-            delete _eventDataList[i];
+            EventData::returnObject(_eventDataList[i]);
         }
     }
     
@@ -406,7 +405,7 @@ void Armature::advanceTime(float passedTime)
     if (_slotsZOrderChanged)
     {
         sortSlotsByZOrder();
-
+        
 #ifdef NEED_Z_ORDER_UPDATED_EVENT
         if (_eventDispatcher->hasEvent(EventData::EventType::Z_ORDER_UPDATED))
         {
@@ -420,10 +419,8 @@ void Armature::advanceTime(float passedTime)
     {
         for (size_t i = 0, l = _eventDataList.size(); i < l; ++i)
         {
-            //TODO
             _eventDispatcher->dispatchEvent(_eventDataList[i]);
-            _eventDataList[i]->dispose();
-            delete _eventDataList[i];
+            EventData::returnObject(_eventDataList[i]);
         }
         
         _eventDataList.clear();
@@ -526,7 +523,8 @@ void Armature::arriveAtFrame(Frame *frame, AnimationState *animationState, bool 
 {
     if (!frame->event.empty() && _eventDispatcher->hasEvent(EventData::EventType::ANIMATION_FRAME_EVENT))
     {
-        EventData *eventData = new EventData(EventData::EventType::ANIMATION_FRAME_EVENT, this);
+        EventData *eventData = EventData::borrowObject(EventData::EventType::ANIMATION_FRAME_EVENT);
+        eventData->armature = this;
         eventData->animationState = animationState;
         eventData->frameLabel = frame->event;
         eventData->frame = frame;
@@ -535,7 +533,8 @@ void Armature::arriveAtFrame(Frame *frame, AnimationState *animationState, bool 
     
     if (!frame->sound.empty() && soundEventDispatcher && soundEventDispatcher->hasEvent(EventData::EventType::SOUND))
     {
-        EventData *eventData = new EventData(EventData::EventType::SOUND, this);
+        EventData *eventData = EventData::borrowObject(EventData::EventType::SOUND);
+        eventData->armature = this;
         eventData->animationState = animationState;
         eventData->sound = frame->sound;
         soundEventDispatcher->dispatchEvent(eventData);
