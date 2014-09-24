@@ -307,7 +307,11 @@ void Armature::replaceSlot(const String &boneName, const String &oldSlotName, Sl
         [&oldSlotName](Slot* tmp){return oldSlotName == tmp->name;});
     if (it != slots.end())
     {
-        removeSlot(*it);
+        auto oldSlog = *it;
+        newSlot->_tweenZOrder = oldSlog->_tweenZOrder;
+        newSlot->_originZOrder = oldSlog->_originZOrder;
+        newSlot->_offsetZOrder = oldSlog->_offsetZOrder;
+        removeSlot(oldSlog);
     }
 
     newSlot->name = oldSlotName;
