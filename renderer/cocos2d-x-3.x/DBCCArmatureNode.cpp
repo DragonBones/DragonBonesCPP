@@ -31,7 +31,6 @@ bool DBCCArmatureNode::initWithDBCCArmature(DBCCArmature *armature)
         _armature = armature;
         addChild(armature->getCCDisplay());
         scheduleUpdate();
-        update(0);
         return true;
     }
 
