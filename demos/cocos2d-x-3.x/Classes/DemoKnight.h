@@ -445,7 +445,10 @@ private:
             
             if (_speedY >= 0 && _speedY + speedG < 0)
             {
-                _armature->getAnimation()->gotoAndPlay("fall", 0.2f);
+                if (_armature->getAnimation()->hasAnimation("fall"))
+                {
+                    _armature->getAnimation()->gotoAndPlay("fall", 0.2f);
+                }
             }
             
             _speedY += speedG;
