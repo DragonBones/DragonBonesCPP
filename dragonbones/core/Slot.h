@@ -32,6 +32,7 @@ protected:
     
 public:
     virtual int getDisplayIndex() const;
+    bool isShowDisplay() { return _isShowDisplay; };
     
     virtual float getZOrder() const;
     virtual void setZOrder(float zorder);

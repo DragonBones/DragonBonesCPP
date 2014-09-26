@@ -60,15 +60,15 @@ DBCCArmatureNode::~DBCCArmatureNode()
 
 cocos2d::Rect DBCCArmatureNode::getBoundingBox() const
 {
-    float minx, miny, maxx, maxy = 0;
+    float minx = 0, miny = 0, maxx = 0, maxy = 0;
     bool first = true;
-    cocos2d::Rect boundingBox;
     
-for (const auto slot : _armature->getSlots())
+    for (const auto slot : _armature->getSlots())
     {
-        if (! slot->getVisible()) { continue; }
+        if (!slot->getVisible() || !slot->isShowDisplay()) { continue; }
         
         auto node = static_cast<cocos2d::Node*>(slot->getDisplay());
+        
         auto r = node->getBoundingBox();
         
         if (first)
@@ -81,17 +81,16 @@ for (const auto slot : _armature->getSlots())
         }
         else
         {
-            minx = r.getMinX() < boundingBox.getMinX() ? r.getMinX() : boundingBox.getMinX();
-            miny = r.getMinY() < boundingBox.getMinY() ? r.getMinY() : boundingBox.getMinY();
-            maxx = r.getMaxX() > boundingBox.getMaxX() ? r.getMaxX() : boundingBox.getMaxX();
-            maxy = r.getMaxY() > boundingBox.getMaxY() ? r.getMaxY() : boundingBox.getMaxY();
+            minx = r.getMinX() < minx ? r.getMinX() : minx;
+            miny = r.getMinY() < miny ? r.getMinY() : miny;
+            maxx = r.getMaxX() > maxx ? r.getMaxX() : maxx;
+            maxy = r.getMaxY() > maxy ? r.getMaxY() : maxy;
         }
-        
-        boundingBox.setRect(minx, miny, maxx - minx, maxy - miny);
     }
-    
+
     auto display = _armature->getCCDisplay();
-    return cocos2d::RectApplyTransform(boundingBox, display->getNodeToParentTransform());
+    cocos2d::Rect rect(minx, miny, maxx - minx, maxy - miny);
+    return cocos2d::RectApplyTransform(rect, display->getNodeToParentTransform());
 }
 
 void DBCCArmatureNode::update(float dt)
