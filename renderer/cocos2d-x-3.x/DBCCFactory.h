@@ -2,6 +2,7 @@
 #define __DBCC_FACTORY_H__
 
 #include "DragonBonesHeaders.h"
+#include "DBCCRenderHeaders.h"
 #include "cocos2d.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
@@ -15,6 +16,10 @@ public:
     
     DBCCFactory();
     virtual ~DBCCFactory();
+
+    virtual DBCCArmature* buildArmature(const String &armatureName) const override;
+    virtual DBCCArmature* buildArmature(const String &armatureName, const String &dragonBonesName) const override;
+    virtual DBCCArmature* buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const override;
     
     virtual DragonBonesData* loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
     virtual ITextureAtlas* loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
@@ -23,8 +28,8 @@ public:
     virtual bool hasDragonBones(const std::string &skeletonName, const std::string &armatureName = "", const std::string &animationName = "");
     
 protected:
-    virtual Armature* generateArmature(const ArmatureData *armatureData) const override;
-    virtual Slot* generateSlot(const SlotData *slotData) const override;
+    virtual DBCCArmature* generateArmature(const ArmatureData *armatureData) const override;
+    virtual DBCCSlot* generateSlot(const SlotData *slotData) const override;
     virtual void* generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const override;
     
 private:
