@@ -254,7 +254,9 @@ Armature* BaseFactory::buildArmature(const String &armatureName, const String &s
     }
     
     // update armature pose
+    armature->getAnimation()->play();
     armature->advanceTime(0);
+    armature->getAnimation()->stop();
     return armature;
 }
 
