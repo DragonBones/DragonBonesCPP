@@ -31,8 +31,6 @@ bool DBCCArmatureNode::initWithDBCCArmature(DBCCArmature *armature)
         _armature = armature;
         addChild(armature->getCCDisplay());
         scheduleUpdate();
-        setCascadeOpacityEnabled(true);
-        setCascadeColorEnabled(true);
         return true;
     }
 
