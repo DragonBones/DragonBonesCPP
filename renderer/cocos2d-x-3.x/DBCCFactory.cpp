@@ -14,6 +14,22 @@ DBCCFactory* DBCCFactory::getInstance()
 DBCCFactory::DBCCFactory() {}
 DBCCFactory::~DBCCFactory() {}
 
+DBCCArmature* DBCCFactory::buildArmature(const String &armatureName) const
+{
+    return (DBCCArmature*) BaseFactory::buildArmature(armatureName);
+}
+
+DBCCArmature* DBCCFactory::buildArmature(const String &armatureName, const String &dragonBonesName) const
+{
+    return (DBCCArmature*) BaseFactory::buildArmature(armatureName, dragonBonesName);
+}
+
+DBCCArmature* DBCCFactory::buildArmature(const String &armatureName, const String &skinName, const String &animationName,
+                                         const String &dragonBonesName, const String &textureAtlasName) const
+{
+    return (DBCCArmature*) BaseFactory::buildArmature(armatureName, skinName, animationName, dragonBonesName, textureAtlasName);
+}
+
 DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
 {
     DragonBonesData *existDragonBonesData = getDragonBonesData(name);
@@ -121,11 +137,11 @@ bool DBCCFactory::hasDragonBones(const std::string &skeletonName, const std::str
     return true;
 }
 
-Armature* DBCCFactory::generateArmature(const ArmatureData *armatureData) const
+DBCCArmature* DBCCFactory::generateArmature(const ArmatureData *armatureData) const
 {
     Animation *animation = new Animation();
     // sprite
-    cocos2d::Node *display = cocos2d::Sprite::create();
+    cocos2d::Node *display = cocos2d::Node::create();
     display->setCascadeColorEnabled(true);
     display->setCascadeOpacityEnabled(true);
     display->retain();
@@ -134,14 +150,12 @@ Armature* DBCCFactory::generateArmature(const ArmatureData *armatureData) const
     eventDispatcher->eventDispatcher = new cocos2d::EventDispatcher();
     eventDispatcher->eventDispatcher->setEnabled(true);
     // armature
-    Armature *armature = new DBCCArmature((ArmatureData*)(armatureData), animation, eventDispatcher, display);
-    return armature;
+    return new DBCCArmature((ArmatureData*)(armatureData), animation, eventDispatcher, display);
 }
 
-Slot* DBCCFactory::generateSlot(const SlotData *slotData) const
+DBCCSlot* DBCCFactory::generateSlot(const SlotData *slotData) const
 {
-    Slot *slot = new DBCCSlot((SlotData*)(slotData));
-    return slot;
+    return new DBCCSlot((SlotData*)(slotData));
 }
 
 void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const
