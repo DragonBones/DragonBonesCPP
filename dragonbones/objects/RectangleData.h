@@ -18,6 +18,7 @@ public:
 public:
     RectangleData()
     {
+        areaType = IAreaData::AreaType::AT_RECTANGLE;
         width = 0.f;
         height = 0.f;
     }

@@ -161,7 +161,7 @@ ArmatureData* XMLDataParser::parseArmatureData(const XMLElement *armatureXML) co
     
     for (const XMLElement *ellipseXML = armatureXML->FirstChildElement(ConstValues::ELLIPSE.c_str()); ellipseXML; ellipseXML = ellipseXML->NextSiblingElement(ConstValues::ELLIPSE.c_str()))
     {
-        RectangleData *ellipseData = parseRectangleData(ellipseXML);
+        EllipseData *ellipseData = parseEllipseData(ellipseXML);
         armatureData->areaDataList.push_back(ellipseData);
     }
     
@@ -193,7 +193,7 @@ BoneData* XMLDataParser::parseBoneData(const XMLElement *boneXML) const
     
     for (const XMLElement *ellipseXML = boneXML->FirstChildElement(ConstValues::ELLIPSE.c_str()); ellipseXML; ellipseXML = ellipseXML->NextSiblingElement(ConstValues::ELLIPSE.c_str()))
     {
-        RectangleData *ellipseData = parseRectangleData(ellipseXML);
+        EllipseData *ellipseData = parseEllipseData(ellipseXML);
         boneData->areaDataList.push_back(ellipseData);
     }
     

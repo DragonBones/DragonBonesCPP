@@ -18,6 +18,7 @@ public:
 public:
     EllipseData()
     {
+        areaType = IAreaData::AreaType::AT_ELLIPSE;
         width = 0.f;
         height = 0.f;
     }
