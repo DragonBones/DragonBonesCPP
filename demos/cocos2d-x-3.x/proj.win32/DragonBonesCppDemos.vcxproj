@@ -204,6 +204,9 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCTextureAtlas.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\DemoBase.h" />
+    <ClInclude Include="..\Classes\DemoDragonBoy.h" />
+    <ClInclude Include="..\Classes\DemoKnight.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
