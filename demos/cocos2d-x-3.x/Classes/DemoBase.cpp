@@ -70,7 +70,6 @@ DemoBase* restartDBDemoAction()
 {
     DemoBase* pLayer = (createFunctions[sceneIdx<0 ? 0 : sceneIdx])();
     pLayer->autorelease();
-    
     return pLayer;
 }
 DemoBase* DemoBase::create(int index)
@@ -107,7 +106,7 @@ void DemoBase::onEnter()
 {
     Layer::onEnter();
     
-    LabelTTF* pLabel = LabelTTF::create("DragonBonesCPP for cocos2d-x 2.x", "Arial", 28);
+    Label* pLabel = Label::createWithSystemFont("DragonBonesCPP for cocos2d-x 3.2", "Arial", 28);
     
     // position the label on the center of the screen
     pLabel->setPosition(VisibleRect::top(0, -20));
@@ -115,30 +114,28 @@ void DemoBase::onEnter()
     // add the label as a child to this layer
     this->addChild(pLabel, 1);
     
-    LabelTTF* label = LabelTTF::create(title().c_str(), "Arial", 24);
+    Label* label = Label::createWithSystemFont(title().c_str(), "Arial", 24);
     addChild(label, 1);
     label->setPosition(VisibleRect::top(0, -50));
     
     std::string strSubtitle = subtitle();
     if (!strSubtitle.empty())
     {
-        LabelTTF* l = LabelTTF::create(strSubtitle.c_str(), "Thonburi", 20);
+        Label* l = Label::createWithSystemFont(strSubtitle.c_str(), "Thonburi", 20);
         addChild(l, 1);
         l->setPosition(VisibleRect::top(0, -80));
     }
     
-    MenuItemImage *item1 = MenuItemImage::create("b1.png", "b2.png", this, menu_selector(DemoBase::backCallback));
-    MenuItemImage *item2 = MenuItemImage::create("r1.png", "r2.png", this, menu_selector(DemoBase::restartCallback));
-    MenuItemImage *item3 = MenuItemImage::create("f1.png", "f2.png", this, menu_selector(DemoBase::nextCallback));
-    MenuItemImage *pCloseItem = MenuItemImage::create(
-                                                          "CloseNormal.png",
-                                                          "CloseSelected.png",
-                                                          this,
-                                                          menu_selector(DemoBase::menuCloseCallback));
+    MenuItemImage *item1 = MenuItemImage::create("b1.png", "b2.png", CC_CALLBACK_1(DemoBase::backCallback, this));
+    MenuItemImage *item2 = MenuItemImage::create("r1.png", "r2.png", CC_CALLBACK_1(DemoBase::restartCallback, this));
+    MenuItemImage *item3 = MenuItemImage::create("f1.png", "f2.png", CC_CALLBACK_1(DemoBase::nextCallback, this));
+    MenuItemImage *pCloseItem = MenuItemImage::create("CloseNormal.png",
+                                                       "CloseSelected.png",
+                                                       CC_CALLBACK_1(DemoBase::menuCloseCallback, this));
     
-    CCMenu *menu = CCMenu::create(item1, item2, item3, pCloseItem, NULL);
+    Menu *menu = Menu::create(item1, item2, item3, pCloseItem, NULL);
     
-    menu->setPosition(CCPointZero);
+    menu->setPosition(Point());
     item1->setPosition(VisibleRect::bottom(-item2->getContentSize().width * 2, item2->getContentSize().height / 2));
     item2->setPosition(VisibleRect::bottom(0, item2->getContentSize().height / 2));
     item3->setPosition(VisibleRect::bottom(item2->getContentSize().width * 2, item2->getContentSize().height / 2));
@@ -149,27 +146,23 @@ void DemoBase::onEnter()
 
 void DemoBase::restartCallback(Ref* pSender)
 {
-    Scene* s = new Scene();
+    Scene* s = Scene::create();
     s->addChild(restartDBDemoAction());
-    
-    CCDirector::sharedDirector()->replaceScene(s);
-    s->release();
+    Director::getInstance()->replaceScene(s);
 }
 
 void DemoBase::nextCallback(Ref* pSender)
 {
-    Scene* s = new Scene();
+    Scene* s = Scene::create();
     s->addChild(nextDBDemoAction());
-    CCDirector::sharedDirector()->replaceScene(s);
-    s->release();
+    Director::getInstance()->replaceScene(s);
 }
 
 void DemoBase::backCallback(Ref* pSender)
 {
-    Scene* s = new Scene();
+    Scene* s = Scene::create();
     s->addChild(backDBDemoAction());
-    CCDirector::sharedDirector()->replaceScene(s);
-    s->release();
+    Director::getInstance()->replaceScene(s);
 }
 
 void DemoBase::menuCloseCallback(Ref* pSender)
@@ -177,7 +170,7 @@ void DemoBase::menuCloseCallback(Ref* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
     CCMessageBox("You pressed the close button. Windows Store Apps do not implement a close button.", "Alert");
 #else
-    CCDirector::sharedDirector()->end();
+    Director::getInstance()->end();
     exit(0);
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);

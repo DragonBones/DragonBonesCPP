@@ -6,14 +6,6 @@
 class DemoDragonBoy : public DemoBase
 {
 public:
-    static cocos2d::Scene* createScene()
-    {
-        auto scene = cocos2d::Scene::create();
-        auto layer = DemoDragonBoy::create();
-        scene->addChild(layer);
-        return scene;
-    }
-    
     CREATE_FUNC(DemoDragonBoy);
     
 private:

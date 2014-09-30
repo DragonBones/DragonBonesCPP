@@ -10,7 +10,7 @@ void VisibleRect::lazyInit()
         GLView* pEGLView = Director::getInstance()->getOpenGLView();
         s_visibleRect.origin = pEGLView->getVisibleOrigin();
         s_visibleRect.size = pEGLView->getVisibleSize();
-		_sSize = CCDirector::sharedDirector()->getWinSize();
+        _sSize = Director::getInstance()->getWinSize();
     }
 }
 

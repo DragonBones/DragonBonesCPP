@@ -10,6 +10,8 @@ USING_NS_CC;
 class DemoBase : public cocos2d::LayerColor
 {
 public:
+    static DemoBase* create(int index);
+
     virtual bool init();
     virtual std::string title();
     virtual std::string subtitle();

@@ -102,6 +102,12 @@
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.cpp">
       <Filter>dragonbones\renderer</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\VisibleRect.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\DemoBase.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -258,6 +264,9 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\DemoKnight.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\VisibleRect.h">
       <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>

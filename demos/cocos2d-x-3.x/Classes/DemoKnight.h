@@ -6,14 +6,6 @@
 class DemoKnight : public DemoBase
 {
 public:
-    static cocos2d::Scene* createScene()
-    {
-        auto scene = cocos2d::Scene::create();
-        auto layer = DemoKnight::create();
-        scene->addChild(layer);
-        return scene;
-    }
-    
     CREATE_FUNC(DemoKnight);
     
 private:
