@@ -36,13 +36,13 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2dx.props" />
-    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2d_headers.props" />
+    <Import Project="..\cocos2d\cocos\2d\cocos2dx.props" />
+    <Import Project="..\cocos2d\cocos\2d\cocos2d_headers.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2dx.props" />
-    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2d_headers.props" />
+    <Import Project="..\cocos2d\cocos\2d\cocos2dx.props" />
+    <Import Project="..\cocos2d\cocos\2d\cocos2d_headers.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -69,7 +69,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(EngineRoot)cocos;$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;..\..\..\dragonbones;..\..\..\renderer\cocos2d-x-3.x;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -102,7 +102,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;..\..\..\renderer\cocos2d-x-3.x;..\..\..\library;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -133,89 +133,24 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\dragonbones\animation\Animation.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\animation\AnimationState.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\animation\TimelineState.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\animation\WorldClock.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\core\Armature.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\core\Bone.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\core\Object.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\core\Slot.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\events\EventData.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\factories\BaseFactory.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\parsers\BaseDataParser.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\parsers\ConstValues.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\parsers\dbtinyxml2.cpp" />
-    <ClCompile Include="..\..\..\dragonbones\parsers\XMLDataParser.cpp" />
-    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmature.cpp" />
-    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmatureNode.cpp" />
-    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCFactory.cpp" />
-    <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\dragonbones\animation\Animation.h" />
-    <ClInclude Include="..\..\..\dragonbones\animation\AnimationState.h" />
-    <ClInclude Include="..\..\..\dragonbones\animation\IAnimatable.h" />
-    <ClInclude Include="..\..\..\dragonbones\animation\TimelineState.h" />
-    <ClInclude Include="..\..\..\dragonbones\animation\WorldClock.h" />
-    <ClInclude Include="..\..\..\dragonbones\core\Armature.h" />
-    <ClInclude Include="..\..\..\dragonbones\core\Bone.h" />
-    <ClInclude Include="..\..\..\dragonbones\core\Object.h" />
-    <ClInclude Include="..\..\..\dragonbones\core\Slot.h" />
-    <ClInclude Include="..\..\..\dragonbones\DragonBones.h" />
-    <ClInclude Include="..\..\..\dragonbones\DragonBonesHeaders.h" />
-    <ClInclude Include="..\..\..\dragonbones\events\EventData.h" />
-    <ClInclude Include="..\..\..\dragonbones\events\IEventDispatcher.h" />
-    <ClInclude Include="..\..\..\dragonbones\factories\BaseFactory.h" />
-    <ClInclude Include="..\..\..\dragonbones\geoms\ColorTransform.h" />
-    <ClInclude Include="..\..\..\dragonbones\geoms\Matrix.h" />
-    <ClInclude Include="..\..\..\dragonbones\geoms\Point.h" />
-    <ClInclude Include="..\..\..\dragonbones\geoms\Rectangle.h" />
-    <ClInclude Include="..\..\..\dragonbones\geoms\Transform.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\AnimationData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\ArmatureData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\BoneData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\DisplayData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\DragonBonesData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\EllipseData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\Frame.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\IAreaData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\RectangleData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\SkinData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\SlotData.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\Timeline.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\TransformFrame.h" />
-    <ClInclude Include="..\..\..\dragonbones\objects\TransformTimeline.h" />
-    <ClInclude Include="..\..\..\dragonbones\parsers\BaseDataParser.h" />
-    <ClInclude Include="..\..\..\dragonbones\parsers\ConstValues.h" />
-    <ClInclude Include="..\..\..\dragonbones\parsers\dbtinyxml2.h" />
-    <ClInclude Include="..\..\..\dragonbones\parsers\XMLDataParser.h" />
-    <ClInclude Include="..\..\..\dragonbones\textures\ITextureAtlas.h" />
-    <ClInclude Include="..\..\..\dragonbones\textures\TextureAtlasData.h" />
-    <ClInclude Include="..\..\..\dragonbones\textures\TextureData.h" />
-    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmature.h" />
-    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCArmatureNode.h" />
-    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCEventDispatcher.h" />
-    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCFactory.h" />
-    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCRenderHeaders.h" />
-    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.h" />
-    <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCTextureAtlas.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\DemoBase.h" />
-    <ClInclude Include="..\Classes\DemoDragonBoy.h" />
-    <ClInclude Include="..\Classes\DemoKnight.h" />
+    <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\cocos\2d\libcocos2d.vcxproj">
+    <ProjectReference Include="..\cocos2d\cocos\2d\cocos2d.vcxproj">
       <Project>{98a51ba8-fc3a-415b-ac8f-8c7bd464e93e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\cocos\audio\proj.win32\libcocosdenshion.vcxproj">
+    <ProjectReference Include="..\cocos2d\cocos\audio\proj.win32\CocosDenshion.vcxproj">
       <Project>{f8edd7fa-9a51-4e80-baeb-860825d2eac6}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\external\chipmunk\proj.win32\chipmunk.vcxproj">
+    <ProjectReference Include="..\cocos2d\external\chipmunk\proj.win32\chipmunk.vcxproj">
       <Project>{207bc7a9-ccf1-4f2f-a04d-45f72242ae25}</Project>
     </ProjectReference>
   </ItemGroup>
