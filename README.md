@@ -5,8 +5,11 @@ DragonBones C++ Library
 
 # Supported engines
 
-## [cocos2d-x][1]
+* [cocos2d-x][1]
 
-Please get the cocos2d-x source codes and copy them to [engines](engines/) directory.
+# Demos
+
+* [cocos2d-x-3.2][2]
 
 [1]: http://cocos2d-x.org
+[2]: demos/cocos2d-x-3.x/
