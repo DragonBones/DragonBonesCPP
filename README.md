@@ -7,9 +7,6 @@ DragonBones C++ Library
 
 ## [cocos2d-x][1]
 
-Please get the cocos2d-x source codes and copy them to **engines** directory.
+Please get the cocos2d-x source codes and copy them to [engines](engines/) directory.
 
-* For cocos2d-x 2.x: engines/cocos2d-x-2.x
-* For cocos2d-x 3.x: engines/cocos2d-x-3.x
-	
 [1]: http://cocos2d-x.org
