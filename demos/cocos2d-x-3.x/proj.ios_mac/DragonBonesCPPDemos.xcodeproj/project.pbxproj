@@ -65,6 +65,10 @@
 		D44C620E132DFF430009C878 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620D132DFF430009C878 /* AVFoundation.framework */; };
 		D44C6210132DFF4E0009C878 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620F132DFF4E0009C878 /* AudioToolbox.framework */; };
 		D6B0611B1803AB670077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B0611A1803AB670077942B /* CoreMotion.framework */; };
+		E564411719DABEE7003F4479 /* DemoBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E564411619DABEE7003F4479 /* DemoBase.cpp */; };
+		E564411819DABEE7003F4479 /* DemoBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E564411619DABEE7003F4479 /* DemoBase.cpp */; };
+		E564411C19DAC1D7003F4479 /* VisibleRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E564411A19DAC1D7003F4479 /* VisibleRect.cpp */; };
+		E564411D19DAC1D7003F4479 /* VisibleRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E564411A19DAC1D7003F4479 /* VisibleRect.cpp */; };
 		E5963F0A19DA91E600E93DAC /* armatures in Resources */ = {isa = PBXBuildFile; fileRef = E5963F0919DA91E600E93DAC /* armatures */; };
 		E5963F0B19DA91E600E93DAC /* armatures in Resources */ = {isa = PBXBuildFile; fileRef = E5963F0919DA91E600E93DAC /* armatures */; };
 		E5963F5019DA923200E93DAC /* Animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5963F1019DA923200E93DAC /* Animation.cpp */; };
@@ -298,6 +302,9 @@
 		D44C620D132DFF430009C878 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		D44C620F132DFF4E0009C878 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D6B0611A1803AB670077942B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
+		E564411619DABEE7003F4479 /* DemoBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DemoBase.cpp; path = ../Classes/DemoBase.cpp; sourceTree = "<group>"; };
+		E564411A19DAC1D7003F4479 /* VisibleRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VisibleRect.cpp; path = ../Classes/VisibleRect.cpp; sourceTree = "<group>"; };
+		E564411B19DAC1D7003F4479 /* VisibleRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VisibleRect.h; path = ../Classes/VisibleRect.h; sourceTree = "<group>"; };
 		E5963F0919DA91E600E93DAC /* armatures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = armatures; sourceTree = "<group>"; };
 		E5963F0C19DA922400E93DAC /* DemoBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DemoBase.h; path = ../Classes/DemoBase.h; sourceTree = "<group>"; };
 		E5963F0D19DA922400E93DAC /* DemoDragonBoy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DemoDragonBoy.h; path = ../Classes/DemoDragonBoy.h; sourceTree = "<group>"; };
@@ -436,22 +443,15 @@
 		15AA9C4015B7EC450033D6C2 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				E5963F7019DA923B00E93DAC /* renderer */,
+				E564411A19DAC1D7003F4479 /* VisibleRect.cpp */,
+				E564411B19DAC1D7003F4479 /* VisibleRect.h */,
+				E564411519DABB12003F4479 /* samples */,
 				E5963F0C19DA922400E93DAC /* DemoBase.h */,
-				E5963F0F19DA923200E93DAC /* animation */,
-				E5963F1919DA923200E93DAC /* core */,
-				E5963F2219DA923200E93DAC /* DragonBones.h */,
-				E5963F2319DA923200E93DAC /* DragonBonesHeaders.h */,
-				E5963F2419DA923200E93DAC /* events */,
-				E5963F2819DA923200E93DAC /* factories */,
-				E5963F2B19DA923200E93DAC /* geoms */,
-				E5963F3119DA923200E93DAC /* objects */,
-				E5963F4019DA923200E93DAC /* parsers */,
-				E5963F4C19DA923200E93DAC /* textures */,
 				E5963F0D19DA922400E93DAC /* DemoDragonBoy.h */,
 				E5963F0E19DA922400E93DAC /* DemoKnight.h */,
 				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
 				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
+				E564411619DABEE7003F4479 /* DemoBase.cpp */,
 			);
 			name = Classes;
 			path = ../classes;
@@ -488,6 +488,7 @@
 			children = (
 				1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */,
 				15AA9C4015B7EC450033D6C2 /* Classes */,
+				E564411219DAB69C003F4479 /* dragonbones */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				080E96DDFE201D6D7F000001 /* ios */,
 				503AE10617EB990700D1A890 /* mac */,
@@ -573,6 +574,31 @@
 			);
 			name = Resources;
 			path = ../Resources;
+			sourceTree = "<group>";
+		};
+		E564411219DAB69C003F4479 /* dragonbones */ = {
+			isa = PBXGroup;
+			children = (
+				E5963F0F19DA923200E93DAC /* animation */,
+				E5963F1919DA923200E93DAC /* core */,
+				E5963F2219DA923200E93DAC /* DragonBones.h */,
+				E5963F2319DA923200E93DAC /* DragonBonesHeaders.h */,
+				E5963F2419DA923200E93DAC /* events */,
+				E5963F2819DA923200E93DAC /* factories */,
+				E5963F2B19DA923200E93DAC /* geoms */,
+				E5963F3119DA923200E93DAC /* objects */,
+				E5963F4019DA923200E93DAC /* parsers */,
+				E5963F4C19DA923200E93DAC /* textures */,
+				E5963F7019DA923B00E93DAC /* renderer */,
+			);
+			name = dragonbones;
+			sourceTree = "<group>";
+		};
+		E564411519DABB12003F4479 /* samples */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = samples;
 			sourceTree = "<group>";
 		};
 		E5963F0F19DA923200E93DAC /* animation */ = {
@@ -707,6 +733,7 @@
 				E5963F7B19DA924C00E93DAC /* DBCCTextureAtlas.h */,
 			);
 			name = renderer;
+			path = ../classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -915,6 +942,7 @@
 			files = (
 				E5963F6419DA923200E93DAC /* BaseDataParser.cpp in Sources */,
 				E5963F6019DA923200E93DAC /* EventData.cpp in Sources */,
+				E564411719DABEE7003F4479 /* DemoBase.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
 				E5963F6819DA923200E93DAC /* dbtinyxml2.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
@@ -932,6 +960,7 @@
 				503AE10117EB989F00D1A890 /* main.m in Sources */,
 				E5963F8019DA924C00E93DAC /* DBCCFactory.cpp in Sources */,
 				E5963F7C19DA924C00E93DAC /* DBCCArmature.cpp in Sources */,
+				E564411C19DAC1D7003F4479 /* VisibleRect.cpp in Sources */,
 				E5963F5219DA923200E93DAC /* AnimationState.cpp in Sources */,
 				E5963F5019DA923200E93DAC /* Animation.cpp in Sources */,
 				E5963F5A19DA923200E93DAC /* Bone.cpp in Sources */,
@@ -950,6 +979,8 @@
 				E5963F6719DA923200E93DAC /* ConstValues.cpp in Sources */,
 				E5963F5719DA923200E93DAC /* WorldClock.cpp in Sources */,
 				E5963F5B19DA923200E93DAC /* Bone.cpp in Sources */,
+				E564411D19DAC1D7003F4479 /* VisibleRect.cpp in Sources */,
+				E564411819DABEE7003F4479 /* DemoBase.cpp in Sources */,
 				E5963F7F19DA924C00E93DAC /* DBCCArmatureNode.cpp in Sources */,
 				503AE10517EB98FF00D1A890 /* main.cpp in Sources */,
 				E5963F5119DA923200E93DAC /* Animation.cpp in Sources */,
