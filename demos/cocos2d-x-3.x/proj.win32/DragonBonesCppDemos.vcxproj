@@ -153,7 +153,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCFactory.cpp" />
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\DemoBase.cpp" />
+    <ClCompile Include="..\Classes\examples\DemoBase.cpp" />
+    <ClCompile Include="..\Classes\examples\DemoKnight.cpp" />
     <ClCompile Include="..\Classes\VisibleRect.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -206,9 +207,9 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.h" />
     <ClInclude Include="..\..\..\renderer\cocos2d-x-3.x\DBCCTextureAtlas.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\DemoBase.h" />
-    <ClInclude Include="..\Classes\DemoDragonBoy.h" />
-    <ClInclude Include="..\Classes\DemoKnight.h" />
+    <ClInclude Include="..\Classes\examples\DemoBase.h" />
+    <ClInclude Include="..\Classes\examples\DemoDragonBoy.h" />
+    <ClInclude Include="..\Classes\examples\DemoKnight.h" />
     <ClInclude Include="..\Classes\VisibleRect.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>

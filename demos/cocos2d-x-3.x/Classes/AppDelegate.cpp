@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "DemoBase.h"
+#include "examples/DemoBase.h"
 
 USING_NS_CC;
 
@@ -26,7 +26,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
 
-    auto layer = DemoBase::create(0);
+    auto layer = DemoBase::create(1);
     // create a scene. it's an autorelease object
     Scene* scene = Scene::create();
     scene->addChild(layer);

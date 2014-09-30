@@ -3,7 +3,7 @@
 #ifndef __DRAGON_DEMO_ENTRY__
 #define __DRAGON_DEMO_ENTRY__
 
-#include "example/DragonBonesDemo.h"
+#include "examples/DragonBonesDemo.h"
 
 class DragonDemoEntry : public DragonBonesDemo
 {

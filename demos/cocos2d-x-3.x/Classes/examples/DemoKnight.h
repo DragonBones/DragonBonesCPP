@@ -7,6 +7,8 @@ class DemoKnight : public DemoBase
 {
 public:
     CREATE_FUNC(DemoKnight);
+    DemoKnight();
+    ~DemoKnight();
     
 private:
     dragonBones::DBCCArmature *_armature;
