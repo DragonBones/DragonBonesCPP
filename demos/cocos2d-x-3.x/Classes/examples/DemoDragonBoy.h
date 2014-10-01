@@ -6,6 +6,8 @@
 class DemoDragonBoy : public DemoBase
 {
 public:
+    virtual std::string title();
+    virtual std::string subtitle();
 private:
     dragonBones::DBCCArmature *_armature;
     

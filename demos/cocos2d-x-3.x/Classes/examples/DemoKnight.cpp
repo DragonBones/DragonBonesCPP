@@ -1,18 +1,28 @@
 #include "DemoKnight.h"
 
-DemoKnight::DemoKnight()
-: _armature(nullptr)
-, _armArmature(nullptr)
-{
+//DemoKnight::DemoKnight()
+//: _armature(nullptr)
+//, _armArmature(nullptr)
+//{
+//
+//}
+//
+//DemoKnight::~DemoKnight()
+//{
+//   //_armature->dispose();
+//   //_armarmature->dispose();
+//   //cc_safe_delete(_armature);
+//   //cc_safe_delete(_armarmature);
+//}
 
+std::string DemoKnight::title()
+{
+    return "Knight Demo";
 }
 
-DemoKnight::~DemoKnight()
+std::string DemoKnight::subtitle()
 {
-   //_armature->dispose();
-   //_armarmature->dispose();
-   //cc_safe_delete(_armature);
-   //cc_safe_delete(_armarmature);
+    return "Press W / A / D to move.Press S to upgrade weapon.\nPress SPACE to switch weapons.Press K to attack.";
 }
 
 void DemoKnight::demoInit()
@@ -57,11 +67,6 @@ void DemoKnight::demoInit()
     _hitCount = 1;
     //
     updateAnimation();
-    // info
-    auto label = cocos2d::Label::createWithSystemFont("Knight Demo: Press W/A/D to move. Press S to upgrade weapon.\nPress SPACE to switch weapons. Press K to attack.", "Arial", 20);
-    label->setPosition(40, 560);
-    label->setAnchorPoint(cocos2d::Point(0, 0));
-    this->addChild(label);
 }
 
 void DemoKnight::updateHandler(float passTime)
@@ -71,39 +76,60 @@ void DemoKnight::updateHandler(float passTime)
     updateArrows();
 }
 
-//void DemoKnight::keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
-//{
-//    switch (keyCode)
-//    {
-//    case cocos2d::EventKeyboard::KeyCode::KEY_W:
-//    case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
-//        jump();
-//        break;
-//
-//    case cocos2d::EventKeyboard::KeyCode::KEY_S:
-//    case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-//        upgradeWeaponLevel();
-//        break;
-//
-//    case cocos2d::EventKeyboard::KeyCode::KEY_A:
-//    case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-//        move(-1, true);
-//        break;
-//
-//    case cocos2d::EventKeyboard::KeyCode::KEY_D:
-//    case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-//        move(1, true);
-//        break;
-//
-//    case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
-//        changeWeapon();
-//        break;
-//
-//    case cocos2d::EventKeyboard::KeyCode::KEY_K:
-//        attack();
-//        break;
-//    }
-//}
+void DemoKnight::keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
+{
+    switch (keyCode)
+    {
+    case cocos2d::EventKeyboard::KeyCode::KEY_W:
+    case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+    case cocos2d::EventKeyboard::KeyCode::KEY_S:
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_A:
+    case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+        move(-1, false);
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_D:
+    case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+        move(1, false);
+        break;
+    }
+}
+
+void DemoKnight::keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
+{
+    switch (keyCode)
+    {
+    case cocos2d::EventKeyboard::KeyCode::KEY_W:
+    case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
+        jump();
+        break;
+
+    case cocos2d::EventKeyboard::KeyCode::KEY_S:
+    case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+        upgradeWeaponLevel();
+        break;
+
+    case cocos2d::EventKeyboard::KeyCode::KEY_A:
+    case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+        move(-1, true);
+        break;
+
+    case cocos2d::EventKeyboard::KeyCode::KEY_D:
+    case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+        move(1, true);
+        break;
+
+    case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
+        changeWeapon();
+        break;
+
+    case cocos2d::EventKeyboard::KeyCode::KEY_K:
+        attack();
+        break;
+    }
+}
 
 void DemoKnight::jump()
 {

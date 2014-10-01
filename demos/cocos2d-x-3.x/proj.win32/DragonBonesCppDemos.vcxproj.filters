@@ -114,6 +114,9 @@
     <ClCompile Include="..\Classes\examples\DemoDragonBoy.cpp">
       <Filter>Classes\examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\examples\DemoKnight.cpp">
+      <Filter>Classes\examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">

@@ -1,5 +1,16 @@
 #include "examples\DemoDragonBoy.h"
 
+std::string DemoDragonBoy::title()
+{
+    return "DragonBoy Demo";
+}
+
+std::string DemoDragonBoy::subtitle()
+{
+    return "Press W/S/A/D to move.\nPress SPACE to switch clothes.";
+
+}
+
 void DemoDragonBoy::demoInit()
 {
     // factory
@@ -44,11 +55,6 @@ void DemoDragonBoy::demoInit()
     _clothesList.push_back("parts/clothes4");
     //
     updateAnimation();
-    // info
-    auto label = cocos2d::Label::createWithSystemFont("DragonBoy Demo: Press W/S/A/D to move.\nPress SPACE to switch clothes.", "Arial", 20);
-    label->setPosition(40, 560);
-    label->setAnchorPoint(cocos2d::Point(0, 0));
-    this->addChild(label);
 }
 
 void DemoDragonBoy::updateHandler(float passTime)
