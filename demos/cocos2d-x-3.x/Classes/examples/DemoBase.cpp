@@ -21,12 +21,25 @@ DemoBase* backDBDemoAction();
 DemoBase* restartDBDemoAction();
 
 typedef DemoBase* (*NEW_DB_DEMO_FUNC)();
-#define DBDEMO_CREATE_FUNC(className) \
-static DemoBase* create##className() \
-{ return new className(); }
+#define DBDEMO_CREATE_FUNC(__TYPE__) \
+static DemoBase* create##__TYPE__() \
+{ \
+    DemoBase *pRet = new __TYPE__(); \
+    if (pRet && pRet->init()) \
+    { \
+        pRet->autorelease(); \
+        return pRet; \
+    } \
+        else \
+    { \
+        delete pRet; \
+        pRet = nullptr; \
+        return nullptr; \
+    } \
+}
 
-DBDEMO_CREATE_FUNC(DemoDragonBoy)
-DBDEMO_CREATE_FUNC(DemoKnight)
+DBDEMO_CREATE_FUNC(DemoDragonBoy);
+DBDEMO_CREATE_FUNC(DemoKnight);
 //DBDEMO_CREATE_FUNC(DragonDemoEntry);
 //DBDEMO_CREATE_FUNC(DragonSwitchClothes);
 //DBDEMO_CREATE_FUNC(DragonChaseStarling);
@@ -48,8 +61,6 @@ DemoBase* nextDBDemoAction()
     sceneIdx = sceneIdx % MAX_LAYER;
     
     DemoBase* pLayer = (createFunctions[sceneIdx])();
-    pLayer->autorelease();
-    
     return pLayer;
 }
 
@@ -61,21 +72,18 @@ DemoBase* backDBDemoAction()
         sceneIdx += total;
     
     DemoBase* pLayer = (createFunctions[sceneIdx])();
-    pLayer->autorelease();
-    
     return pLayer;
 }
 
 DemoBase* restartDBDemoAction()
 {
     DemoBase* pLayer = (createFunctions[sceneIdx<0 ? 0 : sceneIdx])();
-    pLayer->autorelease();
     return pLayer;
 }
+
 DemoBase* DemoBase::create(int index)
 {
     DemoBase* pLayer = (createFunctions[index])();
-    pLayer->autorelease();
     sceneIdx = index;
     return pLayer;
 }
@@ -92,7 +100,7 @@ std::string DemoBase::subtitle()
 
 bool DemoBase::init()
 {
-    if (!cocos2d::LayerColor::initWithColor(cocos2d::Color4B(128, 128, 128, 255)))
+    if (!LayerColor::initWithColor(cocos2d::Color4B(128, 128, 128, 255)))
     {
         return false;
     }
@@ -104,7 +112,7 @@ bool DemoBase::init()
 
 void DemoBase::onEnter()
 {
-    Layer::onEnter();
+    LayerColor::onEnter();
     
     Label* pLabel = Label::createWithSystemFont("DragonBonesCPP for cocos2d-x 3.2", "Arial", 28);
     

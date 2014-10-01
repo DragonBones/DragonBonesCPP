@@ -154,7 +154,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\..\..\renderer\cocos2d-x-3.x\DBCCSlot.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\examples\DemoBase.cpp" />
-    <ClCompile Include="..\Classes\examples\DemoKnight.cpp" />
+    <ClCompile Include="..\Classes\examples\DemoDragonBoy.cpp" />
     <ClCompile Include="..\Classes\VisibleRect.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
