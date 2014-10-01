@@ -5,7 +5,7 @@ Demos
 
 The refactoring branch does **NOT** support cocos2d-x-2.x currently. 
 
-You can see the [dev branch][1] for cocos2d-x=2.x support.
+You can see the [dev branch][1] for cocos2d-x-2.x support.
 
 # cocos2d-x 3.x 
 
