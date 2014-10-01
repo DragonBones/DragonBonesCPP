@@ -1,7 +1,7 @@
 ﻿#ifndef __DEMO_KNIGHT_H__
 #define __DEMO_KNIGHT_H__
 
-#include "DemoBase.h"
+#include "Demo.h"
 
 class DemoKnight : public DemoBase
 {

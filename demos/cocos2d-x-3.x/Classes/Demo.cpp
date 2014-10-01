@@ -6,10 +6,10 @@
 //
 //
 
-#include "DemoBase.h"
+#include "Demo.h"
 
-#include "DemoDragonBoy.h"
-#include "DemoKnight.h"
+#include "examples/DemoDragonBoy.h"
+#include "examples/DemoKnight.h"
 //#include "example/DragonDemoEntry.h"
 //#include "example/DragonSwitchClothes.h"
 //#include "example/DragonChaseStarling.h"
