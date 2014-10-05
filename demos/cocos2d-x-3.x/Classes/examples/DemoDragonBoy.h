@@ -1,5 +1,5 @@
-﻿#ifndef __DEMO_DRAGON_BOY_H__
-#define __DEMO_DRAGON_BOY_H__
+﻿#ifndef DEMO_DRAGON_BOY_H
+#define DEMO_DRAGON_BOY_H
 
 #include "Demo.h"
 
@@ -44,4 +44,4 @@ private:
     void updateSpeed();
     void fallEndFadeOutCompleteHandler(cocos2d::EventCustom *event);
 };
-#endif  // __DEMO_DRAGON_BOY_H__
+#endif  // DEMO_DRAGON_BOY_H

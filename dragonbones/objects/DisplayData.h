@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_DISPLAY_DATA_H__
-#define __OBJECTS_DISPLAY_DATA_H__
+﻿#ifndef OBJECTS_DISPLAY_DATA_H
+#define OBJECTS_DISPLAY_DATA_H
 
 #include "../DragonBones.h"
 #include "../geoms/Point.h"
@@ -35,4 +35,4 @@ public:
     virtual ~DisplayData() {}
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_DISPLAY_DATA_H__
+#endif  // OBJECTS_DISPLAY_DATA_H

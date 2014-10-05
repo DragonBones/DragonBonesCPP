@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_TRANSFORM_TIMELINE_H__
-#define __OBJECTS_TRANSFORM_TIMELINE_H__
+﻿#ifndef OBJECTS_TRANSFORM_TIMELINE_H
+#define OBJECTS_TRANSFORM_TIMELINE_H
 
 #include "../DragonBones.h"
 #include "../geoms/Point.h"
@@ -50,4 +50,4 @@ public:
     }
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_TRANSFORM_TIMELINE_H__
+#endif  // OBJECTS_TRANSFORM_TIMELINE_H

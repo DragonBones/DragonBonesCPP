@@ -1,5 +1,5 @@
-﻿#ifndef __DEMO_KNIGHT_H__
-#define __DEMO_KNIGHT_H__
+﻿#ifndef DEMO_KNIGHT_H
+#define DEMO_KNIGHT_H
 
 #include "Demo.h"
 
@@ -58,4 +58,4 @@ private:
     void updateArrows();    
     void updateSpeed();
 };
-#endif  // __DEMO_KNIGHT_H__
+#endif  // DEMO_KNIGHT_H
