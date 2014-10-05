@@ -1,5 +1,20 @@
 #include "examples\DemoDragonBoy.h"
 
+DemoDragonBoy::DemoDragonBoy()
+: _armature(nullptr)
+{
+
+}
+
+DemoDragonBoy::~DemoDragonBoy()
+{
+    Director::getInstance()->getScheduler()->unscheduleUpdate(this);
+    dragonBones::WorldClock::clock.remove(_armature);
+    _armature->dispose();
+
+    CC_SAFE_DELETE(_armature);
+}
+
 std::string DemoDragonBoy::title()
 {
     return "DragonBoy Demo";
@@ -8,14 +23,13 @@ std::string DemoDragonBoy::title()
 std::string DemoDragonBoy::subtitle()
 {
     return "Press W/S/A/D to move.\nPress SPACE to switch clothes.";
-
 }
 
 void DemoDragonBoy::demoInit()
 {
     // factory
-    dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/DragonBoy/skeleton.xml");
-    dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/DragonBoy/texture.xml");
+    dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/DragonBoy/skeleton.xml", "DragonBoy");
+    dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/DragonBoy/texture.xml", "DragonBoy");
     // armature
     _armature = (dragonBones::DBCCArmature*)(dragonBones::DBCCFactory::factory.buildArmature("dragonBoy"));
     _armature->getCCDisplay()->setPosition(480.f, 200.f);
@@ -55,9 +69,10 @@ void DemoDragonBoy::demoInit()
     _clothesList.push_back("parts/clothes4");
     //
     updateAnimation();
+    Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
 }
 
-void DemoDragonBoy::updateHandler(float passTime)
+void DemoDragonBoy::update(float passTime)
 {
     updateSpeed();
     dragonBones::WorldClock::clock.advanceTime(passTime);

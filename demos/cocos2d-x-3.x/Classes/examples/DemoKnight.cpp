@@ -1,19 +1,21 @@
 #include "DemoKnight.h"
 
-//DemoKnight::DemoKnight()
-//: _armature(nullptr)
-//, _armArmature(nullptr)
-//{
-//
-//}
-//
-//DemoKnight::~DemoKnight()
-//{
-//   //_armature->dispose();
-//   //_armarmature->dispose();
-//   //cc_safe_delete(_armature);
-//   //cc_safe_delete(_armarmature);
-//}
+DemoKnight::DemoKnight()
+: _armature(nullptr)
+, _armArmature(nullptr)
+{
+
+}
+
+DemoKnight::~DemoKnight()
+{
+    Director::getInstance()->getScheduler()->unscheduleUpdate(this);
+    dragonBones::WorldClock::clock.remove(_armature);
+    _armArmature->dispose();
+    _armature->dispose();
+    
+   CC_SAFE_DELETE(_armature);
+}
 
 std::string DemoKnight::title()
 {
@@ -23,6 +25,13 @@ std::string DemoKnight::title()
 std::string DemoKnight::subtitle()
 {
     return "Press W / A / D to move.Press S to upgrade weapon.\nPress SPACE to switch weapons.Press K to attack.";
+}
+
+void DemoKnight::update(float dt)
+{
+    updateSpeed();
+    dragonBones::WorldClock::clock.advanceTime(dt);
+    updateArrows();
 }
 
 void DemoKnight::demoInit()
@@ -68,13 +77,8 @@ void DemoKnight::demoInit()
     _hitCount = 1;
     //
     updateAnimation();
-}
-
-void DemoKnight::updateHandler(float passTime)
-{
-    updateSpeed();
-    dragonBones::WorldClock::clock.advanceTime(passTime);
-    updateArrows();
+    cocos2d::Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
+    //cocos2d::Director::getInstance()->getScheduler()->schedule(schedule_selector(DemoKnight::updateHandler), this, 0, false);
 }
 
 void DemoKnight::keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)

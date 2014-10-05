@@ -7,8 +7,12 @@ class DemoDragonBoy : public DemoBase
 {
 public:
     CREATE_FUNC(DemoDragonBoy);
+    DemoDragonBoy();
+    ~DemoDragonBoy();
     virtual std::string title();
     virtual std::string subtitle();
+    virtual void update(float dt) override;
+
 private:
     dragonBones::DBCCArmature *_armature;
     
@@ -25,7 +29,6 @@ private:
     
 protected:
     virtual void demoInit() override;    
-    virtual void updateHandler(float passTime) override;
     
 private:
     cocos2d::EventListener *_fallEndFadeOutListener;

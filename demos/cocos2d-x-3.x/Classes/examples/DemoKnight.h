@@ -7,10 +7,11 @@ class DemoKnight : public DemoBase
 {
 public:
     CREATE_FUNC(DemoKnight);
-    //DemoKnight();
-    //~DemoKnight();
+    DemoKnight();
+    ~DemoKnight();
     virtual std::string title();
     virtual std::string subtitle();
+    virtual void update(float dt) override;
     
 private:
     dragonBones::DBCCArmature *_armature;
@@ -34,14 +35,12 @@ private:
     
 protected:
     virtual void demoInit() override;    
-    virtual void updateHandler(float passTime) override;
 private:
 
     inline std::string getWeaponName(const std::string &name, int level)
     {
         char weapon[512];
         sprintf(weapon, "knightFolder/%s_%d", name.c_str(), level);
-        CCLOG("getWeaponNAme:%s", weapon);
         return std::string(weapon);
     }
 

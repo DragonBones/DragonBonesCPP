@@ -24,7 +24,6 @@ public:
     
 protected:
     virtual void demoInit() = 0;
-    virtual void updateHandler(float passTime) = 0;
     std::string    m_strTitle;
     
     
