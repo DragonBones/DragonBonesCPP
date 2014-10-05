@@ -1,5 +1,5 @@
-﻿#ifndef __DEMO_KNIGHT_H__
-#define __DEMO_KNIGHT_H__
+﻿#ifndef DEMO_KNIGHT_H
+#define DEMO_KNIGHT_H
 
 #include "Demo.h"
 
@@ -7,10 +7,11 @@ class DemoKnight : public DemoBase
 {
 public:
     CREATE_FUNC(DemoKnight);
-    //DemoKnight();
-    //~DemoKnight();
+    DemoKnight();
+    ~DemoKnight();
     virtual std::string title();
     virtual std::string subtitle();
+    virtual void update(float dt) override;
     
 private:
     dragonBones::DBCCArmature *_armature;
@@ -34,8 +35,15 @@ private:
     
 protected:
     virtual void demoInit() override;    
-    virtual void updateHandler(float passTime) override;
 private:
+
+    inline std::string getWeaponName(const std::string &name, int level)
+    {
+        char weapon[512];
+        sprintf(weapon, "knightFolder/%s_%d", name.c_str(), level);
+        return std::string(weapon);
+    }
+
     virtual void keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);    
     virtual void keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);    
     void jump();    
@@ -50,4 +58,4 @@ private:
     void updateArrows();    
     void updateSpeed();
 };
-#endif  // __DEMO_KNIGHT_H__
+#endif  // DEMO_KNIGHT_H

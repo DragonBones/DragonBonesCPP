@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_SLOT_DATA_H__
-#define __OBJECTS_SLOT_DATA_H__
+﻿#ifndef OBJECTS_SLOT_DATA_H
+#define OBJECTS_SLOT_DATA_H
 
 #include "../DragonBones.h"
 #include "DisplayData.h"
@@ -67,4 +67,4 @@ public:
     }
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_SLOT_DATA_H__
+#endif  // OBJECTS_SLOT_DATA_H

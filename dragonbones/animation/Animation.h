@@ -1,5 +1,5 @@
-﻿#ifndef __ANIMATION_ANIMATION_H__
-#define __ANIMATION_ANIMATION_H__
+﻿#ifndef ANIMATION_ANIMATION_H
+#define ANIMATION_ANIMATION_H
 
 #include "../DragonBones.h"
 #include "../objects/AnimationData.h"
@@ -89,4 +89,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(Animation);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __ANIMATION_ANIMATION_H__
+#endif  // ANIMATION_ANIMATION_H

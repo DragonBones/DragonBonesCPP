@@ -1,5 +1,5 @@
-﻿#ifndef __DEMO_BASE_H__
-#define __DEMO_BASE_H__
+﻿#ifndef DEMO_BASE_H
+#define DEMO_BASE_H
 
 #include "cocos2d.h"
 #include "VisibleRect.h"
@@ -24,9 +24,8 @@ public:
     
 protected:
     virtual void demoInit() = 0;
-    virtual void updateHandler(float passTime) = 0;
     std::string    m_strTitle;
     
     
 };
-#endif  // __DEMO_BASE_H__
+#endif  // DEMO_BASE_H

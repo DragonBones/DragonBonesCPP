@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_FRAME_H__
-#define __OBJECTS_FRAME_H__
+﻿#ifndef OBJECTS_FRAME_H
+#define OBJECTS_FRAME_H
 
 #include "../DragonBones.h"
 
@@ -60,4 +60,4 @@ public:
     }
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_FRAME_H__
+#endif  // OBJECTS_FRAME_H

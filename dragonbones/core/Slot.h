@@ -1,5 +1,5 @@
-﻿#ifndef __CORE_SLOT_H__
-#define __CORE_SLOT_H__
+﻿#ifndef CORE_SLOT_H
+#define CORE_SLOT_H
 
 #include "../DragonBones.h"
 #include "Object.h"
@@ -79,4 +79,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(Slot);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __CORE_SLOT_H__
+#endif  // CORE_SLOT_H

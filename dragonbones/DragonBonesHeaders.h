@@ -1,5 +1,5 @@
-﻿#ifndef __DRAGON_BONES_HEADERS_H__
-#define __DRAGON_BONES_HEADERS_H__
+﻿#ifndef DRAGON_BONES_HEADERS_H
+#define DRAGON_BONES_HEADERS_H
 
 #include "DragonBones.h"
 
@@ -55,4 +55,4 @@
 // factories
 #include "factories/BaseFactory.h"
 
-#endif  // __DRAGON_BONES_HEADERS_H__
+#endif  // DRAGON_BONES_HEADERS_H

@@ -1,5 +1,5 @@
-﻿#ifndef __DRAGON_BONES_H__
-#define __DRAGON_BONES_H__
+﻿#ifndef DRAGON_BONES_H
+#define DRAGON_BONES_H
 
 #include <algorithm>
 #include <string>
@@ -179,4 +179,4 @@ inline BlendMode getBlendModeByString(String blendMode)
 
 NAME_SPACE_DRAGON_BONES_END
 
-#endif  // __DRAGON_BONES_H__
+#endif  // DRAGON_BONES_H

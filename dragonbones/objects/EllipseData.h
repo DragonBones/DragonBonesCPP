@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_ELLIPSE_DATA_H__
-#define __OBJECTS_ELLIPSE_DATA_H__
+﻿#ifndef OBJECTS_ELLIPSE_DATA_H
+#define OBJECTS_ELLIPSE_DATA_H
 
 #include "../DragonBones.h"
 #include "../geoms/Point.h"
@@ -42,4 +42,4 @@ public:
     virtual void dispose() {}
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_ELLIPSE_DATA_H__
+#endif  // OBJECTS_ELLIPSE_DATA_H

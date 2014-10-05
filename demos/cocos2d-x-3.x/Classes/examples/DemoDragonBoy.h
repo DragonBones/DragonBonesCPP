@@ -1,13 +1,18 @@
-﻿#ifndef __DEMO_DRAGON_BOY_H__
-#define __DEMO_DRAGON_BOY_H__
+﻿#ifndef DEMO_DRAGON_BOY_H
+#define DEMO_DRAGON_BOY_H
 
 #include "Demo.h"
 
 class DemoDragonBoy : public DemoBase
 {
 public:
+    CREATE_FUNC(DemoDragonBoy);
+    DemoDragonBoy();
+    ~DemoDragonBoy();
     virtual std::string title();
     virtual std::string subtitle();
+    virtual void update(float dt) override;
+
 private:
     dragonBones::DBCCArmature *_armature;
     
@@ -24,7 +29,6 @@ private:
     
 protected:
     virtual void demoInit() override;    
-    virtual void updateHandler(float passTime) override;
     
 private:
     cocos2d::EventListener *_fallEndFadeOutListener;
@@ -40,4 +44,4 @@ private:
     void updateSpeed();
     void fallEndFadeOutCompleteHandler(cocos2d::EventCustom *event);
 };
-#endif  // __DEMO_DRAGON_BOY_H__
+#endif  // DEMO_DRAGON_BOY_H

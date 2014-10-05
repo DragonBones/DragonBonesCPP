@@ -1,19 +1,21 @@
 #include "DemoKnight.h"
 
-//DemoKnight::DemoKnight()
-//: _armature(nullptr)
-//, _armArmature(nullptr)
-//{
-//
-//}
-//
-//DemoKnight::~DemoKnight()
-//{
-//   //_armature->dispose();
-//   //_armarmature->dispose();
-//   //cc_safe_delete(_armature);
-//   //cc_safe_delete(_armarmature);
-//}
+DemoKnight::DemoKnight()
+: _armature(nullptr)
+, _armArmature(nullptr)
+{
+
+}
+
+DemoKnight::~DemoKnight()
+{
+    Director::getInstance()->getScheduler()->unscheduleUpdate(this);
+    dragonBones::WorldClock::clock.remove(_armature);
+    _armArmature->dispose();
+    _armature->dispose();
+    
+   CC_SAFE_DELETE(_armature);
+}
 
 std::string DemoKnight::title()
 {
@@ -25,11 +27,19 @@ std::string DemoKnight::subtitle()
     return "Press W / A / D to move.Press S to upgrade weapon.\nPress SPACE to switch weapons.Press K to attack.";
 }
 
+void DemoKnight::update(float dt)
+{
+    updateSpeed();
+    dragonBones::WorldClock::clock.advanceTime(dt);
+    updateArrows();
+}
+
 void DemoKnight::demoInit()
 {
     // factory
-    dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/Knight/skeleton.xml");
-    dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/Knight/texture.xml");
+    dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/Knight/skeleton.xml", "Knight");
+    dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/Knight/texture.xml", "Knight");
+
     // armature
     _armature = (dragonBones::DBCCArmature*)(dragonBones::DBCCFactory::factory.buildArmature("knight"));
     _armArmature = _armature->getCCSlot("armOutside")->getCCChildArmature();
@@ -67,13 +77,8 @@ void DemoKnight::demoInit()
     _hitCount = 1;
     //
     updateAnimation();
-}
-
-void DemoKnight::updateHandler(float passTime)
-{
-    updateSpeed();
-    dragonBones::WorldClock::clock.advanceTime(passTime);
-    updateArrows();
+    cocos2d::Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
+    //cocos2d::Director::getInstance()->getScheduler()->schedule(schedule_selector(DemoKnight::updateHandler), this, 0, false);
 }
 
 void DemoKnight::keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
@@ -232,6 +237,7 @@ void DemoKnight::upgradeWeaponLevel()
     _weaponLevelList[_weaponIndex] = weaponLevel;
     const std::string &weaponName = _weaponList[_weaponIndex];
 
+    int newWeaponLevel = weaponLevel + 1;
     switch (_weaponIndex)
     {
     case 0:
@@ -239,9 +245,7 @@ void DemoKnight::upgradeWeaponLevel()
     case 2:
     {
         dragonBones::DBCCSlot *weaponSlot = _armArmature->getCCSlot("weapon");
-        char weaponTextureName[512];
-        sprintf(weaponTextureName, "knightFolder/%s_%d", weaponName.c_str(), weaponLevel + 1);
-        weaponSlot->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(weaponTextureName));
+        weaponSlot->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
         break;
     }
 
@@ -252,18 +256,10 @@ void DemoKnight::upgradeWeaponLevel()
         dragonBones::DBCCSlot *bowBB = bowSlot->getCCChildArmature()->getCCSlot("bb");
         dragonBones::DBCCSlot *bowArrow = bowSlot->getCCChildArmature()->getCCSlot("arrow");
         dragonBones::DBCCSlot *bowArrowB = bowSlot->getCCChildArmature()->getCCSlot("arrowBackup");
-        char bowBATextureName[512];
-        sprintf(bowBATextureName, "knightFolder/%s_%d", weaponName.c_str(), weaponLevel + 1);
-        bowBA->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(bowBATextureName));
-        char bowBBextureName[512];
-        sprintf(bowBBextureName, "knightFolder/%s_%d", weaponName.c_str(), weaponLevel + 1);
-        bowBB->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(bowBBextureName));
-        char bowATextureName[512];
-        sprintf(bowATextureName, "knightFolder/arrow_%d", weaponLevel + 1);
-        bowArrow->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(bowATextureName));
-        char bowABTextureName[512];
-        sprintf(bowABTextureName, "knightFolder/arrow_%d", weaponLevel + 1);
-        bowArrowB->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(bowABTextureName));
+        bowBA->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
+        bowBB->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
+        bowArrow->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName("arrow", newWeaponLevel)));
+        bowArrowB->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName("arrow", newWeaponLevel)));
         break;
     }
     }
@@ -362,7 +358,7 @@ void DemoKnight::armAnimationHandler(cocos2d::EventCustom *event)
 
 void DemoKnight::createArrow(float r, const cocos2d::Point &point)
 {
-    cocos2d::Node *arrowNode = static_cast<cocos2d::Node*>(dragonBones::DBCCFactory::factory.getTextureDisplay("knightFolder/arrow_1"));
+    cocos2d::Node *arrowNode = static_cast<cocos2d::Node*>(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName("arrow", 1)));
     arrowNode->setPosition(point);
     arrowNode->setRotation(CC_RADIANS_TO_DEGREES(r));
     cocos2d::Point *speedPoint = new cocos2d::Point();

@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_I_AREA_DATA_H__
-#define __OBJECTS_I_AREA_DATA_H__
+﻿#ifndef OBJECTS_I_AREA_DATA_H
+#define OBJECTS_I_AREA_DATA_H
 
 #include "../DragonBones.h"
 
@@ -31,4 +31,4 @@ public:
     virtual void dispose() = 0;
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_I_AREA_DATA_H__
+#endif  // OBJECTS_I_AREA_DATA_H
