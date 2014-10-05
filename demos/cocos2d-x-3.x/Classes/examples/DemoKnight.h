@@ -36,6 +36,15 @@ protected:
     virtual void demoInit() override;    
     virtual void updateHandler(float passTime) override;
 private:
+
+    inline std::string getWeaponName(const std::string &name, int level)
+    {
+        char weapon[512];
+        sprintf(weapon, "knightFolder/%s_%d", name.c_str(), level);
+        CCLOG("getWeaponNAme:%s", weapon);
+        return std::string(weapon);
+    }
+
     virtual void keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);    
     virtual void keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);    
     void jump();    

@@ -6,6 +6,7 @@ const std::map<String, DragonBonesData*>& BaseFactory::getDragonBonesDataMap() c
 {
     return _dragonBonesDataMap;
 }
+
 const std::map<String, ITextureAtlas*>& BaseFactory::getTextureAtlasMap() const
 {
     return _textureAtlasMap;
@@ -16,6 +17,7 @@ BaseFactory::BaseFactory()
     autoSearchDragonBonesData = false;
     autoSearchTexture = false;
 }
+
 BaseFactory::~BaseFactory()
 {
     dispose();
@@ -34,6 +36,7 @@ DragonBonesData* BaseFactory::getDragonBonesData(const String &name) const
         return nullptr;
     }
 }
+
 void BaseFactory::addDragonBonesData(DragonBonesData *data, const String &name)
 {
     if (!data)
@@ -55,9 +58,10 @@ void BaseFactory::addDragonBonesData(DragonBonesData *data, const String &name)
         // throw
         throw std::runtime_error("Data has been added.");
     }
-    
+
     _dragonBonesDataMap[key] = data;
 }
+
 void BaseFactory::removeDragonBonesData(const String &name, bool disposeData)
 {
     auto iterator = _dragonBonesDataMap.find(name);
@@ -111,6 +115,7 @@ void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const String &nam
     
     _textureAtlasMap[key] = textureAtlas;
 }
+
 void BaseFactory::removeTextureAtlas(const String &name, bool disposeData)
 {
     auto iterator = _textureAtlasMap.find(name);
@@ -152,10 +157,12 @@ Armature* BaseFactory::buildArmature(const String &armatureName) const
 {
     return buildArmature(armatureName, "", armatureName, "", "");
 }
+
 Armature* BaseFactory::buildArmature(const String &armatureName, const String &dragonBonesName) const
 {
     return buildArmature(armatureName, "", armatureName, dragonBonesName, dragonBonesName);
 }
+
 Armature* BaseFactory::buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const
 {
     DragonBonesData *dragonBonesData = nullptr;

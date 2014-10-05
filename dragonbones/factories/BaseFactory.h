@@ -1,5 +1,5 @@
-﻿#ifndef __FACTORIES_BASE_FACTORY_H__
-#define __FACTORIES_BASE_FACTORY_H__
+﻿#ifndef FACTORIES_BASE_FACTORY_H
+#define FACTORIES_BASE_FACTORY_H
 
 #include "../DragonBones.h"
 #include "../objects/ArmatureData.h"
@@ -60,4 +60,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(BaseFactory);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif // __FACTORIES_BASE_FACTORY_H__
+#endif // FACTORIES_BASE_FACTORY_H

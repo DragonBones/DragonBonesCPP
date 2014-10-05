@@ -6,6 +6,7 @@
 class DemoDragonBoy : public DemoBase
 {
 public:
+    CREATE_FUNC(DemoDragonBoy);
     virtual std::string title();
     virtual std::string subtitle();
 private:

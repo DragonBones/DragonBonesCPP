@@ -24,18 +24,7 @@ typedef DemoBase* (*NEW_DB_DEMO_FUNC)();
 #define DBDEMO_CREATE_FUNC(__TYPE__) \
 static DemoBase* create##__TYPE__() \
 { \
-    DemoBase *pRet = new __TYPE__(); \
-    if (pRet && pRet->init()) \
-    { \
-        pRet->autorelease(); \
-        return pRet; \
-    } \
-        else \
-    { \
-        delete pRet; \
-        pRet = nullptr; \
-        return nullptr; \
-    } \
+    return __TYPE__::create(); \
 }
 
 DBDEMO_CREATE_FUNC(DemoDragonBoy);
