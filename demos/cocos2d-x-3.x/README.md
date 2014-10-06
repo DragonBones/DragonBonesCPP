@@ -5,3 +5,4 @@ Pleae make a `cocos2d/` directory and put cocos2d-3.2 source code in it. The ref
 
 * DragonBoy
 * Knight
+* Chase Starling
