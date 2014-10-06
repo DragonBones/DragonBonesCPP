@@ -28,12 +28,16 @@ private:
     std::vector<std::string> _clothesList;
     
 protected:
-    virtual void demoInit() override;    
+    virtual void demoInit() override;
+    virtual void addInteraction() override;
     
 private:
-    cocos2d::EventListener *_fallEndFadeOutListener;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+    cocos2d::EventListenerKeyboard *_keyboardListener;
     virtual void keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);
     virtual void keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);
+#endif
+    cocos2d::EventListener *_fallEndFadeOutListener;
     
     void eventHandler(cocos2d::EventCustom *event);
     void jump();   

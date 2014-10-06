@@ -34,9 +34,14 @@ private:
     std::vector<cocos2d::Node*> _arrowList;
     
 protected:
-    virtual void demoInit() override;    
+    virtual void demoInit() override;
+    virtual void addInteraction() override;
 private:
-
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+    cocos2d::EventListenerKeyboard *_keyboardListener;
+    virtual void keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);
+    virtual void keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);
+#endif
     inline std::string getWeaponName(const std::string &name, int level)
     {
         char weapon[512];
@@ -44,8 +49,6 @@ private:
         return std::string(weapon);
     }
 
-    virtual void keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);    
-    virtual void keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);    
     void jump();    
     void move(int dir, bool isDown);    
     void armReady();    

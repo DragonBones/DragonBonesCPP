@@ -24,8 +24,6 @@ public:
     
 protected:
     virtual void demoInit() = 0;
-    std::string    m_strTitle;
-    
-    
+    virtual void addInteraction() = 0;
 };
 #endif  // DEMO_BASE_H
