@@ -2,12 +2,25 @@
 
 DemoDragonBoy::DemoDragonBoy()
 : _armature(nullptr)
+, _fallEndFadeOutListener(nullptr)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+, _keyboardListener(nullptr)
+#endif
 {
 
 }
 
 DemoDragonBoy::~DemoDragonBoy()
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+    this->getEventDispatcher()->removeEventListener(_keyboardListener);
+    _keyboardListener = nullptr;
+#endif
+    if (_fallEndFadeOutListener)
+    {
+        _armature->getCCEventDispatcher()->removeEventListener(_fallEndFadeOutListener);
+        _fallEndFadeOutListener = nullptr;
+    }
     Director::getInstance()->getScheduler()->unscheduleUpdate(this);
     dragonBones::WorldClock::clock.remove(_armature);
     _armature->dispose();
@@ -22,7 +35,11 @@ std::string DemoDragonBoy::title()
 
 std::string DemoDragonBoy::subtitle()
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
     return "Press W/S/A/D to move.\nPress SPACE to switch clothes.";
+#else
+    return "";
+#endif
 }
 
 void DemoDragonBoy::demoInit()
@@ -38,22 +55,19 @@ void DemoDragonBoy::demoInit()
     // update
     dragonBones::WorldClock::clock.add(_armature);
     // event
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::BONE_FRAME_EVENT, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN_COMPLETE, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT_COMPLETE, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::START, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::COMPLETE, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::LOOP_COMPLETE, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::SOUND, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::Z_ORDER_UPDATED, std::bind(&DemoDragonBoy::eventHandler, this, std::placeholders::_1));
-    // key
-    cocos2d::EventListenerKeyboard *listener = cocos2d::EventListenerKeyboard::create();
-    listener->onKeyPressed = std::bind(&DemoDragonBoy::keyPressHandler, this, std::placeholders::_1, std::placeholders::_2);
-    listener->onKeyReleased = std::bind(&DemoDragonBoy::keyReleaseHandler, this, std::placeholders::_1, std::placeholders::_2);
-    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::BONE_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::START, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::LOOP_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::SOUND, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::Z_ORDER_UPDATED, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    // interaction
+    addInteraction();
     //
     _isLeft = false;
     _isRight = false;
@@ -72,12 +86,45 @@ void DemoDragonBoy::demoInit()
     Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
 }
 
+void DemoDragonBoy::addInteraction()
+{
+    // key
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+    _keyboardListener = cocos2d::EventListenerKeyboard::create();
+    _keyboardListener->onKeyPressed = CC_CALLBACK_2(DemoDragonBoy::keyPressHandler, this);
+    _keyboardListener->onKeyReleased = CC_CALLBACK_2(DemoDragonBoy::keyReleaseHandler, this);
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(_keyboardListener, this);
+#else
+    std::vector<MenuItemFont*> items({
+        MenuItemFont::create("Move Left", std::bind([](DemoDragonBoy* ref){ref->squat(false); ref->move(ref->_moveDir, false); ref->move(-1, true); }, this)),
+        MenuItemFont::create("Move Right", std::bind([](DemoDragonBoy* ref){ref->squat(false); ref->move(ref->_moveDir, false); ref->move(1, true); }, this)),
+        MenuItemFont::create("Stop", std::bind([](DemoDragonBoy* ref){ref->squat(false); ref->move(ref->_moveDir, false); }, this)),
+        MenuItemFont::create("Jump", std::bind([](DemoDragonBoy* ref){ref->squat(false); ref->jump(); }, this)),
+        MenuItemFont::create("Squat", std::bind([](DemoDragonBoy* ref){ref->squat(true); }, this)),
+        MenuItemFont::create("Change Clothes", std::bind([](DemoDragonBoy* ref){ref->changeClothe(); }, this))
+    });
+
+    Menu *menu = Menu::create();
+    for (auto i = 0; i < items.size(); ++i)
+    {
+        items[i]->setAnchorPoint(Point(0,0));
+        menu->addChild(items[i], 0, i);
+    }
+
+    menu->setPosition(VisibleRect::left(10, 0));
+    menu->alignItemsVertically();
+
+    this->addChild(menu);
+#endif
+}
+
 void DemoDragonBoy::update(float passTime)
 {
     updateSpeed();
     dragonBones::WorldClock::clock.advanceTime(passTime);
 }
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 void DemoDragonBoy::keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
 {
     switch (keyCode)
@@ -132,14 +179,15 @@ void DemoDragonBoy::keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, c
         break;
     }
 }
+#endif
 
 void DemoDragonBoy::eventHandler(cocos2d::EventCustom *event)
 {
-    dragonBones::EventData *eventData = (dragonBones::EventData*)(event->getUserData());
+    dragonBones::EventData *eventData = static_cast<dragonBones::EventData*>(event->getUserData());
 
     if (eventData->animationState)
     {
-        cocos2d::log("Animation name: %s, Event type: %s",
+        CCLOG("Animation name: %s, Event type: %s",
             eventData->animationState->name.c_str(),
             eventData->getStringType().c_str()
             );
@@ -290,7 +338,7 @@ void DemoDragonBoy::updateSpeed()
             _speedX = 0.f;
             _fallEndFadeOutListener = _armature->getCCEventDispatcher()->addCustomEventListener(
                 dragonBones::EventData::FADE_OUT_COMPLETE,
-                std::bind(&DemoDragonBoy::fallEndFadeOutCompleteHandler, this, std::placeholders::_1)
+                CC_CALLBACK_1(DemoDragonBoy::fallEndFadeOutCompleteHandler, this)
                 );
             _armature->getAnimation()->gotoAndPlay("fallEnd");
         }

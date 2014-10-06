@@ -3,12 +3,19 @@
 DemoKnight::DemoKnight()
 : _armature(nullptr)
 , _armArmature(nullptr)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+, _keyboardListener(nullptr)
+#endif
 {
 
 }
 
 DemoKnight::~DemoKnight()
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+    this->getEventDispatcher()->removeEventListener(_keyboardListener);
+    _keyboardListener = nullptr;
+#endif
     Director::getInstance()->getScheduler()->unscheduleUpdate(this);
     dragonBones::WorldClock::clock.remove(_armature);
     _armArmature->dispose();
@@ -24,7 +31,11 @@ std::string DemoKnight::title()
 
 std::string DemoKnight::subtitle()
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
     return "Press W / A / D to move.Press S to upgrade weapon.\nPress SPACE to switch weapons.Press K to attack.";
+#else
+    return "";
+#endif
 }
 
 void DemoKnight::update(float dt)
@@ -52,10 +63,7 @@ void DemoKnight::demoInit()
     // update
     dragonBones::WorldClock::clock.add(_armature);
     // key
-    cocos2d::EventListenerKeyboard *listener = cocos2d::EventListenerKeyboard::create();
-    listener->onKeyPressed = std::bind(&DemoKnight::keyPressHandler, this, std::placeholders::_1, std::placeholders::_2);
-    listener->onKeyReleased = std::bind(&DemoKnight::keyReleaseHandler, this, std::placeholders::_1, std::placeholders::_2);
-    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+    addInteraction();
     //
     _isLeft = false;
     _isRight = false;
@@ -78,9 +86,41 @@ void DemoKnight::demoInit()
     //
     updateAnimation();
     cocos2d::Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
-    //cocos2d::Director::getInstance()->getScheduler()->schedule(schedule_selector(DemoKnight::updateHandler), this, 0, false);
 }
 
+void DemoKnight::addInteraction()
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+    _keyboardListener = cocos2d::EventListenerKeyboard::create();
+    _keyboardListener->onKeyPressed = CC_CALLBACK_2(DemoKnight::keyPressHandler, this);
+    _keyboardListener->onKeyReleased = CC_CALLBACK_2(DemoKnight::keyReleaseHandler, this);
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(_keyboardListener, this);
+#else
+    std::vector<MenuItemFont*> items({
+        MenuItemFont::create("Move Left", std::bind([](DemoKnight* ref){ref->move(ref->_moveDir, false); ref->move(-1, true); }, this)),
+        MenuItemFont::create("Move Right", std::bind([](DemoKnight* ref){ref->move(ref->_moveDir, false); ref->move(1, true); }, this)),
+        MenuItemFont::create("Stop", std::bind([](DemoKnight* ref){ ref->move(ref->_moveDir, false); }, this)),
+        MenuItemFont::create("Jump", std::bind([](DemoKnight* ref){ref->jump(); }, this)),
+        MenuItemFont::create("Change Weapon", std::bind([](DemoKnight* ref){ref->changeWeapon(); }, this)),
+        MenuItemFont::create("Update Weapon Level", std::bind([](DemoKnight* ref){ref->upgradeWeaponLevel(); }, this)),
+        MenuItemFont::create("Attack", std::bind([](DemoKnight* ref){ref->attack(); }, this))
+    });
+
+    Menu *menu = Menu::create();
+    for (auto i = 0; i < items.size(); ++i)
+    {
+        items[i]->setAnchorPoint(Point(0, 0));
+        menu->addChild(items[i], 0, i);
+    }
+
+    menu->setPosition(VisibleRect::left(10, 0));
+    menu->alignItemsVertically();
+
+    this->addChild(menu);
+#endif
+}
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 void DemoKnight::keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
 {
     switch (keyCode)
@@ -135,6 +175,7 @@ void DemoKnight::keyPressHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2
         break;
     }
 }
+#endif
 
 void DemoKnight::jump()
 {
