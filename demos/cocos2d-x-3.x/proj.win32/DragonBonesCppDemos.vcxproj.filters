@@ -117,6 +117,9 @@
     <ClCompile Include="..\Classes\Demo.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\examples\DemoChaseStarling.cpp">
+      <Filter>Classes\examples</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Demo.h">
       <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\examples\DemoChaseStarling.h">
+      <Filter>Classes\examples</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,9 +10,7 @@
 
 #include "examples/DemoDragonBoy.h"
 #include "examples/DemoKnight.h"
-//#include "example/DragonDemoEntry.h"
-//#include "example/DragonSwitchClothes.h"
-//#include "example/DragonChaseStarling.h"
+#include "examples/DemoChaseStarling.h"
 
 static int sceneIdx = 0;
 
@@ -29,17 +27,13 @@ static DemoBase* create##__TYPE__() \
 
 DBDEMO_CREATE_FUNC(DemoDragonBoy);
 DBDEMO_CREATE_FUNC(DemoKnight);
-//DBDEMO_CREATE_FUNC(DragonDemoEntry);
-//DBDEMO_CREATE_FUNC(DragonSwitchClothes);
-//DBDEMO_CREATE_FUNC(DragonChaseStarling);
+DBDEMO_CREATE_FUNC(DemoChaseStarling);
 
 static NEW_DB_DEMO_FUNC createFunctions[] =
 {
     createDemoDragonBoy,
     createDemoKnight,
-//    createDragonDemoEntry,
-//    createDragonSwitchClothes,
-//    createDragonChaseStarling,
+    createDemoChaseStarling,
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
