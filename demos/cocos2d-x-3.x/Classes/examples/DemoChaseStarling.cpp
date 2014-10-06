@@ -29,12 +29,12 @@ DemoChaseStarling::~DemoChaseStarling()
 
 std::string DemoChaseStarling::title()
 {
-    return "Dragon Chase Starling";
+    return "Chase Starling";
 }
 
 std::string DemoChaseStarling::subtitle()
 {
-    return "Please touch screen.";
+    return "Please touch the screen.";
 }
 
 void DemoChaseStarling::demoInit()
@@ -46,19 +46,10 @@ void DemoChaseStarling::demoInit()
     // armature
     _armature = (dragonBones::DBCCArmature*)(dragonBones::DBCCFactory::factory.buildArmature("Dragon"));
     _armature->getCCDisplay()->setPosition(VisibleRect::bottom(0, _footY));
+    _armature->getCCDisplay()->setContentSize(Size(360, 400));
     this->addChild(_armature->getCCDisplay());
     // update
-
     dragonBones::WorldClock::clock.add(_armature);
-    //_db = CCDragonBones::create("dragon/skeleton.xml", "dragon/texture.xml", "Dragon", "Dragon", "");
-    //this->addChild(_db, 0);
-    //_db->setPosition(VisibleRect::bottom(0, _footY));
-    //_db->gotoAndPlay("stand");
-    //_db->setContentSize(CCSizeMake(360, 400));
-
-    //CCLOG("getDisplay %s", typeid(_db->getArmature()->getDisplay()).raw_name());
-    //CCLOG("SIZE %f", _db->getDisplayNode()->getContentSize());
-    CCLOG("SIZE %f", _armature->getCCDisplay()->getContentSize().width);
 
     _starlingBird = Sprite::create("starling.png");
     _starlingBird->setPosition(VisibleRect::left(20, 0));
@@ -69,10 +60,6 @@ void DemoChaseStarling::demoInit()
     _armL = _armature->getBone("armUpperL");
 
     addInteraction();
-
-    //CocosNode* node = static_cast<CocosNode*>(_db->getArmature()->getDisplay());
-    //CCAtlasNode* an = static_cast<CCAtlasNode*>(node->getNode());
-    //an->setOpacity(100);
     Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
 }
 
@@ -81,6 +68,7 @@ void DemoChaseStarling::addInteraction()
     auto touchListener = EventListenerTouchOneByOne::create();
     touchListener->onTouchBegan = CC_CALLBACK_2(DemoChaseStarling::touchBeganListener, this);
     touchListener->onTouchMoved = CC_CALLBACK_2(DemoChaseStarling::touchMovedListener, this);
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
 }
 
 void DemoChaseStarling::update(float dt)
@@ -100,7 +88,7 @@ bool DemoChaseStarling::touchBeganListener(Touch *pTouche, Event *pEvent)
         _isChasing = true;
         this->scheduleUpdate();
     }
-    CCLOG("ccTouchBegan, %.2f, %.2f", loc.x, loc.y);
+    CCLOG("%s, %.2f, %.2f", __FUNCTION__, loc.x, loc.y);
     return true;
 }
 
@@ -108,7 +96,7 @@ void DemoChaseStarling::touchMovedListener(Touch *pTouch, Event *pEvent)
 {
     Point loc = pTouch->getLocation();
     updatePosition(loc);
-    CCLOG("ccTouchMoved, %.2f, %.2f", loc.x, loc.y);
+    CCLOG("%s, %.2f, %.2f", __FUNCTION__, loc.x, loc.y);
 }
 
 void DemoChaseStarling::updatePosition(Point& point)
@@ -139,11 +127,12 @@ void DemoChaseStarling::checkDistance()
 void DemoChaseStarling::updateBones()
 {
     //update the bones' pos or rotation
-    _r = M_PI + atan2(_armature->getCCDisplay()->getPositionY() + _armature->getCCDisplay()->getContentSize().height / 2 - _touchY, 
+    Size csize = _armature->getCCDisplay()->getContentSize();
+    _r = M_PI + atan2(_armature->getCCDisplay()->getPositionY() + csize.height / 2 - _touchY, 
         _touchX - _armature->getCCDisplay()->getPositionX());
     if (_r > M_PI)
     {
-        _r -= M_PI * 2;
+        _r -= float(M_PI * 2);
     }
     
     _head->offset.setRotation(_r*0.3);
