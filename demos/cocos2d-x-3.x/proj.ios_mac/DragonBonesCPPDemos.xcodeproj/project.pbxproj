@@ -65,10 +65,30 @@
 		D44C620E132DFF430009C878 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620D132DFF430009C878 /* AVFoundation.framework */; };
 		D44C6210132DFF4E0009C878 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620F132DFF4E0009C878 /* AudioToolbox.framework */; };
 		D6B0611B1803AB670077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B0611A1803AB670077942B /* CoreMotion.framework */; };
-		E564411719DABEE7003F4479 /* DemoBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E564411619DABEE7003F4479 /* DemoBase.cpp */; };
-		E564411819DABEE7003F4479 /* DemoBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E564411619DABEE7003F4479 /* DemoBase.cpp */; };
 		E564411C19DAC1D7003F4479 /* VisibleRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E564411A19DAC1D7003F4479 /* VisibleRect.cpp */; };
 		E564411D19DAC1D7003F4479 /* VisibleRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E564411A19DAC1D7003F4479 /* VisibleRect.cpp */; };
+		E57424DB19E37C5800D18603 /* DemoChaseStarling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E57424D519E37C5800D18603 /* DemoChaseStarling.cpp */; };
+		E57424DC19E37C5800D18603 /* DemoChaseStarling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E57424D519E37C5800D18603 /* DemoChaseStarling.cpp */; };
+		E57424DD19E37C5800D18603 /* DemoDragonBoy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E57424D719E37C5800D18603 /* DemoDragonBoy.cpp */; };
+		E57424DE19E37C5800D18603 /* DemoDragonBoy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E57424D719E37C5800D18603 /* DemoDragonBoy.cpp */; };
+		E57424DF19E37C5800D18603 /* DemoKnight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E57424D919E37C5800D18603 /* DemoKnight.cpp */; };
+		E57424E019E37C5800D18603 /* DemoKnight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E57424D919E37C5800D18603 /* DemoKnight.cpp */; };
+		E57424E319E37C6600D18603 /* Demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E57424E119E37C6600D18603 /* Demo.cpp */; };
+		E57424E419E37C6600D18603 /* Demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E57424E119E37C6600D18603 /* Demo.cpp */; };
+		E57424EC19E37D7800D18603 /* b1.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E519E37D7800D18603 /* b1.png */; };
+		E57424ED19E37D7800D18603 /* b1.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E519E37D7800D18603 /* b1.png */; };
+		E57424EE19E37D7800D18603 /* b2.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E619E37D7800D18603 /* b2.png */; };
+		E57424EF19E37D7800D18603 /* b2.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E619E37D7800D18603 /* b2.png */; };
+		E57424F019E37D7800D18603 /* f1.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E719E37D7800D18603 /* f1.png */; };
+		E57424F119E37D7800D18603 /* f1.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E719E37D7800D18603 /* f1.png */; };
+		E57424F219E37D7800D18603 /* f2.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E819E37D7800D18603 /* f2.png */; };
+		E57424F319E37D7800D18603 /* f2.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E819E37D7800D18603 /* f2.png */; };
+		E57424F419E37D7800D18603 /* r1.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E919E37D7800D18603 /* r1.png */; };
+		E57424F519E37D7800D18603 /* r1.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424E919E37D7800D18603 /* r1.png */; };
+		E57424F619E37D7800D18603 /* r2.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424EA19E37D7800D18603 /* r2.png */; };
+		E57424F719E37D7800D18603 /* r2.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424EA19E37D7800D18603 /* r2.png */; };
+		E57424F819E37D7800D18603 /* starling.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424EB19E37D7800D18603 /* starling.png */; };
+		E57424F919E37D7800D18603 /* starling.png in Resources */ = {isa = PBXBuildFile; fileRef = E57424EB19E37D7800D18603 /* starling.png */; };
 		E5963F0A19DA91E600E93DAC /* armatures in Resources */ = {isa = PBXBuildFile; fileRef = E5963F0919DA91E600E93DAC /* armatures */; };
 		E5963F0B19DA91E600E93DAC /* armatures in Resources */ = {isa = PBXBuildFile; fileRef = E5963F0919DA91E600E93DAC /* armatures */; };
 		E5963F5019DA923200E93DAC /* Animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5963F1019DA923200E93DAC /* Animation.cpp */; };
@@ -302,13 +322,24 @@
 		D44C620D132DFF430009C878 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		D44C620F132DFF4E0009C878 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D6B0611A1803AB670077942B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
-		E564411619DABEE7003F4479 /* DemoBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DemoBase.cpp; path = ../Classes/DemoBase.cpp; sourceTree = "<group>"; };
 		E564411A19DAC1D7003F4479 /* VisibleRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VisibleRect.cpp; path = ../Classes/VisibleRect.cpp; sourceTree = "<group>"; };
 		E564411B19DAC1D7003F4479 /* VisibleRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VisibleRect.h; path = ../Classes/VisibleRect.h; sourceTree = "<group>"; };
+		E57424D519E37C5800D18603 /* DemoChaseStarling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DemoChaseStarling.cpp; sourceTree = "<group>"; };
+		E57424D619E37C5800D18603 /* DemoChaseStarling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoChaseStarling.h; sourceTree = "<group>"; };
+		E57424D719E37C5800D18603 /* DemoDragonBoy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DemoDragonBoy.cpp; sourceTree = "<group>"; };
+		E57424D819E37C5800D18603 /* DemoDragonBoy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoDragonBoy.h; sourceTree = "<group>"; };
+		E57424D919E37C5800D18603 /* DemoKnight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DemoKnight.cpp; sourceTree = "<group>"; };
+		E57424DA19E37C5800D18603 /* DemoKnight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoKnight.h; sourceTree = "<group>"; };
+		E57424E119E37C6600D18603 /* Demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Demo.cpp; path = ../Classes/Demo.cpp; sourceTree = "<group>"; };
+		E57424E219E37C6600D18603 /* Demo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Demo.h; path = ../Classes/Demo.h; sourceTree = "<group>"; };
+		E57424E519E37D7800D18603 /* b1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = b1.png; sourceTree = "<group>"; };
+		E57424E619E37D7800D18603 /* b2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = b2.png; sourceTree = "<group>"; };
+		E57424E719E37D7800D18603 /* f1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = f1.png; sourceTree = "<group>"; };
+		E57424E819E37D7800D18603 /* f2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = f2.png; sourceTree = "<group>"; };
+		E57424E919E37D7800D18603 /* r1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = r1.png; sourceTree = "<group>"; };
+		E57424EA19E37D7800D18603 /* r2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = r2.png; sourceTree = "<group>"; };
+		E57424EB19E37D7800D18603 /* starling.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = starling.png; sourceTree = "<group>"; };
 		E5963F0919DA91E600E93DAC /* armatures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = armatures; sourceTree = "<group>"; };
-		E5963F0C19DA922400E93DAC /* DemoBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DemoBase.h; path = ../Classes/DemoBase.h; sourceTree = "<group>"; };
-		E5963F0D19DA922400E93DAC /* DemoDragonBoy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DemoDragonBoy.h; path = ../Classes/DemoDragonBoy.h; sourceTree = "<group>"; };
-		E5963F0E19DA922400E93DAC /* DemoKnight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DemoKnight.h; path = ../Classes/DemoKnight.h; sourceTree = "<group>"; };
 		E5963F1019DA923200E93DAC /* Animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Animation.cpp; sourceTree = "<group>"; };
 		E5963F1119DA923200E93DAC /* Animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Animation.h; sourceTree = "<group>"; };
 		E5963F1219DA923200E93DAC /* AnimationState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimationState.cpp; sourceTree = "<group>"; };
@@ -443,15 +474,13 @@
 		15AA9C4015B7EC450033D6C2 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				E57424E119E37C6600D18603 /* Demo.cpp */,
+				E57424E219E37C6600D18603 /* Demo.h */,
+				E57424D419E37C5800D18603 /* examples */,
 				E564411A19DAC1D7003F4479 /* VisibleRect.cpp */,
 				E564411B19DAC1D7003F4479 /* VisibleRect.h */,
-				E564411519DABB12003F4479 /* samples */,
-				E5963F0C19DA922400E93DAC /* DemoBase.h */,
-				E5963F0D19DA922400E93DAC /* DemoDragonBoy.h */,
-				E5963F0E19DA922400E93DAC /* DemoKnight.h */,
 				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
 				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
-				E564411619DABEE7003F4479 /* DemoBase.cpp */,
 			);
 			name = Classes;
 			path = ../classes;
@@ -486,8 +515,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */,
 				15AA9C4015B7EC450033D6C2 /* Classes */,
+				1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */,
 				E564411219DAB69C003F4479 /* dragonbones */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				080E96DDFE201D6D7F000001 /* ios */,
@@ -568,6 +597,13 @@
 		78C7DDAA14EBA5050085D0C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E57424E519E37D7800D18603 /* b1.png */,
+				E57424E619E37D7800D18603 /* b2.png */,
+				E57424E719E37D7800D18603 /* f1.png */,
+				E57424E819E37D7800D18603 /* f2.png */,
+				E57424E919E37D7800D18603 /* r1.png */,
+				E57424EA19E37D7800D18603 /* r2.png */,
+				E57424EB19E37D7800D18603 /* starling.png */,
 				E5963F0919DA91E600E93DAC /* armatures */,
 				1AFAF8B916D35E4900DB1158 /* CloseNormal.png */,
 				1AFAF8BA16D35E4900DB1158 /* CloseSelected.png */,
@@ -594,11 +630,18 @@
 			name = dragonbones;
 			sourceTree = "<group>";
 		};
-		E564411519DABB12003F4479 /* samples */ = {
+		E57424D419E37C5800D18603 /* examples */ = {
 			isa = PBXGroup;
 			children = (
+				E57424D519E37C5800D18603 /* DemoChaseStarling.cpp */,
+				E57424D619E37C5800D18603 /* DemoChaseStarling.h */,
+				E57424D719E37C5800D18603 /* DemoDragonBoy.cpp */,
+				E57424D819E37C5800D18603 /* DemoDragonBoy.h */,
+				E57424D919E37C5800D18603 /* DemoKnight.cpp */,
+				E57424DA19E37C5800D18603 /* DemoKnight.h */,
 			);
-			name = samples;
+			name = examples;
+			path = ../Classes/examples;
 			sourceTree = "<group>";
 		};
 		E5963F0F19DA923200E93DAC /* animation */ = {
@@ -900,21 +943,28 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E57424EC19E37D7800D18603 /* b1.png in Resources */,
 				5087E78117EB970100C73F5D /* Icon-120.png in Resources */,
+				E57424F019E37D7800D18603 /* f1.png in Resources */,
 				5087E78617EB970100C73F5D /* Icon-76.png in Resources */,
 				5087E77F17EB970100C73F5D /* Default@2x.png in Resources */,
+				E57424F619E37D7800D18603 /* r2.png in Resources */,
+				E57424F219E37D7800D18603 /* f2.png in Resources */,
 				50EF629917ECD46A001EB2F8 /* Icon-100.png in Resources */,
 				1AFAF8BC16D35E4900DB1158 /* CloseNormal.png in Resources */,
 				5087E78317EB970100C73F5D /* Icon-152.png in Resources */,
 				5087E77D17EB970100C73F5D /* Default-568h@2x.png in Resources */,
+				E57424F819E37D7800D18603 /* starling.png in Resources */,
 				5087E78517EB970100C73F5D /* Icon-72.png in Resources */,
 				1AFAF8BD16D35E4900DB1158 /* CloseSelected.png in Resources */,
+				E57424F419E37D7800D18603 /* r1.png in Resources */,
 				50EF62A317ECD613001EB2F8 /* Icon-50.png in Resources */,
 				5087E78017EB970100C73F5D /* Icon-114.png in Resources */,
 				50EF62A217ECD613001EB2F8 /* Icon-29.png in Resources */,
 				50EF629617ECD46A001EB2F8 /* Icon-40.png in Resources */,
 				5087E78217EB970100C73F5D /* Icon-144.png in Resources */,
 				50EF629817ECD46A001EB2F8 /* Icon-80.png in Resources */,
+				E57424EE19E37D7800D18603 /* b2.png in Resources */,
 				5087E78417EB970100C73F5D /* Icon-57.png in Resources */,
 				E5963F0A19DA91E600E93DAC /* armatures in Resources */,
 				5087E77E17EB970100C73F5D /* Default.png in Resources */,
@@ -926,8 +976,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E57424ED19E37D7800D18603 /* b1.png in Resources */,
+				E57424F319E37D7800D18603 /* f2.png in Resources */,
+				E57424F119E37D7800D18603 /* f1.png in Resources */,
+				E57424F519E37D7800D18603 /* r1.png in Resources */,
+				E57424EF19E37D7800D18603 /* b2.png in Resources */,
+				E57424F719E37D7800D18603 /* r2.png in Resources */,
 				E5963F0B19DA91E600E93DAC /* armatures in Resources */,
 				5087E75317EB910900C73F5D /* CloseNormal.png in Resources */,
+				E57424F919E37D7800D18603 /* starling.png in Resources */,
 				503AE0F817EB97AB00D1A890 /* Icon.icns in Resources */,
 				5087E75417EB910900C73F5D /* CloseSelected.png in Resources */,
 			);
@@ -940,18 +997,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E57424E319E37C6600D18603 /* Demo.cpp in Sources */,
 				E5963F6419DA923200E93DAC /* BaseDataParser.cpp in Sources */,
 				E5963F6019DA923200E93DAC /* EventData.cpp in Sources */,
-				E564411719DABEE7003F4479 /* DemoBase.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
+				E57424DB19E37C5800D18603 /* DemoChaseStarling.cpp in Sources */,
 				E5963F6819DA923200E93DAC /* dbtinyxml2.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
 				E5963F8219DA924C00E93DAC /* DBCCSlot.cpp in Sources */,
+				E57424DF19E37C5800D18603 /* DemoKnight.cpp in Sources */,
 				E5963F5C19DA923200E93DAC /* Object.cpp in Sources */,
 				E5963F6A19DA923200E93DAC /* XMLDataParser.cpp in Sources */,
 				E5963F5E19DA923200E93DAC /* Slot.cpp in Sources */,
 				E5963F5819DA923200E93DAC /* Armature.cpp in Sources */,
 				E5963F6619DA923200E93DAC /* ConstValues.cpp in Sources */,
+				E57424DD19E37C5800D18603 /* DemoDragonBoy.cpp in Sources */,
 				E5963F5419DA923200E93DAC /* TimelineState.cpp in Sources */,
 				E5963F5619DA923200E93DAC /* WorldClock.cpp in Sources */,
 				E5963F7E19DA924C00E93DAC /* DBCCArmatureNode.cpp in Sources */,
@@ -975,24 +1035,27 @@
 				E5963F5919DA923200E93DAC /* Armature.cpp in Sources */,
 				E5963F5319DA923200E93DAC /* AnimationState.cpp in Sources */,
 				E5963F6319DA923200E93DAC /* BaseFactory.cpp in Sources */,
+				E57424E419E37C6600D18603 /* Demo.cpp in Sources */,
 				5087E75717EB910900C73F5D /* AppDelegate.cpp in Sources */,
 				E5963F6719DA923200E93DAC /* ConstValues.cpp in Sources */,
 				E5963F5719DA923200E93DAC /* WorldClock.cpp in Sources */,
 				E5963F5B19DA923200E93DAC /* Bone.cpp in Sources */,
 				E564411D19DAC1D7003F4479 /* VisibleRect.cpp in Sources */,
-				E564411819DABEE7003F4479 /* DemoBase.cpp in Sources */,
 				E5963F7F19DA924C00E93DAC /* DBCCArmatureNode.cpp in Sources */,
 				503AE10517EB98FF00D1A890 /* main.cpp in Sources */,
 				E5963F5119DA923200E93DAC /* Animation.cpp in Sources */,
+				E57424DE19E37C5800D18603 /* DemoDragonBoy.cpp in Sources */,
 				E5963F6B19DA923200E93DAC /* XMLDataParser.cpp in Sources */,
 				E5963F7D19DA924C00E93DAC /* DBCCArmature.cpp in Sources */,
 				E5963F5D19DA923200E93DAC /* Object.cpp in Sources */,
 				E5963F8119DA924C00E93DAC /* DBCCFactory.cpp in Sources */,
+				E57424E019E37C5800D18603 /* DemoKnight.cpp in Sources */,
 				E5963F5F19DA923200E93DAC /* Slot.cpp in Sources */,
 				E5963F6119DA923200E93DAC /* EventData.cpp in Sources */,
 				E5963F6919DA923200E93DAC /* dbtinyxml2.cpp in Sources */,
 				E5963F6519DA923200E93DAC /* BaseDataParser.cpp in Sources */,
 				E5963F8319DA924C00E93DAC /* DBCCSlot.cpp in Sources */,
+				E57424DC19E37C5800D18603 /* DemoChaseStarling.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
