@@ -123,7 +123,7 @@ void DemoBase::onEnter()
                                                        "CloseSelected.png",
                                                        CC_CALLBACK_1(DemoBase::menuCloseCallback, this));
     
-    Menu *menu = Menu::create(item1, item2, item3, pCloseItem, NULL);
+    Menu *menu = Menu::create(item1, item2, item3, pCloseItem, nullptr);
     
     menu->setPosition(Point());
     item1->setPosition(VisibleRect::bottom(-item2->getContentSize().width * 2, item2->getContentSize().height / 2));

@@ -1,4 +1,4 @@
-#include "examples\DemoDragonBoy.h"
+#include "DemoDragonBoy.h"
 
 DemoDragonBoy::DemoDragonBoy()
 : _armature(nullptr)
