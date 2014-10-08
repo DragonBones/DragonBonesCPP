@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_BONE_DATA_H__
-#define __OBJECTS_BONE_DATA_H__
+﻿#ifndef OBJECTS_BONE_DATA_H
+#define OBJECTS_BONE_DATA_H
 
 #include "../DragonBones.h"
 #include "IAreaData.h"
@@ -105,4 +105,4 @@ public:
     }
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_BONE_DATA_H__
+#endif  // OBJECTS_BONE_DATA_H

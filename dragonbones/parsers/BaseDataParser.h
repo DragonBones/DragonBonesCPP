@@ -1,5 +1,5 @@
-﻿#ifndef __PARSERS_BASE_DATA_PARSER_H__
-#define __PARSERS_BASE_DATA_PARSER_H__
+﻿#ifndef PARSERS_BASE_DATA_PARSER_H
+#define PARSERS_BASE_DATA_PARSER_H
 
 #include "../DragonBones.h"
 
@@ -55,4 +55,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(BaseDataParser);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __PARSERS_BASE_DATA_PARSER_H__
+#endif  // PARSERS_BASE_DATA_PARSER_H

@@ -1,6 +1,5 @@
 #include "AppDelegate.h"
-#include "DemoDragonBoy.h"
-#include "DemoKnight.h"
+#include "Demo.h"
 
 USING_NS_CC;
 
@@ -17,7 +16,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::create("My Game");
+        glview = GLView::create("DragonBones Demos");
         director->setOpenGLView(glview);
     }
 
@@ -27,8 +26,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
 
+    auto layer = DemoBase::create(0);
     // create a scene. it's an autorelease object
-    auto scene = DemoKnight::createScene();
+    Scene* scene = Scene::create();
+    scene->addChild(layer);
 
     // run
     director->runWithScene(scene);
@@ -41,7 +42,7 @@ void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 
     // if you use SimpleAudioEngine, it must be pause
-    // SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+    // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 }
 
 // this function will be called when the app is active again
@@ -49,5 +50,5 @@ void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
 
     // if you use SimpleAudioEngine, it must resume here
-    // SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+    // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }

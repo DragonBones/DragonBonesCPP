@@ -1,5 +1,5 @@
-﻿#ifndef __CONST_VALUES_H__
-#define __CONST_VALUES_H__
+﻿#ifndef CONST_VALUES_H
+#define CONST_VALUES_H
 
 #include "../DragonBones.h"
 
@@ -83,4 +83,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(ConstValues);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __CONST_VALUES_H__
+#endif  // CONST_VALUES_H

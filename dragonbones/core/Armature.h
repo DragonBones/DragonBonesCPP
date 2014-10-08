@@ -1,5 +1,5 @@
-﻿#ifndef __CORE_ARMATURE_H__
-#define __CORE_ARMATURE_H__
+﻿#ifndef CORE_ARMATURE_H
+#define CORE_ARMATURE_H
 
 #include "../DragonBones.h"
 #include "../objects/ArmatureData.h"
@@ -98,4 +98,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(Armature);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __CORE_ARMATURE_H__
+#endif  // CORE_ARMATURE_H

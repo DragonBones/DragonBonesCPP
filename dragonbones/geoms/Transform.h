@@ -1,5 +1,5 @@
-﻿#ifndef __GEOMS_TRANSFORM_H__
-#define __GEOMS_TRANSFORM_H__
+﻿#ifndef GEOMS_TRANSFORM_H
+#define GEOMS_TRANSFORM_H
 
 #include "../DragonBones.h"
 #include "Matrix.h"
@@ -86,4 +86,4 @@ public:
     }
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __GEOMS_TRANSFORM_H__
+#endif  // GEOMS_TRANSFORM_H

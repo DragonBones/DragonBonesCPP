@@ -1,5 +1,5 @@
-﻿#ifndef __DBCC_ARMATURE_NODE_H__
-#define __DBCC_ARMATURE_NODE_H__
+﻿#ifndef DBCC_ARMATURE_NODE_H
+#define DBCC_ARMATURE_NODE_H
 
 #include "DragonBonesHeaders.h"
 #include "cocos2d.h"
@@ -50,4 +50,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(DBCCArmatureNode);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __DBCC_ARMATURE_NODE_H__
+#endif  // DBCC_ARMATURE_NODE_H

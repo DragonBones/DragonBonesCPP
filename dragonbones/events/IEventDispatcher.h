@@ -1,5 +1,5 @@
-﻿#ifndef __EVENTS_I_EVENT_DISPATCHER_H__
-#define __EVENTS_I_EVENT_DISPATCHER_H__
+﻿#ifndef EVENTS_I_EVENT_DISPATCHER_H
+#define EVENTS_I_EVENT_DISPATCHER_H
 
 #include "../DragonBones.h"
 #include "EventData.h"
@@ -19,4 +19,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(IEventDispatcher);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __EVENTS_I_EVENT_DISPATCHER_H__
+#endif  // EVENTS_I_EVENT_DISPATCHER_H

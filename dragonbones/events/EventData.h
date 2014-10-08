@@ -1,5 +1,5 @@
-﻿#ifndef __EVENTS_EVENT_DATA_H__
-#define __EVENTS_EVENT_DATA_H__
+﻿#ifndef EVENTS_EVENT_DATA_H
+#define EVENTS_EVENT_DATA_H
 
 #include "../DragonBones.h"
 
@@ -74,4 +74,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(EventData);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __EVENTS_EVENT_DATA_H__
+#endif  // EVENTS_EVENT_DATA_H
