@@ -45,12 +45,15 @@ DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBones
         return nullptr;
     }
 
+    // armature scale
+    float scale = cocos2d::Director::getInstance()->getContentScaleFactor();
+
     // load skeleton.xml using XML parser.
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
     // paser dragonbones skeleton data.
     dragonBones::XMLDataParser parser;
-    DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement());
+    DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement(), scale);
     addDragonBonesData(dragonBonesData, name);
     return dragonBonesData;
 }
@@ -71,11 +74,14 @@ ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile
         return nullptr;
     }
 
+    // textureAtlas scale
+    float scale = cocos2d::Director::getInstance()->getContentScaleFactor();
+
     dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
     dragonBones::XMLDataParser parser;
     DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas();
-    textureAtlas->textureAtlasData = parser.parseTextureAtlasData(doc.RootElement());
+    textureAtlas->textureAtlasData = parser.parseTextureAtlasData(doc.RootElement(), scale);
 
     int pos = textureAtlasFile.find_last_of("/");
     

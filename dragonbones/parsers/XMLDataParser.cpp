@@ -394,8 +394,8 @@ void XMLDataParser::parseTransform(const XMLElement *transformXML, Transform *tr
     {
         if (transform)
         {
-            transform->x = transformXML->FloatAttribute(ConstValues::A_X.c_str()) / _textureScale;
-            transform->y = transformXML->FloatAttribute(ConstValues::A_Y.c_str()) / _textureScale;
+            transform->x = transformXML->FloatAttribute(ConstValues::A_X.c_str()) / _armatureScale;
+            transform->y = transformXML->FloatAttribute(ConstValues::A_Y.c_str()) / _armatureScale;
             transform->skewX = transformXML->FloatAttribute(ConstValues::A_SKEW_X.c_str()) * ANGLE_TO_RADIAN;
             transform->skewY = transformXML->FloatAttribute(ConstValues::A_SKEW_Y.c_str()) * ANGLE_TO_RADIAN;
             transform->scaleX = transformXML->FloatAttribute(ConstValues::A_SCALE_X.c_str());
@@ -404,8 +404,8 @@ void XMLDataParser::parseTransform(const XMLElement *transformXML, Transform *tr
         
         if (pivot)
         {
-            pivot->x = transformXML->FloatAttribute(ConstValues::A_PIVOT_X.c_str()) / _textureScale;
-            pivot->y = transformXML->FloatAttribute(ConstValues::A_PIVOT_Y.c_str()) / _textureScale;
+            pivot->x = transformXML->FloatAttribute(ConstValues::A_PIVOT_X.c_str()) / _armatureScale;
+            pivot->y = transformXML->FloatAttribute(ConstValues::A_PIVOT_Y.c_str()) / _armatureScale;
         }
     }
 }
