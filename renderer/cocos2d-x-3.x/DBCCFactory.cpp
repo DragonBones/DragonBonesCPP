@@ -176,6 +176,8 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
         const cocos2d::Rect rect(x, y, width, height);
         // sprite
         cocos2d::Node *display = cocos2d::Sprite::createWithTexture(dbccTextureAtlas->texture, rect, false);
+        display->setCascadeColorEnabled(true);
+        display->setCascadeOpacityEnabled(true);
         display->retain();
         float pivotX = 0;
         float pivotY = 0;
