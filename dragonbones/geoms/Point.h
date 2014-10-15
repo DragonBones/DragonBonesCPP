@@ -1,5 +1,5 @@
-﻿#ifndef __GEOMS_POINT_H__
-#define __GEOMS_POINT_H__
+﻿#ifndef GEOMS_POINT_H
+#define GEOMS_POINT_H
 
 #include "../DragonBones.h"
 
@@ -28,4 +28,4 @@ public:
     virtual ~Point() {}
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __GEOMS_POINT_H__
+#endif  // GEOMS_POINT_H

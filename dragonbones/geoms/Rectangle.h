@@ -1,5 +1,5 @@
-﻿#ifndef __GEOMS_RECTANGLE_H__
-#define __GEOMS_RECTANGLE_H__
+﻿#ifndef GEOMS_RECTANGLE_H
+#define GEOMS_RECTANGLE_H
 
 #include "../DragonBones.h"
 
@@ -35,4 +35,4 @@ public:
     virtual ~Rectangle() {}
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __GEOMS_RECTANGLE_H__
+#endif  // GEOMS_RECTANGLE_H

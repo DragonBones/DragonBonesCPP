@@ -1,5 +1,5 @@
-﻿#ifndef __DBCC_TEXTURE_ATLAS_H__
-#define __DBCC_TEXTURE_ATLAS_H__
+﻿#ifndef DBCC_TEXTURE_ATLAS_H
+#define DBCC_TEXTURE_ATLAS_H
 
 #include "DragonBonesHeaders.h"
 #include "cocos2d.h"
@@ -36,4 +36,4 @@ private:
 };
 NAME_SPACE_DRAGON_BONES_END
 
-#endif  // __DBCC_TEXTURE_ATLAS_H__
+#endif  // DBCC_TEXTURE_ATLAS_H

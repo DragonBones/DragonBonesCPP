@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_TIMELINE_H__
-#define __OBJECTS_TIMELINE_H__
+﻿#ifndef OBJECTS_TIMELINE_H
+#define OBJECTS_TIMELINE_H
 
 #include "../DragonBones.h"
 #include "Frame.h"
@@ -68,4 +68,4 @@ public:
     }
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_TIMELINE_H__
+#endif  // OBJECTS_TIMELINE_H

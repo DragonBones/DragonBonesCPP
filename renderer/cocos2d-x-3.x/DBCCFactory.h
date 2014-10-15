@@ -1,5 +1,5 @@
-﻿#ifndef __DBCC_FACTORY_H__
-#define __DBCC_FACTORY_H__
+﻿#ifndef DBCC_FACTORY_H
+#define DBCC_FACTORY_H
 
 #include "DragonBonesHeaders.h"
 #include "DBCCRenderHeaders.h"
@@ -37,4 +37,4 @@ private:
 };
 NAME_SPACE_DRAGON_BONES_END
 
-#endif  // __DBCC_FACTORY_H__
+#endif  // DBCC_FACTORY_H

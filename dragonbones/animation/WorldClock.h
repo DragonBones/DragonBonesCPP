@@ -1,5 +1,5 @@
-﻿#ifndef __ANIMATION_WORLD_CLOCK_H__
-#define __ANIMATION_WORLD_CLOCK_H__
+﻿#ifndef ANIMATION_WORLD_CLOCK_H
+#define ANIMATION_WORLD_CLOCK_H
 
 #include "../DragonBones.h"
 #include "IAnimatable.h"
@@ -44,4 +44,4 @@ private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(WorldClock);
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __ANIMATION_WORLD_CLOCK_H__
+#endif  // ANIMATION_WORLD_CLOCK_H

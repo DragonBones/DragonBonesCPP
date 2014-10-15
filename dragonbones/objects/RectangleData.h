@@ -1,5 +1,5 @@
-﻿#ifndef __OBJECTS_RECTANGLE_DATA_H__
-#define __OBJECTS_RECTANGLE_DATA_H__
+﻿#ifndef OBJECTS_RECTANGLE_DATA_H
+#define OBJECTS_RECTANGLE_DATA_H
 
 #include "../DragonBones.h"
 #include "../geoms/Point.h"
@@ -18,6 +18,7 @@ public:
 public:
     RectangleData()
     {
+        areaType = IAreaData::AreaType::AT_RECTANGLE;
         width = 0.f;
         height = 0.f;
     }
@@ -41,4 +42,4 @@ public:
     virtual void dispose() {}
 };
 NAME_SPACE_DRAGON_BONES_END
-#endif  // __OBJECTS_RECTANGLE_DATA_H__
+#endif  // OBJECTS_RECTANGLE_DATA_H
