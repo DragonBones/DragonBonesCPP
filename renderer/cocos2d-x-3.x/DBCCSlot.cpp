@@ -185,8 +185,9 @@ void DBCCSlot::updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOf
 {
     if (_nodeDisplay)
     {
-        _nodeDisplay->setOpacity(aOffset + aMultiplier * 255.f);
-        _nodeDisplay->setColor(cocos2d::Color3B(rOffset + rMultiplier * 255.f , gOffset + gMultiplier * 255.f , bOffset + bMultiplier * 255.f));
+        // cocos2dx does not support offset of color.
+        _nodeDisplay->setOpacity(aMultiplier * 255.f);
+        _nodeDisplay->setColor(cocos2d::Color3B(rMultiplier * 255.f , gMultiplier * 255.f , bMultiplier * 255.f));
     }
 }
 
