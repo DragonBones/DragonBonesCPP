@@ -23,8 +23,6 @@
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
-typedef std::string String;
-
 const float PI = 3.14159265358979323846f;
 const float ANGLE_TO_RADIAN = PI / 180.f;
 const float RADIAN_TO_ANGLE = 180.f / PI;
@@ -92,7 +90,7 @@ inline int indexOf(std::vector<T> &vector, const T &value)
 }
 
 enum class DisplayType {DT_IMAGE, DT_ARMATURE, DT_FRAME, DT_1, DT_2, DT_3, DT_4, DT_5};
-inline DisplayType getDisplayTypeByString(String displayType)
+inline DisplayType getDisplayTypeByString(std::string displayType)
 {
     if (displayType == "image")
     {
@@ -111,7 +109,7 @@ inline DisplayType getDisplayTypeByString(String displayType)
 }
 
 enum class BlendMode {BM_ADD, BM_ALPHA, BM_DARKEN, BM_DIFFERENCE, BM_ERASE, BM_HARDLIGHT, BM_INVERT, BM_LAYER, BM_LIGHTEN, BM_MULTIPLY, BM_NORMAL, BM_OVERLAY, BM_SCREEN, BM_SHADER, BM_SUBTRACT};
-inline BlendMode getBlendModeByString(String blendMode)
+inline BlendMode getBlendModeByString(std::string blendMode)
 {
     if (blendMode == "normal")
     {

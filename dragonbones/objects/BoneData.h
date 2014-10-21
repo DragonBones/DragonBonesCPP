@@ -15,8 +15,8 @@ public:
     bool inheritRotation;
     float length;
     
-    String name;
-    String parent;
+    std::string name;
+    std::string parent;
     Transform global;
     Transform transform;
     std::vector<IAreaData*> areaDataList;
@@ -81,7 +81,7 @@ public:
         areaDataList.clear();
     }
     
-    IAreaData* getAreaData(const String &areaName) const
+    IAreaData* getAreaData(const std::string &areaName) const
     {
         if (areaDataList.empty())
         {

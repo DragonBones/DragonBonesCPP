@@ -14,18 +14,18 @@ DBCCFactory* DBCCFactory::getInstance()
 DBCCFactory::DBCCFactory() {}
 DBCCFactory::~DBCCFactory() {}
 
-DBCCArmature* DBCCFactory::buildArmature(const String &armatureName) const
+DBCCArmature* DBCCFactory::buildArmature(const std::string &armatureName) const
 {
     return (DBCCArmature*) BaseFactory::buildArmature(armatureName);
 }
 
-DBCCArmature* DBCCFactory::buildArmature(const String &armatureName, const String &dragonBonesName) const
+DBCCArmature* DBCCFactory::buildArmature(const std::string &armatureName, const std::string &dragonBonesName) const
 {
     return (DBCCArmature*) BaseFactory::buildArmature(armatureName, dragonBonesName);
 }
 
-DBCCArmature* DBCCFactory::buildArmature(const String &armatureName, const String &skinName, const String &animationName,
-                                         const String &dragonBonesName, const String &textureAtlasName) const
+DBCCArmature* DBCCFactory::buildArmature(const std::string &armatureName, const std::string &skinName, const std::string &animationName,
+                                         const std::string &dragonBonesName, const std::string &textureAtlasName) const
 {
     return (DBCCArmature*) BaseFactory::buildArmature(armatureName, skinName, animationName, dragonBonesName, textureAtlasName);
 }
@@ -85,9 +85,9 @@ ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile
 
     int pos = textureAtlasFile.find_last_of("/");
     
-    if (String::npos != pos)
+    if (std::string::npos != pos)
     {
-        String base_path = textureAtlasFile.substr(0, pos + 1);
+        std::string base_path = textureAtlasFile.substr(0, pos + 1);
         textureAtlas->textureAtlasData->imagePath = base_path + textureAtlas->textureAtlasData->imagePath;
     }
     

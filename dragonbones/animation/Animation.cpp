@@ -34,7 +34,7 @@ AnimationState* Animation::getLastAnimationState() const
     return _lastAnimationState;
 }
 
-const std::vector<String>& Animation::getAnimationList() const
+const std::vector<std::string>& Animation::getAnimationList() const
 {
     return _animationList;
 }
@@ -96,12 +96,12 @@ void Animation::dispose()
 }
 
 AnimationState* Animation::gotoAndPlay(
-    const String &animationName,
+    const std::string &animationName,
     float fadeInTime,
     float duration,
     int playTimes,
     int layer,
-    const String &group,
+    const std::string &group,
     AnimationFadeOutMode fadeOutMode,
     bool pauseFadeOut,
     bool pauseFadeIn
@@ -222,13 +222,13 @@ AnimationState* Animation::gotoAndPlay(
 }
 
 AnimationState* Animation::gotoAndStop(
-    const String &animationName,
+    const std::string &animationName,
     float time,
     float normalizedTime,
     float fadeInTime,
     float duration,
     int layer,
-    const String &group,
+    const std::string &group,
     AnimationFadeOutMode fadeOutMode
 )
 {
@@ -274,7 +274,7 @@ void Animation::stop()
     _isPlaying = false;
 }
 
-bool Animation::hasAnimation(const String &animationName) const
+bool Animation::hasAnimation(const std::string &animationName) const
 {
     for (size_t i = 0, l = _animationDataList.size(); i < l; ++i)
     {
@@ -287,7 +287,7 @@ bool Animation::hasAnimation(const String &animationName) const
     return false;
 }
 
-AnimationState* Animation::getState(const String &name, int layer) const
+AnimationState* Animation::getState(const std::string &name, int layer) const
 {
     for (size_t i = _animationStateList.size(); i--; )
     {

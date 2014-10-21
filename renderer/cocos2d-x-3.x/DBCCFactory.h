@@ -17,9 +17,9 @@ public:
     DBCCFactory();
     virtual ~DBCCFactory();
 
-    virtual DBCCArmature* buildArmature(const String &armatureName) const override;
-    virtual DBCCArmature* buildArmature(const String &armatureName, const String &dragonBonesName) const override;
-    virtual DBCCArmature* buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const override;
+    virtual DBCCArmature* buildArmature(const std::string &armatureName) const override;
+    virtual DBCCArmature* buildArmature(const std::string &armatureName, const std::string &dragonBonesName) const override;
+    virtual DBCCArmature* buildArmature(const std::string &armatureName, const std::string &skinName, const std::string &animationName, const std::string &dragonBonesName, const std::string &textureAtlasName) const override;
     
     virtual DragonBonesData* loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
     virtual ITextureAtlas* loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");

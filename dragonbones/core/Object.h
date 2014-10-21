@@ -15,7 +15,7 @@ public:
     bool inheritRotation;
     bool inheritScale;
     
-    String name;
+    std::string name;
     Transform global;
     Transform origin;
     Transform offset;

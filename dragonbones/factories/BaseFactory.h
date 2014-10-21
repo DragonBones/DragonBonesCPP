@@ -20,32 +20,32 @@ public:
     bool autoSearchTexture;
     
 protected:
-    mutable String _currentDragonBonesDataName;
-    mutable String _currentTextureAtlasName;
-    std::map<String, DragonBonesData*> _dragonBonesDataMap;
-    std::map<String, ITextureAtlas*> _textureAtlasMap;
+    mutable std::string _currentDragonBonesDataName;
+    mutable std::string _currentTextureAtlasName;
+    std::map<std::string, DragonBonesData*> _dragonBonesDataMap;
+    std::map<std::string, ITextureAtlas*> _textureAtlasMap;
     
 public:
-    const std::map<String, DragonBonesData*>& getDragonBonesDataMap() const;
-    const std::map<String, ITextureAtlas*>& getTextureAtlasMap() const;
+    const std::map<std::string, DragonBonesData*>& getDragonBonesDataMap() const;
+    const std::map<std::string, ITextureAtlas*>& getTextureAtlasMap() const;
     
 public:
     BaseFactory();
     virtual ~BaseFactory();
     virtual void dispose(bool disposeData = true);
     
-    virtual DragonBonesData* getDragonBonesData(const String &name) const;
-    virtual void addDragonBonesData(DragonBonesData *data, const String &name = "");
-    virtual void removeDragonBonesData(const String &name, bool disposeData = true);
+    virtual DragonBonesData* getDragonBonesData(const std::string &name) const;
+    virtual void addDragonBonesData(DragonBonesData *data, const std::string &name = "");
+    virtual void removeDragonBonesData(const std::string &name, bool disposeData = true);
     
-    virtual ITextureAtlas* getTextureAtlas(const String &name) const;
-    virtual void addTextureAtlas(ITextureAtlas *textureAtlas, const String &name = "");
-    virtual void removeTextureAtlas(const String &name, bool disposeData = true);
+    virtual ITextureAtlas* getTextureAtlas(const std::string &name) const;
+    virtual void addTextureAtlas(ITextureAtlas *textureAtlas, const std::string &name = "");
+    virtual void removeTextureAtlas(const std::string &name, bool disposeData = true);
     
-    virtual Armature* buildArmature(const String &armatureName) const;
-    virtual Armature* buildArmature(const String &armatureName, const String &dragonBonesName) const;
-    virtual Armature* buildArmature(const String &armatureName, const String &skinName, const String &animationName, const String &dragonBonesName, const String &textureAtlasName) const;
-    virtual void* getTextureDisplay(const String &textureName, const String &textureAtlasName = "", const DisplayData *displayData = nullptr) const;
+    virtual Armature* buildArmature(const std::string &armatureName) const;
+    virtual Armature* buildArmature(const std::string &armatureName, const std::string &dragonBonesName) const;
+    virtual Armature* buildArmature(const std::string &armatureName, const std::string &skinName, const std::string &animationName, const std::string &dragonBonesName, const std::string &textureAtlasName) const;
+    virtual void* getTextureDisplay(const std::string &textureName, const std::string &textureAtlasName = "", const DisplayData *displayData = nullptr) const;
     
 protected:
 

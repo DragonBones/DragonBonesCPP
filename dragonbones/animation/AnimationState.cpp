@@ -69,7 +69,7 @@ float AnimationState::getCurrentWeight() const
     return _fadeWeight * weight;
 }
 
-const String& AnimationState::getGroup() const
+const std::string& AnimationState::getGroup() const
 {
     return _group;
 }
@@ -263,12 +263,12 @@ AnimationState* AnimationState::stop()
     return this;
 }
 
-bool AnimationState::getMixingTransform(const String &timelineName) const
+bool AnimationState::getMixingTransform(const std::string &timelineName) const
 {
     return std::find(_mixingTransforms.cbegin(), _mixingTransforms.cend(), timelineName) != _mixingTransforms.cend();
 }
 
-AnimationState* AnimationState::addMixingTransform(const String &timelineName, bool recursive)
+AnimationState* AnimationState::addMixingTransform(const std::string &timelineName, bool recursive)
 {
     if (recursive)
     {
@@ -278,7 +278,7 @@ AnimationState* AnimationState::addMixingTransform(const String &timelineName, b
         for (size_t i = _armature->getBones().size(); i--;)
         {
             Bone *bone = _armature->getBones()[i];
-            const String &boneName = bone->name;
+            const std::string &boneName = bone->name;
             
             if (boneName == timelineName)
             {
@@ -308,7 +308,7 @@ AnimationState* AnimationState::addMixingTransform(const String &timelineName, b
     return this;
 }
 
-AnimationState* AnimationState::removeMixingTransform(const String &timelineName, bool recursive)
+AnimationState* AnimationState::removeMixingTransform(const std::string &timelineName, bool recursive)
 {
     if (recursive)
     {
@@ -408,7 +408,7 @@ void AnimationState::updateTimelineStates()
     }
 }
 
-void AnimationState::addTimelineState(const String &timelineName)
+void AnimationState::addTimelineState(const std::string &timelineName)
 {
     Bone *bone = _armature->getBone(timelineName);
     

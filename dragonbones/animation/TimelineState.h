@@ -27,7 +27,7 @@ private:
     static void clearObjects();
     
 public:
-    String name;
+    std::string name;
     
 private:
     bool _blendEnabled;

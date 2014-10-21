@@ -9,7 +9,7 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class DisplayData
 {
 public:
-    String name;
+    std::string name;
     
     DisplayType type;
     Transform transform;

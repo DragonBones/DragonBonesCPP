@@ -33,7 +33,7 @@ private:
     static bool sortSlot(const Slot *a, const Slot *b);
     
 public:
-    String name;
+    std::string name;
     
     void *userData;
     
@@ -67,23 +67,23 @@ public:
     virtual void dispose();
     
 public:
-    virtual Bone* getBone(const String &boneName) const;
+    virtual Bone* getBone(const std::string &boneName) const;
     virtual Bone* getBoneByDisplay(const void *display) const;
     virtual void addBone(Bone *bone);
-    virtual void addBone(Bone *bone, const String &parentBoneName);
+    virtual void addBone(Bone *bone, const std::string &parentBoneName);
     virtual void removeBone(Bone *bone);
-    virtual Bone* removeBone(const String &boneName);
+    virtual Bone* removeBone(const std::string &boneName);
     
-    virtual Slot* getSlot(const String &slotName) const;
+    virtual Slot* getSlot(const std::string &slotName) const;
     virtual Slot* getSlotByDisplay(const void *display) const;
-    virtual void addSlot(Slot *slot, const String &parentBoneName);
+    virtual void addSlot(Slot *slot, const std::string &parentBoneName);
     virtual void removeSlot(Slot *slot);
-    virtual Slot* removeSlot(const String &slotName);
-    virtual void replaceSlot(const String &boneName, const String &oldSlotName, Slot* newSlot);
+    virtual Slot* removeSlot(const std::string &slotName);
+    virtual void replaceSlot(const std::string &boneName, const std::string &oldSlotName, Slot* newSlot);
     virtual void sortSlotsByZOrder();
     
     virtual void invalidUpdate();
-    virtual void invalidUpdate(const String &boneName);
+    virtual void invalidUpdate(const std::string &boneName);
     
     virtual void advanceTime(float passedTime) override;
     

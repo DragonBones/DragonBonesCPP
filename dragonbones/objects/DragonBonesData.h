@@ -9,7 +9,7 @@ class DragonBonesData
 {
 public:
     bool autoSearch;
-    String name;
+    std::string name;
     std::vector<ArmatureData*> armatureDataList;
     
 public:
@@ -51,7 +51,7 @@ public:
         armatureDataList.clear();
     }
     
-    ArmatureData* getArmatureData(const String &armatureName) const
+    ArmatureData* getArmatureData(const std::string &armatureName) const
     {
         for (size_t i = 0, l = armatureDataList.size(); i < l; ++i)
         {

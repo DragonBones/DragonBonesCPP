@@ -31,7 +31,7 @@ public:
     bool lastFrameAutoTween;
     float fadeOutTime;
     float weight;
-    String name;
+    std::string name;
     
 private:
     bool _isPlaying;
@@ -53,11 +53,11 @@ private:
     float _fadeCurrentTime;
     float _fadeTotalTime;
     float _fadeBeginTime;
-    String _group;
+    std::string _group;
     FadeState _fadeState;
     
     std::vector<TimelineState*> _timelineStateList;
-    std::vector<String> _mixingTransforms;
+    std::vector<std::string> _mixingTransforms;
     
     AnimationData *_clip;
     Armature *_armature;
@@ -69,7 +69,7 @@ public:
     int getLayer() const;
     float getTotalTime() const;
     float getCurrentWeight() const;
-    const String& getGroup() const;
+    const std::string& getGroup() const;
     const AnimationData* getClip() const;
     
     AnimationState* setAdditiveBlending(bool value);
@@ -91,9 +91,9 @@ public:
     AnimationState* fadeOut(float fadeTotalTime, bool pausePlayhead);
     AnimationState* play();
     AnimationState* stop();
-    bool getMixingTransform(const String &timelineName) const;
-    AnimationState* addMixingTransform(const String &timelineName, bool recursive = true);
-    AnimationState* removeMixingTransform(const String &timelineName, bool recursive = true);
+    bool getMixingTransform(const std::string &timelineName) const;
+    AnimationState* addMixingTransform(const std::string &timelineName, bool recursive = true);
+    AnimationState* removeMixingTransform(const std::string &timelineName, bool recursive = true);
     AnimationState* removeAllMixingTransform();
     
 private:
@@ -101,7 +101,7 @@ private:
     
     bool advanceTime(float passedTime);
     void updateTimelineStates();
-    void addTimelineState(const String &timelineName);
+    void addTimelineState(const std::string &timelineName);
     void removeTimelineState(TimelineState *timelineState);
     void advanceFadeTime(float passedTime);
     void advanceTimelinesTime(float passedTime);

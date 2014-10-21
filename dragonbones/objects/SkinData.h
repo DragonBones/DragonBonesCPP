@@ -8,7 +8,7 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class SkinData
 {
 public:
-    String name;
+    std::string name;
     std::vector<SlotData*> slotDataList;
     
 public:
@@ -46,7 +46,7 @@ public:
         slotDataList.clear();
     }
     
-    SlotData* getSlotData(const String &slotName) const
+    SlotData* getSlotData(const std::string &slotName) const
     {
         for (size_t i = 0, l = slotDataList.size(); i < l; ++i)
         {
