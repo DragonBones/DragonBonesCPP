@@ -2,21 +2,21 @@
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
-const String EventData::Z_ORDER_UPDATED = "zorderUpdate";
-const String EventData::ANIMATION_FRAME_EVENT = "animationFrameEvent";
-const String EventData::BONE_FRAME_EVENT = "boneFrameEvent";
-const String EventData::SOUND = "sound";
-const String EventData::FADE_IN = "fadeIn";
-const String EventData::FADE_OUT = "fadeOut";
-const String EventData::START = "start";
-const String EventData::COMPLETE = "complete";
-const String EventData::LOOP_COMPLETE = "loopComplete";
-const String EventData::FADE_IN_COMPLETE = "fadeInComplete";
-const String EventData::FADE_OUT_COMPLETE = "fadeOutComplete";
+const std::string EventData::Z_ORDER_UPDATED = "zorderUpdate";
+const std::string EventData::ANIMATION_FRAME_EVENT = "animationFrameEvent";
+const std::string EventData::BONE_FRAME_EVENT = "boneFrameEvent";
+const std::string EventData::SOUND = "sound";
+const std::string EventData::FADE_IN = "fadeIn";
+const std::string EventData::FADE_OUT = "fadeOut";
+const std::string EventData::START = "start";
+const std::string EventData::COMPLETE = "complete";
+const std::string EventData::LOOP_COMPLETE = "loopComplete";
+const std::string EventData::FADE_IN_COMPLETE = "fadeInComplete";
+const std::string EventData::FADE_OUT_COMPLETE = "fadeOutComplete";
 
-const String EventData::_ERROR = "error";
+const std::string EventData::_ERROR = "error";
 
-const String& EventData::typeToString(EventData::EventType eventType)
+const std::string& EventData::typeToString(EventData::EventType eventType)
 {
     switch (eventType)
     {
@@ -104,7 +104,7 @@ EventData::EventType EventData::getType() const
     return _type;
 }
 
-const String& EventData::getStringType() const
+const std::string& EventData::getStringType() const
 {
     return typeToString(_type);
 }

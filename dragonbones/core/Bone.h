@@ -26,7 +26,7 @@ private:
     static bool sortState(const TimelineState *a, const TimelineState *b);
     
 public:
-    String displayController;
+    std::string displayController;
     
 protected:
     bool _isColorChanged;

@@ -10,7 +10,7 @@ class TextureData
 public:
     bool rotated;
     
-    String name;
+    std::string name;
     Rectangle region;
     
     Rectangle *frame;

@@ -13,19 +13,19 @@ class Frame;
 class EventData
 {
 public:
-    static const String Z_ORDER_UPDATED;
-    static const String ANIMATION_FRAME_EVENT;
-    static const String BONE_FRAME_EVENT;
-    static const String SOUND;
-    static const String FADE_IN;
-    static const String FADE_OUT;
-    static const String START;
-    static const String COMPLETE;
-    static const String LOOP_COMPLETE;
-    static const String FADE_IN_COMPLETE;
-    static const String FADE_OUT_COMPLETE;
+    static const std::string Z_ORDER_UPDATED;
+    static const std::string ANIMATION_FRAME_EVENT;
+    static const std::string BONE_FRAME_EVENT;
+    static const std::string SOUND;
+    static const std::string FADE_IN;
+    static const std::string FADE_OUT;
+    static const std::string START;
+    static const std::string COMPLETE;
+    static const std::string LOOP_COMPLETE;
+    static const std::string FADE_IN_COMPLETE;
+    static const std::string FADE_OUT_COMPLETE;
     
-    static const String _ERROR;
+    static const std::string _ERROR;
     
     enum class EventType
     {
@@ -37,7 +37,7 @@ public:
         _ERROR
     };
     
-    static const String& typeToString(EventType eventType);
+    static const std::string& typeToString(EventType eventType);
 
     static EventData* borrowObject(EventType eventType);
     static void returnObject(EventData *eventData);
@@ -47,8 +47,8 @@ private:
     static std::vector<EventData*> _pool;
     
 public:
-    String frameLabel;
-    String sound;
+    std::string frameLabel;
+    std::string sound;
     
     Armature *armature;
     Bone *bone;
@@ -61,7 +61,7 @@ private:
 public:
     EventType getType() const;
     
-    const String& getStringType() const;
+    const std::string& getStringType() const;
     
 public:
     EventData();

@@ -16,9 +16,9 @@ public:
     // overwrite frame tweenEase, [-1, 0):ease in, 0:line easing, (0, 1]:ease out, (1, 2]:ease in out
     float tweenEasing;
     
-    String name;
+    std::string name;
     std::vector<TransformTimeline*> timelineList;
-    std::vector<String> hideTimelineList;
+    std::vector<std::string> hideTimelineList;
     
 public:
     AnimationData()
@@ -65,7 +65,7 @@ public:
         _dispose();
     }
     
-    TransformTimeline *getTimeline(const String &timelineName) const
+    TransformTimeline *getTimeline(const std::string &timelineName) const
     {
         for (size_t i = 0, l = timelineList.size(); i < l; ++i)
         {

@@ -13,7 +13,7 @@ public:
     bool transformed;
     float offset;
     
-    String name;
+    std::string name;
     Transform originTransform;
     Point originPivot;
     

@@ -14,10 +14,10 @@ public:
     int duration;
     
     FrameType frameType;
-    String action;
-    String event;
-    String sound;
-    String eventParameters;
+    std::string action;
+    std::string event;
+    std::string sound;
+    std::string eventParameters;
 
     void* eventParametersParsed;
     

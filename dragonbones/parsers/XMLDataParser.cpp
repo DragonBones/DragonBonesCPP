@@ -106,7 +106,7 @@ DragonBonesData* XMLDataParser::parseDragonBonesData(const void *rawDragonBonesD
 {
     _armatureScale = scale;
     const XMLElement *dragonBonesXML = static_cast<const XMLElement*>(rawDragonBonesData);
-    String version = dragonBonesXML->Attribute(ConstValues::A_VERSION.c_str());
+    std::string version = dragonBonesXML->Attribute(ConstValues::A_VERSION.c_str());
     // TODO
     /*
     switch(version)

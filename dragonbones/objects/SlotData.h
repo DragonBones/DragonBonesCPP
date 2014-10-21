@@ -10,8 +10,8 @@ class SlotData
 public:
     float zOrder;
     
-    String name;
-    String parent;
+    std::string name;
+    std::string parent;
     BlendMode blendMode;
     std::vector<DisplayData*> displayDataList;
     
@@ -53,7 +53,7 @@ public:
         displayDataList.clear();
     }
     
-    const DisplayData* getDisplayData(const String &displayName) const
+    const DisplayData* getDisplayData(const std::string &displayName) const
     {
         for (size_t i = 0, l = displayDataList.size(); i < l; ++i)
         {

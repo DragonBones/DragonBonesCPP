@@ -11,7 +11,7 @@ public:
     
 public:
     AreaType areaType;
-    String name;
+    std::string name;
     
 public:
     IAreaData() {}

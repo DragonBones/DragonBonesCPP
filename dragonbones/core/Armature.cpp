@@ -131,7 +131,7 @@ void Armature::dispose()
     }
 }
 
-Bone* Armature::getBone(const String &boneName) const
+Bone* Armature::getBone(const std::string &boneName) const
 {
     if (boneName.empty())
     {
@@ -175,7 +175,7 @@ void Armature::addBone(Bone *bone)
     bone->setArmature(this);
 }
 
-void Armature::addBone(Bone *bone, const String &parentBoneName)
+void Armature::addBone(Bone *bone, const std::string &parentBoneName)
 {
     if (parentBoneName.empty())
     {
@@ -209,7 +209,7 @@ void Armature::removeBone(Bone *bone)
     }
 }
 
-Bone *Armature::removeBone(const String &boneName)
+Bone *Armature::removeBone(const std::string &boneName)
 {
     if (boneName.empty())
     {
@@ -226,7 +226,7 @@ Bone *Armature::removeBone(const String &boneName)
     return bone;
 }
 
-Slot* Armature::getSlot(const String &slotName) const
+Slot* Armature::getSlot(const std::string &slotName) const
 {
     if (slotName.empty())
     {
@@ -262,7 +262,7 @@ Slot* Armature::getSlotByDisplay(const void *display) const
     return nullptr;
 }
 
-void Armature::addSlot(Slot *slot, const String &parentBoneName)
+void Armature::addSlot(Slot *slot, const std::string &parentBoneName)
 {
     Bone *bone = getBone(parentBoneName);
     
@@ -284,7 +284,7 @@ void Armature::removeSlot(Slot *slot)
     slot->_parent->removeChild(slot);
 }
 
-Slot* Armature::removeSlot(const String &slotName)
+Slot* Armature::removeSlot(const std::string &slotName)
 {
     Slot *slot = getSlot(slotName);
     
@@ -296,7 +296,7 @@ Slot* Armature::removeSlot(const String &slotName)
     return slot;
 }
 
-void Armature::replaceSlot(const String &boneName, const String &oldSlotName, Slot* newSlot)
+void Armature::replaceSlot(const std::string &boneName, const std::string &oldSlotName, Slot* newSlot)
 {
     auto bone = getBone(boneName);
     if (!bone) return;
@@ -364,7 +364,7 @@ void Armature::invalidUpdate()
     }
 }
 
-void Armature::invalidUpdate(const String &boneName)
+void Armature::invalidUpdate(const std::string &boneName)
 {
     if (boneName.empty())
     {
