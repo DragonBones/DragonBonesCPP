@@ -95,6 +95,18 @@ void Animation::dispose()
     _lastAnimationState = nullptr;
 }
 
+void Animation::clear()
+{
+    stop();
+
+    for (size_t i = 0, l = _animationStateList.size(); i < l; ++i)
+    {
+        AnimationState::returnObject(_animationStateList[i]);
+    }
+    _animationStateList.clear();
+    _lastAnimationState = nullptr;
+}
+
 AnimationState* Animation::gotoAndPlay(
     const std::string &animationName,
     float fadeInTime,

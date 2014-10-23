@@ -49,6 +49,7 @@ public:
     virtual ~Animation();
     
     virtual void dispose();
+    virtual void clear();
     
     virtual AnimationState* gotoAndPlay(
         const std::string &animationName,

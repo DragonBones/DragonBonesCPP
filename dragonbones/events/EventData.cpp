@@ -135,6 +135,9 @@ void EventData::clear()
     bone = nullptr;
     animationState = nullptr;
     frame = nullptr;
+
+    frameLabel.clear();
+    sound.clear();
 }
 
 void EventData::copy(const EventData &copyData)
