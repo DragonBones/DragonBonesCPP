@@ -14,6 +14,8 @@ protected:
 public:
     virtual cocos2d::Node* getCCDisplay() const;
     virtual DBCCArmature* getCCChildArmature() const;
+
+    virtual void setDisplayImage(cocos2d::Node *display, bool disposeExisting = true);
     
 public:
     DBCCSlot(SlotData *slotData);

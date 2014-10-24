@@ -13,6 +13,11 @@ DBCCArmature* DBCCSlot::getCCChildArmature() const
     return static_cast<DBCCArmature*>(_childArmature);
 }
 
+void DBCCSlot::setDisplayImage(cocos2d::Node *display, bool disposeExisting/* = true*/)
+{
+    Slot::setDisplay(display, DisplayType::DT_IMAGE, disposeExisting);
+}
+
 DBCCSlot::DBCCSlot(SlotData *slotData)
     : Slot(slotData)
 {
