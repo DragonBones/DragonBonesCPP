@@ -5,6 +5,8 @@
 #include "VisibleRect.h"
 #include "DBCCRenderHeaders.h"
 
+#include "2d/CCLayer.h"
+
 USING_NS_CC;
 
 class DemoBase : public cocos2d::LayerColor
