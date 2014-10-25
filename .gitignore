@@ -87,3 +87,7 @@ tags
 
 # .setting directory for eclipse project
 .settings/
+
+
+# ignore engines
+engines/
