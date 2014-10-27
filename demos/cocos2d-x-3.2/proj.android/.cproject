@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?fileVersion 4.0.0?>
-
-<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="0.1230402123">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="0.1230402123" moduleId="org.eclipse.cdt.core.settings" name="Release">
@@ -41,19 +39,19 @@
 									<listOptionValue builtIn="false" value="${NDK_ROOT}/sources/android/native_app_glue"/>
 									<listOptionValue builtIn="false" value="${NDK_ROOT}/platforms/android-18/arch-arm/usr/include"/>
 									<listOptionValue builtIn="false" value="${NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/4.8/include"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/2d"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/physics"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/base"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/math/kazmath"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/ui"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/network"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/audio/include"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/editor-support"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/extensions"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/external"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/external/chipmunk/include/chipmunk"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/2d"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/physics"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/base"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/math/kazmath"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/ui"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/network"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/audio/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/editor-support"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/extensions"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/external"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/external/chipmunk/include/chipmunk"/>
 								</option>
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1728671637" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CC_TARGET_PLATFORM=CC_PLATFORM_ANDROID"/>
@@ -120,19 +118,19 @@
 									<listOptionValue builtIn="false" value="${NDK_ROOT}/sources/android/native_app_glue"/>
 									<listOptionValue builtIn="false" value="${NDK_ROOT}/platforms/android-18/arch-arm/usr/include"/>
 									<listOptionValue builtIn="false" value="${NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/4.8/include"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/2d"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/physics"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/base"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/math/kazmath"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/ui"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/network"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/audio/include"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/cocos/editor-support"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/extensions"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/external"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../cocos2d/external/chipmunk/include/chipmunk"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/2d"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/physics"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/base"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/math/kazmath"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/ui"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/network"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/audio/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/cocos/editor-support"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/extensions"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/external"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../engines/cocos2d-x-3.2/external/chipmunk/include/chipmunk"/>
 								</option>
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.923561092" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CC_TARGET_PLATFORM=CC_PLATFORM_ANDROID"/>
@@ -161,6 +159,20 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
+		<cconfiguration id="0.1230402123.1377291156">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="0.1230402123.1377291156" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
@@ -173,13 +185,7 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="DragonBonesCPPDemos.null.31159645" name="DragonBonesCPPDemos"/>
 	</storageModule>
-	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Default">
-			<resource resourceType="PROJECT" workspacePath="/DragonBonesCPPDemos"/>
-		</configuration>
-		<configuration configurationName="Debug">
-			<resource resourceType="PROJECT" workspacePath="/DragonBonesCPPDemos"/>
-		</configuration>
+	<storageModule moduleId="refreshScope" versionNumber="1">
+		<resource resourceType="PROJECT" workspacePath="/DragonBonesCPPDemos"/>
 	</storageModule>
 </cproject>
-
