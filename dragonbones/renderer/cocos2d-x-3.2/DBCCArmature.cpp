@@ -53,6 +53,7 @@ cocos2d::Rect DBCCArmature::getCCBoundingBox()
         auto r = slot->getBoundingBox();
         if (first)
         {
+            first = false;
             minx = r.x;
             miny = r.y;
             maxx = r.x + r.width;
