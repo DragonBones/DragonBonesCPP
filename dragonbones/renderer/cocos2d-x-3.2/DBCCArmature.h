@@ -16,6 +16,9 @@ public:
     DBCCArmature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, cocos2d::Node *display);
     virtual ~DBCCArmature();
     virtual void dispose() override;
+
+    virtual Rectangle getBoundingBox() override;
+    virtual cocos2d::Rect getCCBoundingBox();
     
     virtual DBCCSlot* getCCSlot(const std::string &slotName) const;
     

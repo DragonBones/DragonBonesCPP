@@ -34,6 +34,22 @@ void DBCCSlot::dispose()
     _nodeDisplay = nullptr;
 }
 
+Rectangle DBCCSlot::getBoundingBox()
+{
+    if (_displayIndex < 0)
+    {
+        return Rectangle();
+    }
+
+    if (_displayList[_displayIndex].second == DisplayType::DT_ARMATURE)
+    {
+        return getCCChildArmature()->getBoundingBox();
+    }
+
+    auto r = getCCDisplay()->getBoundingBox();
+    return Rectangle(r.origin.x, r.origin.y, r.size.width, r.size.height);
+}
+
 int DBCCSlot::getDisplayZIndex() const
 {
     if (_nodeDisplay)

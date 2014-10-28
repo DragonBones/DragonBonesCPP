@@ -64,37 +64,7 @@ DBCCArmatureNode::~DBCCArmatureNode()
 
 cocos2d::Rect DBCCArmatureNode::getBoundingBox() const
 {
-    float minx = 0, miny = 0, maxx = 0, maxy = 0;
-    bool first = true;
-    
-    for (const auto slot : _armature->getSlots())
-    {
-        if (!slot->getVisible() || !slot->isShowDisplay()) { continue; }
-        
-        auto node = static_cast<cocos2d::Node*>(slot->getDisplay());
-        
-        auto r = node->getBoundingBox();
-        
-        if (first)
-        {
-            minx = r.getMinX();
-            miny = r.getMinY();
-            maxx = r.getMaxX();
-            maxy = r.getMaxY();
-            first = false;
-        }
-        else
-        {
-            minx = r.getMinX() < minx ? r.getMinX() : minx;
-            miny = r.getMinY() < miny ? r.getMinY() : miny;
-            maxx = r.getMaxX() > maxx ? r.getMaxX() : maxx;
-            maxy = r.getMaxY() > maxy ? r.getMaxY() : maxy;
-        }
-    }
-
-    auto display = _armature->getCCDisplay();
-    cocos2d::Rect rect(minx, miny, maxx - minx, maxy - miny);
-    return cocos2d::RectApplyTransform(rect, display->getNodeToParentTransform());
+    return _armature->getCCBoundingBox();
 }
 
 void DBCCArmatureNode::update(float dt)
