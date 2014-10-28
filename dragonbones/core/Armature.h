@@ -7,6 +7,7 @@
 #include "../animation/Animation.h"
 #include "../events/IEventDispatcher.h"
 #include "Slot.h"
+#include "geoms/Rectangle.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
@@ -53,6 +54,8 @@ protected:
     void *_display;
     
 public:
+    virtual Rectangle getBoundingBox() = 0;
+
     virtual const std::vector<Bone*>& getBones() const;
     virtual const std::vector<Slot*>& getSlots() const;
     

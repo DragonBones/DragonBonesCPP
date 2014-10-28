@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "../objects/SlotData.h"
 #include "Armature.h"
+#include "geoms/Rectangle.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 class Slot : public Object
@@ -31,6 +32,9 @@ protected:
     Armature *_childArmature;
     
 public:
+
+    virtual Rectangle getBoundingBox() = 0;
+
     virtual int getDisplayIndex() const;
     bool isShowDisplay() { return _isShowDisplay; };
     

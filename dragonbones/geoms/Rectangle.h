@@ -14,12 +14,17 @@ public:
     
 public:
     Rectangle()
-    {
-        x = 0.f;
-        y = 0.f;
-        width = 0.f;
-        height = 0.f;
-    }
+        : x(0)
+        , y(0)
+        , width(0)
+        , height(0)
+    {}
+    Rectangle(float x, float y, float w, float h)
+        : x(x)
+        , y(y)
+        , width(w)
+        , height(h)
+    {}
     Rectangle(const Rectangle &copyData)
     {
         operator=(copyData);

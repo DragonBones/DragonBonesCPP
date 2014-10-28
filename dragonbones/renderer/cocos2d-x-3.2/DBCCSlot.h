@@ -21,6 +21,8 @@ public:
     DBCCSlot(SlotData *slotData);
     virtual ~DBCCSlot();
     virtual void dispose() override;
+
+    virtual Rectangle getBoundingBox() override;
     
 protected:
     virtual int getDisplayZIndex() const override;
