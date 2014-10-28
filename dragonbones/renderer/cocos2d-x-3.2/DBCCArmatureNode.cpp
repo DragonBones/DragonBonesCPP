@@ -1,5 +1,7 @@
+#include "dbccMacro.h"
 #include "DBCCArmatureNode.h"
 #include "DBCCEventDispatcher.h"
+
 
 #if (DRAGON_BONES_ENABLE_LUA == 1)
 #include "CCLuaEngine.h"
