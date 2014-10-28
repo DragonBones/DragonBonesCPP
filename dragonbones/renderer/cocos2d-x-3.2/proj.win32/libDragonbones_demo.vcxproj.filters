@@ -230,5 +230,8 @@
     <ClInclude Include="..\..\..\DragonBonesHeaders.h">
       <Filter>dragonbones</Filter>
     </ClInclude>
+    <ClInclude Include="..\dbccMacro.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
