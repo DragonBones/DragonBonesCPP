@@ -1,6 +1,7 @@
 ﻿#ifndef DBCC_ARMATURE_NODE_H
 #define DBCC_ARMATURE_NODE_H
 
+#include "dbccMacro.h"
 #include "DragonBonesHeaders.h"
 #include "cocos2d.h"
 #include "DBCCSlot.h"
