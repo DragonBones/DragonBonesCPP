@@ -4,6 +4,11 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 
 WorldClock WorldClock::clock;
 
+WorldClock* WorldClock::getInstance()
+{
+    return &clock;
+}
+
 float WorldClock::getTime() const
 {
     return _time;
