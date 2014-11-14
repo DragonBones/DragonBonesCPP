@@ -190,16 +190,12 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
         {
             float px = -textureData->frame->x;
             float py = -textureData->frame->y;
-            rect.size.width = textureData->frame->width;
-            rect.size.height = textureData->frame->height;
-            originSize.width = width;
-            originSize.height = height;
-            //1.图像区域中心坐标为 x1 = 12 + 182/2 = 103 ， y1 = 200 - 37 - 148/2 = 89
-            //2.整体区域中心坐标为 x2 = 200/2 =100, y2 = 200/2 =100
-            //3.偏移量 Δx = 103 -100 = 3, Δy = 89 - 100 = -11
+            originSize.width = textureData->frame->width;
+            originSize.height = textureData->frame->height;
+            // offset = sprite center - trimed texture center
             float cx1 = px + rect.size.width / 2;
             float cy1 = originSize.height - py - rect.size.height / 2;
-            float cx2 = originSize.height / 2;
+            float cx2 = originSize.width / 2;
             float cy2 = originSize.height / 2;
             offset.x = cx2 - cx1;
             offset.y = cy2 - cy1;
@@ -220,7 +216,8 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
             pivotY = displayData->pivot.y;
         }
 
-        display->setAnchorPoint(cocos2d::Point(pivotX / originSize.width, 1.f - pivotY / originSize.height));
+        display->setAnchorPoint(cocos2d::Vec2(pivotX / originSize.width, 1.f - pivotY / originSize.height));
+        display->setContentSize(originSize);
         return display;
     }
 
