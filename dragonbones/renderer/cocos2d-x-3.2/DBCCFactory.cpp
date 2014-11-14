@@ -1,4 +1,4 @@
-#include "DBCCFactory.h"
+﻿#include "DBCCFactory.h"
 #include "DBCCTextureAtlas.h"
 #include "DBCCSlot.h"
 #include "DBCCEventDispatcher.h"
@@ -33,12 +33,12 @@ DBCCArmature* DBCCFactory::buildArmature(const std::string &armatureName, const 
 DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
 {
     DragonBonesData *existDragonBonesData = getDragonBonesData(name);
-    
+
     if (existDragonBonesData)
     {
         return existDragonBonesData;
     }
-    
+
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(dragonBonesFilePath);
     if (data.getSize() == 0)
     {
@@ -61,13 +61,13 @@ DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBones
 ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name)
 {
     ITextureAtlas *existTextureAtlas = getTextureAtlas(name);
-    
+
     if (existTextureAtlas)
     {
         refreshTextureAtlasTexture(name.empty() ? existTextureAtlas->textureAtlasData->name : name);
         return existTextureAtlas;
     }
-    
+
     const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(textureAtlasFile);
     if (data.getSize() == 0)
     {
@@ -84,13 +84,13 @@ ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile
     textureAtlas->textureAtlasData = parser.parseTextureAtlasData(doc.RootElement(), scale);
 
     int pos = textureAtlasFile.find_last_of("/");
-    
+
     if (std::string::npos != pos)
     {
         std::string base_path = textureAtlasFile.substr(0, pos + 1);
         textureAtlas->textureAtlasData->imagePath = base_path + textureAtlas->textureAtlasData->imagePath;
     }
-    
+
     //
     addTextureAtlas(textureAtlas, name);
     refreshTextureAtlasTexture(name.empty() ? textureAtlas->textureAtlasData->name : name);
@@ -103,7 +103,7 @@ void DBCCFactory::refreshTextureAtlasTexture(const std::string &name)
     {
         DBCCTextureAtlas *textureAtlas = static_cast<DBCCTextureAtlas*>(iterator->second);
         const TextureAtlasData *textureAtlasData = textureAtlas->textureAtlasData;
-        
+
         if (iterator->first == name)
         {
             textureAtlas->texture = cocos2d::Director::getInstance()->getTextureCache()->addImage(textureAtlasData->imagePath.c_str());
@@ -124,22 +124,22 @@ void DBCCFactory::refreshAllTextureAtlasTexture()
 bool DBCCFactory::hasDragonBones(const std::string &skeletonName, const std::string &armatureName, const std::string &animationName)
 {
     auto dragonbonesData = getDragonBonesData(skeletonName);
-    
+
     if (!dragonbonesData) { return false; }
-    
+
     if (!armatureName.empty())
     {
         auto armatureData = dragonbonesData->getArmatureData(armatureName);
-        
+
         if (!armatureData) { return false; }
-        
+
         if (!animationName.empty())
         {
             auto animationData = armatureData->getAnimationData(animationName);
             return animationData != nullptr;
         }
     }
-    
+
     return true;
 }
 
@@ -167,44 +167,60 @@ DBCCSlot* DBCCFactory::generateSlot(const SlotData *slotData) const
 void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const TextureData *textureData, const DisplayData *displayData) const
 {
     DBCCTextureAtlas *dbccTextureAtlas = (DBCCTextureAtlas*)(textureAtlas);
-    
+
     if (dbccTextureAtlas && textureData)
     {
         if (!dbccTextureAtlas->texture)
         {
             // throw
         }
-        
+
+
+
         const float x = textureData->region.x;
         const float y = textureData->region.y;
-        const float width = textureData->region.width;
-        const float height = textureData->region.height;
-        const cocos2d::Rect rect(x, y, width, height);
+        const bool rotated = textureData->rotated;
+        const float width = rotated ? textureData->region.height : textureData->region.width;
+        const float height = rotated ? textureData->region.width : textureData->region.height;
+        cocos2d::Rect rect(x, y, width, height);
+        cocos2d::Vec2 offset;
+        cocos2d::Size originSize(width, height);
+
+        if (textureData->frame)
+        {
+            float px = -textureData->frame->x;
+            float py = -textureData->frame->y;
+            originSize.width = textureData->frame->width;
+            originSize.height = textureData->frame->height;
+            // offset = sprite center - trimed texture center
+            float cx1 = px + rect.size.width / 2;
+            float cy1 = originSize.height - py - rect.size.height / 2;
+            float cx2 = originSize.width / 2;
+            float cy2 = originSize.height / 2;
+            offset.x = cx2 - cx1;
+            offset.y = cy2 - cy1;
+        }
         // sprite
-        cocos2d::Node *display = cocos2d::Sprite::createWithTexture(dbccTextureAtlas->texture, rect, false);
+        auto spriteFrame = cocos2d::SpriteFrame::createWithTexture(dbccTextureAtlas->texture, rect,
+            textureData->rotated, offset, originSize);
+        cocos2d::Node *display = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
         display->setCascadeColorEnabled(true);
         display->setCascadeOpacityEnabled(true);
         display->retain();
         float pivotX = 0;
         float pivotY = 0;
-        
+
         if (displayData)
         {
             pivotX = displayData->pivot.x;
             pivotY = displayData->pivot.y;
-            
-            if (textureData->frame)
-            {
-                pivotX += textureData->frame->x;
-                pivotY += textureData->frame->y;
-            }
         }
-        
-        display->setAnchorPoint(cocos2d::Point(pivotX / width, 1.f - pivotY / height));
-        display->setContentSize(cocos2d::Size(width, height));
+
+        display->setAnchorPoint(cocos2d::Vec2(pivotX / originSize.width, 1.f - pivotY / originSize.height));
+        display->setContentSize(originSize);
         return display;
     }
-    
+
     return nullptr;
 }
 NAME_SPACE_DRAGON_BONES_END
