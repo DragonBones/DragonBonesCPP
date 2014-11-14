@@ -179,11 +179,10 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
 
         const float x = textureData->region.x;
         const float y = textureData->region.y;
-        const float width = textureData->region.width;
-        const float height = textureData->region.height;
+        const bool rotated = textureData->rotated;
+        const float width = rotated ? textureData->region.height : textureData->region.width;
+        const float height = rotated ? textureData->region.width : textureData->region.height;
         cocos2d::Rect rect(x, y, width, height);
-
-        //cocos2d::Rect rect(x, y, width, height);
         cocos2d::Vec2 offset;
         cocos2d::Size originSize(width, height);
 
