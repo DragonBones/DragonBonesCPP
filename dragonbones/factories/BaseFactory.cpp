@@ -438,15 +438,21 @@ void BaseFactory::buildSlots(Armature *armature, const ArmatureData *armatureDat
                     displayList.push_back(std::make_pair(display, DisplayType::DT_IMAGE));
                     break;
                 }
-                
+
+                /*
                 case DisplayType::DT_FRAME:
                 {
-                    //j
-                    //frameDisplay = ;
                     break;
                 }
+
+                case DisplayType::DT_TEXT:
+                {
+                    break;
+                }
+                */
                 
                 default:
+                    displayList.push_back(std::make_pair(nullptr, DisplayType::DT_IMAGE));
                     break;
             }
         }
