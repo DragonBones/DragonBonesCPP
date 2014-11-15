@@ -105,6 +105,15 @@ void Animation::clear()
     }
     _animationStateList.clear();
     _lastAnimationState = nullptr;
+
+    for (size_t i = 0, l = _armature->_slotList.size(); i < l; ++i)
+    {
+        Armature *childArmature = _armature->_slotList[i]->getChildArmature();
+        if (childArmature)
+        {
+            childArmature->getAnimation()->clear();
+        }
+    }
 }
 
 AnimationState* Animation::gotoAndPlay(
@@ -140,6 +149,10 @@ AnimationState* Animation::gotoAndPlay(
     _isPlaying = true;
     _isFading = true;
     fadeInTime = fadeInTime < 0 ? (animationData->fadeTime < 0 ? 0.3f : animationData->fadeTime) : fadeInTime;
+    if (fadeInTime <= 0)
+    {
+        fadeInTime = 0.01f;
+    }
     float durationScale;
     
     if (duration < 0)
