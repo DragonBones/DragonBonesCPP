@@ -12,4 +12,4 @@ DragonBones C++ Library
 * [cocos2d-x-3.2][2]
 
 [1]: http://cocos2d-x.org
-[2]: demos/cocos2d-x-3.x/
+[2]: demos/cocos2d-x-3.2/

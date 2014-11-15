@@ -1,0 +1,11 @@
+
+
+#ifndef DBCC_MACRO_H
+#define DBCC_MACRO_H
+
+#ifndef DRAGON_BONES_ENABLE_LUA
+#define DRAGON_BONES_ENABLE_LUA 0
+#endif // !DRAGON_BONES_ENABLE_LUA
+
+
+#endif // DBCC_MACRO_H

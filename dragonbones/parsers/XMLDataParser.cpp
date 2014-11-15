@@ -66,7 +66,8 @@ TextureAtlasData* XMLDataParser::parseTextureAtlasData(const void *rawTextureAtl
     _textureScale = scale;
     const XMLElement *textureAtlasXML = static_cast<const XMLElement*>(rawTextureAtlasData);
     TextureAtlasData *textureAtlasData = new TextureAtlasData();
-    textureAtlasData->name = textureAtlasXML->Attribute(ConstValues::A_NAME.c_str());
+    const char *name = textureAtlasXML->Attribute(ConstValues::A_NAME.c_str());
+    textureAtlasData->name = name ? name : "";
     textureAtlasData->imagePath = textureAtlasXML->Attribute(ConstValues::A_IMAGE_PATH.c_str());
     
     for (const XMLElement *textureXML = textureAtlasXML->FirstChildElement(ConstValues::SUB_TEXTURE.c_str()); textureXML; textureXML = textureXML->NextSiblingElement(ConstValues::SUB_TEXTURE.c_str()))
