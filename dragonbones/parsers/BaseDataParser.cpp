@@ -241,7 +241,7 @@ void BaseDataParser::setFrameTransform(AnimationData *animationData, const Armat
                     *globalTransform = currentTransform;
                 }
                 
-                globalTransform->toMatrix(helpMatrix);
+                globalTransform->toMatrix(helpMatrix, true);
             }
             
             frame->transform.transformWith(*globalTransform);

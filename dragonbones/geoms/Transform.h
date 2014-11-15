@@ -75,7 +75,7 @@ public:
     void transformWith(const Transform &parent)
     {
         Matrix matrix;
-        parent.toMatrix(matrix);
+        parent.toMatrix(matrix, true);
         matrix.invert();
         const float x0 = x;
         const float y0 = y;

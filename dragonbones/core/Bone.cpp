@@ -222,16 +222,17 @@ void Bone::update(bool needUpdate)
         global.skewY = origin.skewY + offset.skewY + _tween.skewY;
     }
     
-    /*
     globalTransformMatrix.a = global.scaleX * cos(global.skewY);
     globalTransformMatrix.b = global.scaleX * sin(global.skewY);
     globalTransformMatrix.c = -global.scaleY * sin(global.skewX);
     globalTransformMatrix.d = global.scaleY * cos(global.skewX);
-    */
+    
+    /*
     globalTransformMatrix.a = offset.scaleX * cos(global.skewY);
     globalTransformMatrix.b = offset.scaleX * sin(global.skewY);
     globalTransformMatrix.c = -offset.scaleY * sin(global.skewX);
     globalTransformMatrix.d = offset.scaleY * cos(global.skewX);
+    */
 }
 
 void Bone::updateColor(
@@ -272,8 +273,8 @@ void Bone::arriveAtFrame(TransformFrame *frame, const TimelineState *timelineSta
         animationState->displayControl &&
         (displayController.empty() || displayController == animationState->name);
         
-    //
-    if (displayControl && timelineState->_weight > 0)
+    // && timelineState->_weight > 0
+    if (displayControl)
     {
         const int displayIndex = frame->displayIndex;
         

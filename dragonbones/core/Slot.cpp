@@ -6,6 +6,11 @@ int Slot::getDisplayIndex() const
     return _displayIndex;
 }
 
+SlotData* Slot::getSlotData() const
+{
+    return _slotData;
+}
+
 float Slot::getZOrder() const
 {
     return _originZOrder + _tweenZOrder + _offsetZOrder;
@@ -147,10 +152,10 @@ void Slot::update()
     const float x = origin.x + offset.x + _parent->_tweenPivot.x;
     const float y = origin.y + offset.y + _parent->_tweenPivot.y;
     const Matrix &parentMatrix = _parent->globalTransformMatrix;
-    //globalTransformMatrix.tx = global.x = parentMatrix.a * x + parentMatrix.c * y + parentMatrix.tx;
-    //globalTransformMatrix.ty = global.y = parentMatrix.d * y + parentMatrix.b * x + parentMatrix.ty;
-    globalTransformMatrix.tx = global.x = parentMatrix.a * x * _parent->global.scaleX + parentMatrix.c * y * _parent->global.scaleY + parentMatrix.tx;
-    globalTransformMatrix.ty = global.y = parentMatrix.d * y * _parent->global.scaleY + parentMatrix.b * x * _parent->global.scaleX + parentMatrix.ty;
+    globalTransformMatrix.tx = global.x = parentMatrix.a * x + parentMatrix.c * y + parentMatrix.tx;
+    globalTransformMatrix.ty = global.y = parentMatrix.d * y + parentMatrix.b * x + parentMatrix.ty;
+    //globalTransformMatrix.tx = global.x = parentMatrix.a * x * _parent->global.scaleX + parentMatrix.c * y * _parent->global.scaleY + parentMatrix.tx;
+    //globalTransformMatrix.ty = global.y = parentMatrix.d * y * _parent->global.scaleY + parentMatrix.b * x * _parent->global.scaleX + parentMatrix.ty;
     
     if (inheritRotation)
     {
