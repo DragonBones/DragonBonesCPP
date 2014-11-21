@@ -14,7 +14,7 @@ DBCCArmatureNode* DBCCArmatureNode::create(DBCCArmature *armature)
 {
     DBCCArmatureNode *ret = new DBCCArmatureNode();
     
-    if (ret && ret->initWithDBCCArmature(armature))
+    if (ret && ret->initWithDBCCArmature(armature, nullptr))
     {
         ret->autorelease();
     }
@@ -26,13 +26,38 @@ DBCCArmatureNode* DBCCArmatureNode::create(DBCCArmature *armature)
     return ret;
 }
 
-bool DBCCArmatureNode::initWithDBCCArmature(DBCCArmature *armature)
+DBCCArmatureNode* DBCCArmatureNode::createWithWorldClock(DBCCArmature *armature, WorldClock *clock)
+{
+    DBCCArmatureNode *ret = new DBCCArmatureNode();
+    if (!clock)
+        clock = WorldClock::getInstance();
+
+    if (ret && ret->initWithDBCCArmature(armature, clock))
+    {
+        ret->autorelease();
+    }
+    else
+    {
+        CC_SAFE_DELETE(ret);
+    }
+
+    return ret;
+}
+
+bool DBCCArmatureNode::initWithDBCCArmature(DBCCArmature *armature, WorldClock *clock)
 {
     if (armature != nullptr)
     {
         _armature = armature;
+        _clock = clock;
+        if (clock)
+        {
+            clock->add(this);
+        }else
+        {
+            scheduleUpdate();
+        }
         addChild(armature->getCCDisplay());
-        scheduleUpdate();
         setCascadeOpacityEnabled(true);
         setCascadeColorEnabled(true);
         return true;
@@ -43,7 +68,8 @@ bool DBCCArmatureNode::initWithDBCCArmature(DBCCArmature *armature)
 
 
 DBCCArmatureNode::DBCCArmatureNode()
-	:_armature(nullptr)
+    :_armature(nullptr)
+    ,_clock(nullptr)
 	,_frameEventHandler(0)
 	,_movementEventHandler(0)
 {
@@ -54,6 +80,12 @@ DBCCArmatureNode::~DBCCArmatureNode()
 	unregisterFrameEventHandler();
 	unregisterMovementEventHandler();
 #endif // DRAGON_BONES_ENABLE_LUA
+
+    if (_clock)
+    {
+        _clock->remove(this);
+        _clock = nullptr;
+    }
 
     if (_armature)
     {
@@ -69,9 +101,14 @@ cocos2d::Rect DBCCArmatureNode::getBoundingBox() const
 
 void DBCCArmatureNode::update(float dt)
 {
-	retain();
-	getArmature()->advanceTime(dt);
-	release();
+    advanceTime(dt);
+}
+
+void DBCCArmatureNode::advanceTime(float dt)
+{
+    retain();
+    _armature->advanceTime(dt);
+    release();
 }
 
 ///////////////////////////////////////////////////////////////////////

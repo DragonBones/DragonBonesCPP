@@ -14,10 +14,10 @@
 
 
 NAME_SPACE_DRAGON_BONES_BEGIN
-class DBCCArmatureNode : public cocos2d::Node
+class DBCCArmatureNode : public cocos2d::Node, public IAnimatable
 {
 public:
-	virtual cocos2d::Node* getCCDisplay() const { return _armature->getCCDisplay(); };
+	virtual cocos2d::Node* getCCDisplay() const { return (cocos2d::Node*)_armature->getCCDisplay(); };
 	virtual cocos2d::EventDispatcher* getCCEventDispatcher() const { return _armature->getCCEventDispatcher(); };
 	virtual cocos2d::Rect getBoundingBox() const override;
 
@@ -30,9 +30,16 @@ public:
 
 
 public:
-
+    // create DBCCArmatureNode without WorldClock
     static DBCCArmatureNode* create(DBCCArmature *armature);
-    virtual bool initWithDBCCArmature(DBCCArmature *armature);
+    /**
+     * create DDCCArmatureNode with WorldClock
+     * @param armature
+     * @param clock if null, use WorldClock::getInstance()
+     * @return 
+     */
+    static DBCCArmatureNode* createWithWorldClock(DBCCArmature *armature, WorldClock *clock);
+    virtual bool initWithDBCCArmature(DBCCArmature *armature, WorldClock *clock);
     
     DBCCArmatureNode();
     virtual ~DBCCArmatureNode();
@@ -41,9 +48,11 @@ public:
 	Animation* getAnimation() const { return _armature->getAnimation(); };
 
 	virtual void update(float dt) override;
+    virtual void advanceTime(float dt) override;
 
 protected:
     DBCCArmature *_armature;
+    WorldClock *_clock;
     
 private:
 	int _frameEventHandler;
