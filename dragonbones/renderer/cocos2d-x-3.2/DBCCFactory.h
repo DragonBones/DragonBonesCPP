@@ -8,7 +8,7 @@
 NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCFactory : public BaseFactory
 {
-public:
+private:
     static DBCCFactory factory;
     
 public:
@@ -20,6 +20,9 @@ public:
     virtual DBCCArmature* buildArmature(const std::string &armatureName) const override;
     virtual DBCCArmature* buildArmature(const std::string &armatureName, const std::string &dragonBonesName) const override;
     virtual DBCCArmature* buildArmature(const std::string &armatureName, const std::string &skinName, const std::string &animationName, const std::string &dragonBonesName, const std::string &textureAtlasName) const override;
+    virtual DBCCArmatureNode* buildArmatureNode(const std::string &armatureName) const;
+    virtual DBCCArmatureNode* buildArmatureNode(const std::string &armatureName, const std::string &dragonBonesName) const;
+    virtual DBCCArmatureNode* buildArmatureNode(const std::string &armatureName, const std::string &skinName, const std::string &animationName, const std::string &dragonBonesName, const std::string &textureAtlasName) const;
     
     virtual DragonBonesData* loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
     virtual ITextureAtlas* loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");

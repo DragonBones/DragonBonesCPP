@@ -30,6 +30,25 @@ DBCCArmature* DBCCFactory::buildArmature(const std::string &armatureName, const 
     return (DBCCArmature*) BaseFactory::buildArmature(armatureName, skinName, animationName, dragonBonesName, textureAtlasName);
 }
 
+DBCCArmatureNode* DBCCFactory::buildArmatureNode(const std::string &armatureName) const
+{
+    auto armature = buildArmature(armatureName);
+    return DBCCArmatureNode::create(armature);
+}
+
+DBCCArmatureNode* DBCCFactory::buildArmatureNode(const std::string &armatureName, const std::string &dragonBonesName) const
+{
+    auto armature = buildArmature(armatureName, dragonBonesName);
+    return DBCCArmatureNode::create(armature);
+}
+
+DBCCArmatureNode* DBCCFactory::buildArmatureNode(const std::string &armatureName, const std::string &skinName, const std::string &animationName,
+    const std::string &dragonBonesName, const std::string &textureAtlasName) const
+{
+    auto armature = buildArmature(armatureName, skinName, animationName, dragonBonesName, textureAtlasName);
+    return DBCCArmatureNode::create(armature);
+}
+
 DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
 {
     DragonBonesData *existDragonBonesData = getDragonBonesData(name);
