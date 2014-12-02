@@ -3,6 +3,8 @@
 
 #include "Demo.h"
 
+USING_NS_DB;
+
 class DemoDragonBoy : public DemoBase
 {
 public:
@@ -14,7 +16,7 @@ public:
     virtual void update(float dt) override;
 
 private:
-    dragonBones::DBCCArmature *_armature;
+    DBCCArmatureNode *_armatureNode;
     
     bool _isLeft;
     bool _isRight;

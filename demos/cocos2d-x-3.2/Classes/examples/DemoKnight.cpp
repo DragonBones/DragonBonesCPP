@@ -1,7 +1,9 @@
 #include "DemoKnight.h"
 
+USING_NS_DB;
+
 DemoKnight::DemoKnight()
-: _armature(nullptr)
+: _armatureNode(nullptr)
 , _armArmature(nullptr)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 , _keyboardListener(nullptr)
@@ -16,12 +18,7 @@ DemoKnight::~DemoKnight()
     this->getEventDispatcher()->removeEventListener(_keyboardListener);
     _keyboardListener = nullptr;
 #endif
-    Director::getInstance()->getScheduler()->unscheduleUpdate(this);
-    dragonBones::WorldClock::clock.remove(_armature);
-    _armArmature->dispose();
-    _armature->dispose();
-    
-   CC_SAFE_DELETE(_armature);
+    _armatureNode = nullptr;
 }
 
 std::string DemoKnight::title()
@@ -41,27 +38,24 @@ std::string DemoKnight::subtitle()
 void DemoKnight::update(float dt)
 {
     updateSpeed();
-    dragonBones::WorldClock::clock.advanceTime(dt);
     updateArrows();
 }
 
 void DemoKnight::demoInit()
 {
     // factory
-    dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/Knight/skeleton.xml", "Knight");
-    dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/Knight/texture.xml", "Knight");
+    DBCCFactory::getInstance()->loadDragonBonesData("armatures/Knight/skeleton.xml", "Knight");
+    DBCCFactory::getInstance()->loadTextureAtlas("armatures/Knight/texture.xml", "Knight");
 
     // armature
-    _armature = (dragonBones::DBCCArmature*)(dragonBones::DBCCFactory::factory.buildArmature("knight"));
-    _armArmature = _armature->getCCSlot("armOutside")->getCCChildArmature();
-    _armature->getCCDisplay()->setPosition(480.f, 200.f);
-    this->addChild(_armature->getCCDisplay());
+    _armatureNode = DBCCFactory::getInstance()->buildArmatureNode("knight");
+    _armArmature = _armatureNode->getCCSlot("armOutside")->getCCChildArmature();
+    _armatureNode->setPosition(480.f, 200.f);
+    this->addChild(_armatureNode);
     // armature event
     _armArmature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
     _armArmature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::COMPLETE, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
     _armArmature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
-    // update
-    dragonBones::WorldClock::clock.add(_armature);
     // key
     addInteraction();
     //
@@ -85,7 +79,7 @@ void DemoKnight::demoInit()
     _hitCount = 1;
     //
     updateAnimation();
-    cocos2d::Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
+    scheduleUpdate();
 }
 
 void DemoKnight::addInteraction()
@@ -186,7 +180,7 @@ void DemoKnight::jump()
 
     _isJump = true;
     _speedY = 24.f;
-    _armature->getAnimation()->gotoAndPlay("jump");
+    _armatureNode->getAnimation()->gotoAndPlay("jump");
 }
 
 void DemoKnight::move(int dir, bool isDown)
@@ -243,13 +237,13 @@ void DemoKnight::updateAnimation()
     else if (_moveDir != 0)
     {
         _speedX = _moveDir * 6.f;
-        _armature->getAnimation()->gotoAndPlay("run");
-        _armature->getCCDisplay()->setScaleX(_moveDir);
+        _armatureNode->getAnimation()->gotoAndPlay("run");
+        _armatureNode->setScaleX(_moveDir);
     }
     else
     {
         _speedX = 0.f;
-        _armature->getAnimation()->gotoAndPlay("stand");
+        _armatureNode->getAnimation()->gotoAndPlay("stand");
     }
 }
 
@@ -286,7 +280,7 @@ void DemoKnight::upgradeWeaponLevel()
     case 2:
     {
         dragonBones::DBCCSlot *weaponSlot = _armArmature->getCCSlot("weapon");
-        weaponSlot->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
+        weaponSlot->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
         break;
     }
 
@@ -297,10 +291,10 @@ void DemoKnight::upgradeWeaponLevel()
         dragonBones::DBCCSlot *bowBB = bowSlot->getCCChildArmature()->getCCSlot("bb");
         dragonBones::DBCCSlot *bowArrow = bowSlot->getCCChildArmature()->getCCSlot("arrow");
         dragonBones::DBCCSlot *bowArrowB = bowSlot->getCCChildArmature()->getCCSlot("arrowBackup");
-        bowBA->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
-        bowBB->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
-        bowArrow->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName("arrow", newWeaponLevel)));
-        bowArrowB->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName("arrow", newWeaponLevel)));
+        bowBA->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
+        bowBB->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
+        bowArrow->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName("arrow", newWeaponLevel)));
+        bowArrowB->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName("arrow", newWeaponLevel)));
         break;
     }
     }
@@ -355,13 +349,13 @@ void DemoKnight::armAnimationHandler(cocos2d::EventCustom *event)
             cocos2d::Point resultPoint = _armArmature->getCCDisplay()->convertToWorldSpace(cocos2d::Point(bowBone->global.x, -bowBone->global.y));
             float r = 0.f;
 
-            if (_armature->getCCDisplay()->getScaleX() > 0)
+            if (_armatureNode->getScaleX() > 0)
             {
-                r = CC_DEGREES_TO_RADIANS(-_armature->getCCDisplay()->getRotation()) + bowBone->global.getRotation();
+                r = CC_DEGREES_TO_RADIANS(-_armatureNode->getRotation()) + bowBone->global.getRotation();
             }
             else
             {
-                r = CC_DEGREES_TO_RADIANS(-_armature->getCCDisplay()->getRotation()) - bowBone->global.getRotation() + dragonBones::PI;
+                r = CC_DEGREES_TO_RADIANS(-_armatureNode->getRotation()) - bowBone->global.getRotation() + dragonBones::PI;
             }
 
             switch (_weaponLevelList[_weaponIndex])
@@ -399,7 +393,7 @@ void DemoKnight::armAnimationHandler(cocos2d::EventCustom *event)
 
 void DemoKnight::createArrow(float r, const cocos2d::Point &point)
 {
-    cocos2d::Node *arrowNode = static_cast<cocos2d::Node*>(dragonBones::DBCCFactory::factory.getTextureDisplay(getWeaponName("arrow", 1)));
+    cocos2d::Node *arrowNode = static_cast<cocos2d::Node*>(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName("arrow", 1)));
     arrowNode->setPosition(point);
     arrowNode->setRotation(CC_RADIANS_TO_DEGREES(r));
     cocos2d::Point *speedPoint = new cocos2d::Point();
@@ -437,9 +431,9 @@ void DemoKnight::updateArrows()
 
 void DemoKnight::updateSpeed()
 {
-    float timeScale = _armature->getAnimation()->getTimeScale();
-    float x = _armature->getCCDisplay()->getPositionX();
-    float y = _armature->getCCDisplay()->getPositionY();
+    float timeScale = _armatureNode->getAnimation()->getTimeScale();
+    float x = _armatureNode->getPositionX();
+    float y = _armatureNode->getPositionY();
 
     if (_speedX != 0)
     {
@@ -461,9 +455,9 @@ void DemoKnight::updateSpeed()
 
         if (_speedY >= 0 && _speedY + speedG < 0)
         {
-            if (_armature->getAnimation()->hasAnimation("fall"))
+            if (_armatureNode->getAnimation()->hasAnimation("fall"))
             {
-                _armature->getAnimation()->gotoAndPlay("fall", 0.2f);
+                _armatureNode->getAnimation()->gotoAndPlay("fall", 0.2f);
             }
         }
 
@@ -476,14 +470,14 @@ void DemoKnight::updateSpeed()
             _isJump = false;
             _speedY = 0.f;
             _speedX = 0.f;
-            _armature->getCCDisplay()->setRotation(0.f);
+            _armatureNode->setRotation(0.f);
             updateAnimation();
         }
         else
         {
-            _armature->getCCDisplay()->setRotation(-_speedY * _armature->getCCDisplay()->getScaleX());
+            _armatureNode->setRotation(-_speedY * _armatureNode->getScaleX());
         }
     }
 
-    _armature->getCCDisplay()->setPosition(x, y);
+    _armatureNode->setPosition(x, y);
 }

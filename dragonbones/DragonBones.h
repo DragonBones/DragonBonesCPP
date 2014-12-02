@@ -14,6 +14,7 @@
 // namespace dragonBones {}
 #define NAME_SPACE_DRAGON_BONES_BEGIN namespace dragonBones {
 #define NAME_SPACE_DRAGON_BONES_END }
+#define USING_NS_DB                   using namespace dragonBones
 
 // A macro to disallow the copy constructor and operator= functions
 // This should be used in the private: declarations for a class
