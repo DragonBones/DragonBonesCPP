@@ -17,7 +17,8 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCArmatureNode : public cocos2d::Node, public IAnimatable
 {
 public:
-	virtual cocos2d::Node* getCCDisplay() const { return (cocos2d::Node*)_armature->getCCDisplay(); };
+    virtual DBCCSlot* getCCSlot(const std::string &slotName) const { return _armature->getCCSlot(slotName); };
+	virtual cocos2d::Node* getCCDisplay() const { return _armature->getCCDisplay(); };
 	virtual cocos2d::EventDispatcher* getCCEventDispatcher() const { return _armature->getCCEventDispatcher(); };
 	virtual cocos2d::Rect getBoundingBox() const override;
 
