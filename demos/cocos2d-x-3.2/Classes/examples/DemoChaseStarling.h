@@ -4,6 +4,7 @@
 #define DEMO_CHASE_STARLING_H
 
 #include "Demo.h"
+USING_NS_DB;
 
 class DemoChaseStarling : public DemoBase
 {
@@ -31,17 +32,17 @@ private:
     const int _footY; //= 100;
     Size _winSize;
 
-    dragonBones::DBCCArmature *_armature;
+    DBCCArmatureNode *_armatureNode;
     Sprite *_starlingBird;
 
-    dragonBones::Bone *_head;
-    dragonBones::Bone *_armR;
-    dragonBones::Bone *_armL;
+    Bone *_head;
+    Bone *_armR;
+    Bone *_armL;
 
     bool touchBeganListener(Touch *pTouch, Event *pEvent);
     void touchMovedListener(Touch *pTouch, Event *pEvent);
 
-    void updatePosition(Point& point);
+    void updatePosition(Vec2& point);
     void updateBehavior(int direction);
 	void updateMove();
 	void updateBones();

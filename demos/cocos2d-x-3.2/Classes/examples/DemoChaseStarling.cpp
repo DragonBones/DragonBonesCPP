@@ -1,7 +1,9 @@
 #include "DemoChaseStarling.h"
 
+USING_NS_DB;
+
 DemoChaseStarling::DemoChaseStarling()
-: _armature(nullptr)
+: _armatureNode(nullptr)
 , _starlingBird(nullptr)
 , _head(nullptr)
 , _armR(nullptr)
@@ -20,11 +22,7 @@ DemoChaseStarling::DemoChaseStarling()
 
 DemoChaseStarling::~DemoChaseStarling()
 {
-    Director::getInstance()->getScheduler()->unscheduleUpdate(this);
-    dragonBones::WorldClock::clock.remove(_armature);
-    _armature->dispose();
-
-    CC_SAFE_DELETE(_armature);
+    _armatureNode = nullptr;
 }
 
 std::string DemoChaseStarling::title()
@@ -41,26 +39,24 @@ void DemoChaseStarling::demoInit()
 {
 
     // factory
-    dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/dragon/skeleton.xml", "Dragon");
-    dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/dragon/texture.xml", "Dragon");
+    DBCCFactory::getInstance()->loadDragonBonesData("armatures/dragon/skeleton.xml", "Dragon");
+    DBCCFactory::getInstance()->loadTextureAtlas("armatures/dragon/texture.xml", "Dragon");
     // armature
-    _armature = (dragonBones::DBCCArmature*)(dragonBones::DBCCFactory::factory.buildArmature("Dragon"));
-    _armature->getCCDisplay()->setPosition(VisibleRect::bottom(0, _footY));
-    _armature->getCCDisplay()->setContentSize(Size(360, 400));
-    this->addChild(_armature->getCCDisplay());
-    // update
-    dragonBones::WorldClock::clock.add(_armature);
+    _armatureNode = DBCCFactory::getInstance()->buildArmatureNode("Dragon");
+    _armatureNode->setPosition(VisibleRect::bottom(0, _footY));
+    _armatureNode->setContentSize(Size(360, 400));
+    addChild(_armatureNode);
 
     _starlingBird = Sprite::create("starling.png");
     _starlingBird->setPosition(VisibleRect::left(20, 0));
-    this->addChild(_starlingBird, 10);
+    addChild(_starlingBird, 10);
 
-    _head = _armature->getBone("head");
-    _armR = _armature->getBone("armUpperR");
-    _armL = _armature->getBone("armUpperL");
+    _head = _armatureNode->getArmature()->getBone("head");
+    _armR = _armatureNode->getArmature()->getBone("armUpperR");
+    _armL = _armatureNode->getArmature()->getBone("armUpperL");
 
     addInteraction();
-    Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
+    scheduleUpdate();
 }
 
 void DemoChaseStarling::addInteraction()
@@ -76,12 +72,11 @@ void DemoChaseStarling::update(float dt)
     checkDistance();
     updateMove();
     updateBones();
-    dragonBones::WorldClock::clock.advanceTime(dt);
 }
 
 bool DemoChaseStarling::touchBeganListener(Touch *pTouche, Event *pEvent)
 {
-    Point loc = pTouche->getLocation();
+    auto loc = pTouche->getLocation();
     updatePosition(loc);
     if (!_isChasing) 
     {
@@ -94,12 +89,12 @@ bool DemoChaseStarling::touchBeganListener(Touch *pTouche, Event *pEvent)
 
 void DemoChaseStarling::touchMovedListener(Touch *pTouch, Event *pEvent)
 {
-    Point loc = pTouch->getLocation();
+    auto loc = pTouch->getLocation();
     updatePosition(loc);
     CCLOG("%s, %.2f, %.2f", __FUNCTION__, loc.x, loc.y);
 }
 
-void DemoChaseStarling::updatePosition(Point& point)
+void DemoChaseStarling::updatePosition(Vec2& point)
 {
     _touchX = point.x;
     _touchY = point.y;
@@ -108,7 +103,7 @@ void DemoChaseStarling::updatePosition(Point& point)
 
 void DemoChaseStarling::checkDistance()
 {
-    _distance = _armature->getCCDisplay()->getPositionX() - _touchX;
+    _distance = _armatureNode->getPositionX() - _touchX;
 
     if (_distance<150)
     {
@@ -127,9 +122,9 @@ void DemoChaseStarling::checkDistance()
 void DemoChaseStarling::updateBones()
 {
     //update the bones' pos or rotation
-    Size csize = _armature->getCCDisplay()->getContentSize();
-    _r = M_PI + atan2(_armature->getCCDisplay()->getPositionY() + csize.height / 2 - _touchY, 
-        _touchX - _armature->getCCDisplay()->getPositionX());
+    Size csize = _armatureNode->getContentSize();
+    _r = M_PI + atan2(_armatureNode->getPositionY() + csize.height / 2 - _touchY,
+        _touchX - _armatureNode->getPositionX());
     if (_r > M_PI)
     {
         _r -= float(M_PI * 2);
@@ -147,14 +142,14 @@ void DemoChaseStarling::updateMove()
 {
     if (_speedX != 0)
     {
-        _armature->getCCDisplay()->setPositionX(_armature->getCCDisplay()->getPositionX() + _speedX);
-        if (_armature->getCCDisplay()->getPositionX() < 0)
+        _armatureNode->setPositionX(_armatureNode->getPositionX() + _speedX);
+        if (_armatureNode->getPositionX() < 0)
         {
-            _armature->getCCDisplay()->setPositionX(0);
+            _armatureNode->setPositionX(0);
         }
-        else if (_armature->getCCDisplay()->getPositionX() > _winSize.width)
+        else if (_armatureNode->getPositionX() > _winSize.width)
         {
-            _armature->getCCDisplay()->setPositionX(_winSize.width);
+            _armatureNode->setPositionX(_winSize.width);
         }
     }
 }
@@ -170,11 +165,11 @@ void DemoChaseStarling::updateBehavior(int direction)
     if (_moveDirection == 0)
     {
         _speedX = 0;
-        _armature->getAnimation()->gotoAndPlay("stand");
+        _armatureNode->getAnimation()->gotoAndPlay("stand");
     }
     else
     {
         _speedX = 6 * _moveDirection;
-        _armature->getAnimation()->gotoAndPlay("walk");
+        _armatureNode->getAnimation()->gotoAndPlay("walk");
     }
 }

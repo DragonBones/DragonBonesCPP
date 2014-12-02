@@ -125,7 +125,7 @@ void DemoBase::onEnter()
     
     Menu *menu = Menu::create(item1, item2, item3, pCloseItem, nullptr);
     
-    menu->setPosition(Point());
+    menu->setPosition(Vec2::ZERO);
     item1->setPosition(VisibleRect::bottom(-item2->getContentSize().width * 2, item2->getContentSize().height / 2));
     item2->setPosition(VisibleRect::bottom(0, item2->getContentSize().height / 2));
     item3->setPosition(VisibleRect::bottom(item2->getContentSize().width * 2, item2->getContentSize().height / 2));
