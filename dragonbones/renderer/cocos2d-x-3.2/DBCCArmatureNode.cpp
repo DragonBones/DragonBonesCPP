@@ -89,7 +89,7 @@ DBCCArmatureNode::~DBCCArmatureNode()
 
     if (_armature)
     {
-        _armature->dispose();
+        delete _armature;
         _armature = nullptr;
     }
 }
