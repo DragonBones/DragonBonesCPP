@@ -4,11 +4,23 @@
 #include "DBCCEventDispatcher.h"
 #include "DBCCArmature.h"
 NAME_SPACE_DRAGON_BONES_BEGIN
-DBCCFactory DBCCFactory::factory;
+DBCCFactory* DBCCFactory::_instance = nullptr;
 
 DBCCFactory* DBCCFactory::getInstance()
 {
-    return &factory;
+    if (!_instance)
+    {
+        _instance = new DBCCFactory();
+    }
+    return _instance;
+}
+
+void DBCCFactory::destroyInstance()
+{
+    if (_instance)
+    {
+       CC_SAFE_DELETE(_instance);
+    }
 }
 
 DBCCFactory::DBCCFactory() {}
