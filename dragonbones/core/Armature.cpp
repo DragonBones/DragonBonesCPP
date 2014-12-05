@@ -310,6 +310,7 @@ void Armature::replaceSlot(const std::string &boneName, const std::string &oldSl
         newSlot->_tweenZOrder = oldSlog->_tweenZOrder;
         newSlot->_originZOrder = oldSlog->_originZOrder;
         newSlot->_offsetZOrder = oldSlog->_offsetZOrder;
+        newSlot->_blendMode = oldSlog->_blendMode;
         removeSlot(oldSlog);
     }
 
