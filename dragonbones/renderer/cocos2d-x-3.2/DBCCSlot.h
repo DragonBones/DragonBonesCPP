@@ -15,6 +15,8 @@ public:
     virtual cocos2d::Node* getCCDisplay() const;
     virtual DBCCArmature* getCCChildArmature() const;
 
+    virtual cocos2d::Vec2 getGlobalPosition() const;
+
     virtual void setDisplayImage(cocos2d::Node *display, bool disposeExisting = true);
     
 public:

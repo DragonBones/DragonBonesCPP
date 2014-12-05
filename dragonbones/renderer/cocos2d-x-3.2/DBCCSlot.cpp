@@ -13,6 +13,11 @@ DBCCArmature* DBCCSlot::getCCChildArmature() const
     return static_cast<DBCCArmature*>(_childArmature);
 }
 
+cocos2d::Vec2 DBCCSlot::getGlobalPosition() const
+{
+    return cocos2d::Vec2(global.x, global.y);
+}
+
 void DBCCSlot::setDisplayImage(cocos2d::Node *display, bool disposeExisting/* = true*/)
 {
     Slot::setDisplay(display, DisplayType::DT_IMAGE, disposeExisting);
