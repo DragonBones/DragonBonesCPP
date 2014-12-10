@@ -140,7 +140,7 @@ inline BlendMode getBlendModeByString(std::string blendMode)
     {
         return BlendMode::BM_ERASE;
     }
-    else if (blendMode == "hardlight")
+    else if (blendMode == "hardLight")
     {
         return BlendMode::BM_HARDLIGHT;
     }
