@@ -4,8 +4,9 @@
 #include "../DragonBones.h"
 #include "Object.h"
 #include "../objects/SlotData.h"
+#include "../geoms/Rectangle.h"
+#include "../geoms/ColorTransform.h"
 #include "Armature.h"
-#include "geoms/Rectangle.h"
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 class Slot : public Object
@@ -23,6 +24,8 @@ protected:
     float _tweenZOrder;
     float _offsetZOrder;
     BlendMode _blendMode;
+
+    ColorTransform _colorTransform;
     
     // <displayOrArmature*, DisplayType>
     std::vector<std::pair<void*, DisplayType>> _displayList;
@@ -66,6 +69,9 @@ protected:
     virtual void update();
     virtual void changeDisplay(int displayIndex);
     virtual void updateSlotDisplay(bool disposeExisting);
+
+    virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier);
+
     virtual void updateChildArmatureAnimation();
     virtual void playChildArmatureAnimation();
     virtual void stopChildArmatureAnimation();
@@ -76,7 +82,6 @@ protected:
     virtual void disposeDisplay() = 0;
     virtual void disposeDisplayList() = 0;
     virtual void updateDisplay(void *display) = 0;
-    virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) = 0;
     virtual void updateDisplayBlendMode(BlendMode blendMode) = 0;
     virtual void updateDisplayVisible(bool visible) = 0;
     virtual void updateDisplayTransform() = 0;

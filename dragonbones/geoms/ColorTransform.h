@@ -20,10 +20,10 @@ public:
 public:
     ColorTransform()
     {
-        alphaMultiplier = 0.f;
-        redMultiplier = 0.f;
-        greenMultiplier = 0.f;
-        blueMultiplier = 0.f;
+        alphaMultiplier = 1.f;
+        redMultiplier = 1.f;
+        greenMultiplier = 1.f;
+        blueMultiplier = 1.f;
         alphaOffset = 0;
         redOffset = 0;
         greenOffset = 0;
