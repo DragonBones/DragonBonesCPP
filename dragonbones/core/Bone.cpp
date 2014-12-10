@@ -274,6 +274,7 @@ void Bone::arriveAtFrame(TransformFrame *frame, const TimelineState *timelineSta
         (displayController.empty() || displayController == animationState->name);
         
     // && timelineState->_weight > 0
+    // TODO: 需要修正混合动画干扰关键帧数据的问题，如何正确高效的判断混合动画？
     if (displayControl)
     {
         const int displayIndex = frame->displayIndex;
