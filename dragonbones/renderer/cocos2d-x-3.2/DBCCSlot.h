@@ -27,6 +27,8 @@ public:
     virtual Rectangle getBoundingBox() override;
     
 protected:
+    virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) override;
+
     virtual int getDisplayZIndex() const override;
     virtual void addDisplayToContainer(void *container, int zIndex) override;
     virtual void removeDisplayFromContainer() override;
@@ -34,7 +36,6 @@ protected:
     virtual void disposeDisplayList() override;
     virtual void updateDisplay(void *display) override;
     virtual void updateDisplayBlendMode(BlendMode blendMode) override;
-    virtual void updateDisplayColor(int aOffset, int rOffset, int gOffset, int bOffset, float aMultiplier, float rMultiplier, float gMultiplier, float bMultiplier) override;
     virtual void updateDisplayVisible(bool visible) override;
     virtual void updateDisplayTransform() override;
     
