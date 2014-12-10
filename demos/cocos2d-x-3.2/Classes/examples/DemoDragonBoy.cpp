@@ -1,7 +1,9 @@
 #include "DemoDragonBoy.h"
 
+USING_NS_DB;
+
 DemoDragonBoy::DemoDragonBoy()
-: _armature(nullptr)
+: _armatureNode(nullptr)
 , _fallEndFadeOutListener(nullptr)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 , _keyboardListener(nullptr)
@@ -18,14 +20,10 @@ DemoDragonBoy::~DemoDragonBoy()
 #endif
     if (_fallEndFadeOutListener)
     {
-        _armature->getCCEventDispatcher()->removeEventListener(_fallEndFadeOutListener);
+        _armatureNode->getCCEventDispatcher()->removeEventListener(_fallEndFadeOutListener);
         _fallEndFadeOutListener = nullptr;
     }
-    Director::getInstance()->getScheduler()->unscheduleUpdate(this);
-    dragonBones::WorldClock::clock.remove(_armature);
-    _armature->dispose();
-
-    CC_SAFE_DELETE(_armature);
+    _armatureNode = nullptr;
 }
 
 std::string DemoDragonBoy::title()
@@ -45,27 +43,25 @@ std::string DemoDragonBoy::subtitle()
 void DemoDragonBoy::demoInit()
 {
     // factory
-    dragonBones::DBCCFactory::factory.loadDragonBonesData("armatures/DragonBoy/skeleton.xml", "DragonBoy");
-    dragonBones::DBCCFactory::factory.loadTextureAtlas("armatures/DragonBoy/texture.xml", "DragonBoy");
+    DBCCFactory::getInstance()->loadDragonBonesData("armatures/DragonBoy/skeleton.xml", "DragonBoy");
+    DBCCFactory::getInstance()->loadTextureAtlas("armatures/DragonBoy/texture.xml", "DragonBoy");
     // armature
-    _armature = (dragonBones::DBCCArmature*)(dragonBones::DBCCFactory::factory.buildArmature("dragonBoy"));
-    _armature->getCCDisplay()->setPosition(480.f, 200.f);
-    _armature->getCCDisplay()->setScale(0.5f);
-    this->addChild(_armature->getCCDisplay());
-    // update
-    dragonBones::WorldClock::clock.add(_armature);
+    _armatureNode = DBCCFactory::getInstance()->buildArmatureNode("dragonBoy");
+    _armatureNode->setPosition(480.f, 200.f);
+    _armatureNode->setScale(0.5f);
+    addChild(_armatureNode);
     // event
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::BONE_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::START, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::LOOP_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::SOUND, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::Z_ORDER_UPDATED, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::BONE_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::START, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::LOOP_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::SOUND, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::Z_ORDER_UPDATED, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
     // interaction
     addInteraction();
     //
@@ -83,7 +79,7 @@ void DemoDragonBoy::demoInit()
     _clothesList.push_back("parts/clothes4");
     //
     updateAnimation();
-    Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
+    scheduleUpdate();
 }
 
 void DemoDragonBoy::addInteraction()
@@ -121,7 +117,6 @@ void DemoDragonBoy::addInteraction()
 void DemoDragonBoy::update(float passTime)
 {
     updateSpeed();
-    dragonBones::WorldClock::clock.advanceTime(passTime);
 }
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
@@ -203,7 +198,7 @@ void DemoDragonBoy::jump()
 
     _isJump = true;
     _speedY = 24.f;
-    _armature->getAnimation()->gotoAndPlay("jump");
+    _armatureNode->getAnimation()->gotoAndPlay("jump");
 }
 
 void DemoDragonBoy::squat(bool isSquat)
@@ -264,18 +259,18 @@ void DemoDragonBoy::updateAnimation()
     else if (_isSquat)
     {
         _speedX = 0.f;
-        _armature->getAnimation()->gotoAndPlay("squat");
+        _armatureNode->getAnimation()->gotoAndPlay("squat");
     }
     else if (_moveDir != 0)
     {
         _speedX = _moveDir * 6.f;
-        _armature->getAnimation()->gotoAndPlay("walk");
-        _armature->getCCDisplay()->setScaleX(-_moveDir * 0.5f);
+        _armatureNode->getAnimation()->gotoAndPlay("walk");
+        _armatureNode->setScaleX(-_moveDir * 0.5f);
     }
     else
     {
         _speedX = 0.f;
-        _armature->getAnimation()->gotoAndPlay("stand");
+        _armatureNode->getAnimation()->gotoAndPlay("stand");
     }
 }
 
@@ -290,19 +285,19 @@ void DemoDragonBoy::changeClothe()
 
     if (_currentClotheIndex < (int)(_clothesList.size()))
     {
-        _armature->getCCSlot("clothes")->setDisplay(dragonBones::DBCCFactory::factory.getTextureDisplay(_clothesList[_currentClotheIndex]));
+        _armatureNode->getCCSlot("clothes")->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(_clothesList[_currentClotheIndex]));
     }
     else
     {
-        _armature->getCCSlot("clothes")->setDisplay(nullptr);
+        _armatureNode->getCCSlot("clothes")->setDisplay(nullptr);
     }
 }
 
 void DemoDragonBoy::updateSpeed()
 {
-    float timeScale = _armature->getAnimation()->getTimeScale();
-    float x = _armature->getCCDisplay()->getPositionX();
-    float y = _armature->getCCDisplay()->getPositionY();
+    float timeScale = _armatureNode->getAnimation()->getTimeScale();
+    float x = _armatureNode->getPositionX();
+    float y = _armatureNode->getPositionY();
 
     if (_speedX != 0)
     {
@@ -324,7 +319,7 @@ void DemoDragonBoy::updateSpeed()
 
         if (_speedY >= 0 && _speedY + speedG < 0)
         {
-            _armature->getAnimation()->gotoAndPlay("fall", 0.2f);
+            _armatureNode->getAnimation()->gotoAndPlay("fall", 0.2f);
         }
 
         _speedY += speedG;
@@ -336,20 +331,20 @@ void DemoDragonBoy::updateSpeed()
             _isJump = false;
             _speedY = 0.f;
             _speedX = 0.f;
-            _fallEndFadeOutListener = _armature->getCCEventDispatcher()->addCustomEventListener(
+            _fallEndFadeOutListener = _armatureNode->getCCEventDispatcher()->addCustomEventListener(
                 dragonBones::EventData::FADE_OUT_COMPLETE,
                 CC_CALLBACK_1(DemoDragonBoy::fallEndFadeOutCompleteHandler, this)
                 );
-            _armature->getAnimation()->gotoAndPlay("fallEnd");
+            _armatureNode->getAnimation()->gotoAndPlay("fallEnd");
         }
     }
 
-    _armature->getCCDisplay()->setPosition(x, y);
+    _armatureNode->setPosition(x, y);
 }
 
 void DemoDragonBoy::fallEndFadeOutCompleteHandler(cocos2d::EventCustom *event)
 {
-    _armature->getCCEventDispatcher()->removeEventListener(_fallEndFadeOutListener);
+    _armatureNode->getCCEventDispatcher()->removeEventListener(_fallEndFadeOutListener);
     _fallEndFadeOutListener = nullptr;
     updateAnimation();
 }

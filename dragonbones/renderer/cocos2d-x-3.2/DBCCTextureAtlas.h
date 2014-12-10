@@ -8,12 +8,8 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class DBCCTextureAtlas : public ITextureAtlas
 {
 public:
-    cocos2d::Texture2D *texture;
-    
-public:
     DBCCTextureAtlas()
     {
-        texture = nullptr;
         textureAtlasData = nullptr;
     }
     virtual ~DBCCTextureAtlas()
@@ -27,8 +23,26 @@ public:
             textureAtlasData->dispose();
             textureAtlasData = nullptr;
         }
-        
-        texture = nullptr;
+    }
+
+    virtual cocos2d::Texture2D* getTexture()
+    {
+        if (!textureAtlasData) return nullptr;
+
+        auto textureCache = cocos2d::TextureCache::getInstance();
+        auto texture = textureCache->getTextureForKey(textureAtlasData->imagePath);
+        if (!texture)
+        {
+            texture = textureCache->addImage(textureAtlasData->imagePath);
+        }
+        return texture;
+    }
+
+    virtual cocos2d::Texture2D* reloadTexture()
+    {
+        if (!textureAtlasData) return nullptr;
+
+        cocos2d::TextureCache::getInstance()->addImage(textureAtlasData->imagePath);
     }
     
 private:

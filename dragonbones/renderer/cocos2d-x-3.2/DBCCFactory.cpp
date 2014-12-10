@@ -4,11 +4,23 @@
 #include "DBCCEventDispatcher.h"
 #include "DBCCArmature.h"
 NAME_SPACE_DRAGON_BONES_BEGIN
-DBCCFactory DBCCFactory::factory;
+DBCCFactory* DBCCFactory::_instance = nullptr;
 
 DBCCFactory* DBCCFactory::getInstance()
 {
-    return &factory;
+    if (!_instance)
+    {
+        _instance = new DBCCFactory();
+    }
+    return _instance;
+}
+
+void DBCCFactory::destroyInstance()
+{
+    if (_instance)
+    {
+       CC_SAFE_DELETE(_instance);
+    }
 }
 
 DBCCFactory::DBCCFactory() {}
@@ -28,6 +40,25 @@ DBCCArmature* DBCCFactory::buildArmature(const std::string &armatureName, const 
                                          const std::string &dragonBonesName, const std::string &textureAtlasName) const
 {
     return (DBCCArmature*) BaseFactory::buildArmature(armatureName, skinName, animationName, dragonBonesName, textureAtlasName);
+}
+
+DBCCArmatureNode* DBCCFactory::buildArmatureNode(const std::string &armatureName) const
+{
+    auto armature = buildArmature(armatureName);
+    return DBCCArmatureNode::create(armature);
+}
+
+DBCCArmatureNode* DBCCFactory::buildArmatureNode(const std::string &armatureName, const std::string &dragonBonesName) const
+{
+    auto armature = buildArmature(armatureName, dragonBonesName);
+    return DBCCArmatureNode::create(armature);
+}
+
+DBCCArmatureNode* DBCCFactory::buildArmatureNode(const std::string &armatureName, const std::string &skinName, const std::string &animationName,
+    const std::string &dragonBonesName, const std::string &textureAtlasName) const
+{
+    auto armature = buildArmature(armatureName, skinName, animationName, dragonBonesName, textureAtlasName);
+    return DBCCArmatureNode::create(armature);
 }
 
 DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
@@ -106,7 +137,7 @@ void DBCCFactory::refreshTextureAtlasTexture(const std::string &name)
 
         if (iterator->first == name)
         {
-            textureAtlas->texture = cocos2d::Director::getInstance()->getTextureCache()->addImage(textureAtlasData->imagePath.c_str());
+            textureAtlas->reloadTexture();
         }
     }
 }
@@ -117,7 +148,7 @@ void DBCCFactory::refreshAllTextureAtlasTexture()
     {
         DBCCTextureAtlas *textureAtlas = static_cast<DBCCTextureAtlas*>(iterator->second);
         const TextureAtlasData *textureAtlasData = textureAtlas->textureAtlasData;
-        textureAtlas->texture = cocos2d::Director::getInstance()->getTextureCache()->addImage(textureAtlasData->imagePath.c_str());
+        textureAtlas->reloadTexture();
     }
 }
 
@@ -168,59 +199,52 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
 {
     DBCCTextureAtlas *dbccTextureAtlas = (DBCCTextureAtlas*)(textureAtlas);
 
-    if (dbccTextureAtlas && textureData)
+    if (!dbccTextureAtlas || !textureData) return nullptr;
+
+    auto texture = dbccTextureAtlas->getTexture();
+    assert(texture);
+
+    const float x = textureData->region.x;
+    const float y = textureData->region.y;
+    const bool rotated = textureData->rotated;
+    const float width = rotated ? textureData->region.height : textureData->region.width;
+    const float height = rotated ? textureData->region.width : textureData->region.height;
+    cocos2d::Rect rect(x, y, width, height);
+    cocos2d::Vec2 offset;
+    cocos2d::Size originSize(width, height);
+
+    if (textureData->frame)
     {
-        if (!dbccTextureAtlas->texture)
-        {
-            // throw
-        }
+        float px = -textureData->frame->x;
+        float py = -textureData->frame->y;
+        originSize.width = textureData->frame->width;
+        originSize.height = textureData->frame->height;
+        // offset = sprite center - trimed texture center
+        float cx1 = px + rect.size.width / 2;
+        float cy1 = originSize.height - py - rect.size.height / 2;
+        float cx2 = originSize.width / 2;
+        float cy2 = originSize.height / 2;
+        offset.x = cx2 - cx1;
+        offset.y = cy2 - cy1;
+    }
+    // sprite
+    auto spriteFrame = cocos2d::SpriteFrame::createWithTexture(texture, rect,
+        textureData->rotated, offset, originSize);
+    cocos2d::Node *display = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    display->setCascadeColorEnabled(true);
+    display->setCascadeOpacityEnabled(true);
+    display->retain();
+    float pivotX = 0;
+    float pivotY = 0;
 
-
-
-        const float x = textureData->region.x;
-        const float y = textureData->region.y;
-        const bool rotated = textureData->rotated;
-        const float width = rotated ? textureData->region.height : textureData->region.width;
-        const float height = rotated ? textureData->region.width : textureData->region.height;
-        cocos2d::Rect rect(x, y, width, height);
-        cocos2d::Vec2 offset;
-        cocos2d::Size originSize(width, height);
-
-        if (textureData->frame)
-        {
-            float px = -textureData->frame->x;
-            float py = -textureData->frame->y;
-            originSize.width = textureData->frame->width;
-            originSize.height = textureData->frame->height;
-            // offset = sprite center - trimed texture center
-            float cx1 = px + rect.size.width / 2;
-            float cy1 = originSize.height - py - rect.size.height / 2;
-            float cx2 = originSize.width / 2;
-            float cy2 = originSize.height / 2;
-            offset.x = cx2 - cx1;
-            offset.y = cy2 - cy1;
-        }
-        // sprite
-        auto spriteFrame = cocos2d::SpriteFrame::createWithTexture(dbccTextureAtlas->texture, rect,
-            textureData->rotated, offset, originSize);
-        cocos2d::Node *display = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
-        display->setCascadeColorEnabled(true);
-        display->setCascadeOpacityEnabled(true);
-        display->retain();
-        float pivotX = 0;
-        float pivotY = 0;
-
-        if (displayData)
-        {
-            pivotX = displayData->pivot.x;
-            pivotY = displayData->pivot.y;
-        }
-
-        display->setAnchorPoint(cocos2d::Vec2(pivotX / originSize.width, 1.f - pivotY / originSize.height));
-        display->setContentSize(originSize);
-        return display;
+    if (displayData)
+    {
+        pivotX = displayData->pivot.x;
+        pivotY = displayData->pivot.y;
     }
 
-    return nullptr;
+    display->setAnchorPoint(cocos2d::Vec2(pivotX / originSize.width, 1.f - pivotY / originSize.height));
+    display->setContentSize(originSize);
+    return display;
 }
 NAME_SPACE_DRAGON_BONES_END
