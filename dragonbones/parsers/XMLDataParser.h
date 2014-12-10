@@ -10,8 +10,8 @@ NAME_SPACE_DRAGON_BONES_BEGIN
 class XMLDataParser : public BaseDataParser
 {
 private:
-    static bool getBoolean(const XMLElement *data, const char *key, bool defaultValue);
-    static float getNumber(const XMLElement *data, const char *key, float defaultValue, float nanValue);
+    static bool getBoolean(const XMLElement &data, const char *key, bool defaultValue);
+    static float getNumber(const XMLElement &data, const char *key, float defaultValue, float nanValue);
     
 private:
     mutable float _textureScale;
@@ -41,10 +41,12 @@ private:
     RectangleData* parseRectangleData(const XMLElement *rectangleXML) const;
     EllipseData* parseEllipseData(const XMLElement *ellipseXML) const;
     
-    void parseTimeline(const XMLElement *timelineXML, Timeline *timeline) const;
-    void parseFrame(const XMLElement *frameXML, Frame *frame) const;
-    void parseTransform(const XMLElement *transformXML, Transform *transform, Point *pivot) const;
-    void parseColorTransform(const XMLElement *colorTransformXML, ColorTransform *colorTransform) const;
+    void parseTimeline(const XMLElement &timelineXML, Timeline &timeline) const;
+    void parseFrame(const XMLElement &frameXML, Frame &frame) const;
+    void parseTransform(const XMLElement &transformXML, Transform &transform) const;
+    void parsePivot(const XMLElement &transformXML, Point &pivot) const;
+    void parseColorTransform(const XMLElement &colorTransformXML, ColorTransform &colorTransform) const;
+    void parseTextData(const XMLElement &textXML, TextData &textData) const;
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(XMLDataParser);

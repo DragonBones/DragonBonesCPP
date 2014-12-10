@@ -15,6 +15,9 @@ const std::string ConstValues::TRANSFORM = "transform";
 const std::string ConstValues::COLOR_TRANSFORM = "colorTransform";
 const std::string ConstValues::RECTANGLE = "rectangle";
 const std::string ConstValues::ELLIPSE = "ellipse";
+const std::string ConstValues::TEXT = "text";
+const std::string ConstValues::COLOR = "color";
+const std::string ConstValues::SCALING_GRID = "scalingGrid";
 
 const std::string ConstValues::TEXTURE_ATLAS = "TextureAtlas";
 const std::string ConstValues::SUB_TEXTURE = "SubTexture";
@@ -69,6 +72,26 @@ const std::string ConstValues::A_ALPHA_MULTIPLIER = "aM";
 const std::string ConstValues::A_RED_MULTIPLIER = "rM";
 const std::string ConstValues::A_GREEN_MULTIPLIER = "gM";
 const std::string ConstValues::A_BLUE_MULTIPLIER = "bM";
+
+const std::string ConstValues::A_ALPHA = "a";
+const std::string ConstValues::A_RED = "r";
+const std::string ConstValues::A_GREEN = "g";
+const std::string ConstValues::A_BLUE = "b";
+
+const std::string ConstValues::A_LEFT = "left";
+const std::string ConstValues::A_RIGHT = "right";
+const std::string ConstValues::A_TOP = "top";
+const std::string ConstValues::A_BOTTOM = "bottom";
+
+const std::string ConstValues::A_BOLD = "bold";
+const std::string ConstValues::A_ITALIC = "italic";
+const std::string ConstValues::A_SIZE = "size";
+const std::string ConstValues::A_FACE = "face";
+const std::string ConstValues::A_ALIGN_H = "alignH";
+const std::string ConstValues::A_ALIGN_V = "alignV";
+const std::string ConstValues::A_LINE_TYPE = "lineType";
+const std::string ConstValues::A_TEXT_TYPE = "textType";
+const std::string ConstValues::A_TEXT = "text";
 
 const std::string ConstValues::A_SCALE_X_OFFSET = "scXOffset";
 const std::string ConstValues::A_SCALE_Y_OFFSET = "scYOffset";

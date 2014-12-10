@@ -19,6 +19,7 @@
 #include "../objects/Timeline.h"
 #include "../objects/TransformTimeline.h"
 #include "../objects/AnimationData.h"
+#include "../objects/TextData.h"
 #include "../objects/DisplayData.h"
 #include "../objects/SlotData.h"
 #include "../objects/SkinData.h"
@@ -33,6 +34,53 @@
 NAME_SPACE_DRAGON_BONES_BEGIN
 class BaseDataParser
 {
+public:
+    static TextData::AlignHType getAlignHType(const char *alignHString)
+    {
+        if (alignHString)
+        {
+            if (strcmp(alignHString, "left") == 0)
+            {
+                return TextData::AlignHType::LEFT;
+            }
+            else if (strcmp(alignHString, "center") == 0)
+            {
+                return TextData::AlignHType::CENTER;
+            }
+            else if (strcmp(alignHString, "right") == 0)
+            {
+                return TextData::AlignHType::RIGHT;
+            }
+            else if (strcmp(alignHString, "justify") == 0)
+            {
+                return TextData::AlignHType::JUSTIFY;
+            }
+        }
+
+        return TextData::AlignHType::LEFT;
+    }
+
+    static TextData::AlignVType getAlignVType(const char *alignVString)
+    {
+        if (alignVString)
+        {
+            if (strcmp(alignVString, "top") == 0)
+            {
+                return TextData::AlignVType::TOP;
+            }
+            else if (strcmp(alignVString, "center") == 0)
+            {
+                return TextData::AlignVType::CENTER;
+            }
+            else if (strcmp(alignVString, "right") == 0)
+            {
+                return TextData::AlignVType::BOTTOM;
+            }
+        }
+
+        return TextData::AlignVType::TOP;
+    }
+
 protected:
     static void transformArmatureData(ArmatureData *armatureData);
     static void transformArmatureDataAnimations(ArmatureData *armatureData);

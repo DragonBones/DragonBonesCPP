@@ -20,6 +20,9 @@ public:
     static const std::string COLOR_TRANSFORM;
     static const std::string RECTANGLE;
     static const std::string ELLIPSE;
+    static const std::string TEXT;
+    static const std::string COLOR;
+    static const std::string SCALING_GRID;
     
     static const std::string TEXTURE_ATLAS;
     static const std::string SUB_TEXTURE;
@@ -74,6 +77,26 @@ public:
     static const std::string A_RED_MULTIPLIER;
     static const std::string A_GREEN_MULTIPLIER;
     static const std::string A_BLUE_MULTIPLIER;
+
+    static const std::string A_ALPHA;
+    static const std::string A_RED;
+    static const std::string A_GREEN;
+    static const std::string A_BLUE;
+
+    static const std::string A_LEFT;
+    static const std::string A_RIGHT;
+    static const std::string A_TOP;
+    static const std::string A_BOTTOM;
+
+    static const std::string A_BOLD;
+    static const std::string A_ITALIC;
+    static const std::string A_SIZE;
+    static const std::string A_FACE;
+    static const std::string A_ALIGN_H;
+    static const std::string A_ALIGN_V;
+    static const std::string A_LINE_TYPE;
+    static const std::string A_TEXT_TYPE;
+    static const std::string A_TEXT;
     
     // add scale offset to frame
     static const std::string A_SCALE_X_OFFSET;

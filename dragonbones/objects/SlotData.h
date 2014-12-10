@@ -9,17 +9,24 @@ class SlotData
 {
 public:
     float zOrder;
-    
     std::string name;
     std::string parent;
+
     BlendMode blendMode;
+
     std::vector<DisplayData*> displayDataList;
     
 public:
-    SlotData()
+    SlotData():
+        zOrder(0.f),
+        name(),
+        parent(),
+
+        blendMode(BlendMode::BM_NORMAL),
+
+        displayDataList()
     {
-        zOrder = 0.f;
-        blendMode = BlendMode::BM_NORMAL;
+
     }
     SlotData(const SlotData &copyData)
     {
@@ -28,9 +35,14 @@ public:
     SlotData& operator=(const SlotData &copyData)
     {
         dispose();
+
+        zOrder = copyData.zOrder;
         name = copyData.name;
+        parent = copyData.parent;
+
+        blendMode = copyData.blendMode;
+
         displayDataList.reserve(copyData.displayDataList.size());
-        
         for (size_t i = 0, l = displayDataList.size(); i < l; ++i)
         {
             displayDataList.push_back(new DisplayData());
@@ -43,13 +55,19 @@ public:
     {
         dispose();
     }
+
     void dispose()
     {
+        zOrder = 0.f;
+        name.clear();
+        parent.clear();
+
+        blendMode = BlendMode::BM_NORMAL;
+
         for (size_t i = 0, l = displayDataList.size(); i < l; ++i)
         {
             delete displayDataList[i];
         }
-        
         displayDataList.clear();
     }
     
