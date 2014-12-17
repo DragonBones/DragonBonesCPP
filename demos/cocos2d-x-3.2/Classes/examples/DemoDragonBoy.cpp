@@ -103,7 +103,7 @@ void DemoDragonBoy::addInteraction()
     Menu *menu = Menu::create();
     for (auto i = 0; i < items.size(); ++i)
     {
-        items[i]->setAnchorPoint(Point(0,0));
+        items[i]->setAnchorPoint(Vec2(0,0));
         menu->addChild(items[i], 0, i);
     }
 
