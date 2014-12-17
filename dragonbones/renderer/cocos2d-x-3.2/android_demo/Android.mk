@@ -27,8 +27,7 @@ LOCAL_SRC_FILES := ../../../animation/Animation.cpp \
 
 LOCAL_C_INCLUDES := \
 $(LOCAL_PATH)/.. \
-$(LOCAL_PATH)/../../.. \
-$(LOCAL_PATH)/../../../../engines/cocos2d-x-3.2/cocos/2d 
+$(LOCAL_PATH)/../../.. 
 
 LOCAL_EXPORT_C_INCLUDES := \
 $(LOCAL_PATH)/.. \
