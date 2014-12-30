@@ -187,6 +187,33 @@ void DBCCArmatureNode::unregisterMovementEventHandler()
 	}
 }
 
+void DBCCArmatureNode::setAnchorPoint( const cocos2d::Vec2& point )
+{
+	if( ! point.equals(_anchorPoint))
+	{
+		_anchorPoint = point;
+		_anchorPointInPoints = cocos2d::Vec2(_contentSize.width * _anchorPoint.x - _offsetPoint.x, _contentSize.height * _anchorPoint.y - _offsetPoint.y);
+		_realAnchorPointInPoints = cocos2d::Vec2(_contentSize.width * _anchorPoint.x, _contentSize.height * _anchorPoint.y);
+		_transformDirty = _inverseDirty = true;
+	}
+}
+
+void DBCCArmatureNode::updateOffsetPoint()
+{
+	cocos2d::Rect rect = getBoundingBox();
+	setContentSize(rect.size);
+	_offsetPoint = cocos2d::Vec2(-rect.origin.x, -rect.origin.y);
+	if (rect.size.width != 0 && rect.size.height !=0)
+	{
+		setAnchorPoint(cocos2d::Vec2(_offsetPoint.x / rect.size.width, _offsetPoint.y / rect.size.height));
+	}
+}
+
+const cocos2d::Vec2& DBCCArmatureNode::getAnchorPointInPoints() const 
+{
+	return _realAnchorPointInPoints;
+}
+
 #endif // !DRAGON_BONES_ENABLE_LUA
 
 
