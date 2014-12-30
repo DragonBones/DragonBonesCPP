@@ -67,8 +67,7 @@ cocos2d::Rect DBCCArmature::getCCBoundingBox()
             maxy = r.y + r.height > maxy ? r.y + r.height : maxy;
         }
     }
-    cocos2d::Rect rect(minx, miny, maxx - minx, maxy - miny);
-    return cocos2d::RectApplyTransform(rect, getCCDisplay()->getNodeToParentTransform());
+    return cocos2d::Rect(minx, miny, maxx - minx, maxy - miny);
 }
 
 DBCCSlot* DBCCArmature::getCCSlot(const std::string &slotName) const
