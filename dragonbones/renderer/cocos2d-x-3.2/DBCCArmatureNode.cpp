@@ -96,7 +96,7 @@ DBCCArmatureNode::~DBCCArmatureNode()
 
 cocos2d::Rect DBCCArmatureNode::getBoundingBox() const
 {
-	return RectApplyTransform(_armature->getCCBoundingBox(), Node::getNodeToParentTransform());
+    return _armature->getCCBoundingBox();
 }
 
 void DBCCArmatureNode::update(float dt)
