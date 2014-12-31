@@ -50,20 +50,11 @@ public:
 
 	virtual void update(float dt) override;
     virtual void advanceTime(float dt) override;
-	
-    /**
-     * Set contentsize and Calculate anchor point.
-     */
-	virtual void updateOffsetPoint();
-    virtual void setAnchorPoint(const cocos2d::Vec2& point) override;
-    virtual const cocos2d::Vec2& getAnchorPointInPoints() const override;	
 
 protected:
     DBCCArmature *_armature;
     WorldClock *_clock;
-	
-	cocos2d::Vec2 _realAnchorPointInPoints;
-	cocos2d::Vec2 _offsetPoint;
+    
 private:
 	int _frameEventHandler;
 	int _movementEventHandler;
