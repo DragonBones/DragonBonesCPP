@@ -15,7 +15,7 @@ LOCAL_SRC_FILES := ../../../animation/Animation.cpp \
                    ../../../core/Slot.cpp \
                    ../../../events/EventData.cpp \
                    ../../../factories/BaseFactory.cpp \
-                   ../../../parsers/BaseDataparser.cpp \
+                   ../../../parsers/BaseDataParser.cpp \
                    ../../../parsers/ConstValues.cpp \
                    ../../../parsers/XMLDataParser.cpp \
                    ../../../parsers/dbtinyxml2.cpp \
