@@ -1,6 +1,8 @@
 DragonBonesCPP
 ==============
 
+[![Build Status](https://travis-ci.org/DragonBones/DragonBonesCPP.svg?branch=refactoring)](https://travis-ci.org/DragonBones/DragonBonesCPP)
+
 DragonBones C++ Library
 
 # Supported engines
