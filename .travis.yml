@@ -17,6 +17,7 @@ script:
 - export CC=$CC_COMPILER
 - export CXX=$CXX_COMPILER
 - travis-scripts/run-script.sh
+
 before_install:
 - chmod -R +x travis-scripts
 - travis-scripts/before-install.sh
