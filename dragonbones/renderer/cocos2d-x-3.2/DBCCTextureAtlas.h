@@ -29,7 +29,7 @@ public:
     {
         if (!textureAtlasData) return nullptr;
 
-        auto textureCache = cocos2d::TextureCache::getInstance();
+        auto textureCache = cocos2d::Director::getInstance()->getTextureCache();
         auto texture = textureCache->getTextureForKey(textureAtlasData->imagePath);
         if (!texture)
         {
@@ -42,7 +42,8 @@ public:
     {
         if (!textureAtlasData) return nullptr;
 
-        cocos2d::TextureCache::getInstance()->addImage(textureAtlasData->imagePath);
+        auto textureCache = cocos2d::Director::getInstance()->getTextureCache();
+        return textureCache->addImage(textureAtlasData->imagePath);
     }
     
 private:

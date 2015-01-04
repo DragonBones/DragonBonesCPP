@@ -53,9 +53,9 @@ void DemoKnight::demoInit()
     _armatureNode->setPosition(480.f, 200.f);
     this->addChild(_armatureNode);
     // armature event
-    _armArmature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
-    _armArmature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::COMPLETE, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
-    _armArmature->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
+    _armArmature->getCCEventDispatcher()->addCustomEventListener(EventData::FADE_IN, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
+    _armArmature->getCCEventDispatcher()->addCustomEventListener(EventData::COMPLETE, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
+    _armArmature->getCCEventDispatcher()->addCustomEventListener(EventData::ANIMATION_FRAME_EVENT, std::bind(&DemoKnight::armAnimationHandler, this, std::placeholders::_1));
     // key
     addInteraction();
     //
@@ -279,18 +279,18 @@ void DemoKnight::upgradeWeaponLevel()
     case 1:
     case 2:
     {
-        dragonBones::DBCCSlot *weaponSlot = _armArmature->getCCSlot("weapon");
+        DBCCSlot *weaponSlot = _armArmature->getCCSlot("weapon");
         weaponSlot->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
         break;
     }
 
     case 3:
     {
-        dragonBones::DBCCSlot *bowSlot = _armArmature->getCCSlot("bow");
-        dragonBones::DBCCSlot *bowBA = bowSlot->getCCChildArmature()->getCCSlot("ba");
-        dragonBones::DBCCSlot *bowBB = bowSlot->getCCChildArmature()->getCCSlot("bb");
-        dragonBones::DBCCSlot *bowArrow = bowSlot->getCCChildArmature()->getCCSlot("arrow");
-        dragonBones::DBCCSlot *bowArrowB = bowSlot->getCCChildArmature()->getCCSlot("arrowBackup");
+        DBCCSlot *bowSlot = _armArmature->getCCSlot("bow");
+        DBCCSlot *bowBA = bowSlot->getCCChildArmature()->getCCSlot("ba");
+        DBCCSlot *bowBB = bowSlot->getCCChildArmature()->getCCSlot("bb");
+        DBCCSlot *bowArrow = bowSlot->getCCChildArmature()->getCCSlot("arrow");
+        DBCCSlot *bowArrowB = bowSlot->getCCChildArmature()->getCCSlot("arrowBackup");
         bowBA->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
         bowBB->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName(weaponName, newWeaponLevel)));
         bowArrow->setDisplay(DBCCFactory::getInstance()->getTextureDisplay(getWeaponName("arrow", newWeaponLevel)));
@@ -316,16 +316,16 @@ void DemoKnight::attack()
 
 void DemoKnight::armAnimationHandler(cocos2d::EventCustom *event)
 {
-    dragonBones::EventData *eventData = (dragonBones::EventData*)(event->getUserData());
+    EventData *eventData = (EventData*)(event->getUserData());
 
     switch (eventData->getType())
     {
-    case dragonBones::EventData::EventType::FADE_IN:
+    case EventData::EventType::FADE_IN:
         _isComboAttack = false;
         cocos2d::log("animation fade in: %s", eventData->animationState->name.c_str());
         break;
 
-    case dragonBones::EventData::EventType::COMPLETE:
+    case EventData::EventType::COMPLETE:
         cocos2d::log("animation complete: %s _isComboAttack: %d", eventData->animationState->name.c_str(), _isComboAttack);
 
         if (_isComboAttack)
@@ -341,11 +341,11 @@ void DemoKnight::armAnimationHandler(cocos2d::EventCustom *event)
 
         break;
 
-    case dragonBones::EventData::EventType::ANIMATION_FRAME_EVENT:
+    case EventData::EventType::ANIMATION_FRAME_EVENT:
     {
         if (eventData->frameLabel == "fire")
         {
-            dragonBones::Bone *bowBone = _armArmature->getBone("bow");
+            Bone *bowBone = _armArmature->getBone("bow");
             cocos2d::Point resultPoint = _armArmature->getCCDisplay()->convertToWorldSpace(cocos2d::Point(bowBone->global.x, -bowBone->global.y));
             float r = 0.f;
 
@@ -355,7 +355,7 @@ void DemoKnight::armAnimationHandler(cocos2d::EventCustom *event)
             }
             else
             {
-                r = CC_DEGREES_TO_RADIANS(-_armatureNode->getRotation()) - bowBone->global.getRotation() + dragonBones::PI;
+                r = CC_DEGREES_TO_RADIANS(-_armatureNode->getRotation()) - bowBone->global.getRotation() + PI;
             }
 
             switch (_weaponLevelList[_weaponIndex])
@@ -365,14 +365,14 @@ void DemoKnight::armAnimationHandler(cocos2d::EventCustom *event)
                 break;
 
             case 1:
-                createArrow(3.f / 180.f * dragonBones::PI + r, resultPoint);
-                createArrow(-3.f / 180.f * dragonBones::PI + r, resultPoint);
+                createArrow(3.f / 180.f * PI + r, resultPoint);
+                createArrow(-3.f / 180.f * PI + r, resultPoint);
                 break;
 
             case 2:
-                createArrow(6.f / 180.f * dragonBones::PI + r, resultPoint);
+                createArrow(6.f / 180.f * PI + r, resultPoint);
                 createArrow(r, resultPoint);
-                createArrow(-6.f / 180.f * dragonBones::PI + r, resultPoint);
+                createArrow(-6.f / 180.f * PI + r, resultPoint);
                 break;
             }
 

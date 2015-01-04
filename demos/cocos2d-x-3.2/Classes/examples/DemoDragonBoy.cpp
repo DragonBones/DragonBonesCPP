@@ -51,17 +51,17 @@ void DemoDragonBoy::demoInit()
     _armatureNode->setScale(0.5f);
     addChild(_armatureNode);
     // event
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::BONE_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::ANIMATION_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_IN_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::FADE_OUT_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::START, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::LOOP_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::SOUND, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
-    _armatureNode->getCCEventDispatcher()->addCustomEventListener(dragonBones::EventData::Z_ORDER_UPDATED, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::BONE_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::ANIMATION_FRAME_EVENT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::FADE_IN, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::FADE_OUT, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::FADE_IN_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::FADE_OUT_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::START, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::LOOP_COMPLETE, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::SOUND, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
+    _armatureNode->getCCEventDispatcher()->addCustomEventListener(EventData::Z_ORDER_UPDATED, CC_CALLBACK_1(DemoDragonBoy::eventHandler, this));
     // interaction
     addInteraction();
     //
@@ -178,7 +178,7 @@ void DemoDragonBoy::keyReleaseHandler(cocos2d::EventKeyboard::KeyCode keyCode, c
 
 void DemoDragonBoy::eventHandler(cocos2d::EventCustom *event)
 {
-    dragonBones::EventData *eventData = static_cast<dragonBones::EventData*>(event->getUserData());
+    EventData *eventData = static_cast<EventData*>(event->getUserData());
 
     if (eventData->animationState)
     {
@@ -332,7 +332,7 @@ void DemoDragonBoy::updateSpeed()
             _speedY = 0.f;
             _speedX = 0.f;
             _fallEndFadeOutListener = _armatureNode->getCCEventDispatcher()->addCustomEventListener(
-                dragonBones::EventData::FADE_OUT_COMPLETE,
+                EventData::FADE_OUT_COMPLETE,
                 CC_CALLBACK_1(DemoDragonBoy::fallEndFadeOutCompleteHandler, this)
                 );
             _armatureNode->getAnimation()->gotoAndPlay("fallEnd");
