@@ -9,12 +9,10 @@ COCOS2DX_ROOT="$DRAGONBONES_ROOT"/engines/cocos2d-x-3.2
 HOST_NAME=""
 
 # download cocos2d-x
-
-git --version
-
 git clone --branch cocos2d-x-3.2 https://github.com/cocos2d/cocos2d-x.git $COCOS2DX_ROOT
-
 pushd $COCOS2DX_ROOT
+git submodule init
+git submodule update
 python download-deps.py -r=yes
 popd
 
@@ -69,7 +67,7 @@ elif [ "$PLATFORM"x = "linux"x ]; then
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.7 90 --slave /usr/bin/g++ g++ /usr/bin/g++-4.7
     g++ --version
     bash $COCOS2DX_ROOT/build/install-deps-linux.sh
-    install_android_ndk
+    # install_android_ndk
 elif [ "$PLATFORM"x = "nacl"x ]; then
     install_nacl_sdk
 elif [ "$PLATFORM"x = "android"x ]; then
