@@ -11,6 +11,12 @@
 //#include <cfloat>
 //#include <stdexcept>
 
+#ifndef DBASSERT
+#define DBASSERT(cond, msg) do { \
+        assert(cond); \
+    } while (0)
+#endif
+
 // namespace dragonBones {}
 #define NAME_SPACE_DRAGON_BONES_BEGIN namespace dragonBones {
 #define NAME_SPACE_DRAGON_BONES_END }

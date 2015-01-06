@@ -31,6 +31,8 @@
 #include "../textures/TextureData.h"
 #include "../textures/TextureAtlasData.h"
 
+#include <cstring>
+
 NAME_SPACE_DRAGON_BONES_BEGIN
 class BaseDataParser
 {
@@ -39,19 +41,19 @@ public:
     {
         if (alignHString)
         {
-            if (strcmp(alignHString, "left") == 0)
+            if (std::strcmp(alignHString, "left") == 0)
             {
                 return TextData::AlignHType::LEFT;
             }
-            else if (strcmp(alignHString, "center") == 0)
+            else if (std::strcmp(alignHString, "center") == 0)
             {
                 return TextData::AlignHType::CENTER;
             }
-            else if (strcmp(alignHString, "right") == 0)
+            else if (std::strcmp(alignHString, "right") == 0)
             {
                 return TextData::AlignHType::RIGHT;
             }
-            else if (strcmp(alignHString, "justify") == 0)
+            else if (std::strcmp(alignHString, "justify") == 0)
             {
                 return TextData::AlignHType::JUSTIFY;
             }
@@ -64,15 +66,15 @@ public:
     {
         if (alignVString)
         {
-            if (strcmp(alignVString, "top") == 0)
+            if (std::strcmp(alignVString, "top") == 0)
             {
                 return TextData::AlignVType::TOP;
             }
-            else if (strcmp(alignVString, "center") == 0)
+            else if (std::strcmp(alignVString, "center") == 0)
             {
                 return TextData::AlignVType::CENTER;
             }
-            else if (strcmp(alignVString, "right") == 0)
+            else if (std::strcmp(alignVString, "right") == 0)
             {
                 return TextData::AlignVType::BOTTOM;
             }

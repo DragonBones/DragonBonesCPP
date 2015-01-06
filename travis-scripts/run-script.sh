@@ -62,7 +62,7 @@ elif [ "$PLATFORM"x = "android"x ]; then
 
     cd $DRAGONBONES_ROOT/demos/cocos2d-x-3.2/proj.android
     chmod +x build_native.py
-    ./build_native.py
+    ./build_native.py -n "NDK_BUG=0 -j10"
 
     # Generate binding glue codes
     # echo "Generating bindings glue codes ..."
@@ -95,14 +95,15 @@ elif [ "$PLATFORM"x = "linux"x ]; then
     # Generate binding glue codes
     echo "Generating bindings glue codes ..."
     cd $COCOS2DX_ROOT/tools/travis-scripts
-    ./generate-bindings.sh
-    ./generate-cocosfiles.sh
+    # ./generate-bindings.sh
+    # ./generate-cocosfiles.sh
 
     echo "Building cocos2d-x"
-    cd $COCOS2DX_ROOT/build
+    cd $DRAGONBONES_ROOT/demos/cocos2d-x-3.2
+    # cd $COCOS2DX_ROOT/build
     mkdir -p linux-build
     cd linux-build
-    cmake ../..
+    cmake ..
     make -j10
 
 elif [ "$PLATFORM"x = "emscripten"x ]; then
