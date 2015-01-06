@@ -108,7 +108,7 @@ void Bone::addChild(Object *object)
     
     if (object == this || (bone && bone->contains(this)))
     {
-        throw std::invalid_argument("An Bone cannot be added as a child to itself or one of its children (or children's children, etc.)");
+        DBASSERT(false, "An Bone cannot be added as a child to itself or one of its children (or children's children, etc.)");
     }
     
     if (object && object->getParent())

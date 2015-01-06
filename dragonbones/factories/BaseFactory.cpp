@@ -39,25 +39,13 @@ DragonBonesData* BaseFactory::getDragonBonesData(const std::string &name) const
 
 void BaseFactory::addDragonBonesData(DragonBonesData *data, const std::string &name)
 {
-    if (!data)
-    {
-        // throw
-        throw std::invalid_argument("Invalid data.");
-    }
+    DBASSERT(data, "Invalid data.");
     
     const std::string &key = name.empty() ? data->name : name;
+
+    DBASSERT(!key.empty(), "Name is empty.");
     
-    if (key.empty())
-    {
-        // throw
-        throw std::runtime_error("Name is empty.");
-    }
-    
-    if (_dragonBonesDataMap.find(key) != _dragonBonesDataMap.end())
-    {
-        // throw
-        throw std::runtime_error("Data has been added.");
-    }
+    DBASSERT(_dragonBonesDataMap.find(key) == _dragonBonesDataMap.end(), "Data has been added.");
 
     _dragonBonesDataMap[key] = data;
 }
@@ -93,25 +81,13 @@ ITextureAtlas* BaseFactory::getTextureAtlas(const std::string &name) const
 }
 void BaseFactory::addTextureAtlas(ITextureAtlas *textureAtlas, const std::string &name)
 {
-    if (!textureAtlas)
-    {
-        // throw
-        throw std::invalid_argument("Invalid textureAtlas.");
-    }
+    DBASSERT(textureAtlas, "Invalid textureAtlas.");
     
     const std::string &key = name.empty() ? textureAtlas->textureAtlasData->name : name;
     
-    if (key.empty())
-    {
-        // throw
-        throw std::runtime_error("Name is empty.");
-    }
+    DBASSERT(!key.empty(), "Name is empty.");
     
-    if (_textureAtlasMap.find(key) != _textureAtlasMap.end())
-    {
-        // throw?
-        throw std::runtime_error("Data has been added.");
-    }
+    DBASSERT(_textureAtlasMap.find(key) == _textureAtlasMap.end(), "Data has been added.");
     
     _textureAtlasMap[key] = textureAtlas;
 }
