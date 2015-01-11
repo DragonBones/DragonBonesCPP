@@ -85,6 +85,9 @@ DBCCArmatureNode::~DBCCArmatureNode()
     {
         _clock->remove(this);
         _clock = nullptr;
+    } else
+    {
+        unscheduleUpdate();
     }
 
     if (_armature)
@@ -101,6 +104,7 @@ cocos2d::Rect DBCCArmatureNode::getBoundingBox() const
 
 void DBCCArmatureNode::update(float dt)
 {
+    DBASSERT(!_clock, "can not has clock when update!");
     advanceTime(dt);
 }
 
