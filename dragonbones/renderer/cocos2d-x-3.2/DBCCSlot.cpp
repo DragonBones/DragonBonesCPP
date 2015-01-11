@@ -146,9 +146,18 @@ void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
         switch (blendMode)
         {
             case BlendMode::BM_ADD:
-                spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
+            {
+                auto texture = spriteDisplay->getTexture();
+                if (texture && texture->hasPremultipliedAlpha())
+                {
+                    cocos2d::BlendFunc func = {GL_ONE, GL_ONE};
+                    spriteDisplay->setBlendFunc(func);
+                }else
+                {
+                    spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
+                }
                 break;
-                
+            }
             case BlendMode::BM_ALPHA:
                 break;
                 
