@@ -114,7 +114,7 @@ def copy_resources(app_android_root):
 
     # copy resources
     os.mkdir(assets_dir)
-    resources_dir = os.path.join(app_android_root, "../Resources")
+    resources_dir = os.path.join(app_android_root, "../../Resources")
     if os.path.isdir(resources_dir):
         copy_files(resources_dir, assets_dir)
 
@@ -125,7 +125,7 @@ def build(ndk_build_param,android_platform,build_mode):
     select_toolchain_version()
 
     current_dir = os.path.dirname(os.path.realpath(__file__))
-    cocos_root = os.path.join(current_dir, "../../../engines/cocos2d-x-3.2")
+    cocos_root = os.path.join(current_dir, "../../../engines/cocos2d-x-3.x")
 
     app_android_root = current_dir
     copy_resources(app_android_root)
