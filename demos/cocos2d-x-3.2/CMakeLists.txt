@@ -79,7 +79,7 @@ set(DRAGONBONES_ROOT ${CMAKE_SOURCE_DIR}/../../dragonbones)
 set(COCOS2D_ROOT ${CMAKE_SOURCE_DIR}/../../engines/cocos2d-x-3.x)
 
 include_directories(
-  Classes
+  ../Classes
   ${DRAGONBONES_ROOT}
   ${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.x
 )
