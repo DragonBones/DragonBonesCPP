@@ -39,7 +39,7 @@ include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,.)
 $(call import-module,audio/android)
-$(call import-module,dragonbones/renderer/cocos2d-x-3.x/android_demo)
+$(call import-module,dragonbones/renderer/cocos2d-x-3.x/android)
 
 # $(call import-module,Box2D)
 # $(call import-module,editor-support/cocosbuilder)
