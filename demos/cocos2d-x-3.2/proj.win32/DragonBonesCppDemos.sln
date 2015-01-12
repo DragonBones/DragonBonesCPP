@@ -11,13 +11,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DragonBonesCPPDemos", "Drag
 		{F8EDD7FA-9A51-4E80-BAEB-860825D2EAC6} = {F8EDD7FA-9A51-4E80-BAEB-860825D2EAC6}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAudio", "..\..\..\engines\cocos2d-x-3.2\cocos\audio\proj.win32\CocosDenshion.vcxproj", "{F8EDD7FA-9A51-4E80-BAEB-860825D2EAC6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAudio", "..\..\..\engines\cocos2d-x-3.x\cocos\audio\proj.win32\CocosDenshion.vcxproj", "{F8EDD7FA-9A51-4E80-BAEB-860825D2EAC6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libchipmunk", "..\..\..\engines\cocos2d-x-3.2\external\chipmunk\proj.win32\chipmunk.vcxproj", "{207BC7A9-CCF1-4F2F-A04D-45F72242AE25}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libchipmunk", "..\..\..\engines\cocos2d-x-3.x\external\chipmunk\proj.win32\chipmunk.vcxproj", "{207BC7A9-CCF1-4F2F-A04D-45F72242AE25}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcocos2d", "..\..\..\engines\cocos2d-x-3.2\cocos\2d\cocos2d.vcxproj", "{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcocos2d", "..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2d.vcxproj", "{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libDragonbones_demo", "..\..\..\dragonbones\renderer\cocos2d-x-3.2\proj.win32\libDragonbones_demo.vcxproj", "{2633E5D1-C31E-466B-844C-67E6B82D9682}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libDragonbones_demo", "..\..\..\dragonbones\renderer\cocos2d-x-3.x\proj.win32\libDragonbones_demo.vcxproj", "{2633E5D1-C31E-466B-844C-67E6B82D9682}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

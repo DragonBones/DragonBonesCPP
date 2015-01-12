@@ -40,13 +40,13 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\engines\cocos2d-x-3.2\cocos\2d\cocos2dx.props" />
-    <Import Project="..\..\..\engines\cocos2d-x-3.2\cocos\2d\cocos2d_headers.props" />
+    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2dx.props" />
+    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2d_headers.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\engines\cocos2d-x-3.2\cocos\2d\cocos2dx.props" />
-    <Import Project="..\..\..\engines\cocos2d-x-3.2\cocos\2d\cocos2d_headers.props" />
+    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2dx.props" />
+    <Import Project="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2d_headers.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -73,7 +73,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;$(EngineRoot)..\..\dragonbones;$(EngineRoot)..\..\dragonbones\renderer\cocos2d-x-3.2;..\Classes;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;$(EngineRoot)..\..\dragonbones;$(EngineRoot)..\..\dragonbones\renderer\cocos2d-x-3.x;..\..\Classes;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -106,7 +106,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\..\Classes;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -137,37 +137,37 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\Demo.cpp" />
-    <ClCompile Include="..\Classes\examples\DemoChaseStarling.cpp" />
-    <ClCompile Include="..\Classes\examples\DemoDragonBoy.cpp" />
-    <ClCompile Include="..\Classes\examples\DemoKnight.cpp" />
-    <ClCompile Include="..\Classes\VisibleRect.cpp" />
+    <ClCompile Include="..\..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\..\Classes\Demo.cpp" />
+    <ClCompile Include="..\..\Classes\examples\DemoChaseStarling.cpp" />
+    <ClCompile Include="..\..\Classes\examples\DemoDragonBoy.cpp" />
+    <ClCompile Include="..\..\Classes\examples\DemoKnight.cpp" />
+    <ClCompile Include="..\..\Classes\VisibleRect.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\Demo.h" />
-    <ClInclude Include="..\Classes\examples\DemoChaseStarling.h" />
-    <ClInclude Include="..\Classes\examples\DemoDragonBoy.h" />
-    <ClInclude Include="..\Classes\examples\DemoKnight.h" />
-    <ClInclude Include="..\Classes\VisibleRect.h" />
+    <ClInclude Include="..\..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\..\Classes\Demo.h" />
+    <ClInclude Include="..\..\Classes\examples\DemoChaseStarling.h" />
+    <ClInclude Include="..\..\Classes\examples\DemoDragonBoy.h" />
+    <ClInclude Include="..\..\Classes\examples\DemoKnight.h" />
+    <ClInclude Include="..\..\Classes\VisibleRect.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\dragonbones\renderer\cocos2d-x-3.2\proj.win32\libDragonbones_demo.vcxproj">
+    <ProjectReference Include="..\..\..\dragonbones\renderer\cocos2d-x-3.x\proj.win32\libDragonbones_demo.vcxproj">
       <Project>{2633e5d1-c31e-466b-844c-67e6b82d9682}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.2\cocos\2d\cocos2d.vcxproj">
+    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\cocos\2d\cocos2d.vcxproj">
       <Project>{98a51ba8-fc3a-415b-ac8f-8c7bd464e93e}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.2\cocos\audio\proj.win32\CocosDenshion.vcxproj">
+    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\cocos\audio\proj.win32\CocosDenshion.vcxproj">
       <Project>{f8edd7fa-9a51-4e80-baeb-860825d2eac6}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.2\external\chipmunk\proj.win32\chipmunk.vcxproj">
+    <ProjectReference Include="..\..\..\engines\cocos2d-x-3.x\external\chipmunk\proj.win32\chipmunk.vcxproj">
       <Project>{207bc7a9-ccf1-4f2f-a04d-45f72242ae25}</Project>
     </ProjectReference>
   </ItemGroup>
