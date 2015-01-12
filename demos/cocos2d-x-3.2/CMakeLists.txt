@@ -67,12 +67,12 @@ set(GAME_SRC
 endif()
 
 set(GAME_SRC ${GAME_SRC}
-    Classes/AppDelegate.cpp
-    Classes/Demo.cpp
-    Classes/examples/DemoChaseStarling.cpp
-    Classes/examples/DemoDragonBoy.cpp
-    Classes/examples/DemoKnight.cpp
-    Classes/VisibleRect.cpp
+    ../Classes/AppDelegate.cpp
+    ../Classes/Demo.cpp
+    ../Classes/examples/DemoChaseStarling.cpp
+    ../Classes/examples/DemoDragonBoy.cpp
+    ../Classes/examples/DemoKnight.cpp
+    ../Classes/VisibleRect.cpp
 )
 
 set(DRAGONBONES_ROOT ${CMAKE_SOURCE_DIR}/../../dragonbones)
