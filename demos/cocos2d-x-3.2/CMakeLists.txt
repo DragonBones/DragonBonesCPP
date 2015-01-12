@@ -207,7 +207,7 @@ add_subdirectory(${COCOS2D_ROOT}/extensions ${CMAKE_CURRENT_BINARY_DIR}/extensio
 ## Editor Support
 
 # dragonbones
-add_subdirectory(${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.2/demo ${CMAKE_CURRENT_BINARY_DIR}/dragonbones)
+add_subdirectory(${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.x/demo ${CMAKE_CURRENT_BINARY_DIR}/dragonbones)
 
 # spine
 add_subdirectory(${COCOS2D_ROOT}/cocos/editor-support/spine ${CMAKE_CURRENT_BINARY_DIR}/cocos/editor-support/spine)
