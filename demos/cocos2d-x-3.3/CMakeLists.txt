@@ -28,7 +28,8 @@ cmake_minimum_required(VERSION 2.8)
 set(APP_NAME MyGame)
 project (${APP_NAME})
 
-set(COCOS2D_ROOT ${CMAKE_SOURCE_DIR}/cocos2d)
+set(DRAGONBONES_ROOT ${CMAKE_SOURCE_DIR}/../../dragonbones)
+set(COCOS2D_ROOT ${CMAKE_SOURCE_DIR}/../../engines/cocos2d-x-3.x)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${COCOS2D_ROOT}/cmake/Modules/")
 include(CocosBuildHelpers)
@@ -36,7 +37,9 @@ include(CocosBuildHelpers)
 # libcocos2d
 set(BUILD_CPP_TESTS OFF CACHE BOOL "turn off build cpp-tests")
 set(BUILD_LUA_LIBS OFF CACHE BOOL "turn off build lua-tests")
-add_subdirectory(${COCOS2D_ROOT})
+add_subdirectory(${COCOS2D_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/cocos2d)
+# dragonbones
+add_subdirectory(${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.x/demo ${CMAKE_CURRENT_BINARY_DIR}/dragonbones)
 
 # Some macro definitions
 if(WINDOWS)
@@ -110,7 +113,9 @@ include_directories(
   /usr/local/include/GLFW
   /usr/include/GLFW
   ${COCOS2D_ROOT}/cocos
-  Classes
+  ../Classes
+  ${DRAGONBONES_ROOT}
+  ${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.x
 )
 
 set(GAME_SRC
@@ -139,7 +144,7 @@ else()
 add_executable(${APP_NAME} ${GAME_SRC})
 endif()
 
-target_link_libraries(${APP_NAME} cocos2d)
+target_link_libraries(${APP_NAME} cocos2d dragonbones)
 
 set(APP_BIN_DIR "${CMAKE_BINARY_DIR}/bin")
 
