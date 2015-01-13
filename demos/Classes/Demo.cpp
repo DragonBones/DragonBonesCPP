@@ -96,7 +96,7 @@ void DemoBase::onEnter()
 {
     LayerColor::onEnter();
     
-    Label* pLabel = Label::createWithSystemFont("DragonBonesCPP for cocos2d-x 3.2", "Arial", 28);
+    Label* pLabel = Label::createWithSystemFont("DragonBonesCPP for cocos2d-x 3.x", "Arial", 28);
     
     // position the label on the center of the screen
     pLabel->setPosition(VisibleRect::top(0, -20));
