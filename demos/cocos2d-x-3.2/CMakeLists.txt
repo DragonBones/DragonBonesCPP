@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 set(APP_NAME MyGame)
 project (${APP_NAME})
 
-include(../../engines/cocos2d-x-3.2/build/BuildHelpers.CMakeLists.txt)
+include(../../engines/cocos2d-x-3.x/build/BuildHelpers.CMakeLists.txt)
 
 option(USE_CHIPMUNK "Use chipmunk for physics library" ON)
 option(USE_BOX2D "Use box2d for physics library" OFF)
@@ -67,21 +67,21 @@ set(GAME_SRC
 endif()
 
 set(GAME_SRC ${GAME_SRC}
-    Classes/AppDelegate.cpp
-    Classes/Demo.cpp
-    Classes/examples/DemoChaseStarling.cpp
-    Classes/examples/DemoDragonBoy.cpp
-    Classes/examples/DemoKnight.cpp
-    Classes/VisibleRect.cpp
+    ../Classes/AppDelegate.cpp
+    ../Classes/Demo.cpp
+    ../Classes/examples/DemoChaseStarling.cpp
+    ../Classes/examples/DemoDragonBoy.cpp
+    ../Classes/examples/DemoKnight.cpp
+    ../Classes/VisibleRect.cpp
 )
 
 set(DRAGONBONES_ROOT ${CMAKE_SOURCE_DIR}/../../dragonbones)
-set(COCOS2D_ROOT ${CMAKE_SOURCE_DIR}/../../engines/cocos2d-x-3.2)
+set(COCOS2D_ROOT ${CMAKE_SOURCE_DIR}/../../engines/cocos2d-x-3.x)
 
 include_directories(
-  Classes
+  ../Classes
   ${DRAGONBONES_ROOT}
-  ${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.2
+  ${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.x
 )
 if (WIN32)
 include_directories(
@@ -207,7 +207,7 @@ add_subdirectory(${COCOS2D_ROOT}/extensions ${CMAKE_CURRENT_BINARY_DIR}/extensio
 ## Editor Support
 
 # dragonbones
-add_subdirectory(${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.2/demo ${CMAKE_CURRENT_BINARY_DIR}/dragonbones)
+add_subdirectory(${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.x/demo ${CMAKE_CURRENT_BINARY_DIR}/dragonbones)
 
 # spine
 add_subdirectory(${COCOS2D_ROOT}/cocos/editor-support/spine ${CMAKE_CURRENT_BINARY_DIR}/cocos/editor-support/spine)

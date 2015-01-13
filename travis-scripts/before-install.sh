@@ -5,7 +5,7 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DRAGONBONES_ROOT="$DIR"/..
-COCOS2DX_ROOT="$DRAGONBONES_ROOT"/engines/cocos2d-x-3.2
+COCOS2DX_ROOT="$DRAGONBONES_ROOT"/engines/cocos2d-x-3.x
 HOST_NAME=""
 
 # download cocos2d-x
