@@ -18,46 +18,46 @@
     <ClCompile Include="main.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\AppDelegate.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\VisibleRect.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\examples\DemoDragonBoy.cpp">
+    <ClCompile Include="..\..\Classes\examples\DemoChaseStarling.cpp">
       <Filter>Classes\examples</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\examples\DemoKnight.cpp">
+    <ClCompile Include="..\..\Classes\examples\DemoDragonBoy.cpp">
       <Filter>Classes\examples</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Demo.cpp">
+    <ClCompile Include="..\..\Classes\examples\DemoKnight.cpp">
+      <Filter>Classes\examples</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\AppDelegate.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\examples\DemoChaseStarling.cpp">
-      <Filter>Classes\examples</Filter>
+    <ClCompile Include="..\..\Classes\Demo.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Classes\VisibleRect.cpp">
+      <Filter>Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\VisibleRect.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\examples\DemoDragonBoy.h">
+    <ClInclude Include="..\..\Classes\examples\DemoChaseStarling.h">
       <Filter>Classes\examples</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\examples\DemoKnight.h">
+    <ClInclude Include="..\..\Classes\examples\DemoDragonBoy.h">
       <Filter>Classes\examples</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Demo.h">
+    <ClInclude Include="..\..\Classes\examples\DemoKnight.h">
+      <Filter>Classes\examples</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\AppDelegate.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\examples\DemoChaseStarling.h">
-      <Filter>Classes\examples</Filter>
+    <ClInclude Include="..\..\Classes\Demo.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\VisibleRect.h">
+      <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
