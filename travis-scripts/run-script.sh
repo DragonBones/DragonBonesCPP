@@ -60,7 +60,7 @@ elif [ "$GEN_COCOS_FILES"x = "YES"x ]; then
 elif [ "$PLATFORM"x = "android"x ]; then
     export NDK_ROOT=$HOME/bin/android-ndk
 
-    cd $DRAGONBONES_ROOT/demos/cocos2d-x-3.2/proj.android
+    cd $DRAGONBONES_ROOT/demos/cocos2d-x-$C2DX_VER/proj.android
     chmod +x build_native.py
     ./build_native.py -n "NDK_BUG=0 -j10"
 
@@ -99,7 +99,7 @@ elif [ "$PLATFORM"x = "linux"x ]; then
     # ./generate-cocosfiles.sh
 
     echo "Building cocos2d-x"
-    cd $DRAGONBONES_ROOT/demos/cocos2d-x-3.2
+    cd $DRAGONBONES_ROOT/demos/cocos2d-x-$C2DX_VER
     # cd $COCOS2DX_ROOT/build
     mkdir -p linux-build
     cd linux-build
