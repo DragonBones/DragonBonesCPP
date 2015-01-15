@@ -38,8 +38,6 @@ include(CocosBuildHelpers)
 set(BUILD_CPP_TESTS OFF CACHE BOOL "turn off build cpp-tests")
 set(BUILD_LUA_LIBS OFF CACHE BOOL "turn off build lua-tests")
 add_subdirectory(${COCOS2D_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/cocos2d)
-# dragonbones
-add_subdirectory(${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.x/demo ${CMAKE_CURRENT_BINARY_DIR}/dragonbones)
 
 # Some macro definitions
 if(WINDOWS)
@@ -80,8 +78,6 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
   endif()
 endif(MSVC)
-
-
 
 set(PLATFORM_SPECIFIC_SRC)
 set(PLATFORM_SPECIFIC_HEADERS)
@@ -137,6 +133,10 @@ set(GAME_HEADERS
     ../Classes/VisibleRect.h
   ${PLATFORM_SPECIFIC_HEADERS}
 )
+
+# dragonbones
+add_subdirectory(${DRAGONBONES_ROOT}/renderer/cocos2d-x-3.x/demo ${CMAKE_CURRENT_BINARY_DIR}/dragonbones)
+
 
 if(GAME_HEADERS)
 add_executable(${APP_NAME} ${GAME_SRC} ${GAME_HEADERS})

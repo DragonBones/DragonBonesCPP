@@ -93,7 +93,15 @@ elif [ "$PLATFORM"x = "nacl"x ]; then
     make -j4
 elif [ "$PLATFORM"x = "linux"x ]; then
     # Generate binding glue codes
-    echo "Generating bindings glue codes ..."
+    # echo "Generating bindings glue codes ..."
+    # change cmakelists.txt
+    # awk '{if(NR>=157&&NR<=159)printf "#"}1' $COCOS2DX_ROOT/CMakeLists.txt > CMakeLists1.txt
+    # mv -f CMakeLists1.txt $COCOS2DX_ROOT/CMakeLists.txt
+
+    if [[ -f "$DRAGONBONES_ROOT/demos/cocos2d-x-$C2DX_VER/FindGLEW.cmake" ]]; then
+        mv "$DRAGONBONES_ROOT/demos/cocos2d-x-$C2DX_VER/FindGLEW.cmake" "$COCOS2DX_ROOT/cmake/Modules/FindGLEW.cmake"
+    fi
+    
     cd $COCOS2DX_ROOT/tools/travis-scripts
     # ./generate-bindings.sh
     # ./generate-cocosfiles.sh

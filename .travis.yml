@@ -12,8 +12,8 @@ env:
   # port currently builds.  TODO(sbc): Re-enable all architectures.
   # Disabled travis-ci build for native client port since it doesn't support std::thread, std::mutex.
   # - PLATFORM=nacl DEBUG=1 NACL_ARCH=arm
-  - PLATFORM=android C2DX_VER=3.3
-  - PLATFORM=android C2DX_VER=3.2
+  - PLATFORM=android CC_COMPILER=gcc CXX_COMPILER=g++ C2DX_VER=3.3
+  - PLATFORM=android CC_COMPILER=gcc CXX_COMPILER=g++ C2DX_VER=3.2
   # - PLATFORM=emscripten DEBUG=1
 script:
 - export CC=$CC_COMPILER
