@@ -60,7 +60,7 @@ elif [ "$GEN_COCOS_FILES"x = "YES"x ]; then
 elif [ "$PLATFORM"x = "android"x ]; then
     export NDK_ROOT=$HOME/bin/android-ndk
 
-    cd $DRAGONBONES_ROOT/demos/cocos2d-x-3.2/proj.android
+    cd $DRAGONBONES_ROOT/demos/cocos2d-x-$C2DX_VER/proj.android
     chmod +x build_native.py
     ./build_native.py -n "NDK_BUG=0 -j10"
 
@@ -93,13 +93,21 @@ elif [ "$PLATFORM"x = "nacl"x ]; then
     make -j4
 elif [ "$PLATFORM"x = "linux"x ]; then
     # Generate binding glue codes
-    echo "Generating bindings glue codes ..."
+    # echo "Generating bindings glue codes ..."
+    # change cmakelists.txt
+    # awk '{if(NR>=157&&NR<=159)printf "#"}1' $COCOS2DX_ROOT/CMakeLists.txt > CMakeLists1.txt
+    # mv -f CMakeLists1.txt $COCOS2DX_ROOT/CMakeLists.txt
+
+    if [[ -f "$DRAGONBONES_ROOT/demos/cocos2d-x-$C2DX_VER/FindGLEW.cmake" ]]; then
+        mv "$DRAGONBONES_ROOT/demos/cocos2d-x-$C2DX_VER/FindGLEW.cmake" "$COCOS2DX_ROOT/cmake/Modules/FindGLEW.cmake"
+    fi
+    
     cd $COCOS2DX_ROOT/tools/travis-scripts
     # ./generate-bindings.sh
     # ./generate-cocosfiles.sh
 
     echo "Building cocos2d-x"
-    cd $DRAGONBONES_ROOT/demos/cocos2d-x-3.2
+    cd $DRAGONBONES_ROOT/demos/cocos2d-x-$C2DX_VER
     # cd $COCOS2DX_ROOT/build
     mkdir -p linux-build
     cd linux-build

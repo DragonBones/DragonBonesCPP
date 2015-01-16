@@ -16,7 +16,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
+#if (COCOS2D_VERSION >= 0x00030300)
+        glview = GLViewImpl::create("DragonBones Demos");
+#else
         glview = GLView::create("DragonBones Demos");
+#endif
         director->setOpenGLView(glview);
     }
 

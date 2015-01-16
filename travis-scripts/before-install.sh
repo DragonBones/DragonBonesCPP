@@ -9,7 +9,7 @@ COCOS2DX_ROOT="$DRAGONBONES_ROOT"/engines/cocos2d-x-3.x
 HOST_NAME=""
 
 # download cocos2d-x
-git clone --branch cocos2d-x-3.2 https://github.com/cocos2d/cocos2d-x.git $COCOS2DX_ROOT
+git clone --branch cocos2d-x-$C2DX_VER https://github.com/cocos2d/cocos2d-x.git $COCOS2DX_ROOT
 pushd $COCOS2DX_ROOT
 git submodule init
 git submodule update
@@ -62,6 +62,11 @@ elif [ "$GEN_BINDING"x = "YES"x ]; then
 elif [ "$PLATFORM"x = "linux"x ]; then
     sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
     sudo apt-get update
+    # install glew
+    # sudo apt-get install freeglut3 freeglut3-dev
+    # sudo apt-get install binutils-goldc
+    sudo apt-get install libglew1.5-dev
+    
     sudo apt-get install gcc-4.7 g++-4.7
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.6
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.7 90 --slave /usr/bin/g++ g++ /usr/bin/g++-4.7
