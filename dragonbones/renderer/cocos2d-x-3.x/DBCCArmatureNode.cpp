@@ -123,72 +123,86 @@ void DBCCArmatureNode::advanceTime(float dt)
 
 void DBCCArmatureNode::registerFrameEventHandler(cocos2d::LUA_FUNCTION func)
 {
-	unregisterFrameEventHandler();
-	_frameEventHandler = func;
+    unregisterFrameEventHandler();
+    _frameEventHandler = func;
 
-	auto dispatcher = getCCEventDispatcher();
+    auto dispatcher = getCCEventDispatcher();
 
-	auto f = [this](cocos2d::EventCustom *event)
-	{
-		auto eventData = (EventData*)(event->getUserData());
-		auto type = (int) eventData->getType();
-		auto movementId = eventData->animationState->name;
-		auto frameLabel = eventData->frameLabel;
+    auto f = [this](cocos2d::EventCustom *event)
+    {
+        auto eventData = (EventData*)(event->getUserData());
+        auto type = (int) eventData->getType();
+        auto movementId = eventData->animationState->name;
+        auto frameLabel = eventData->frameLabel;
 
-		auto stack = cocos2d::LuaEngine::getInstance()->getLuaStack();
-		stack->pushObject(this, "db.DBCCArmatureNode");
-		stack->pushInt(type);
+        auto stack = cocos2d::LuaEngine::getInstance()->getLuaStack();
+        stack->pushObject(this, "db.DBCCArmatureNode");
+        stack->pushInt(type);
         stack->pushString(movementId.c_str(), movementId.size());
         stack->pushString(frameLabel.c_str(), frameLabel.size());
-		stack->executeFunctionByHandler(_frameEventHandler, 4);
-	};
+        if (eventData->getType() == EventData::EventType::BONE_FRAME_EVENT)
+        {
+            stack->pushString(eventData->bone->name.c_str(), eventData->bone->name.size());
+            stack->executeFunctionByHandler(_frameEventHandler, 5);
+        } else 
+        {
+            stack->executeFunctionByHandler(_frameEventHandler, 4);
+        }
+    };
 
-	dispatcher->addCustomEventListener(EventData::ANIMATION_FRAME_EVENT, f);
+    dispatcher->addCustomEventListener(EventData::ANIMATION_FRAME_EVENT, f);
+    dispatcher->addCustomEventListener(EventData::BONE_FRAME_EVENT, f);
 }
 
 void DBCCArmatureNode::registerMovementEventHandler(cocos2d::LUA_FUNCTION func)
 {
-	unregisterMovementEventHandler();
-	_movementEventHandler = func;
+    unregisterMovementEventHandler();
+    _movementEventHandler = func;
 
-	auto dispatcher = getCCEventDispatcher();
+    auto dispatcher = getCCEventDispatcher();
 
-	auto f = [this](cocos2d::EventCustom *event)
-	{
-		auto eventData = (EventData*)(event->getUserData());
-		auto type = (int) eventData->getType();
-		auto movementId = eventData->animationState->name;
+    auto f = [this](cocos2d::EventCustom *event)
+    {
+        auto eventData = (EventData*)(event->getUserData());
+        auto type = (int) eventData->getType();
+        auto movementId = eventData->animationState->name;
         auto lastState = eventData->armature->getAnimation()->getLastAnimationState();
 
-		auto stack = cocos2d::LuaEngine::getInstance()->getLuaStack();
-		stack->pushObject(this, "db.DBCCArmatureNode");
-		stack->pushInt(type);
-		stack->pushString(movementId.c_str(), movementId.size());
+        auto stack = cocos2d::LuaEngine::getInstance()->getLuaStack();
+        stack->pushObject(this, "db.DBCCArmatureNode");
+        stack->pushInt(type);
+        stack->pushString(movementId.c_str(), movementId.size());
         stack->pushBoolean(lastState == eventData->animationState);
-        
-		stack->executeFunctionByHandler(_movementEventHandler, 4);
-	};
 
-	dispatcher->addCustomEventListener(EventData::COMPLETE, f);
-	dispatcher->addCustomEventListener(EventData::LOOP_COMPLETE, f);
+        stack->executeFunctionByHandler(_movementEventHandler, 4);
+    };
+
+    dispatcher->addCustomEventListener(EventData::COMPLETE, f);
+    dispatcher->addCustomEventListener(EventData::LOOP_COMPLETE, f);
 }
 
 void DBCCArmatureNode::unregisterFrameEventHandler()
 {
-	if (_frameEventHandler != 0)
-	{
-		cocos2d::LuaEngine::getInstance()->removeScriptHandler(_frameEventHandler);
-		_frameEventHandler = 0;
-	}
+    if (_frameEventHandler != 0)
+    {
+        auto dispatcher = getCCEventDispatcher();
+        dispatcher->removeCustomEventListeners(EventData::ANIMATION_FRAME_EVENT);
+        dispatcher->removeCustomEventListeners(EventData::BONE_FRAME_EVENT);
+        cocos2d::LuaEngine::getInstance()->removeScriptHandler(_frameEventHandler);
+        _frameEventHandler = 0;
+    }
 }
 
 void DBCCArmatureNode::unregisterMovementEventHandler()
 {
-	if (_movementEventHandler != 0)
-	{
-		cocos2d::LuaEngine::getInstance()->removeScriptHandler(_movementEventHandler);
-		_movementEventHandler = 0;
-	}
+    if (_movementEventHandler != 0)
+    {
+        auto dispatcher = getCCEventDispatcher();
+        dispatcher->removeCustomEventListeners(EventData::COMPLETE);
+        dispatcher->removeCustomEventListeners(EventData::LOOP_COMPLETE);
+        cocos2d::LuaEngine::getInstance()->removeScriptHandler(_movementEventHandler);
+        _movementEventHandler = 0;
+    }
 }
 
 #endif // !DRAGON_BONES_ENABLE_LUA
