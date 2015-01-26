@@ -78,6 +78,7 @@ Device-Release/
 # Ignore vim swaps
 *.swp
 *.swo
+*.un~
 
 # CTags
 tags

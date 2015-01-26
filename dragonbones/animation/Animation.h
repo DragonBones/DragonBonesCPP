@@ -74,16 +74,20 @@ namespace dragonBones
         bool _isActive;
         
         /**
-         * An vector containing all AnimationData names the Animation can play.
-         * @see dragonBones.objects.animationData->
+         * Unrecommended API. Recommend use getAnimationList.
          */
         const std::vector<String> &getMovementList();
+        
+        /**
+         * Unrecommended API. Recommend use getLastAnimationName.
+         */
+        const String &getMovementID();
         
         /**
          * The name of the last AnimationData played.
          * @see dragonBones.objects.animationData->
          */
-        const String &getMovementID();
+        const String &getLastAnimationName();
         
         AnimationState *_lastAnimationState;
         /**
@@ -110,6 +114,8 @@ namespace dragonBones
          */
         const std::vector<AnimationData*>& getAnimationDataList();
         void setAnimationDataList(const std::vector<AnimationData*> &value);
+
+        AnimationData* getAnimationData(std::string &name);
         
         Number _timeScale;
         /**

@@ -9,12 +9,7 @@
 #ifndef __DRAGONBONES_HEADERS_H__
 #define __DRAGONBONES_HEADERS_H__
 
-//#include "CCDragonBones.h"  
-#ifdef COCOS2D_3X
-#include "CCDragonBonesNode.h"
-#else
 #include "CCDragonBones.h"
-#endif
 
 #include "Cocos2dxAtlasNode.h"
 #include "Cocos2dxDisplayBridge.h"

@@ -46,7 +46,7 @@ namespace dragonBones
         CCDragonBones* pNew = new CCDragonBones();
         if (pNew && pNew->init())
         {
-            Armature*arm = CCDragonBones::buildArmature(skeletonXMLFile,
+            Armature* arm = CCDragonBones::buildArmature(skeletonXMLFile,
                 textureXMLFile,
                 dragonBonesName,
                 armatureName,
@@ -163,10 +163,23 @@ namespace dragonBones
     {
         return m_Armature->getAnimation();
     }
+    
+    CCArray* CCDragonBones::getAnimationList()
+    {
+         std::vector<String> aniList = getAnimation()->getAnimationList();
+        
+        CCArray* aniArr = CCArray::createWithCapacity(static_cast<unsigned int>(aniList.size()));
+        for (auto aniName : aniList)
+        {
+            aniArr->addObject(CCString::create(aniName.c_str()));
+        }
+        return aniArr;
+    }
 
     void CCDragonBones::onExit()
     {
 		DB_SAFE_DELETE(m_Armature);
         this->unscheduleAllSelectors();
+        CCNode::onExit();
     }
 }

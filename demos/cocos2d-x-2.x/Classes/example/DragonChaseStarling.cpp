@@ -37,6 +37,9 @@ DragonChaseStarling::DragonChaseStarling()
 
     this->setTouchEnabled(true);
     this->setTouchMode(kCCTouchesOneByOne);
+    CocosNode* node = static_cast<CocosNode*>(_db->getArmature()->getDisplay());
+    CCAtlasNode* an = static_cast<CCAtlasNode*>(node->getNode());
+    an->setOpacity(100);
 }
 
 std::string DragonChaseStarling::title()

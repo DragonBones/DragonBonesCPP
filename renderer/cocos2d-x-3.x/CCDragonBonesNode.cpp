@@ -61,7 +61,11 @@ namespace cocos2d {
 	void DragonBonesNode::update(float dt)
 	{
 		if(m_Armature)
+		{
+			this->retain();
 			m_Armature->advanceTime(dt);
+			this->release();
+		}
 	}
 
 	Node*  DragonBonesNode::getDisplayNode()
@@ -129,10 +133,13 @@ namespace cocos2d {
 			);
 	}
 
+    DragonBonesNode::~DragonBonesNode()
+    {
+        DB_SAFE_DELETE(m_Armature);
+    }
 
 	void DragonBonesNode::onExit()
 	{
-		DB_SAFE_DELETE(m_Armature);
 		this->unscheduleAllSelectors();
 		Node::onExit();
 	}
@@ -144,8 +151,11 @@ namespace cocos2d {
 		const char* animationName)
 	{
 		dragonBones::Cocos2dxFactory *fac = dragonBones::Cocos2dxFactory::getInstance();
-		fac->loadSkeletonFile(skeletonXMLFile);
-		fac->loadTextureAtlasFile(textureXMLFile);
+        if (!fac->getSkeletonData(dragonBonesName))
+        {
+            fac->loadSkeletonFile(skeletonXMLFile);
+            fac->loadTextureAtlasFile(textureXMLFile);
+        }
 		return fac->buildArmature(armatureName, animationName ,dragonBonesName);
 	}
 
