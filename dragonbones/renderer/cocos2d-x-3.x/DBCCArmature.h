@@ -21,6 +21,9 @@ public:
     virtual cocos2d::Rect getCCBoundingBox();
     
     virtual DBCCSlot* getCCSlot(const std::string &slotName) const;
+	
+protected:
+	virtual void sortSlotsByZOrder();	
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(DBCCArmature);

@@ -31,7 +31,6 @@ public:
     
 private:
     static bool sortBone(const std::pair<int, Bone*> &a, const std::pair<int, Bone*> &b);
-    static bool sortSlot(const Slot *a, const Slot *b);
     
 public:
     std::string name;
@@ -93,10 +92,11 @@ public:
 protected:
     virtual void addObject(Object *object);
     virtual void removeObject(Object *object);
+	
     virtual void sortBones();
-    
+    static bool sortSlot(const Slot *a, const Slot *b);
+	
     virtual void arriveAtFrame(Frame *frame, AnimationState *animationState, bool isCross);
-    
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(Armature);
 };

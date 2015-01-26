@@ -76,4 +76,28 @@ DBCCSlot* DBCCArmature::getCCSlot(const std::string &slotName) const
     Slot *slot = getSlot(slotName);
     return slot ? static_cast<DBCCSlot*>(slot) : nullptr;
 }
+
+void DBCCArmature::sortSlotsByZOrder()
+{
+	std::sort(_slotList.begin() , _slotList.end() , sortSlot);
+
+	int nShowCount = 0;
+	int nDisplayChildrenCount = static_cast<cocos2d::Node*>(getCCDisplay())->getChildrenCount();
+
+	for (size_t i = 0, l = _slotList.size(); i < l; ++i)
+	{
+		Slot *slot = _slotList[i];
+		if (slot->isShowDisplay())
+		{
+			cocos2d::Node* slotDisplayNode = static_cast<cocos2d::Node*>(slot->getDisplay());
+			if (slotDisplayNode)
+			{
+				slotDisplayNode->setLocalZOrder(nDisplayChildrenCount + nShowCount);
+			}
+			nShowCount += 1;
+		}
+	}
+	_slotsZOrderChanged = false;
+}
+
 NAME_SPACE_DRAGON_BONES_END
