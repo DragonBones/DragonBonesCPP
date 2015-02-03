@@ -23,7 +23,7 @@ public:
     virtual DBCCSlot* getCCSlot(const std::string &slotName) const;
 	
 protected:
-	virtual void sortSlotsByZOrder();	
+	virtual void sortSlotsByZOrder() override;	
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(DBCCArmature);
