@@ -249,7 +249,7 @@ void Slot::updateChildArmatureAnimation()
 
 void Slot::playChildArmatureAnimation()
 {
-    if (_childArmature)
+    if (_childArmature && _childArmature->_isInheritAnimation)
     {
         if (
             _armature &&
