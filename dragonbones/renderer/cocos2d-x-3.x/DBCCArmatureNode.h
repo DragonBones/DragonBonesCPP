@@ -24,9 +24,9 @@ public:
 
 #if (DRAGON_BONES_ENABLE_LUA == 1)
 	virtual void registerFrameEventHandler(cocos2d::LUA_FUNCTION func);
-	virtual void registerMovementEventHandler(cocos2d::LUA_FUNCTION func);
+	virtual void registerAnimationEventHandler(cocos2d::LUA_FUNCTION func);
 	virtual void unregisterFrameEventHandler();
-	virtual void unregisterMovementEventHandler();
+	virtual void unregisterAnimationEventHandler();
 #endif // DRAGON_BONES_ENABLE_LUA
 
 
@@ -56,8 +56,6 @@ protected:
     WorldClock *_clock;
     
 private:
-	int _frameEventHandler;
-	int _movementEventHandler;
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(DBCCArmatureNode);
 };
 NAME_SPACE_DRAGON_BONES_END
