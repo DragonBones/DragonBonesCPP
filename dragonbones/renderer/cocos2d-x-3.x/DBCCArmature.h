@@ -6,7 +6,10 @@
 #include "DragonBonesHeaders.h"
 #include "DBCCSlot.h"
 #include "cocos2d.h"
+
+#if (DRAGON_BONES_ENABLE_LUA == 1)
 #include "CCLuaValue.h"
+#endif // DRAGON_BONES_ENABLE_LUA
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 
