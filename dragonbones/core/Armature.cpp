@@ -45,6 +45,7 @@ IEventDispatcher* Armature::getEventDispatcher() const
 }
 
 Armature::Armature(ArmatureData *armatureData, Animation *animation, IEventDispatcher *eventDispatcher, void *display)
+    :_isInheritAnimation(true)
 {
     _armatureData = armatureData;
     _animation = animation;

@@ -42,6 +42,7 @@ protected:
     bool _slotsZOrderChanged;
     bool _delayDispose;
     bool _lockDispose;
+    bool _isInheritAnimation;
     
     std::vector<Bone*> _boneList;
     std::vector<Slot*> _slotList;
@@ -69,6 +70,8 @@ public:
     virtual void dispose();
     
 public:
+    virtual bool isInheritAnimation() const { return _isInheritAnimation; };
+    virtual void setInheritAnimation(bool b) { _isInheritAnimation = b; };
     virtual Bone* getBone(const std::string &boneName) const;
     virtual Bone* getBoneByDisplay(const void *display) const;
     virtual void addBone(Bone *bone);

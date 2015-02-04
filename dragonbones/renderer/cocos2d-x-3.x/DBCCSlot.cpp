@@ -51,8 +51,14 @@ Rectangle DBCCSlot::getBoundingBox()
         return getCCChildArmature()->getBoundingBox();
     }
 
+    auto display = getCCDisplay();
+    if (display)
+    {
     auto r = getCCDisplay()->getBoundingBox();
-    return Rectangle(r.origin.x, r.origin.y, r.size.width, r.size.height);
+        return Rectangle(r.origin.x, r.origin.y, r.size.width, r.size.height); 
+    }
+
+    return Rectangle();
 }
 
 int DBCCSlot::getDisplayZIndex() const
@@ -102,7 +108,7 @@ void DBCCSlot::disposeDisplayList()
             
             if (armature)
             {
-                armature->dispose();
+                //armature->dispose();
                 delete armature;
                 _displayList[i].first = NULL;
             }
