@@ -108,6 +108,7 @@
     <ClCompile Include="..\DBCCArmature.cpp" />
     <ClCompile Include="..\DBCCArmatureNode.cpp" />
     <ClCompile Include="..\DBCCFactory.cpp" />
+    <ClCompile Include="..\DBCCLuaUtils.cpp" />
     <ClCompile Include="..\DBCCSlot.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +156,8 @@
     <ClInclude Include="..\DBCCArmatureNode.h" />
     <ClInclude Include="..\DBCCEventDispatcher.h" />
     <ClInclude Include="..\DBCCFactory.h" />
+    <ClInclude Include="..\DBCCLuaUtils.h" />
+    <ClInclude Include="..\dbccMacro.h" />
     <ClInclude Include="..\DBCCRenderHeaders.h" />
     <ClInclude Include="..\DBCCSlot.h" />
     <ClInclude Include="..\DBCCTextureAtlas.h" />
