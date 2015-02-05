@@ -17,7 +17,7 @@ DragonBones C++ Library
 # FAQ
 
 1\. How to use dragonbones in lua?  
-Please see [如何在lua项目中使用dragonbones][4].
+Please see [如何在lua项目中使用dragonbones][4].  
 Please see [如何做dragonbones的lua绑定(Android)][5].
 
 
