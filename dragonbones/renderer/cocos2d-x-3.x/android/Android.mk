@@ -17,11 +17,12 @@ LOCAL_SRC_FILES := ../../../animation/Animation.cpp \
                    ../../../factories/BaseFactory.cpp \
                    ../../../parsers/BaseDataParser.cpp \
                    ../../../parsers/ConstValues.cpp \
-                   ../../../parsers/XMLDataParser.cpp \
                    ../../../parsers/dbtinyxml2.cpp \
+                   ../../../parsers/XMLDataParser.cpp \
                    ../DBCCArmature.cpp \
                    ../DBCCArmatureNode.cpp \
                    ../DBCCFactory.cpp \
+                   ../DBCCLuaUtils.cpp \
                    ../DBCCSlot.cpp
 
 
