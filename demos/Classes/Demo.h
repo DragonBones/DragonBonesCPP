@@ -17,7 +17,7 @@ public:
     virtual bool init();
     virtual std::string title();
     virtual std::string subtitle();
-    virtual void onEnter();
+    virtual void onEnter() override;
     
     void restartCallback(cocos2d::Ref* pSender);
     void nextCallback(cocos2d::Ref* pSender);

@@ -13,6 +13,9 @@
     <Filter Include="Classes\examples">
       <UniqueIdentifier>{30c2ad4b-d614-45de-9636-41ae869d7aa1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\performance">
+      <UniqueIdentifier>{9ebba9d5-6c84-42a7-a809-a6b789d4fd53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,6 +39,9 @@
     <ClCompile Include="..\..\Classes\VisibleRect.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Classes\performance\PerformanceTest.cpp">
+      <Filter>Classes\performance</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -58,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Classes\VisibleRect.h">
       <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\performance\PerformanceTest.h">
+      <Filter>Classes\performance</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
