@@ -120,7 +120,7 @@ set(GAME_SRC
     ../Classes/examples/DemoChaseStarling.cpp
     ../Classes/examples/DemoDragonBoy.cpp
     ../Classes/examples/DemoKnight.cpp
-	../Classes/examples/PerformanceTest.cpp
+	../Classes/performance/PerformanceTest.cpp
     ../Classes/VisibleRect.cpp
   ${PLATFORM_SPECIFIC_SRC}
 )
@@ -131,6 +131,7 @@ set(GAME_HEADERS
     ../Classes/examples/DemoChaseStarling.h
     ../Classes/examples/DemoDragonBoy.h
     ../Classes/examples/DemoKnight.h
+    ../Classes/performance/PerformanceTest.h
     ../Classes/VisibleRect.h
   ${PLATFORM_SPECIFIC_HEADERS}
 )

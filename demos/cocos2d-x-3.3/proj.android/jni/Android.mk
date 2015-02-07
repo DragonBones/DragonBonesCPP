@@ -18,7 +18,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../../Classes/examples/DemoChaseStarling.cpp \
                    ../../../Classes/examples/DemoDragonBoy.cpp \
                    ../../../Classes/examples/DemoKnight.cpp \
-                   ../../../Classes/examples/PerformanceTest.cpp
+                   ../../../Classes/performance/PerformanceTest.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes
 #LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../../dragonbones
