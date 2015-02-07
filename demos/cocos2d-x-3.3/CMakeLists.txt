@@ -120,6 +120,7 @@ set(GAME_SRC
     ../Classes/examples/DemoChaseStarling.cpp
     ../Classes/examples/DemoDragonBoy.cpp
     ../Classes/examples/DemoKnight.cpp
+	../Classes/examples/PerformanceTest.cpp
     ../Classes/VisibleRect.cpp
   ${PLATFORM_SPECIFIC_SRC}
 )
