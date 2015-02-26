@@ -120,8 +120,8 @@ set(GAME_SRC
     ../Classes/examples/DemoChaseStarling.cpp
     ../Classes/examples/DemoDragonBoy.cpp
     ../Classes/examples/DemoKnight.cpp
-	../Classes/performance/PerformanceTest.cpp
-  ../Classes/performace/AsyncTest.cpp
+    ../Classes/performance/PerformanceTest.cpp
+    ../Classes/performance/AsyncTest.cpp
     ../Classes/VisibleRect.cpp
   ${PLATFORM_SPECIFIC_SRC}
 )
@@ -133,7 +133,7 @@ set(GAME_HEADERS
     ../Classes/examples/DemoDragonBoy.h
     ../Classes/examples/DemoKnight.h
     ../Classes/performance/PerformanceTest.h
-    ../Classes/performace/AsyncTest.h
+    ../Classes/performance/AsyncTest.h
     ../Classes/VisibleRect.h
   ${PLATFORM_SPECIFIC_HEADERS}
 )
