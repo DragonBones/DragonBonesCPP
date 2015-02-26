@@ -73,6 +73,7 @@ set(GAME_SRC ${GAME_SRC}
     ../Classes/examples/DemoDragonBoy.cpp
     ../Classes/examples/DemoKnight.cpp
     ../Classes/performance/PerformanceTest.cpp
+    ../Classes/performance/AsyncTest.cpp
     ../Classes/VisibleRect.cpp
 )
 
