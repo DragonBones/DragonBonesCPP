@@ -90,7 +90,7 @@ void AsyncTest::loadModule(Ref* node)
 void AsyncTest::addNode(Ref* node)
 {
 	auto armatureNode = DBCCFactory::getInstance()->buildArmatureNode(armatureNameList[addedPos]);
-	armatureNode->setPosition(480.f + random(-100.f, 100.f), 200.f);
+	armatureNode->setPosition(480.f + addedPos * 100 - 100, 200.f);
 	addChild(armatureNode);
 	list.pushBack(armatureNode);
 
