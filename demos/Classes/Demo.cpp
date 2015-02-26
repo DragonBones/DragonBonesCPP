@@ -12,6 +12,7 @@
 #include "examples/DemoKnight.h"
 #include "examples/DemoChaseStarling.h"
 #include "performance/PerformanceTest.h"
+#include "performance/AsyncTest.h"
 
 static int sceneIdx = 0;
 
@@ -30,9 +31,11 @@ DBDEMO_CREATE_FUNC(DemoDragonBoy);
 DBDEMO_CREATE_FUNC(DemoKnight);
 DBDEMO_CREATE_FUNC(DemoChaseStarling);
 DBDEMO_CREATE_FUNC(PerformanceTest);
+DBDEMO_CREATE_FUNC(AsyncTest);
 
 static NEW_DB_DEMO_FUNC createFunctions[] =
 {
+	createAsyncTest,
     createDemoDragonBoy,
     createDemoKnight,
     createDemoChaseStarling,

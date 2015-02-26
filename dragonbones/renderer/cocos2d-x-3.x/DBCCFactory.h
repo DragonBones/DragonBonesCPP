@@ -28,6 +28,9 @@ public:
     
     virtual DragonBonesData* loadDragonBonesData(const std::string &dragonBonesFile, const std::string &name = "");
     virtual ITextureAtlas* loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name = "");
+	virtual void loadDragonBonesDataAsync(const std::string &dragonBonesFile, const std::string &name,const std::function<void(DragonBonesData*)>& callback);
+	virtual void loadTextureAtlasAsync(const std::string &textureAtlasFile, const std::string &name, const std::function<void(ITextureAtlas*)>& callback);
+
     virtual void refreshTextureAtlasTexture(const std::string &name);
     virtual void refreshAllTextureAtlasTexture();
     virtual bool hasDragonBones(const std::string &skeletonName, const std::string &armatureName = "", const std::string &animationName = "");
@@ -39,6 +42,56 @@ protected:
     
 private:
     DRAGON_BONES_DISALLOW_COPY_AND_ASSIGN(DBCCFactory);
+
+public:
+	struct DBCCAsyncDataStruct
+	{
+	public:
+		DBCCAsyncDataStruct(const std::string& dragonBonesFile, const std::string& name, std::function<void(DragonBonesData*)> f) : 
+			file(dragonBonesFile),name(name), callback(f) {}
+
+		std::string file;
+		std::string name;
+		DragonBonesData* data;
+		std::function<void(DragonBonesData*)> callback;
+	};
+
+	struct DBCCAsyncAtlasStruct
+	{
+	public:
+		DBCCAsyncAtlasStruct(const std::string& textureAtlasFile,const std::string &name, std::function<void(ITextureAtlas*)> f) : 
+			file(textureAtlasFile),name(name), callback(f) {}
+
+		std::string file;
+		std::string name;
+		ITextureAtlas* data;
+		std::function<void(ITextureAtlas*)> callback;
+	};
+
+protected:
+	std::thread* _loadingThread;
+
+	std::queue<DBCCAsyncDataStruct*>* _dataAsyncStructQueue;
+	std::queue<DBCCAsyncAtlasStruct*>* _atlasAsyncStructQueue;
+	std::deque<DBCCAsyncDataStruct*>* _dataAsycCompleteQueue;
+	std::deque<DBCCAsyncAtlasStruct*>* _atlasAsyncCompleteQueue;
+
+
+	std::mutex _dataAsyncStructQueueMutex;
+	std::mutex _atlasAsyncStructQueueMutex;
+	std::mutex _dataAsyncCompleteQueueMutex;
+	std::mutex _atlasAsyncCompleteQueueMutex;
+
+
+	std::mutex _sleepMutex;
+	std::condition_variable _sleepCondition;
+
+	bool _needQuit;
+	int _asyncRefCount;
+private:
+	void loadAsyncCallBack(float dt);
+	void loadOnSubThread();
+
 };
 NAME_SPACE_DRAGON_BONES_END
 
