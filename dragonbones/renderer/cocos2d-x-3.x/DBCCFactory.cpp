@@ -170,8 +170,10 @@ void DBCCFactory::loadDragonBonesDataAsync(const std::string &dragonBonesFile, c
 
 	++_asyncRefCount;
 
+	//make sure the path is absoluted.or else may cause sub thread unsafty when call FileUtils::getInstance()->getDataFromFile
+	std::string fullPath = cocos2d::FileUtils::getInstance()->fullPathForFilename(dragonBonesFile);
 	// generate async struct
-	DBCCAsyncDataStruct *dataStruct = new (std::nothrow) DBCCAsyncDataStruct(dragonBonesFile, name, callback);
+	DBCCAsyncDataStruct *dataStruct = new (std::nothrow) DBCCAsyncDataStruct(fullPath, name, callback);
 
 	// add async struct into queue
 	_dataAsyncStructQueueMutex.lock();
@@ -213,8 +215,10 @@ void DBCCFactory::loadTextureAtlasAsync(const std::string &textureAtlasFile, con
 
 	++_asyncRefCount;
 
+	//make sure the path is absoluted.or else may cause sub thread unsafty when call FileUtils::getInstance()->getDataFromFile
+	std::string fullPath = cocos2d::FileUtils::getInstance()->fullPathForFilename(textureAtlasFile);
 	// generate async struct
-	DBCCAsyncAtlasStruct *atlasStruct = new (std::nothrow) DBCCAsyncAtlasStruct(textureAtlasFile, name, callback);
+	DBCCAsyncAtlasStruct *atlasStruct = new (std::nothrow) DBCCAsyncAtlasStruct(fullPath, name, callback);
 
 	// add async struct into queue
 	_atlasAsyncStructQueueMutex.lock();
