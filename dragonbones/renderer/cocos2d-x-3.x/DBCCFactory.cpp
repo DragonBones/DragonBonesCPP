@@ -72,7 +72,9 @@ DBCCArmatureNode* DBCCFactory::buildArmatureNode(const std::string &armatureName
 
 DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBonesFilePath, const std::string &name)
 {
+	_dragonBonesDataMapMutex.lock();
     DragonBonesData *existDragonBonesData = getDragonBonesData(name);
+	_dragonBonesDataMapMutex.unlock();
 
     if (existDragonBonesData)
     {
@@ -94,13 +96,19 @@ DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBones
     // paser dragonbones skeleton data.
     XMLDataParser parser;
     DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement(), scale);
+
+	_dragonBonesDataMapMutex.lock();
     addDragonBonesData(dragonBonesData, name);
+	_dragonBonesDataMapMutex.unlock();
+
     return dragonBonesData;
 }
 
 ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile, const std::string &name)
 {
+	_textureAtlasMapMutex.lock();
     ITextureAtlas *existTextureAtlas = getTextureAtlas(name);
+	_textureAtlasMapMutex.unlock();
 
     if (existTextureAtlas)
     {
@@ -132,7 +140,10 @@ ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile
     }
 
     //
+	_textureAtlasMapMutex.lock();
     addTextureAtlas(textureAtlas, name);
+	_textureAtlasMapMutex.unlock();
+
     refreshTextureAtlasTexture(name.empty() ? textureAtlas->textureAtlasData->name : name);
     return textureAtlas;
 }
@@ -140,7 +151,9 @@ ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile
 
 void DBCCFactory::loadDragonBonesDataAsync(const std::string &dragonBonesFile, const std::string &name, const std::function<void(DragonBonesData*)>& callback)
 {
+	_dragonBonesDataMapMutex.lock();
 	DragonBonesData *existDragonBonesData = getDragonBonesData(name);
+	_dragonBonesDataMapMutex.unlock();
 
 	if (existDragonBonesData)
 	{
@@ -185,7 +198,10 @@ void DBCCFactory::loadDragonBonesDataAsync(const std::string &dragonBonesFile, c
 }
 
 void DBCCFactory::loadTextureAtlasAsync(const std::string &textureAtlasFile, const std::string &name, const std::function<void(ITextureAtlas*)>& callback){
+	_textureAtlasMapMutex.lock();
 	ITextureAtlas *existTextureAtlas = getTextureAtlas(name);
+	_textureAtlasMapMutex.unlock();
+
 	if (existTextureAtlas)
 	{
 		//TODO: refreshTextureAtlasTexture in here should be asynchronous too 
@@ -244,8 +260,6 @@ void DBCCFactory::loadAsyncCallBack(float dt){
 			_dataAsycCompleteQueue->pop_front();
 			_dataAsyncCompleteQueueMutex.unlock();
 
-			addDragonBonesData(asyncStruct->data, asyncStruct->name);
-
 			if (asyncStruct->callback)
 			{
 				asyncStruct->callback(asyncStruct->data);
@@ -271,7 +285,6 @@ void DBCCFactory::loadAsyncCallBack(float dt){
 			_atlasAsyncCompleteQueue->pop_front();
 			_atlasAsyncCompleteQueueMutex.unlock();
 
-			addTextureAtlas(asyncStruct->data, asyncStruct->name);
 			//TODO: refreshTextureAtlasTexture in here should be asynchronous too 
 			refreshTextureAtlasTexture(asyncStruct->name.empty() ? asyncStruct->data->textureAtlasData->name : asyncStruct->name);
 
@@ -326,24 +339,42 @@ void DBCCFactory::loadOnSubThread()
 		//parse dragonBonesData
 		if (dataStruct != nullptr)
 		{
-			const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(dataStruct->file);
-			if (data.getSize() == 0)
-			{
-				//callback(nullptr);
-				dataStruct->data = nullptr;
-			}
-			else{
-				// armature scale
-				float scale = cocos2d::Director::getInstance()->getContentScaleFactor();
+			//check exist
+			_dragonBonesDataMapMutex.lock();
+			DragonBonesData *existDragonBonesData = getDragonBonesData(dataStruct->name);
+			_dragonBonesDataMapMutex.unlock();
 
-				// load skeleton.xml using XML parser.
-				XMLDocument doc;
-				doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
-				// paser dragonbones skeleton data.
-				XMLDataParser parser;
-				DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement(), scale);
-				dataStruct->data = dragonBonesData;
+			if (existDragonBonesData != nullptr)
+			{
+				dataStruct->data = existDragonBonesData;
 			}
+			else
+			{
+				const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(dataStruct->file);
+				if (data.getSize() == 0)
+				{
+					//callback(nullptr);
+					dataStruct->data = nullptr;
+				}
+				else{
+					// armature scale
+					float scale = cocos2d::Director::getInstance()->getContentScaleFactor();
+
+					// load skeleton.xml using XML parser.
+					XMLDocument doc;
+					doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
+					// paser dragonbones skeleton data.
+					XMLDataParser parser;
+					DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement(), scale);
+					dataStruct->data = dragonBonesData;
+				}
+
+				_dragonBonesDataMapMutex.lock();
+				addDragonBonesData(dataStruct->data, dataStruct->name);
+				_dragonBonesDataMapMutex.unlock();
+			}
+
+			
 
 			_dataAsyncCompleteQueueMutex.lock();
 			_dataAsycCompleteQueue->push_back(dataStruct);
@@ -371,29 +402,46 @@ void DBCCFactory::loadOnSubThread()
 
 		if (atlasStruct != nullptr)
 		{
-			const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(atlasStruct->file);
-			if (data.getSize() == 0)
+			_textureAtlasMapMutex.lock();
+			ITextureAtlas *existTextureAtlas = getTextureAtlas(atlasStruct->name);
+			_textureAtlasMapMutex.unlock();
+
+			if (existTextureAtlas != nullptr)
 			{
-				atlasStruct->data = nullptr;
+				atlasStruct->data = existTextureAtlas;
 			}
-
-			// textureAtlas scale
-			float scale = cocos2d::Director::getInstance()->getContentScaleFactor();
-
-			XMLDocument doc;
-			doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
-			XMLDataParser parser;
-			DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas();
-			textureAtlas->textureAtlasData = parser.parseTextureAtlasData(doc.RootElement(), scale);
-
-			int pos = atlasStruct->file.find_last_of("/");
-
-			if (std::string::npos != pos)
+			else
 			{
-				std::string base_path = atlasStruct->file.substr(0, pos + 1);
-				textureAtlas->textureAtlasData->imagePath = base_path + textureAtlas->textureAtlasData->imagePath;
-				atlasStruct->data = textureAtlas;
+				const auto &data = cocos2d::FileUtils::getInstance()->getDataFromFile(atlasStruct->file);
+				if (data.getSize() == 0)
+				{
+					atlasStruct->data = nullptr;
+				}
+
+				// textureAtlas scale
+				float scale = cocos2d::Director::getInstance()->getContentScaleFactor();
+
+				XMLDocument doc;
+				doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
+				XMLDataParser parser;
+				DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas();
+				textureAtlas->textureAtlasData = parser.parseTextureAtlasData(doc.RootElement(), scale);
+
+				int pos = atlasStruct->file.find_last_of("/");
+
+				if (std::string::npos != pos)
+				{
+					std::string base_path = atlasStruct->file.substr(0, pos + 1);
+					textureAtlas->textureAtlasData->imagePath = base_path + textureAtlas->textureAtlasData->imagePath;
+					atlasStruct->data = textureAtlas;
+				}
+
+				_textureAtlasMapMutex.lock();
+				addTextureAtlas(atlasStruct->data, atlasStruct->name);
+				_textureAtlasMapMutex.unlock();
 			}
+		
+			
 			_atlasAsyncCompleteQueueMutex.lock();
 			_atlasAsyncCompleteQueue->push_back(atlasStruct);
 			_atlasAsyncCompleteQueueMutex.unlock();

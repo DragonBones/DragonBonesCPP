@@ -82,6 +82,8 @@ protected:
 	std::mutex _dataAsyncCompleteQueueMutex;
 	std::mutex _atlasAsyncCompleteQueueMutex;
 
+	std::mutex _dragonBonesDataMapMutex;
+	std::mutex _textureAtlasMapMutex;
 
 	std::mutex _sleepMutex;
 	std::condition_variable _sleepCondition;
