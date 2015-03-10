@@ -540,6 +540,7 @@ void Armature::arriveAtFrame(Frame *frame, AnimationState *animationState, bool 
         eventData->animationState = animationState;
         eventData->sound = frame->sound;
         soundEventDispatcher->dispatchEvent(eventData);
+        EventData::returnObject(eventData);
     }
     
     if (!frame->action.empty())
