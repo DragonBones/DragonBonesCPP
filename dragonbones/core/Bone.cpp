@@ -314,6 +314,7 @@ void Bone::arriveAtFrame(TransformFrame *frame, const TimelineState *timelineSta
             eventData->animationState = animationState;
             eventData->sound = frame->sound;
             Armature::soundEventDispatcher->dispatchEvent(eventData);
+            EventData::returnObject(eventData);
         }
         
         if (!frame->action.empty())
