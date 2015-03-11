@@ -87,6 +87,12 @@ DBCCArmatureNode::~DBCCArmatureNode()
 
 cocos2d::Rect DBCCArmatureNode::getBoundingBox() const
 {
+    auto rect = _armature->getCCBoundingBox();
+    return cocos2d::RectApplyTransform(rect, getNodeToParentTransform());
+}
+
+cocos2d::Rect DBCCArmatureNode::getInnerBoundingBox() const
+{
     return _armature->getCCBoundingBox();
 }
 
