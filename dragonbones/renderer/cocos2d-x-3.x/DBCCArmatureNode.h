@@ -21,6 +21,7 @@ public:
 	virtual cocos2d::Node* getCCDisplay() const { return _armature->getCCDisplay(); };
 	virtual cocos2d::EventDispatcher* getCCEventDispatcher() const { return _armature->getCCEventDispatcher(); };
 	virtual cocos2d::Rect getBoundingBox() const override;
+    virtual cocos2d::Rect getInnerBoundingBox() const;
 
 #if (DRAGON_BONES_ENABLE_LUA == 1)
 	virtual void registerFrameEventHandler(cocos2d::LUA_FUNCTION func);
