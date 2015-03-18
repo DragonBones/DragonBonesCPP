@@ -3,6 +3,7 @@
 #include "DBCCSlot.h"
 #include "DBCCEventDispatcher.h"
 #include "DBCCArmature.h"
+
 NAME_SPACE_DRAGON_BONES_BEGIN
 DBCCFactory* DBCCFactory::_instance = nullptr;
 
@@ -80,10 +81,10 @@ DragonBonesData* DBCCFactory::loadDragonBonesData(const std::string &dragonBones
     float scale = cocos2d::Director::getInstance()->getContentScaleFactor();
 
     // load skeleton.xml using XML parser.
-    XMLDocument doc;
+    dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
     // paser dragonbones skeleton data.
-    XMLDataParser parser;
+    dragonBones::XMLDataParser parser;
     DragonBonesData *dragonBonesData = parser.parseDragonBonesData(doc.RootElement(), scale);
     addDragonBonesData(dragonBonesData, name);
     return dragonBonesData;
@@ -108,9 +109,9 @@ ITextureAtlas* DBCCFactory::loadTextureAtlas(const std::string &textureAtlasFile
     // textureAtlas scale
     float scale = cocos2d::Director::getInstance()->getContentScaleFactor();
 
-    XMLDocument doc;
+    dragonBones::XMLDocument doc;
     doc.Parse(reinterpret_cast<char*>(data.getBytes()), data.getSize());
-    XMLDataParser parser;
+    dragonBones::XMLDataParser parser;
     DBCCTextureAtlas *textureAtlas = new DBCCTextureAtlas();
     textureAtlas->textureAtlasData = parser.parseTextureAtlasData(doc.RootElement(), scale);
 
@@ -178,7 +179,7 @@ DBCCArmature* DBCCFactory::generateArmature(const ArmatureData *armatureData) co
 {
     Animation *animation = new Animation();
     // sprite
-    auto display = cocos2d::Node::create();
+    cocos2d::Node *display = cocos2d::Node::create();
     display->setCascadeColorEnabled(true);
     display->setCascadeOpacityEnabled(true);
     display->retain();
@@ -210,41 +211,30 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
     const float width = rotated ? textureData->region.height : textureData->region.width;
     const float height = rotated ? textureData->region.width : textureData->region.height;
     cocos2d::Rect rect(x, y, width, height);
-    cocos2d::Vec2 offset;
-    cocos2d::Size originSize(width, height);
 
-    if (textureData->frame)
-    {
-        float px = -textureData->frame->x;
-        float py = -textureData->frame->y;
-        originSize.width = textureData->frame->width;
-        originSize.height = textureData->frame->height;
-        // offset = sprite center - trimed texture center
-        float cx1 = px + rect.size.width / 2;
-        float cy1 = originSize.height - py - rect.size.height / 2;
-        float cx2 = originSize.width / 2;
-        float cy2 = originSize.height / 2;
-        offset.x = cx2 - cx1;
-        offset.y = cy2 - cy1;
-    }
-    // sprite
-    auto spriteFrame = cocos2d::SpriteFrame::createWithTexture(texture, rect,
-        textureData->rotated, offset, originSize);
-    cocos2d::Node *display = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    cocos2d::Node *display = cocos2d::Sprite::createWithTexture(texture, rect, textureData->rotated);
+
     display->setCascadeColorEnabled(true);
     display->setCascadeOpacityEnabled(true);
     display->retain();
-    float pivotX = 0;
-    float pivotY = 0;
+
+    float pivotX = 0.f;
+    float pivotY = 0.f;
 
     if (displayData)
     {
         pivotX = displayData->pivot.x;
         pivotY = displayData->pivot.y;
+        if (textureData->frame)
+        {
+            pivotX += textureData->frame->x;
+            pivotY += textureData->frame->y;
+        }
     }
 
-    display->setAnchorPoint(cocos2d::Vec2(pivotX / originSize.width, 1.f - pivotY / originSize.height));
-    display->setContentSize(originSize);
+    display->setAnchorPoint(cocos2d::Vec2(pivotX / width, 1.f - pivotY / height));
+    display->setContentSize(rect.size);
+
     return display;
 }
 NAME_SPACE_DRAGON_BONES_END
