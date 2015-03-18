@@ -31,59 +31,14 @@
 #include "../textures/TextureData.h"
 #include "../textures/TextureAtlasData.h"
 
-#include <cstring>
-
 NAME_SPACE_DRAGON_BONES_BEGIN
 class BaseDataParser
 {
-public:
-    static TextData::AlignHType getAlignHType(const char *alignHString)
-    {
-        if (alignHString)
-        {
-            if (std::strcmp(alignHString, "left") == 0)
-            {
-                return TextData::AlignHType::LEFT;
-            }
-            else if (std::strcmp(alignHString, "center") == 0)
-            {
-                return TextData::AlignHType::CENTER;
-            }
-            else if (std::strcmp(alignHString, "right") == 0)
-            {
-                return TextData::AlignHType::RIGHT;
-            }
-            else if (std::strcmp(alignHString, "justify") == 0)
-            {
-                return TextData::AlignHType::JUSTIFY;
-            }
-        }
-
-        return TextData::AlignHType::LEFT;
-    }
-
-    static TextData::AlignVType getAlignVType(const char *alignVString)
-    {
-        if (alignVString)
-        {
-            if (std::strcmp(alignVString, "top") == 0)
-            {
-                return TextData::AlignVType::TOP;
-            }
-            else if (std::strcmp(alignVString, "center") == 0)
-            {
-                return TextData::AlignVType::CENTER;
-            }
-            else if (std::strcmp(alignVString, "right") == 0)
-            {
-                return TextData::AlignVType::BOTTOM;
-            }
-        }
-
-        return TextData::AlignVType::TOP;
-    }
-
 protected:
+    static TextData::AlignHType getAlignHType(const char *alignHString);
+    static TextData::AlignVType getAlignVType(const char *alignVString);
+    static TextData::TextType getTextType(const char *textTypeString);
+    static TextData::LineType getLineType(const char *lineTypeString);
     static void transformArmatureData(ArmatureData *armatureData);
     static void transformArmatureDataAnimations(ArmatureData *armatureData);
     static void transformAnimationData(AnimationData *animationData, const ArmatureData *armatureData);

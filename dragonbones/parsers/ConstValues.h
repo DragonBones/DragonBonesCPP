@@ -97,6 +97,10 @@ public:
     static const std::string A_LINE_TYPE;
     static const std::string A_TEXT_TYPE;
     static const std::string A_TEXT;
+    static const std::string A_HTML_TEXT;
+    static const std::string A_LETTER_SPACING;
+    static const std::string A_LINE_SPACING;
+    static const std::string A_MAX_CHARACTERS;
     
     // add scale offset to frame
     static const std::string A_SCALE_X_OFFSET;

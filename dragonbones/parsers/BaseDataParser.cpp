@@ -3,6 +3,98 @@
 #include <stdio.h>
 
 NAME_SPACE_DRAGON_BONES_BEGIN
+TextData::AlignHType BaseDataParser::getAlignHType(const char *alignHString)
+{
+    if (alignHString)
+    {
+        if (std::strcmp(alignHString, "left") == 0)
+        {
+            return TextData::AlignHType::LEFT;
+        }
+        else if (std::strcmp(alignHString, "center") == 0)
+        {
+            return TextData::AlignHType::CENTER;
+        }
+        else if (std::strcmp(alignHString, "right") == 0)
+        {
+            return TextData::AlignHType::RIGHT;
+        }
+        else if (std::strcmp(alignHString, "justify") == 0)
+        {
+            return TextData::AlignHType::JUSTIFY;
+        }
+    }
+
+    return TextData::AlignHType::LEFT;
+}
+
+TextData::AlignVType BaseDataParser::getAlignVType(const char *alignVString)
+{
+    if (alignVString)
+    {
+        if (std::strcmp(alignVString, "top") == 0)
+        {
+            return TextData::AlignVType::TOP;
+        }
+        else if (std::strcmp(alignVString, "center") == 0)
+        {
+            return TextData::AlignVType::CENTER;
+        }
+        else if (std::strcmp(alignVString, "right") == 0)
+        {
+            return TextData::AlignVType::BOTTOM;
+        }
+    }
+
+    return TextData::AlignVType::TOP;
+}
+
+TextData::TextType BaseDataParser::getTextType(const char *textTypeString)
+{
+    if (textTypeString)
+    {
+        if (std::strcmp(textTypeString, "static") == 0)
+        {
+            return TextData::TextType::STATIC;
+        }
+        else if (std::strcmp(textTypeString, "dynamic") == 0)
+        {
+            return TextData::TextType::DYNAMIC;
+        }
+        else if (std::strcmp(textTypeString, "input") == 0)
+        {
+            return TextData::TextType::INPUT;
+        }
+    }
+
+    return TextData::TextType::STATIC;
+}
+
+TextData::LineType BaseDataParser::getLineType(const char *lineTypeString)
+{
+    if (lineTypeString)
+    {
+        if (std::strcmp(lineTypeString, "single line") == 0)
+        {
+            return TextData::LineType::SINGLE_LINE;
+        }
+        else if (std::strcmp(lineTypeString, "multiline") == 0)
+        {
+            return TextData::LineType::MULTILINE;
+        }
+        else if (std::strcmp(lineTypeString, "multiline no wrap") == 0)
+        {
+            return TextData::LineType::MULTILINE_NO_WRAP;
+        }
+        else if (std::strcmp(lineTypeString, "password") == 0)
+        {
+            return TextData::LineType::PASSWORD;
+        }
+    }
+
+    return TextData::LineType::SINGLE_LINE;
+}
+
 void BaseDataParser::transformArmatureData(ArmatureData *armatureData)
 {
     for (size_t i = armatureData->boneDataList.size(); i--;)

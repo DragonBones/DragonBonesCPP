@@ -80,7 +80,7 @@ void EventData::returnObject(EventData *eventData)
 {
     auto iterator = std::find(_pool.cbegin(), _pool.cend(), eventData);
 
-    if (iterator == _pool.end())
+    if (iterator == _pool.cend())
     {
         _pool.push_back(eventData);
     }

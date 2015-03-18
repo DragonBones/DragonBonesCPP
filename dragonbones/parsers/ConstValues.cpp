@@ -92,6 +92,10 @@ const std::string ConstValues::A_ALIGN_V = "alignV";
 const std::string ConstValues::A_LINE_TYPE = "lineType";
 const std::string ConstValues::A_TEXT_TYPE = "textType";
 const std::string ConstValues::A_TEXT = "text";
+const std::string ConstValues::A_HTML_TEXT = "htmlText";
+const std::string ConstValues::A_LETTER_SPACING = "letterSpacing";
+const std::string ConstValues::A_LINE_SPACING = "lineSpacing";
+const std::string ConstValues::A_MAX_CHARACTERS = "maxCharacters";
 
 const std::string ConstValues::A_SCALE_X_OFFSET = "scXOffset";
 const std::string ConstValues::A_SCALE_Y_OFFSET = "scYOffset";

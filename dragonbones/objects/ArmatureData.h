@@ -152,6 +152,28 @@ public:
         
         return nullptr;
     }
+
+    SkinData* getDefaultSkinData() const
+    {
+        if (skinDataList.empty())
+        {
+            return nullptr;
+        }
+
+        for (size_t i = 0, l = skinDataList.size(); i < l; ++i)
+        {
+            const std::string &skinDataName = skinDataList[i]->name;
+            if (
+                skinDataName.empty() || 
+                skinDataName == "default"
+                )
+            {
+                return skinDataList[i];
+            }
+        }
+
+        return skinDataList.front();
+    }
     
     SkinData* getSkinData(const std::string &skinName) const
     {
@@ -162,7 +184,7 @@ public:
         
         if (skinName.empty())
         {
-            return skinDataList.front();
+            return getDefaultSkinData();
         }
         
         for (size_t i = 0, l = skinDataList.size(); i < l; ++i)
