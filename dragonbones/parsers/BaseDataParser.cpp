@@ -1,6 +1,7 @@
 ﻿#include "BaseDataParser.h"
 
 #include <stdio.h>
+#include <cstring>
 
 NAME_SPACE_DRAGON_BONES_BEGIN
 TextData::AlignHType BaseDataParser::getAlignHType(const char *alignHString)
