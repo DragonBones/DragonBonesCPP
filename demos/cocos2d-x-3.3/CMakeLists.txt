@@ -121,6 +121,7 @@ set(GAME_SRC
     ../Classes/examples/DemoDragonBoy.cpp
     ../Classes/examples/DemoKnight.cpp
 	../Classes/performance/PerformanceTest.cpp
+	../Classes/test/TrimTextureTest.cpp
     ../Classes/VisibleRect.cpp
   ${PLATFORM_SPECIFIC_SRC}
 )
@@ -132,6 +133,7 @@ set(GAME_HEADERS
     ../Classes/examples/DemoDragonBoy.h
     ../Classes/examples/DemoKnight.h
     ../Classes/performance/PerformanceTest.h
+	../Classes/test/TrimTextureTest.h
     ../Classes/VisibleRect.h
   ${PLATFORM_SPECIFIC_HEADERS}
 )

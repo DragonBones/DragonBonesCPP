@@ -16,6 +16,9 @@
     <Filter Include="Classes\performance">
       <UniqueIdentifier>{9ebba9d5-6c84-42a7-a809-a6b789d4fd53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\test">
+      <UniqueIdentifier>{533ec1f8-1639-4d0e-a256-0899231a5fd9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,6 +45,9 @@
     <ClCompile Include="..\..\Classes\performance\PerformanceTest.cpp">
       <Filter>Classes\performance</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Classes\test\TrimTextureTest.cpp">
+      <Filter>Classes\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -67,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Classes\performance\PerformanceTest.h">
       <Filter>Classes\performance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Classes\test\TrimTextureTest.h">
+      <Filter>Classes\test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

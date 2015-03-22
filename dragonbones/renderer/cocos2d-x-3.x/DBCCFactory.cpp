@@ -211,13 +211,34 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
     const float width = rotated ? textureData->region.height : textureData->region.width;
     const float height = rotated ? textureData->region.width : textureData->region.height;
     cocos2d::Rect rect(x, y, width, height);
+    cocos2d::Vec2 offset;
+    cocos2d::Size originSize(width, height);
 
-    cocos2d::Node *display = cocos2d::Sprite::createWithTexture(texture, rect, textureData->rotated);
+    cocos2d::Node *display = nullptr;
 
+    if (textureData->frame)
+    {
+        float frameX = textureData->frame->x;
+        float frameY = textureData->frame->y;
+        originSize.width = textureData->frame->width;
+        originSize.height = textureData->frame->height;
+        // offset = trimed center - origin center
+        offset.x = (width - originSize.width) / 2 - frameX;
+        offset.y = (height - originSize.height) / 2 - frameY;
+
+        auto spriteFrame = cocos2d::SpriteFrame::createWithTexture(texture, rect,
+            textureData->rotated, offset, originSize);
+        display = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    }
+    else
+    {
+        display = cocos2d::Sprite::createWithTexture(texture, rect, rotated);
+    }
+    // sprite
+    
     display->setCascadeColorEnabled(true);
     display->setCascadeOpacityEnabled(true);
     display->retain();
-
     float pivotX = 0.f;
     float pivotY = 0.f;
 
@@ -225,16 +246,9 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
     {
         pivotX = displayData->pivot.x;
         pivotY = displayData->pivot.y;
-        if (textureData->frame)
-        {
-            pivotX += textureData->frame->x;
-            pivotY += textureData->frame->y;
-        }
     }
-
-    display->setAnchorPoint(cocos2d::Vec2(pivotX / width, 1.f - pivotY / height));
-    display->setContentSize(rect.size);
-
+    display->setAnchorPoint(cocos2d::Vec2(pivotX / originSize.width, 1.f - pivotY / originSize.height));
+    display->setContentSize(originSize);
     return display;
 }
 NAME_SPACE_DRAGON_BONES_END

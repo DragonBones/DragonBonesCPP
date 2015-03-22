@@ -12,6 +12,7 @@
 #include "examples/DemoKnight.h"
 #include "examples/DemoChaseStarling.h"
 #include "performance/PerformanceTest.h"
+#include "test/TrimTextureTest.h"
 
 static int sceneIdx = 0;
 
@@ -30,6 +31,7 @@ DBDEMO_CREATE_FUNC(DemoDragonBoy);
 DBDEMO_CREATE_FUNC(DemoKnight);
 DBDEMO_CREATE_FUNC(DemoChaseStarling);
 DBDEMO_CREATE_FUNC(PerformanceTest);
+DBDEMO_CREATE_FUNC(TrimTextureTest);
 
 static NEW_DB_DEMO_FUNC createFunctions[] =
 {
@@ -37,6 +39,7 @@ static NEW_DB_DEMO_FUNC createFunctions[] =
     createDemoKnight,
     createDemoChaseStarling,
     createPerformanceTest,
+    createTrimTextureTest,
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
