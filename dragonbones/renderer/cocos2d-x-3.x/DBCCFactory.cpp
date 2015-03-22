@@ -214,6 +214,8 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
     cocos2d::Vec2 offset;
     cocos2d::Size originSize(width, height);
 
+    cocos2d::Node *display = nullptr;
+
     if (textureData->frame)
     {
         float frameX = textureData->frame->x;
@@ -223,11 +225,17 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
         // offset = trimed center - origin center
         offset.x = (width - originSize.width) / 2 - frameX;
         offset.y = (height - originSize.height) / 2 - frameY;
+
+        auto spriteFrame = cocos2d::SpriteFrame::createWithTexture(texture, rect,
+            textureData->rotated, offset, originSize);
+        display = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    }
+    else
+    {
+        display = cocos2d::Sprite::createWithTexture(texture, rect, rotated);
     }
     // sprite
-    auto spriteFrame = cocos2d::SpriteFrame::createWithTexture(texture, rect,
-        textureData->rotated, offset, originSize);
-    cocos2d::Node *display = cocos2d::Sprite::createWithSpriteFrame(spriteFrame);
+    
     display->setCascadeColorEnabled(true);
     display->setCascadeOpacityEnabled(true);
     display->retain();
