@@ -112,7 +112,7 @@ elif [ "$PLATFORM"x = "linux"x ]; then
     mkdir -p linux-build
     cd linux-build
     cmake ..
-    make -j10
+    make -j2
 
 elif [ "$PLATFORM"x = "emscripten"x ]; then
     # Generate binding glue codes
