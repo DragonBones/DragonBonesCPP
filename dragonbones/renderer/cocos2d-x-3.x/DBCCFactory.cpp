@@ -218,13 +218,14 @@ void* DBCCFactory::generateDisplay(const ITextureAtlas *textureAtlas, const Text
 
     if (textureData->frame)
     {
-        float frameX = textureData->frame->x;
-        float frameY = textureData->frame->y;
+        float frameX = -textureData->frame->x;
+        float frameY = -textureData->frame->y;
         originSize.width = textureData->frame->width;
         originSize.height = textureData->frame->height;
         // offset = trimed center - origin center
-        offset.x = (width - originSize.width) / 2 - frameX;
-        offset.y = (height - originSize.height) / 2 - frameY;
+        // y use cocos2d coordinates
+        offset.x = (width - originSize.width) * 0.5 + frameX;
+        offset.y = (originSize.height - height)*0.5 - frameY;
 
         auto spriteFrame = cocos2d::SpriteFrame::createWithTexture(texture, rect,
             textureData->rotated, offset, originSize);

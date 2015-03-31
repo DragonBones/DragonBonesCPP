@@ -26,8 +26,9 @@ void TrimTextureTest::demoInit()
     factory->loadTextureAtlas("armatures/TrimTest/texture.xml", "originTexture");
     factory->loadTextureAtlas("armatures/TrimTest/texture1.xml", "trimTexture");
 
-    auto originNode = factory->buildArmatureNode("aaa", "", "A", "TrimBody", "originTexture");
-    originNode->setPosition(Vec2(size.width / 2 - 100, size.height/2));
+    auto originNode = factory->buildArmatureNode("cdKeep", "", "", "TrimBody", "originTexture");
+    originNode->setPosition(Vec2(size.width / 2 - 150, size.height/2));
+    originNode->getAnimation()->gotoAndPlay("mv");
     addChild(originNode);
     auto originBox = originNode->getBoundingBox();
     auto originInnerBox = originNode->getInnerBoundingBox();
@@ -36,8 +37,9 @@ void TrimTextureTest::demoInit()
     originBoxNode->setPosition(originBox.origin);
     addChild(originBoxNode);
 
-    auto trimNode = factory->buildArmatureNode("aaa", "", "A", "TrimBody", "trimTexture");
-    trimNode->setPosition(Vec2(size.width / 2 + 100, size.height/2));
+    auto trimNode = factory->buildArmatureNode("cdKeep", "", "", "TrimBody", "trimTexture");
+    trimNode->getAnimation()->gotoAndPlay("mv");
+    trimNode->setPosition(Vec2(size.width / 2 + 150, size.height/2));
     addChild(trimNode);
     auto trimBox = trimNode->getBoundingBox();
     auto trimInnerBox = trimNode->getInnerBoundingBox();
@@ -45,7 +47,5 @@ void TrimTextureTest::demoInit()
     trimBoxNode->setContentSize(trimBox.size);
     trimBoxNode->setPosition(trimBox.origin);
     addChild(trimBoxNode);
-    auto a = 1;
-
 }
 

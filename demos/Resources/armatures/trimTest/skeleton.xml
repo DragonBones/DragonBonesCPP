@@ -1,19 +1,38 @@
-<dragonBones name="无标题-1" frameRate="24" version="2.3">
- <armature name="aaa">
-  <bone name="图层 1">
-   <transform x="0" y="0" skX="49.47" skY="49.47" scX="1" scY="1"/>
+<dragonBones name="trimTest" frameRate="24" version="2.3">
+ <armature name="cdKeep">
+  <bone name="元件 3">
+   <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="元件 3_0">
+   <transform x="0" y="0" skX="180" skY="180" scX="1" scY="1"/>
   </bone>
   <skin name="default">
-   <slot name="图层 1" parent="图层 1" z="0">
-    <display name="aaaa" type="image">
-     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="92" pY="40"/>
+   <slot name="元件 3" parent="元件 3" z="0" blendMode="add">
+    <display name="fsztbh" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="71.9" pY="139.8"/>
+    </display>
+   </slot>
+   <slot name="元件 3_0" parent="元件 3_0" z="1" blendMode="add">
+    <display name="fsztbh" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="71.9" pY="139.8"/>
     </display>
    </slot>
   </skin>
-  <animation name="A" fadeInTime="0.3" duration="1" scale="1" loop="1" autoTween="1" tweenEasing="NaN">
-   <timeline name="图层 1" scale="1" offset="0">
+  <animation name="mv" fadeInTime="0.3" duration="30" scale="1" loop="0" autoTween="1" tweenEasing="NaN">
+   <timeline name="元件 3" scale="1" offset="0">
+    <frame z="0" tweenEasing="0" tweenRotate="-2" duration="29">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
     <frame z="0" duration="1">
-     <transform x="0" y="0" skX="49.47" skY="49.47" scX="1" scY="1" pX="0" pY="0"/>
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+   </timeline>
+   <timeline name="元件 3_0" scale="1" offset="0">
+    <frame z="1" tweenEasing="0" tweenRotate="-2" duration="29">
+     <transform x="0" y="0" skX="180" skY="180" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="1" duration="1">
+     <transform x="0" y="0" skX="180" skY="180" scX="1" scY="1" pX="0" pY="0"/>
     </frame>
    </timeline>
   </animation>
