@@ -17,6 +17,7 @@ set(DB_SRC
     ../DBCCArmatureNode.cpp 
     ../DBCCFactory.cpp 
     ../DBCCSlot.cpp
+	../DBCCUtils.cpp
 )
 
 include_directories(

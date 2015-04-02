@@ -23,7 +23,8 @@ LOCAL_SRC_FILES := ../../../animation/Animation.cpp \
                    ../DBCCArmatureNode.cpp \
                    ../DBCCFactory.cpp \
                    ../DBCCLuaUtils.cpp \
-                   ../DBCCSlot.cpp
+                   ../DBCCSlot.cpp \
+				   ../DBCCUtils.cpp
 
 
 LOCAL_C_INCLUDES := \
