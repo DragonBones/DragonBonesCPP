@@ -209,15 +209,15 @@ void DBCCSlot::updateDisplayBlendMode(BlendMode blendMode)
             default:
                 break;
         }
+    }
         
-        if (_childArmature)
+    if (_childArmature)
+    {
+        for (size_t i = 0, l = _childArmature->getSlots().size(); i < l; ++i)
         {
-            for (size_t i = 0, l = _childArmature->getSlots().size(); i < l; ++i)
-            {
-                DBCCSlot *slot = static_cast<DBCCSlot*>(_childArmature->getSlots()[i]);
-                slot->_blendMode = blendMode;
-                slot->updateDisplayBlendMode(blendMode);
-            }
+            DBCCSlot *slot = static_cast<DBCCSlot*>(_childArmature->getSlots()[i]);
+            slot->_blendMode = blendMode;
+            slot->updateDisplayBlendMode(blendMode);
         }
     }
 }
