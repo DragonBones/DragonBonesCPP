@@ -120,7 +120,7 @@ inline DisplayType getDisplayTypeByString(std::string displayType)
 }
 
 enum class BlendMode {BM_ADD, BM_ALPHA, BM_DARKEN, BM_DIFFERENCE, BM_ERASE, BM_HARDLIGHT, BM_INVERT, BM_LAYER, BM_LIGHTEN, BM_MULTIPLY, BM_NORMAL, BM_OVERLAY, BM_SCREEN, BM_SHADER, BM_SUBTRACT};
-inline BlendMode getBlendModeByString(std::string blendMode)
+inline BlendMode getBlendModeByString(const std::string &blendMode)
 {
     if (blendMode == "normal")
     {
@@ -184,6 +184,28 @@ inline BlendMode getBlendModeByString(std::string blendMode)
     }
 
     return BlendMode::BM_NORMAL;
+}
+
+enum class PixelFormat
+{
+    //! auto detect the type
+    AUTO, RGBA8888, BGRA8888, RGBA4444, RGB888, RGB565, RGBA5551
+};
+
+static const char* formatNames[] = {"", "RGBA8888", "BGRA8888", "RGBA4444", "RGB888", "RGB565", "RGBA5551"};
+
+inline PixelFormat getPixelFormatByString(const std::string &format)
+{
+    size_t l = sizeof(formatNames)/sizeof(formatNames[0]);
+
+    for (size_t i = 0; i < l; ++i)
+    {
+        if (format == formatNames[i])
+        {
+            return (PixelFormat) i;
+        }
+    }
+    return PixelFormat::AUTO;
 }
 
 NAME_SPACE_DRAGON_BONES_END

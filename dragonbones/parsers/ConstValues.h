@@ -35,6 +35,7 @@ public:
     
     static const std::string A_VERSION;
     static const std::string A_IMAGE_PATH;
+    static const std::string A_IMAGE_FORMAT;
     static const std::string A_FRAME_RATE;
     static const std::string A_NAME;
     static const std::string A_PARENT;
