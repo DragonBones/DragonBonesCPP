@@ -30,6 +30,7 @@ const std::string ConstValues::A_FRAME_HEIGHT = "frameHeight";
 
 const std::string ConstValues::A_VERSION = "version";
 const std::string ConstValues::A_IMAGE_PATH = "imagePath";
+const std::string ConstValues::A_IMAGE_FORMAT = "format";
 const std::string ConstValues::A_FRAME_RATE = "frameRate";
 const std::string ConstValues::A_NAME = "name";
 const std::string ConstValues::A_PARENT = "parent";

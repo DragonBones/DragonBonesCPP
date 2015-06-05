@@ -11,14 +11,18 @@ public:
     bool autoSearch;
     std::string name;
     std::string imagePath;
+    PixelFormat format;
+
     
     std::vector<TextureData*> textureDataList;
     
 public:
     TextureAtlasData()
-    {
-        autoSearch = false;
-    }
+        :autoSearch(false)
+        ,name()
+        ,imagePath()
+        ,format(PixelFormat::AUTO)
+    {}
     TextureAtlasData(const TextureAtlasData &copyData)
     {
         operator=(copyData);

@@ -69,6 +69,8 @@ TextureAtlasData* XMLDataParser::parseTextureAtlasData(const void *rawTextureAtl
     const char *name = textureAtlasXML->Attribute(ConstValues::A_NAME.c_str());
     textureAtlasData->name = name ? name : "";
     textureAtlasData->imagePath = textureAtlasXML->Attribute(ConstValues::A_IMAGE_PATH.c_str());
+    const char *format = textureAtlasXML->Attribute(ConstValues::A_IMAGE_FORMAT.c_str());
+    textureAtlasData->format = getPixelFormatByString(format ? format : "");
     
     for (const XMLElement *textureXML = textureAtlasXML->FirstChildElement(ConstValues::SUB_TEXTURE.c_str()); textureXML; textureXML = textureXML->NextSiblingElement(ConstValues::SUB_TEXTURE.c_str()))
     {
