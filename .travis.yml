@@ -1,7 +1,7 @@
 language: cpp
 env:
   matrix:
-  fast_finish: true
+    fast_finish: true
   #- GEN_BINDING=YES
   #- GEN_COCOS_FILES=YES
   # - PLATFORM=mac-ios PUSH_TO_MAC=YES
