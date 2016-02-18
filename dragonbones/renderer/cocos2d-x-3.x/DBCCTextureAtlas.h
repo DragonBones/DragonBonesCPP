@@ -20,7 +20,8 @@ public:
     {
         if (textureAtlasData)
         {
-            textureAtlasData->dispose();
+            //textureAtlasData->dispose();
+	    delete textureAtlasData;
             textureAtlasData = nullptr;
         }
     }
