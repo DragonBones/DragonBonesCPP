@@ -1,3 +1,0 @@
-<TextureAtlas name="trimTest" imagePath="texture.png">
- <SubTexture name="fsztbh" x="0" y="0" width="179" height="212"/>
-</TextureAtlas>
