@@ -22,7 +22,7 @@ public:
     MeshData* _meshData;
     std::vector<Matrix*>* _cacheFrames;
     void* _rawDisplay;
-	void* _meshDisplay;
+    void* _meshDisplay;
     ColorTransform _colorTransform;
     std::vector<float> _ffdVertices;
 

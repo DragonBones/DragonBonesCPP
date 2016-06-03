@@ -51,15 +51,15 @@ public:
 
     inline FFDTimelineData* getFFDTimeline(const std::string& skinName, const std::string& slotName, unsigned displayIndex) const
     {
-		const auto iteratorSkin = ffdTimelines.find(skinName);
+        const auto iteratorSkin = ffdTimelines.find(skinName);
         if (iteratorSkin != ffdTimelines.end())
         {
-			const auto& skin = iteratorSkin->second;
-			const auto iteratorSlot = skin.find(slotName);
+            const auto& skin = iteratorSkin->second;
+            const auto iteratorSlot = skin.find(slotName);
             if (iteratorSlot != skin.end())
             {
                 const auto& slot = iteratorSlot->second;
-				return mapFind(slot, std::to_string(displayIndex));
+                return mapFind(slot, std::to_string(displayIndex));
             }
         }
 

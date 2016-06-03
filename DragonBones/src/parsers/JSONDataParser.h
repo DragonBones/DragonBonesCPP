@@ -16,7 +16,7 @@ protected:
             const auto& value = rawData[key];
             if (value.IsBool())
             {
-				return value.GetBool();
+                return value.GetBool();
             }
             else if (value.IsNumber())
             {
@@ -93,92 +93,92 @@ protected:
     virtual SlotFrameData* _parseSlotFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual ExtensionFrameData* _parseFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
 
-	template<class T>
+    template<class T>
     void _parseTweenFrame(const rapidjson::Value& rawData, TweenFrameData<T>& frame, unsigned frameStart, unsigned frameCount) const
-	{
-		_parseFrame(rawData, frame, frameStart, frameCount);
+    {
+        _parseFrame(rawData, frame, frameStart, frameCount);
 
-		frame.tweenEasing = _getNumber(rawData, TWEEN_EASING, NO_TWEEN);
+        frame.tweenEasing = _getNumber(rawData, TWEEN_EASING, NO_TWEEN);
 
-		if (rawData.HasMember(CURVE))
-		{
-			const auto rawCurve = rawData[CURVE].GetArray();
+        if (rawData.HasMember(CURVE))
+        {
+            const auto rawCurve = rawData[CURVE].GetArray();
 
-			std::vector<float> curve;
-			curve.reserve(rawCurve.Size());
-			for (const auto& curveValue : rawCurve)
-			{
-				curve.push_back(curveValue.GetFloat());
-			}
+            std::vector<float> curve;
+            curve.reserve(rawCurve.Size());
+            for (const auto& curveValue : rawCurve)
+            {
+                curve.push_back(curveValue.GetFloat());
+            }
 
-			TweenFrameData<T>::samplingCurve(curve, frameCount, frame.curve);
-		}
-	}
+            TweenFrameData<T>::samplingCurve(curve, frameCount, frame.curve);
+        }
+    }
 
-	template<class T>
+    template<class T>
     void _parseFrame(const rapidjson::Value& rawData, FrameData<T>& frame, unsigned frameStart, unsigned frameCount) const
-	{
-		frame.position = (unsigned)(frameStart * SECOND_TO_MICROSECOND / this->_armature->frameRate);
-		frame.duration = (unsigned)(frameCount * SECOND_TO_MICROSECOND / this->_armature->frameRate);
-	}
+    {
+        frame.position = (unsigned)(frameStart * SECOND_TO_MICROSECOND / this->_armature->frameRate);
+        frame.duration = (unsigned)(frameCount * SECOND_TO_MICROSECOND / this->_armature->frameRate);
+    }
 
-	template<class T>
+    template<class T>
     void _parseTimeline(const rapidjson::Value& rawData, TimelineData<T>& timeline, const std::function<T*(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)>& frameParser) const
-	{
-		timeline.scale = _getNumber(rawData, SCALE, 1.f);
-		timeline.offset = _getNumber(rawData, OFFSET, 0.f);
+    {
+        timeline.scale = _getNumber(rawData, SCALE, 1.f);
+        timeline.offset = _getNumber(rawData, OFFSET, 0.f);
 
-		if (rawData.HasMember(FRAME))
-		{
-			const auto& rawFrames = rawData[FRAME].GetArray();
-			if (!rawFrames.Empty())
-			{
-				if (rawFrames.Size() == 1)
-				{
-					const auto& frameObject = rawFrames[0];
-					const auto frame = frameParser(frameObject, 0, _getNumber(frameObject, DURATION, (unsigned)1));
-					timeline.frames.reserve(1);
-					timeline.frames.push_back(frame);
-				}
-				else
-				{
-					timeline.frames.reserve(this->_animation->frameCount + 1);
+        if (rawData.HasMember(FRAME))
+        {
+            const auto& rawFrames = rawData[FRAME].GetArray();
+            if (!rawFrames.Empty())
+            {
+                if (rawFrames.Size() == 1)
+                {
+                    const auto& frameObject = rawFrames[0];
+                    const auto frame = frameParser(frameObject, 0, _getNumber(frameObject, DURATION, (unsigned)1));
+                    timeline.frames.reserve(1);
+                    timeline.frames.push_back(frame);
+                }
+                else
+                {
+                    timeline.frames.reserve(this->_animation->frameCount + 1);
 
-					unsigned frameStart = 0;
-					unsigned frameCount = 0;
-					T* frame = nullptr;
-					T* prevFrame = nullptr;
+                    unsigned frameStart = 0;
+                    unsigned frameCount = 0;
+                    T* frame = nullptr;
+                    T* prevFrame = nullptr;
 
-					for (std::size_t i = 0, iW = 0, l = this->_animation->frameCount + 1; i < l; ++i)
-					{
-						if (frameStart + frameCount <= i && iW < rawFrames.Size())
-						{
-							const auto& frameObject = rawFrames[iW++];
-							frameStart = i;
-							frameCount = _getNumber(frameObject, DURATION, 1);
-							frame = frameParser(frameObject, frameStart, frameCount);
+                    for (std::size_t i = 0, iW = 0, l = this->_animation->frameCount + 1; i < l; ++i)
+                    {
+                        if (frameStart + frameCount <= i && iW < rawFrames.Size())
+                        {
+                            const auto& frameObject = rawFrames[iW++];
+                            frameStart = i;
+                            frameCount = _getNumber(frameObject, DURATION, 1);
+                            frame = frameParser(frameObject, frameStart, frameCount);
 
-							if (prevFrame)
-							{
-								prevFrame->next = frame;
-								frame->prev = prevFrame;
-							}
+                            if (prevFrame)
+                            {
+                                prevFrame->next = frame;
+                                frame->prev = prevFrame;
+                            }
 
-							prevFrame = frame;
-						}
+                            prevFrame = frame;
+                        }
 
-						timeline.frames.push_back(frame);
-					}
+                        timeline.frames.push_back(frame);
+                    }
 
-					frame->duration = this->_animation->duration - frame->position;
+                    frame->duration = this->_animation->duration - frame->position;
 
-					frame = timeline.frames[0];
-					prevFrame->next = frame;
-					frame->prev = prevFrame;
-				}
-			}
-		}
-	}
+                    frame = timeline.frames[0];
+                    prevFrame->next = frame;
+                    frame->prev = prevFrame;
+                }
+            }
+        }
+    }
     virtual void _parseTransform(const rapidjson::Value& rawData, Transform& transform) const;
     virtual void _parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color) const;
 

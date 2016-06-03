@@ -101,10 +101,10 @@ void Animation::_advanceTime(float passedTime)
         return;
     }
 
-	if (passedTime < 0.f)
-	{
-		passedTime = -passedTime;
-	}
+    if (passedTime < 0.f)
+    {
+        passedTime = -passedTime;
+    }
 
     const auto animationStateCount = _animationStates.size();
     if (animationStateCount == 1)

@@ -55,7 +55,7 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
 
     slot->name = slotData->name;
     slot->_rawDisplay = rawDisplay;
-	slot->_meshDisplay = rawDisplay;
+    slot->_meshDisplay = rawDisplay;
 
     displayList.reserve(slotDisplayDataSet.displays.size());
     rawDisplay->retain();
@@ -74,25 +74,25 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
                 break;
 
             case DisplayType::Mesh:
-				if (!displayData->textureData)
-				{
-					displayData->textureData = this->_getTextureData(dataPackage.dataName, displayData->name);
-				}
+                if (!displayData->textureData)
+                {
+                    displayData->textureData = this->_getTextureData(dataPackage.dataName, displayData->name);
+                }
 
                 displayList.push_back(std::make_pair(slot->_meshDisplay, DisplayType::Mesh));
                 break;
 
-			case DisplayType::Armature:
-			{
-				const auto childArmature = buildArmature(displayData->name, dataPackage.dataName);
-				if (childArmature)
-				{
-					childArmature->getAnimation().play();
-				}
+            case DisplayType::Armature:
+            {
+                const auto childArmature = buildArmature(displayData->name, dataPackage.dataName);
+                if (childArmature)
+                {
+                    childArmature->getAnimation().play();
+                }
 
-				displayList.push_back(std::make_pair(childArmature, DisplayType::Armature));
-				break;
-			}
+                displayList.push_back(std::make_pair(childArmature, DisplayType::Armature));
+                break;
+            }
 
             default:
                 displayList.push_back(std::make_pair(nullptr, DisplayType::Image));
@@ -191,7 +191,7 @@ TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, c
         cocos2d::Texture2D::setDefaultAlphaPixelFormat(pixelFormat);
         texture = textureCache->addImage(textureAtlasData->imagePath);
         cocos2d::Texture2D::setDefaultAlphaPixelFormat(defaultPixelFormat);
-	}
+    }
 
     textureAtlasData->texture = texture;
 

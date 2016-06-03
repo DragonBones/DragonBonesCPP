@@ -56,47 +56,47 @@ void CCSlot::_disposeDisplay(void * value)
 
 void CCSlot::_updateVisible()
 {
-	this->_renderDisplay->setVisible(this->_parent->getVisible());
+    this->_renderDisplay->setVisible(this->_parent->getVisible());
 }
 
 void CCSlot::_updateBlendMode()
 {
-	cocos2d::Sprite* spriteDisplay = dynamic_cast<cocos2d::Sprite*>(_renderDisplay);
-	if (spriteDisplay)
-	{
-		switch (this->_blendMode)
-		{
-		case BlendMode::Normal:
-			//spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
-			break;
+    cocos2d::Sprite* spriteDisplay = dynamic_cast<cocos2d::Sprite*>(_renderDisplay);
+    if (spriteDisplay)
+    {
+        switch (this->_blendMode)
+        {
+        case BlendMode::Normal:
+            //spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
+            break;
 
-		case BlendMode::Add:
-		{
-			const auto texture = spriteDisplay->getTexture();
-			if (texture && texture->hasPremultipliedAlpha())
-			{
-				cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
-				spriteDisplay->setBlendFunc(blendFunc);
-			}
-			else
-			{
-				spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
-			}
-			break;
-		}
+        case BlendMode::Add:
+        {
+            const auto texture = spriteDisplay->getTexture();
+            if (texture && texture->hasPremultipliedAlpha())
+            {
+                cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
+                spriteDisplay->setBlendFunc(blendFunc);
+            }
+            else
+            {
+                spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
+            }
+            break;
+        }
 
-		default:
-			break;
-		}
-	}
-	else if (this->_childArmature)
-	{
-		for (const auto slot : this->_childArmature->getSlots())
-		{
-			slot->_blendMode = this->_blendMode;
-			slot->_updateBlendMode();
-		}
-	}
+        default:
+            break;
+        }
+    }
+    else if (this->_childArmature)
+    {
+        for (const auto slot : this->_childArmature->getSlots())
+        {
+            slot->_blendMode = this->_blendMode;
+            slot->_updateBlendMode();
+        }
+    }
 }
 
 void CCSlot::_updateColor()
@@ -137,93 +137,93 @@ void CCSlot::_updateFrame()
 
         if (textureData && textureData->texture)
         {
-			const auto& rect = textureData->frame ? *textureData->frame : textureData->region;
+            const auto& rect = textureData->frame ? *textureData->frame : textureData->region;
 
-			auto width = rect.width;
-			auto height = rect.height;
-			if (textureData->rotated)
-			{
-				width = rect.height;
-				height = rect.width;
-			}
+            auto width = rect.width;
+            auto height = rect.height;
+            if (textureData->rotated)
+            {
+                width = rect.height;
+                height = rect.width;
+            }
 
-			if (this->_meshData && this->_display == this->_meshDisplay)
-			{
-				const auto& offset = textureData->texture->getRect().origin;
-				const auto& textureSize = textureData->texture->getTexture()->getContentSize();
-				auto displayVertices = new cocos2d::V3F_C4B_T2F[this->_meshData->uvs.size()];
-				auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()];
+            if (this->_meshData && this->_display == this->_meshDisplay)
+            {
+                const auto& offset = textureData->texture->getRect().origin;
+                const auto& textureSize = textureData->texture->getTexture()->getContentSize();
+                auto displayVertices = new cocos2d::V3F_C4B_T2F[this->_meshData->uvs.size()];
+                auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()];
 
-				for (std::size_t i = 0, l = this->_meshData->uvs.size(); i < l; i += 2)
-				{
-					const auto iH = unsigned(i / 2);
-					cocos2d::V3F_C4B_T2F vertexData;
-					vertexData.vertices.set(this->_meshData->vertices[i] + width * 0.5f, height * 0.5f - this->_meshData->vertices[i + 1], 0.f);
-					vertexData.texCoords.u = (offset.x + this->_meshData->uvs[i] * width) / textureSize.width;
-					vertexData.texCoords.v = (offset.y + this->_meshData->uvs[i + 1] * height) / textureSize.height;
-					vertexData.colors = cocos2d::Color4B::WHITE;
-					displayVertices[iH] = vertexData;
-				}
+                for (std::size_t i = 0, l = this->_meshData->uvs.size(); i < l; i += 2)
+                {
+                    const auto iH = unsigned(i / 2);
+                    cocos2d::V3F_C4B_T2F vertexData;
+                    vertexData.vertices.set(this->_meshData->vertices[i] + width * 0.5f, height * 0.5f - this->_meshData->vertices[i + 1], 0.f);
+                    vertexData.texCoords.u = (offset.x + this->_meshData->uvs[i] * width) / textureSize.width;
+                    vertexData.texCoords.v = (offset.y + this->_meshData->uvs[i + 1] * height) / textureSize.height;
+                    vertexData.colors = cocos2d::Color4B::WHITE;
+                    displayVertices[iH] = vertexData;
+                }
 
-				for (std::size_t i = 0, l = this->_meshData->vertexIndices.size(); i < l; ++i)
-				{
-					vertexIndices[i] = this->_meshData->vertexIndices[i];
-				}
+                for (std::size_t i = 0, l = this->_meshData->vertexIndices.size(); i < l; ++i)
+                {
+                    vertexIndices[i] = this->_meshData->vertexIndices[i];
+                }
 
-				cocos2d::PolygonInfo polygonInfo;
-				auto& triangles = polygonInfo.triangles;
-				triangles.verts = displayVertices;
-				triangles.indices = vertexIndices;
-				triangles.vertCount = unsigned(this->_meshData->uvs.size() / 2);
-				triangles.indexCount = unsigned(this->_meshData->vertexIndices.size() / 3);
-				polygonInfo.rect.setRect(0.f, 0.f, width, height);
-				frameDisplay->setPolygonInfo(polygonInfo);
-				frameDisplay->setSpriteFrame(textureData->texture);
-				frameDisplay->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));
+                cocos2d::PolygonInfo polygonInfo;
+                auto& triangles = polygonInfo.triangles;
+                triangles.verts = displayVertices;
+                triangles.indices = vertexIndices;
+                triangles.vertCount = unsigned(this->_meshData->uvs.size() / 2);
+                triangles.indexCount = unsigned(this->_meshData->vertexIndices.size() / 3);
+                polygonInfo.rect.setRect(0.f, 0.f, width, height);
+                frameDisplay->setPolygonInfo(polygonInfo);
+                frameDisplay->setSpriteFrame(textureData->texture);
+                frameDisplay->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));
 
-				if (this->_meshData->skinned)
-				{
-					frameDisplay->setScale(1.f, 1.f);
-					frameDisplay->setRotationSkewX(0.f);
-					frameDisplay->setRotationSkewY(0.f);
-					frameDisplay->setPosition(0.f, 0.f);
-					frameDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
-				}
-				else
-				{
-					frameDisplay->setAnchorPoint(cocos2d::Vec2::ANCHOR_MIDDLE);
-				}
-			}
-			else
-			{
-				cocos2d::Vec2 pivot(displayData->pivot.x, displayData->pivot.y);
+                if (this->_meshData->skinned)
+                {
+                    frameDisplay->setScale(1.f, 1.f);
+                    frameDisplay->setRotationSkewX(0.f);
+                    frameDisplay->setRotationSkewY(0.f);
+                    frameDisplay->setPosition(0.f, 0.f);
+                    frameDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
+                }
+                else
+                {
+                    frameDisplay->setAnchorPoint(cocos2d::Vec2::ANCHOR_MIDDLE);
+                }
+            }
+            else
+            {
+                cocos2d::Vec2 pivot(displayData->pivot.x, displayData->pivot.y);
 
-				if (displayData->isRelativePivot)
-				{
-					pivot.x *= width;
-					pivot.y *= height;
-				}
+                if (displayData->isRelativePivot)
+                {
+                    pivot.x *= width;
+                    pivot.y *= height;
+                }
 
-				if (textureData->frame)
-				{
-					pivot.x -= textureData->frame->x;
-					pivot.y -= textureData->frame->y;
-				}
+                if (textureData->frame)
+                {
+                    pivot.x -= textureData->frame->x;
+                    pivot.y -= textureData->frame->y;
+                }
 
-				if (textureData->rotated)
-				{
-					pivot.x = pivot.x / textureData->region.height;
-					pivot.y = 1.f - pivot.y / textureData->region.width;
-				}
-				else
-				{
-					pivot.x = pivot.x / textureData->region.width;
-					pivot.y = 1.f - pivot.y / textureData->region.height;
-				}
+                if (textureData->rotated)
+                {
+                    pivot.x = pivot.x / textureData->region.height;
+                    pivot.y = 1.f - pivot.y / textureData->region.width;
+                }
+                else
+                {
+                    pivot.x = pivot.x / textureData->region.width;
+                    pivot.y = 1.f - pivot.y / textureData->region.height;
+                }
 
-				frameDisplay->setSpriteFrame(textureData->texture);
-				frameDisplay->setAnchorPoint(pivot);
-			}
+                frameDisplay->setSpriteFrame(textureData->texture);
+                frameDisplay->setAnchorPoint(pivot);
+            }
 
             this->_updateVisible();
 
@@ -233,18 +233,18 @@ void CCSlot::_updateFrame()
 
     frameDisplay->setTexture(nullptr);
     frameDisplay->setVisible(false);
-	frameDisplay->setTextureRect(cocos2d::Rect::ZERO);
-	frameDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
+    frameDisplay->setTextureRect(cocos2d::Rect::ZERO);
+    frameDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
 }
 
 void CCSlot::_updateMesh() 
 {
     const auto meshDisplay = static_cast<cocos2d::Sprite*>(_renderDisplay);
     const auto hasFFD = !this->_ffdVertices.empty();
-	const auto& textureRect = meshDisplay->getTextureRect();
-	const auto width = textureRect.size.width;
-	const auto height = textureRect.size.height;
-	const auto displayVertices = meshDisplay->getPolygonInfo().triangles.verts;
+    const auto& textureRect = meshDisplay->getTextureRect();
+    const auto width = textureRect.size.width;
+    const auto height = textureRect.size.height;
+    const auto displayVertices = meshDisplay->getPolygonInfo().triangles.verts;
 
     if (this->_meshData->skinned)
     {
@@ -283,7 +283,7 @@ void CCSlot::_updateMesh()
                 iF += 2;
             }
 
-			displayVertices[iH].vertices.set(xG + width * 0.5f, height * 0.5f - yG, 0.f);
+            displayVertices[iH].vertices.set(xG + width * 0.5f, height * 0.5f - yG, 0.f);
         }
     }
     else if (hasFFD)
@@ -291,7 +291,7 @@ void CCSlot::_updateMesh()
         const auto& vertices = _meshData->vertices;
         for (std::size_t i = 0, l = this->_meshData->vertices.size(); i < l; i += 2)
         {
-			const auto iH = unsigned(i / 2);
+            const auto iH = unsigned(i / 2);
             const auto xG = vertices[i];
             const auto yG = vertices[i + 1];
 
@@ -302,13 +302,13 @@ void CCSlot::_updateMesh()
 
 void CCSlot::_updateTransform()
 {
-	if (_renderDisplay)
-	{
-		_renderDisplay->setScale(this->global.scaleX, this->global.scaleY);
-		_renderDisplay->setRotationSkewX(this->global.skewX * RADIAN_TO_ANGLE);
-		_renderDisplay->setRotationSkewY(this->global.skewY * RADIAN_TO_ANGLE);
-		_renderDisplay->setPosition(this->global.x, -this->global.y);
-	}
+    if (_renderDisplay)
+    {
+        _renderDisplay->setScale(this->global.scaleX, this->global.scaleY);
+        _renderDisplay->setRotationSkewX(this->global.skewX * RADIAN_TO_ANGLE);
+        _renderDisplay->setRotationSkewY(this->global.skewY * RADIAN_TO_ANGLE);
+        _renderDisplay->setPosition(this->global.x, -this->global.y);
+    }
 }
 
 NAMESPACE_DRAGONBONES_END

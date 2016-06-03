@@ -96,8 +96,8 @@ protected:
     static const char* TWEEN;
     static const char* KEY;
 
-	static const char* PIVOT_X;
-	static const char* PIVOT_Y;
+    static const char* PIVOT_X;
+    static const char* PIVOT_Y;
 
     static TextureFormat _getTextureFormat(const std::string& value);
     static ArmatureType _getArmatureType(const std::string& value);

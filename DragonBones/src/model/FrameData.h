@@ -60,17 +60,17 @@ public:
     T* prev;
     T* next;
 
-	FrameData() {}
-	virtual ~FrameData() {}
+    FrameData() {}
+    virtual ~FrameData() {}
 
 protected:
     virtual void _onClear() override
-	{
-		position = 0;
-		duration = 0;
-		prev = nullptr;
-		next = nullptr;
-	}
+    {
+        position = 0;
+        duration = 0;
+        prev = nullptr;
+        next = nullptr;
+    }
 };
 
 template<class T>
@@ -78,64 +78,64 @@ class TweenFrameData : public FrameData<T>
 {
 public:
     static void samplingCurve(std::vector<float>& curve, unsigned frameCount, std::vector<float>& sampling)
-	{
-		if (curve.empty() || frameCount == 0)
-		{
-			return;
-		}
+    {
+        if (curve.empty() || frameCount == 0)
+        {
+            return;
+        }
 
-		const auto samplingTimes = frameCount + 2;
-		const auto samplingStep = 1.f / samplingTimes;
-		sampling.reserve((samplingTimes - 1) * 2);
+        const auto samplingTimes = frameCount + 2;
+        const auto samplingStep = 1.f / samplingTimes;
+        sampling.reserve((samplingTimes - 1) * 2);
 
-		curve.insert(curve.begin(), 0.f);
-		curve.insert(curve.begin(), 0.f);
-		curve.push_back(1.f);
-		curve.push_back(1.f);
+        curve.insert(curve.begin(), 0.f);
+        curve.insert(curve.begin(), 0.f);
+        curve.push_back(1.f);
+        curve.push_back(1.f);
 
-		std::size_t stepIndex = 0;
-		for (std::size_t i = 0; i < samplingTimes - 1; ++i)
-		{
-			const auto step = samplingStep * (i + 1);
-			while (curve[stepIndex + 6] < step) // stepIndex + 3 * 2
-			{
-				stepIndex += 6; // stepIndex += 3 * 2
-			}
+        std::size_t stepIndex = 0;
+        for (std::size_t i = 0; i < samplingTimes - 1; ++i)
+        {
+            const auto step = samplingStep * (i + 1);
+            while (curve[stepIndex + 6] < step) // stepIndex + 3 * 2
+            {
+                stepIndex += 6; // stepIndex += 3 * 2
+            }
 
-			const auto x1 = curve[stepIndex];
-			const auto x4 = curve[stepIndex + 6];
+            const auto x1 = curve[stepIndex];
+            const auto x4 = curve[stepIndex + 6];
 
-			const auto t = (step - x1) / (x4 - x1);
-			const auto l_t = 1.f - t;
+            const auto t = (step - x1) / (x4 - x1);
+            const auto l_t = 1.f - t;
 
-			const auto powA = l_t * l_t;
-			const auto powB = t * t;
+            const auto powA = l_t * l_t;
+            const auto powB = t * t;
 
-			const auto kA = l_t * powA;
-			const auto kB = 3.f * t * powA;
-			const auto kC = 3.f * l_t * powB;
-			const auto kD = t * powB;
+            const auto kA = l_t * powA;
+            const auto kB = 3.f * t * powA;
+            const auto kC = 3.f * l_t * powB;
+            const auto kD = t * powB;
 
-			sampling.push_back(kA * x1 + kB * curve[stepIndex + 2] + kC * curve[stepIndex + 4] + kD * x4);
-			sampling.push_back(kA * curve[stepIndex + 1] + kB * curve[stepIndex + 3] + kC * curve[stepIndex + 5] + kD * curve[stepIndex + 7]);
-		}
-	}
+            sampling.push_back(kA * x1 + kB * curve[stepIndex + 2] + kC * curve[stepIndex + 4] + kD * x4);
+            sampling.push_back(kA * curve[stepIndex + 1] + kB * curve[stepIndex + 3] + kC * curve[stepIndex + 5] + kD * curve[stepIndex + 7]);
+        }
+    }
 
 public:
     float tweenEasing;
     std::vector<float> curve;
 
-	TweenFrameData() {}
-	virtual ~TweenFrameData() {}
+    TweenFrameData() {}
+    virtual ~TweenFrameData() {}
 
 protected:
     virtual void _onClear() override
-	{
-		FrameData<T>::_onClear();
+    {
+        FrameData<T>::_onClear();
 
-		tweenEasing = 0.f;
-		clearVector(curve);
-	}
+        tweenEasing = 0.f;
+        clearVector(curve);
+    }
 };
 
 class AnimationFrameData final : public FrameData<AnimationFrameData>

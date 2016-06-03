@@ -43,7 +43,7 @@ public:
             auto& pool = iterator->second;
             if (!pool.empty())
             {
-				const auto object = static_cast<T*>(pool.back());
+                const auto object = static_cast<T*>(pool.back());
                 pool.pop_back();
 
                 return object;

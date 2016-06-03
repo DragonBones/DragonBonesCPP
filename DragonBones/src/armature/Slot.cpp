@@ -22,7 +22,7 @@ void Slot::_onClear()
     _meshData = nullptr;
     _cacheFrames = nullptr;
     _rawDisplay = nullptr;
-	_meshDisplay = nullptr;
+    _meshDisplay = nullptr;
     _colorTransform.identity();
     clearVector(_ffdVertices);
 
@@ -83,13 +83,13 @@ void Slot::_updateDisplay()
         _colorDirty = true;
     }
 
-	if (_displayDataSet && _displayIndex >= 0 && (std::size_t)_displayIndex < _displayDataSet->displays.size())
-	{
-		_originDirty = true;
-		this->origin = _displayDataSet->displays[_displayIndex]->transform; // copy
-	}
+    if (_displayDataSet && _displayIndex >= 0 && (std::size_t)_displayIndex < _displayDataSet->displays.size())
+    {
+        _originDirty = true;
+        this->origin = _displayDataSet->displays[_displayIndex]->transform; // copy
+    }
 
-	_updateMeshData(false);
+    _updateMeshData(false);
 
     if (currentDisplay == _rawDisplay || currentDisplay == _meshDisplay)
     {

@@ -71,23 +71,23 @@ public:
         ty = dB * tyA + bB * txA + tyB;
     }
 
-	inline void invert() 
-	{
-		const auto aA = a;
-		const auto bA = b;
-		const auto cA = c;
-		const auto dA = d;
-		const auto txA = tx;
-		const auto tyA = ty;
-		const auto n = aA * dA - bA * cA;
+    inline void invert() 
+    {
+        const auto aA = a;
+        const auto bA = b;
+        const auto cA = c;
+        const auto dA = d;
+        const auto txA = tx;
+        const auto tyA = ty;
+        const auto n = aA * dA - bA * cA;
 
-		a = dA / n;
-		b = -bA / n;
-		c = -cA / n;
-		d = aA / n;
-		tx = (cA * tyA - dA * txA) / n;
-		ty = -(aA * tyA - bA * txA) / n;
-	}
+        a = dA / n;
+        b = -bA / n;
+        c = -cA / n;
+        d = aA / n;
+        tx = (cA * tyA - dA * txA) / n;
+        ty = -(aA * tyA - bA * txA) / n;
+    }
 
     inline void transformPoint(float x, float y, Point& result, bool delta = false) const
     {

@@ -320,7 +320,7 @@ bool BaseFactory::copyAnimationsToArmature(
         {
             for (const auto toSlot : toArmature.getSlots())
             {
-				const auto& toSlotDisplayList = toSlot->getDisplayList();
+                const auto& toSlotDisplayList = toSlot->getDisplayList();
                 std::size_t index = 0;
                 for (const auto& pair : toSlotDisplayList)
                 {

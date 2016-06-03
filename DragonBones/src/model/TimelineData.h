@@ -18,28 +18,28 @@ public:
 
     std::vector<T*> frames;
 
-	TimelineData() {}
-	virtual ~TimelineData() {}
+    TimelineData() {}
+    virtual ~TimelineData() {}
 
 protected:
     virtual void _onClear() override
-	{
-		scale = 0.f;
-		offset = 0.f;
+    {
+        scale = 0.f;
+        offset = 0.f;
 
-		T* prevFrame = nullptr;
-		for (const auto frame : frames)
-		{
-			if (prevFrame && frame != prevFrame)
-			{
-				prevFrame->returnToPool();
-			}
+        T* prevFrame = nullptr;
+        for (const auto frame : frames)
+        {
+            if (prevFrame && frame != prevFrame)
+            {
+                prevFrame->returnToPool();
+            }
 
-			prevFrame = frame;
-		}
+            prevFrame = frame;
+        }
 
-		clearVector(frames);
-	}
+        clearVector(frames);
+    }
 };
 
 class BoneTimelineData final : public TimelineData<BoneFrameData>

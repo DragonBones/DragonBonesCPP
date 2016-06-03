@@ -55,7 +55,7 @@ void BoneTimelineState::_onClear()
 
 void BoneTimelineState::_onFadeIn()
 {
-	_originTransform = &this->_timeline->originTransform;
+    _originTransform = &this->_timeline->originTransform;
     _boneTransform = &bone->_animationPose;
 }
 
@@ -63,7 +63,7 @@ void BoneTimelineState::_onArriveAtFrame(bool isUpdate)
 {
     TweenTimelineState::_onArriveAtFrame(isUpdate);
 
-	_currentTransform = this->_currentFrame->transform;
+    _currentTransform = this->_currentFrame->transform;
     _tweenTransform = TweenType::Once;
     _tweenRotate = TweenType::Once;
     _tweenScale = TweenType::Once;
@@ -82,7 +82,7 @@ void BoneTimelineState::_onArriveAtFrame(bool isUpdate)
         }
 
         // Rotate
-		const auto tweenRotate = this->_currentFrame->tweenRotate;
+        const auto tweenRotate = this->_currentFrame->tweenRotate;
         if (tweenRotate == tweenRotate)
         {
             if (tweenRotate)
@@ -490,7 +490,7 @@ void FFDTimelineState::_onArriveAtFrame(bool isUpdate)
 
     if (_tweenFFD == TweenType::None)
     {
-		const auto& currentFFDVertices = this->_currentFrame->tweens;
+        const auto& currentFFDVertices = this->_currentFrame->tweens;
         for (std::size_t i = 0, l = currentFFDVertices.size(); i < l; ++i)
         {
             if ((*_ffdVertices)[i] != currentFFDVertices[i])
@@ -514,7 +514,7 @@ void FFDTimelineState::_onUpdateFrame(bool isUpdate)
         }
 
         const auto& currentFFDVertices = this->_currentFrame->tweens;
-		const auto& nextFFDVertices = _durationFFDFrame->tweens;
+        const auto& nextFFDVertices = _durationFFDFrame->tweens;
         for (std::size_t i = 0, l = currentFFDVertices.size(); i < l; ++i)
         {
             (*_ffdVertices)[i] = currentFFDVertices[i] + nextFFDVertices[i] * this->_tweenProgress;

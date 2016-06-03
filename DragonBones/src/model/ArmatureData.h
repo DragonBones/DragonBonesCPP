@@ -44,7 +44,7 @@ class SlotData final : public BaseObject
     BIND_CLASS_TYPE(SlotData);
 
 public:
-	static ColorTransform DEFAULT_COLOR;
+    static ColorTransform DEFAULT_COLOR;
     static ColorTransform* generateColor();
 
 public:

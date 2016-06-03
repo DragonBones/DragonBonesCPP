@@ -45,7 +45,7 @@ protected:
 
 public:
     void _updateFFDTimelineStates();
-	void _advanceTime(float passedTime);
+    void _advanceTime(float passedTime);
 
 public:
     void reset();
