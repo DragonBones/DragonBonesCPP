@@ -22,6 +22,7 @@ public:
     bool inheritScale;
     bool bendPositive;
     unsigned chain;
+    unsigned chainIndex;
     float weight;
     float length;
     std::string name;

@@ -16,6 +16,7 @@ void AnimationData::_onClear()
 {
     TimelineData::_onClear();
 
+    hasBoneTimelineEvent = false;
     hasAsynchronyTimeline = false;
     frameCount = 0;
     playTimes = 0;
@@ -106,16 +107,7 @@ void AnimationData::addFFDTimeline(FFDTimelineData* value)
     {
         const auto& skinName = value->skin->name;
         const auto& slotName = value->slot->slot->name;
-        const auto& displayIndex = std::to_string(value->displayIndex);
-
-        /*if (ffdTimelines.find(skinName) == ffdTimelines.end())
-        {
-            std::make_pair(ffdTimelines, skinName);
-        }*/
-        /*if (skin.find(slotName) == skin.end())
-        {
-            std::make_pair(skin, slotName);
-        }*/
+        const auto& displayIndex = to_string(value->displayIndex); // std::to_string
 
         auto& skin = ffdTimelines[skinName];
         auto& slot = skin[slotName];

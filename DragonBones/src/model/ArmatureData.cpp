@@ -18,6 +18,7 @@ void BoneData::_onClear()
     inheritScale = false;
     bendPositive = false;
     chain = 0;
+    chainIndex = 0;
     weight = 0.f;
     length = 0.f;
     name.clear();
@@ -264,8 +265,19 @@ void ArmatureData::_sortBones()
             continue;
         }
 
-        _sortedBones[count++] = bone;
+        if (bone->ik && bone->chain > 0 && bone->chainIndex == bone->chain)
+        {
+            auto parentInerator = std::find(_sortedBones.begin(), _sortedBones.end(), bone->parent);
+            _sortedBones.insert(parentInerator++, bone);
+            count++;
+        }
+        else
+        {
+            _sortedBones[count++] = bone;
+        }
     }
+
+    _sortedBones.resize(total);
 
     auto copy = _sortedBones;
     copy.swap(_sortedBones);

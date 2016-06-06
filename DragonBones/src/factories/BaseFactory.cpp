@@ -124,7 +124,7 @@ void BaseFactory::_buildBones(const BuildArmaturePackage& dataPackage, Armature&
         {
             bone->ikBendPositive = boneData->bendPositive;
             bone->ikWeight = boneData->weight;
-            bone->_setIK(armature.getBone(boneData->ik->name), boneData->chain);
+            bone->_setIK(armature.getBone(boneData->ik->name), boneData->chain, boneData->chainIndex);
         }
     }
 }

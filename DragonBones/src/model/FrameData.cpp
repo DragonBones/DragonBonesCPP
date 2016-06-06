@@ -49,19 +49,6 @@ AnimationFrameData::~AnimationFrameData()
 void AnimationFrameData::_onClear()
 {
     FrameData::_onClear();
-
-    for (const auto action : actions)
-    {
-        action->returnToPool();
-    }
-
-    for (const auto event : events)
-    {
-        event->returnToPool();
-    }
-
-    actions.clear();
-    events.clear();
 }
 
 BoneFrameData::BoneFrameData()

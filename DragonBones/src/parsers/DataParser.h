@@ -103,6 +103,7 @@ protected:
     static ArmatureType _getArmatureType(const std::string& value);
     static DisplayType _getDisplayType(const std::string& value);
     static BlendMode _getBlendMode(const std::string& value);
+    static ActionType _getActionType(const std::string& value);
 
 protected:
     DragonBonesData* _data;
@@ -111,7 +112,7 @@ protected:
     SlotDisplayDataSet* _slotDisplayDataSet;
     MeshData* _mesh;
     AnimationData* _animation;
-    void* _timeline;
+    void* _timeline; // TimelineData
 
     Point _helpPoint;
     std::vector<BoneData*> _rawBones;

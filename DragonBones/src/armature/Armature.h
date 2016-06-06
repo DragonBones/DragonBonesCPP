@@ -4,6 +4,7 @@
 #include "../core/BaseObject.h"
 #include "../model/ArmatureData.h"
 #include "../animation/IAnimateble.h"
+#include "../events/EventObject.h"
 #include "../events/IEventDispatcher.h"
 #include "IArmatureDisplayContainer.h"
 

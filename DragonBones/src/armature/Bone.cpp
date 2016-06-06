@@ -30,7 +30,8 @@ void Bone::_onClear()
     _animationPose.identity();
 
     _visible = true;
-    _ikChain = 1;
+    _ikChain = 0;
+    _ikChainIndex = 0;
     _ik = nullptr;
 
     _bones.clear();
@@ -114,8 +115,62 @@ void Bone::_setArmature(Armature* value)
     }
 }
 
-void Bone::_setIK(Bone * value, unsigned chain)
+void Bone::_setIK(Bone* value, unsigned chain, unsigned chainIndex)
 {
+    if (value)
+    {
+        if (chain == chainIndex)
+        {
+            auto chainEnd = this->_parent;
+            if (chain && chainEnd)
+            {
+                chain = 1;
+            }
+            else
+            {
+                chain = 0;
+                chainIndex = 0;
+                chainEnd = this;
+            }
+
+            if (chainEnd == value || chainEnd->contains(value))
+            {
+                value = nullptr;
+                chain = 0;
+                chainIndex = 0;
+            }
+            else
+            {
+                auto ancestor = value;
+                while (ancestor->getIK() && ancestor->getIKChain())
+                {
+                    if (chainEnd->contains(ancestor->getIK()))
+                    {
+                        value = nullptr;
+                        chain = 0;
+                        chainIndex = 0;
+                        break;
+                    }
+
+                    ancestor = ancestor->getParent();
+                }
+            }
+        }
+    }
+    else
+    {
+        chain = 0;
+        chainIndex = 0;
+    }
+
+    _ik = value;
+    _ikChain = chain;
+    _ikChainIndex = chainIndex;
+
+    if (this->_armature)
+    {
+        this->_armature->_bonesDirty = true;
+    }
 }
 
 void Bone::_update(int cacheFrameIndex)

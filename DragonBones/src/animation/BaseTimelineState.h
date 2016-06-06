@@ -65,7 +65,67 @@ protected:
     virtual void _onFadeIn() {}
     virtual void _onUpdateFrame(bool isUpdate) {}
     virtual void _onArriveAtFrame(bool isUpdate) {}
-    virtual void _onCrossFrame(T* frame) {}
+    virtual void _onCrossFrame(T* frame) 
+    {
+        /*const auto eventDispatcher = static_cast<IArmatureDisplayContainer*>(this->_armature.getDisplay());
+
+        for (const auto actionData : frame->actions)
+        {
+            if (actionData->slot)
+            {
+                const auto slot = this->_armature->getSlot(actionData->slot->name);
+                if (slot)
+                {
+                    const auto childArmature = slot->getChildArmature();
+                    if (childArmature)
+                    {
+                        childArmature->_action = actionData;
+                    }
+                }
+            }
+            else 
+            {
+                this->_armature->_action = actionData;
+            }
+        }
+
+        for (const auto eventData : frame->events)
+        {
+            std::string eventType;
+            switch (eventData.type)
+            {
+                case EventType::Frame:
+                    eventType = EventObject::FRAME_EVENT;
+                    break;
+
+                case EventType::Sound:
+                    eventType = EventObject::SOUND_EVENT;
+                    break;
+            }
+
+            if (eventDispatcher.hasEvent(eventType))
+            {
+                const auto eventObject = BaseObject::borrowObject<EventObject>();
+                eventObject->animationState = this->_animationState;
+
+                if (eventData->bone)
+                {
+                    eventObject->bone = this->_armature->getBone(eventData->bone->name);
+                }
+
+                if (eventData->slot)
+                {
+                    eventObject->slot = this->_armature->getSlot(eventData->slot->name);
+                }
+
+                eventObject->name = eventData->name;
+                //eventObject->data = eventData->data; // TODO
+
+                this->_armature->_bufferEvent(eventObject, eventType);
+            }
+        }*/
+    }
+
     bool _setCurrentTime(int value)
     {
         if (_hasAsynchronyTimeline)
@@ -145,23 +205,23 @@ public:
 
         switch (_keyFrameCount)
         {
-        case 0:
-            break;
+            case 0:
+                break;
 
-        case 1:
-            _currentFrame = _timeline->frames[0];
-            _onArriveAtFrame(false);
-            _onUpdateFrame(false);
-            break;
+            case 1:
+                _currentFrame = _timeline->frames[0];
+                _onArriveAtFrame(false);
+                _onUpdateFrame(false);
+                break;
 
-        default:
-            _currentFrame = _timeline->frames[unsigned(_currentTime * _timeToFrameSccale)]; // floor
-            _onArriveAtFrame(false);
-            _onUpdateFrame(false);
-            break;
+            default:
+                _currentFrame = _timeline->frames[unsigned(_currentTime * _timeToFrameSccale)];
+                _onArriveAtFrame(false);
+                _onUpdateFrame(false);
+                break;
         }
 
-        // _currentFrame = null; // TODO For first event frame
+        _currentFrame = nullptr;
     }
 
     void fadeIn(Armature* armature, AnimationState* animationState, M* timelineData)
@@ -187,7 +247,9 @@ public:
         setCurrentTime(0);
     }
 
-    virtual void fadeOut() {}
+    virtual void fadeOut() 
+    {
+    }
 
     virtual void update(int time)
     {

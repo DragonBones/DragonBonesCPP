@@ -32,6 +32,7 @@ public:
 private:
     bool _visible;
     unsigned _ikChain;
+    unsigned _ikChainIndex;
     Bone* _ik;
     std::vector<Bone*> _bones;
     std::vector<Slot*> _slots;
@@ -51,7 +52,7 @@ protected:
 
 public:
     virtual void _setArmature(Armature* value) override;
-    void _setIK(Bone* value, unsigned chain);
+    void _setIK(Bone* value, unsigned chain, unsigned chainIndex);
     void _update(int cacheFrameIndex);
 
 public:
@@ -76,6 +77,11 @@ public:
     inline unsigned getIKChain() const
     {
         return _ikChain;
+    }
+
+    inline unsigned getIKChainIndex() const
+    {
+        return _ikChainIndex;
     }
 
     inline Bone* getIK() const

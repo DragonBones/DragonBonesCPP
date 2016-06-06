@@ -79,13 +79,22 @@ void Armature::_sortBones()
             continue;
         }
 
-        _bones[count++] = bone;
+        if (bone->getIK() && bone->getIKChain() > 0 && bone->getIKChainIndex() == bone->getIKChain())
+        {
+            auto parentInerator = std::find(_bones.begin(), _bones.end(), bone->getParent());
+            _bones.insert(parentInerator++, bone);
+            count++;
+        }
+        else
+        {
+            _bones[count++] = bone;
+        }
+
     }
 }
 
 void Armature::_sortSlots()
 {
-
 }
 
 void Armature::_addBoneToBoneList(Bone* value)

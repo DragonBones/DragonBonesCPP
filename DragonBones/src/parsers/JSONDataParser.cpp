@@ -175,6 +175,18 @@ void JSONDataParser::_parseIK(const rapidjson::Value & rawData)
         bone->bendPositive = _getBoolean(rawData, BEND_POSITIVE, true);
         bone->chain = _getNumber(rawData, CHAIN, (unsigned)0);
         bone->weight = _getNumber(rawData, WEIGHT, 1.f);
+
+        if (bone->chain > 0 && bone->parent && !bone->parent->ik)
+        {
+            bone->parent->ik = bone->ik;
+            bone->parent->chainIndex = 0;
+            bone->chainIndex = 1;
+        }
+        else
+        {
+            bone->chain = 0;
+            bone->chainIndex = 0;
+        }
     }
 }
 
@@ -494,7 +506,7 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
             const auto boneTimeline = BaseObject::borrowObject<BoneTimelineData>();
             const auto boneFrame = BaseObject::borrowObject<BoneFrameData>();
             boneTimeline->bone = pair.second;
-            boneTimeline->frames.reserve(0);
+            boneTimeline->frames.reserve(1);
             boneTimeline->frames[0] = boneFrame;
             animation->addBoneTimeline(boneTimeline);
         }
@@ -520,7 +532,7 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
     return animation;
 }
 
-BoneTimelineData * JSONDataParser::_parseBoneTimeline(const rapidjson::Value & rawData) const
+BoneTimelineData * JSONDataParser::_parseBoneTimeline(const rapidjson::Value& rawData) const
 {
     const auto timeline = BaseObject::borrowObject<BoneTimelineData>();
     timeline->bone = this->_armature->getBone(_getString(rawData, NAME, ""));
@@ -554,7 +566,7 @@ BoneTimelineData * JSONDataParser::_parseBoneTimeline(const rapidjson::Value & r
     return timeline;
 }
 
-SlotTimelineData * JSONDataParser::_parseSlotTimeline(const rapidjson::Value & rawData) const
+SlotTimelineData * JSONDataParser::_parseSlotTimeline(const rapidjson::Value& rawData) const
 {
     const auto timeline = BaseObject::borrowObject<SlotTimelineData>();
     timeline->slot = this->_armature->getSlot(_getString(rawData, NAME, ""));
@@ -569,7 +581,7 @@ SlotTimelineData * JSONDataParser::_parseSlotTimeline(const rapidjson::Value & r
     return timeline;
 }
 
-FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value & rawData)
+FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value& rawData)
 {
     const auto timeline = BaseObject::borrowObject<FFDTimelineData>();
     timeline->skin = this->_armature->getSkin(_getString(rawData, SKIN, ""));
@@ -600,6 +612,16 @@ AnimationFrameData * JSONDataParser::_parseAnimationFrame(const rapidjson::Value
 
     _parseFrame(rawData, *frame, frameStart, frameCount);
 
+    if (rawData.HasMember(ACTION))
+    {
+        _parseActionData(rawData, frame->actions, nullptr, nullptr);
+    }
+
+    if (rawData.HasMember(EVENT) || rawData.HasMember(SOUND))
+    {
+        _parseEventData(rawData, frame->events, nullptr, nullptr);
+    }
+
     return frame;
 }
 
@@ -615,6 +637,13 @@ BoneFrameData * JSONDataParser::_parseBoneFrame(const rapidjson::Value& rawData,
     if (rawData.HasMember(TRANSFORM))
     {
         _parseTransform(rawData[TRANSFORM], frame->transform);
+    }
+
+    if (rawData.HasMember(EVENT) || rawData.HasMember(SOUND))
+    {
+        const auto bone = static_cast<BoneTimelineData*>(this->_timeline);
+        _parseEventData(rawData, frame->events, nullptr, nullptr);
+        this->_animation->hasBoneTimelineEvent = true;
     }
 
     return frame;
@@ -647,7 +676,7 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & raw
 
     _parseTweenFrame<ExtensionFrameData>(rawData, *frame, frameStart, frameCount);
 
-    const auto rawVertices = rawData.HasMember(CURVE) ? &rawData[VERTICES].GetArray() : nullptr;
+    const auto rawVertices = rawData.HasMember(VERTICES) ? &rawData[VERTICES].GetArray() : nullptr;
     const auto offset = _getNumber(rawData, OFFSET, (unsigned)0);
     auto x = 0.f;
     auto y = 0.f;
@@ -686,6 +715,113 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & raw
     }
 
     return frame;
+}
+
+void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData * bone, SlotData * slot) const
+{
+    const auto& actionsObject = rawData[ACTION];
+
+    if (actionsObject.IsString())
+    {
+        const auto actionData = BaseObject::borrowObject<ActionData>();
+        actionData->type = ActionType::FadeIn;
+        // actionData->params = [actionsObject];
+        actionData->bone = bone;
+        actionData->slot = slot;
+        actions.push_back(actionData);
+    }
+    else if (actionsObject.IsArray())
+    {
+        for (const auto& actionObject : actionsObject.GetArray())
+        {
+            const auto actionData = BaseObject::borrowObject<ActionData>();
+            const auto& actionType = actionObject[0];
+            if (actionType.IsString())
+            {
+                actionData->type = _getActionType(actionType.GetString());
+            }
+            else
+            {
+                actionData->type = (ActionType)_getParameter(actionObject, 0, (int)ActionType::FadeIn);
+            }
+
+            switch (actionData->type)
+            {
+                case ActionType::Play:
+                    /*actionDataA.params = [
+                        _getParameter(actionObject, 1, null), // animationName
+                            _getParameter(actionObject, 2, -1), // playTimes
+                    ];*/
+                    break;
+
+                case ActionType::Stop:
+                    /*actionDataA.params = [
+                        _getParameter(actionObject, 1, null) // animation
+                    ];*/
+                    break;
+
+                case ActionType::GotoAndPlay:
+                    /*actionDataA.params = [
+                        _getParameter(actionObject, 1, null), // animationName
+                            _getParameter(actionObject, 2, 0), // time
+                            _getParameter(actionObject, 3, -1) // playTimes
+                    ];*/
+                    break;
+
+                case ActionType::GotoAndStop:
+                    /*actionDataA.params = [
+                        _getParameter(actionObject, 1, null), // animationName
+                            _getParameter(actionObject, 2, 0), // time
+                    ];*/
+                    break;
+
+                case ActionType::FadeIn:
+                    /*actionDataA.params = [
+                        _getParameter(actionObject, 1, null), // animationName
+                            _getParameter(actionObject, 2, -1), // playTimes
+                            _getParameter(actionObject, 3, 0) // fadeInTime
+                    ];*/
+                    break;
+
+                case ActionType::FadeOut:
+                    // TODO
+                    break;
+            }
+
+            actionData->bone = bone;
+            actionData->slot = slot;
+            actions.push_back(actionData);
+        }
+    }
+}
+
+void JSONDataParser::_parseEventData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData * bone, SlotData * slot) const
+{
+    if (rawData.HasMember(SOUND))
+    {
+        const auto eventData = BaseObject::borrowObject<EventData>();
+        eventData->type = EventType::Sound;
+        eventData->name = rawData[SOUND].GetString();
+        eventData->bone = bone;
+        eventData->slot = slot;
+        events.push_back(eventData);
+    }
+
+    if (rawData.HasMember(EVENT))
+    {
+        const auto eventData = BaseObject::borrowObject<EventData>();
+        eventData->type = EventType::Frame;
+        eventData->name = rawData[EVENT].GetString();
+        eventData->bone = bone;
+        eventData->slot = slot;
+
+        if (rawData.HasMember(DATA))
+        {
+            // eventData->data = rawData[DATA]; // TODO
+        }
+
+        events.push_back(eventData);
+    }
 }
 
 void JSONDataParser::_parseTransform(const rapidjson::Value& rawData, Transform& transform) const

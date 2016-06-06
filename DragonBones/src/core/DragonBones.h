@@ -1,30 +1,13 @@
 #ifndef DRAGONBONES_DRAGON_BONES_H
 #define DRAGONBONES_DRAGON_BONES_H
 
-/*
-#ifndef X_Y_Z_H
-#define X_Y_Z_H
-#include "../core/DragonBones.h"
-NAMESPACE_DRAGONBONES_BEGIN
-class xyz
-{
-BIND_CLASS_TYPE(xyz);
-    xyz() {}
-    ~xyz() {}
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(xyz);
-};
-
-NAMESPACE_DRAGONBONES_END
-#endif // X_Y_Z_H
-*/
-
 #include <algorithm>
 #include <cmath>
 #include <locale>
 #include <vector>
 #include <map>
 #include <functional>
+#include <sstream>
 //#include <cstdlib>
 #include <assert.h>
 
@@ -126,6 +109,14 @@ const float RADIAN_TO_ANGLE = 180.f / PI;
 const float SECOND_TO_MILLISECOND = 1000.f;
 const float SECOND_TO_MICROSECOND = 1000000.f;
 const float NO_TWEEN = 100.f;
+
+template <class T>
+std::string to_string(const T& value)
+{
+    std::ostringstream stream;
+    stream << value;
+    return stream.str();
+}
 
 template<class T>
 inline void clearVector(std::vector<T>& value)

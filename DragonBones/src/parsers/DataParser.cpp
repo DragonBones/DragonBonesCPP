@@ -91,7 +91,7 @@ const char* DataParser::KEY = "key";
 const char* DataParser::PIVOT_X = "pX";
 const char* DataParser::PIVOT_Y = "pY";
 
-TextureFormat DataParser::_getTextureFormat(const std::string & value)
+TextureFormat DataParser::_getTextureFormat(const std::string& value)
 {
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
@@ -128,7 +128,7 @@ TextureFormat DataParser::_getTextureFormat(const std::string & value)
     return TextureFormat::DEFAULT;
 }
 
-ArmatureType DataParser::_getArmatureType(const std::string & value)
+ArmatureType DataParser::_getArmatureType(const std::string& value)
 {
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
@@ -149,7 +149,7 @@ ArmatureType DataParser::_getArmatureType(const std::string & value)
     return ArmatureType::Armature;
 }
 
-DisplayType DataParser::_getDisplayType(const std::string & value)
+DisplayType DataParser::_getDisplayType(const std::string& value)
 {
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
@@ -170,7 +170,7 @@ DisplayType DataParser::_getDisplayType(const std::string & value)
     return DisplayType::Image;
 }
 
-BlendMode DataParser::_getBlendMode(const std::string & value)
+BlendMode DataParser::_getBlendMode(const std::string& value)
 {
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
@@ -179,48 +179,93 @@ BlendMode DataParser::_getBlendMode(const std::string & value)
     {
         return BlendMode::Normal;
     }
-    else if (lower == "armature")
+    else if (lower == "add")
     {
-        return BlendMode::Normal;
+        return BlendMode::Add;
     }
-    else if (lower == "mesh")
+    else if (lower == "alpha")
     {
-        return BlendMode::Normal;
+        return BlendMode::Alpha;
     }
-    else if (lower == "armature")
+    else if (lower == "darken")
     {
-        return BlendMode::Normal;
+        return BlendMode::Darken;
     }
-    else if (lower == "mesh")
+    else if (lower == "difference")
     {
-        return BlendMode::Normal;
+        return BlendMode::Difference;
     }
-    else if (lower == "armature")
+    else if (lower == "erase")
     {
-        return BlendMode::Normal;
+        return BlendMode::Erase;
     }
-    else if (lower == "mesh")
+    else if (lower == "hardlight")
     {
-        return BlendMode::Normal;
+        return BlendMode::HardLight;
     }
-    else if (lower == "armature")
+    else if (lower == "invert")
     {
-        return BlendMode::Normal;
+        return BlendMode::Invert;
     }
-    else if (lower == "mesh")
+    else if (lower == "layer")
     {
-        return BlendMode::Normal;
+        return BlendMode::Layer;
     }
-    else if (lower == "armature")
+    else if (lower == "lighten")
     {
-        return BlendMode::Normal;
+        return BlendMode::Lighten;
     }
-    else if (lower == "mesh")
+    else if (lower == "multiply")
     {
-        return BlendMode::Normal;
+        return BlendMode::Multiply;
+    }
+    else if (lower == "overlay")
+    {
+        return BlendMode::Overlay;
+    }
+    else if (lower == "screen")
+    {
+        return BlendMode::Screen;
+    }
+    else if (lower == "subtract")
+    {
+        return BlendMode::Subtract;
     }
 
     return BlendMode::Normal;
+}
+
+ActionType DataParser::_getActionType(const std::string& value)
+{
+    auto lower = value;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+    if (lower.empty() || lower == "fadeIn")
+    {
+        return ActionType::FadeIn;
+    }
+    else if (lower == "play")
+    {
+        return ActionType::Play;
+    }
+    else if (lower == "stop")
+    {
+        return ActionType::Stop;
+    }
+    else if (lower == "gotoandplay")
+    {
+        return ActionType::GotoAndPlay;
+    }
+    else if (lower == "gotoandstop")
+    {
+        return ActionType::GotoAndStop;
+    }
+    else if (lower == "fadeout")
+    {
+        return ActionType::FadeOut;
+    }
+
+    return ActionType::FadeIn;
 }
 
 DataParser::DataParser() :

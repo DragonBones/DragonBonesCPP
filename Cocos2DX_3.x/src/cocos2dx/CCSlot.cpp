@@ -32,7 +32,7 @@ void CCSlot::_onUpdateDisplay()
 
 void CCSlot::_addDisplay()
 {
-    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay());
+    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay()); //reinterpret_cast
     container->addChild(_renderDisplay);
 }
 
@@ -114,7 +114,7 @@ void CCSlot::_updateFilters()
 
 void CCSlot::_updateFrame()
 {
-    const auto frameDisplay = static_cast<cocos2d::Sprite*>(this->_rawDisplay);
+    const auto frameDisplay = static_cast<cocos2d::Sprite*>(_renderDisplay);
     const unsigned displayIndex = this->_displayIndex;
 
     if (this->_display && displayIndex >= 0 && displayIndex < this->_displayDataSet->displays.size())
@@ -151,7 +151,7 @@ void CCSlot::_updateFrame()
             {
                 const auto& offset = textureData->texture->getRect().origin;
                 const auto& textureSize = textureData->texture->getTexture()->getContentSize();
-                auto displayVertices = new cocos2d::V3F_C4B_T2F[this->_meshData->uvs.size()];
+                auto displayVertices = new cocos2d::V3F_C4B_T2F[this->_meshData->uvs.size() / 2];
                 auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()];
 
                 for (std::size_t i = 0, l = this->_meshData->uvs.size(); i < l; i += 2)
@@ -175,10 +175,12 @@ void CCSlot::_updateFrame()
                 triangles.verts = displayVertices;
                 triangles.indices = vertexIndices;
                 triangles.vertCount = unsigned(this->_meshData->uvs.size() / 2);
-                triangles.indexCount = unsigned(this->_meshData->vertexIndices.size() / 3);
+                triangles.indexCount = unsigned(this->_meshData->vertexIndices.size());
                 polygonInfo.rect.setRect(0.f, 0.f, width, height);
-                frameDisplay->setPolygonInfo(polygonInfo);
+
+                auto has = textureData->texture->hasPolygonInfo();
                 frameDisplay->setSpriteFrame(textureData->texture);
+                frameDisplay->setPolygonInfo(polygonInfo);
                 frameDisplay->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));
 
                 if (this->_meshData->skinned)
@@ -220,6 +222,8 @@ void CCSlot::_updateFrame()
                     pivot.x = pivot.x / textureData->region.width;
                     pivot.y = 1.f - pivot.y / textureData->region.height;
                 }
+
+                auto has = textureData->texture->hasPolygonInfo();
 
                 frameDisplay->setSpriteFrame(textureData->texture);
                 frameDisplay->setAnchorPoint(pivot);
@@ -292,10 +296,13 @@ void CCSlot::_updateMesh()
         for (std::size_t i = 0, l = this->_meshData->vertices.size(); i < l; i += 2)
         {
             const auto iH = unsigned(i / 2);
-            const auto xG = vertices[i];
-            const auto yG = vertices[i + 1];
-
-			displayVertices[iH].vertices.set(xG + width * 0.5f, height * 0.5f - yG, 0.f);
+            const auto xG = vertices[i] + _ffdVertices[i];
+            const auto yG = vertices[i + 1] + _ffdVertices[i + 1];
+            auto& vertices = displayVertices[iH];
+            auto& vertex = vertices.vertices;
+            vertex.set(xG + width * 0.5f, height * 0.5f - yG, 0.f);
+            bool test = false;
+            test = true;
         }
     }
 }

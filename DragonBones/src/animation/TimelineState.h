@@ -24,7 +24,6 @@ private:
 
 protected:
     void _onClear() override;
-    void _onCrossFrame(AnimationFrameData* frame) override;
 
 public:
     void update(int time) override;
@@ -73,8 +72,10 @@ public:
     Slot* slot;
 
 private:
+    bool _colorDirty;
     TweenType _tweenColor;
     ColorTransform* _slotColor;
+    ColorTransform _color;
     ColorTransform _durationColor;
 
 public:
@@ -104,8 +105,9 @@ public:
 
 private:
     TweenType _tweenFFD;
-    std::vector<float>* _ffdVertices;
+    std::vector<float>* _slotFFDVertices;
     ExtensionFrameData* _durationFFDFrame;
+    std::vector<float> _ffdVertices;
 
 public:
     FFDTimelineState();
@@ -121,7 +123,6 @@ protected:
     void _onUpdateFrame(bool isUpdate) override;
 
 public:
-    void fadeOut() override;
     void update(int time) override;
 };
 

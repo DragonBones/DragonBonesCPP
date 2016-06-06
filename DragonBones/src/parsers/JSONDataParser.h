@@ -52,7 +52,7 @@ protected:
         if (rawData.HasMember(key))
         {
             const auto& value = rawData[key];
-            return value.IsNull() ? defaultValue : value.GetDouble();
+            return value.IsNull() ? defaultValue : value.GetFloat();
         }
 
         return defaultValue;
@@ -63,6 +63,36 @@ protected:
         if (rawData.HasMember(key))
         {
             return rawData[key].GetString();
+        }
+
+        return defaultValue;
+    }
+
+    inline static const int _getParameter(const rapidjson::Value& rawData, std::size_t index, int defaultValue)
+    {
+        if (rawData.Size() > index)
+        {
+            return rawData[index].GetInt();
+        }
+
+        return defaultValue;
+    }
+
+    inline static const float _getParameter(const rapidjson::Value& rawData, std::size_t index, float defaultValue)
+    {
+        if (rawData.Size() > index)
+        {
+            return rawData[index].GetFloat();
+        }
+
+        return defaultValue;
+    }
+
+    inline static const char* _getParameter(const rapidjson::Value& rawData, std::size_t index, char* defaultValue)
+    {
+        if (rawData.Size() > index)
+        {
+            return rawData[index].GetString();
         }
 
         return defaultValue;
@@ -92,6 +122,8 @@ protected:
     virtual BoneFrameData* _parseBoneFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual SlotFrameData* _parseSlotFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual ExtensionFrameData* _parseFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual void _parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData* bone, SlotData* slot) const;
+    virtual void _parseEventData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const;
 
     template<class T>
     void _parseTweenFrame(const rapidjson::Value& rawData, TweenFrameData<T>& frame, unsigned frameStart, unsigned frameCount) const

@@ -1,5 +1,6 @@
 #include "TimelineState.h"
 #include "AnimationState.h"
+#include "../armature/Armature.h"
 #include "../armature/Bone.h"
 #include "../armature/Slot.h"
 
@@ -19,13 +20,36 @@ void AnimationTimelineState::_onClear()
     _isStarted = false;
 }
 
-void AnimationTimelineState::_onCrossFrame(AnimationFrameData* frame)
-{
-}
-
 void AnimationTimelineState::update(int time)
 {
+    const auto prevPlayTimes = this->_currentPlayTimes;
+
     TimelineState::update(time);
+
+    const auto eventDispatcher = this->_armature->getDisplay();
+
+    if (!_isStarted && this->_currentTime > 0)
+    {
+        _isStarted = true;
+
+        if (eventDispatcher->hasEvent(EventObject::START))
+        {
+            const auto eventObject = BaseObject::borrowObject<EventObject>();
+            eventObject->animationState = this->_animationState;
+            this->_armature->_bufferEvent(eventObject, EventObject::START);
+        }
+    }
+
+    if (prevPlayTimes != this->_currentPlayTimes)
+    {
+        const auto eventType = _isCompleted ? EventObject::COMPLETE : EventObject::LOOP_COMPLETE;
+        if (eventDispatcher->hasEvent(eventType))
+        {
+            const auto eventObject = BaseObject::borrowObject<EventObject>();
+            eventObject->animationState = this->_animationState;
+            this->_armature->_bufferEvent(eventObject, eventType);
+        }
+    }
 }
 
 BoneTimelineState::BoneTimelineState() 
@@ -264,8 +288,10 @@ void SlotTimelineState::_onClear()
 
     slot = nullptr;
 
+    _colorDirty = false;
     _tweenColor = TweenType::None;
     _slotColor = nullptr;
+    _color.identity();
     _durationColor.identity();
 }
 
@@ -341,29 +367,30 @@ void SlotTimelineState::_onArriveAtFrame(bool isUpdate)
             }
         }
 
-        if (_tweenColor == TweenType::None &&
-            (
-                currentColor.alphaMultiplier - _slotColor->alphaMultiplier != 0.f ||
-                currentColor.redMultiplier - _slotColor->redMultiplier != 0.f ||
-                currentColor.greenMultiplier - _slotColor->greenMultiplier != 0.f ||
-                currentColor.blueMultiplier - _slotColor->blueMultiplier != 0.f ||
-                currentColor.alphaOffset - _slotColor->alphaOffset != 0.f ||
-                currentColor.redOffset - _slotColor->redOffset != 0.f ||
-                currentColor.greenOffset - _slotColor->greenOffset != 0.f ||
-                currentColor.blueOffset - _slotColor->blueOffset != 0.f
-                )
-            )
+        if (_tweenColor == TweenType::None)
         {
-            _tweenColor = TweenType::Once;
+            _durationColor.alphaMultiplier = currentColor.alphaMultiplier - _slotColor->alphaMultiplier;
+            _durationColor.redMultiplier = currentColor.redMultiplier - _slotColor->redMultiplier;
+            _durationColor.greenMultiplier = currentColor.greenMultiplier - _slotColor->greenMultiplier;
+            _durationColor.blueMultiplier = currentColor.blueMultiplier - _slotColor->blueMultiplier;
+            _durationColor.alphaOffset = currentColor.alphaOffset - _slotColor->alphaOffset;
+            _durationColor.redOffset = currentColor.redOffset - _slotColor->redOffset;
+            _durationColor.greenOffset = currentColor.greenOffset - _slotColor->greenOffset;
+            _durationColor.blueOffset = currentColor.blueOffset - _slotColor->blueOffset;
 
-            _durationColor.alphaMultiplier = 0.f;
-            _durationColor.redMultiplier = 0.f;
-            _durationColor.greenMultiplier = 0.f;
-            _durationColor.blueMultiplier = 0.f;
-            _durationColor.alphaOffset = 0.f;
-            _durationColor.redOffset = 0.f;
-            _durationColor.greenOffset = 0.f;
-            _durationColor.blueOffset = 0.f;
+            if (
+                _durationColor.alphaMultiplier != 0.f ||
+                _durationColor.redMultiplier != 0.f ||
+                _durationColor.greenMultiplier != 0.f ||
+                _durationColor.blueMultiplier != 0.f ||
+                _durationColor.alphaOffset != 0.f ||
+                _durationColor.redOffset != 0.f ||
+                _durationColor.greenOffset != 0.f ||
+                _durationColor.blueOffset != 0.f
+                )
+            {
+                _tweenColor = TweenType::Once;
+            }
         }
     }
     else
@@ -378,7 +405,7 @@ void SlotTimelineState::_onUpdateFrame(bool isUpdate)
 {
     TweenTimelineState::_onUpdateFrame(isUpdate);
 
-    if (_tweenColor != TweenType::None && this->_animationState->_fadeProgress >= 1.f)
+    if (_tweenColor != TweenType::None)
     {
         if (_tweenColor == TweenType::Once)
         {
@@ -386,16 +413,16 @@ void SlotTimelineState::_onUpdateFrame(bool isUpdate)
         }
 
         const auto& currentColor = *this->_currentFrame->color;
-        _slotColor->alphaMultiplier = currentColor.alphaMultiplier + _durationColor.alphaMultiplier * this->_tweenProgress;
-        _slotColor->redMultiplier = currentColor.redMultiplier + _durationColor.redMultiplier * this->_tweenProgress;
-        _slotColor->greenMultiplier = currentColor.greenMultiplier + _durationColor.greenMultiplier * this->_tweenProgress;
-        _slotColor->blueMultiplier = currentColor.blueMultiplier + _durationColor.blueMultiplier * this->_tweenProgress;
-        _slotColor->alphaOffset = currentColor.alphaOffset + _durationColor.alphaOffset * this->_tweenProgress;
-        _slotColor->redOffset = currentColor.redOffset + _durationColor.redOffset * this->_tweenProgress;
-        _slotColor->greenOffset = currentColor.greenOffset + _durationColor.greenOffset * this->_tweenProgress;
-        _slotColor->blueOffset = currentColor.blueOffset + _durationColor.blueOffset * this->_tweenProgress;
+        _color.alphaMultiplier = currentColor.alphaMultiplier + _durationColor.alphaMultiplier * this->_tweenProgress;
+        _color.redMultiplier = currentColor.redMultiplier + _durationColor.redMultiplier * this->_tweenProgress;
+        _color.greenMultiplier = currentColor.greenMultiplier + _durationColor.greenMultiplier * this->_tweenProgress;
+        _color.blueMultiplier = currentColor.blueMultiplier + _durationColor.blueMultiplier * this->_tweenProgress;
+        _color.alphaOffset = currentColor.alphaOffset + _durationColor.alphaOffset * this->_tweenProgress;
+        _color.redOffset = currentColor.redOffset + _durationColor.redOffset * this->_tweenProgress;
+        _color.greenOffset = currentColor.greenOffset + _durationColor.greenOffset * this->_tweenProgress;
+        _color.blueOffset = currentColor.blueOffset + _durationColor.blueOffset * this->_tweenProgress;
 
-        slot->_colorDirty = true;
+        _colorDirty = true;
     }
 }
 
@@ -408,7 +435,7 @@ void SlotTimelineState::update(int time)
 {
     TweenTimelineState::update(time);
 
-    if (_tweenColor != TweenType::None)
+    if (_tweenColor != TweenType::None || _colorDirty)
     {
         const auto weight = this->_animationState->_weightResult;
         if (weight > 0.f)
@@ -417,15 +444,29 @@ void SlotTimelineState::update(int time)
             if (fadeProgress < 1.f)
             {
                 const auto& currentColor = *this->_currentFrame->color;
-                _slotColor->alphaMultiplier += (currentColor.alphaMultiplier + _durationColor.alphaMultiplier * this->_tweenProgress - _slotColor->alphaMultiplier) * fadeProgress;
-                _slotColor->redMultiplier += (currentColor.redMultiplier + _durationColor.redMultiplier * this->_tweenProgress - _slotColor->redMultiplier) * fadeProgress;
-                _slotColor->greenMultiplier += (currentColor.greenMultiplier + _durationColor.greenMultiplier * this->_tweenProgress - _slotColor->greenMultiplier) * fadeProgress;
-                _slotColor->blueMultiplier += (currentColor.blueMultiplier + _durationColor.blueMultiplier * this->_tweenProgress - _slotColor->blueMultiplier) * fadeProgress;
-                _slotColor->alphaOffset += (currentColor.alphaOffset + _durationColor.alphaOffset * this->_tweenProgress - _slotColor->alphaOffset) * fadeProgress;
-                _slotColor->redOffset += (currentColor.redOffset + _durationColor.redOffset * this->_tweenProgress - _slotColor->redOffset) * fadeProgress;
-                _slotColor->greenOffset += (currentColor.greenOffset + _durationColor.greenOffset * this->_tweenProgress - _slotColor->greenOffset) * fadeProgress;
-                _slotColor->blueOffset += (currentColor.blueOffset + _durationColor.blueOffset * this->_tweenProgress - _slotColor->blueOffset) * fadeProgress;
+                _slotColor->alphaMultiplier += (_color.alphaMultiplier - _slotColor->alphaMultiplier) * fadeProgress;
+                _slotColor->redMultiplier += (_color.alphaMultiplier - _slotColor->redMultiplier) * fadeProgress;
+                _slotColor->greenMultiplier += (_color.alphaMultiplier - _slotColor->greenMultiplier) * fadeProgress;
+                _slotColor->blueMultiplier += (_color.alphaMultiplier - _slotColor->blueMultiplier) * fadeProgress;
+                _slotColor->alphaOffset += (_color.alphaMultiplier - _slotColor->alphaOffset) * fadeProgress;
+                _slotColor->redOffset += (_color.alphaMultiplier - _slotColor->redOffset) * fadeProgress;
+                _slotColor->greenOffset += (_color.alphaMultiplier - _slotColor->greenOffset) * fadeProgress;
+                _slotColor->blueOffset += (_color.alphaMultiplier - _slotColor->blueOffset) * fadeProgress;
                 
+                slot->_colorDirty = true;
+            }
+            else if (_colorDirty)
+            {
+                _colorDirty = false;
+                _slotColor->alphaMultiplier = _color.alphaMultiplier;
+                _slotColor->redMultiplier = _color.redMultiplier;
+                _slotColor->greenMultiplier = _color.greenMultiplier;
+                _slotColor->blueMultiplier = _color.blueMultiplier;
+                _slotColor->alphaOffset = _color.alphaOffset;
+                _slotColor->redOffset = _color.redOffset;
+                _slotColor->greenOffset = _color.greenOffset;
+                _slotColor->blueOffset = _color.blueOffset;
+
                 slot->_colorDirty = true;
             }
         }
@@ -449,24 +490,24 @@ void FFDTimelineState::_onClear()
     slot = nullptr;
 
     _tweenFFD = TweenType::None;
-    _ffdVertices = nullptr;
+    _slotFFDVertices = nullptr;
 
     if (_durationFFDFrame)
     {
         _durationFFDFrame->returnToPool();
         _durationFFDFrame = nullptr;
     }
+
+    clearVector(_ffdVertices);
 }
 
 void FFDTimelineState::_onFadeIn()
 {
-    _ffdVertices = &slot->_ffdVertices;
+    _slotFFDVertices = &slot->_ffdVertices;
 
     _durationFFDFrame = BaseObject::borrowObject<ExtensionFrameData>();
-    if (_durationFFDFrame->tweens.size() != _ffdVertices->size())
-    {
-        _durationFFDFrame->tweens.resize(_ffdVertices->size(), 0.f);
-    }
+    _durationFFDFrame->tweens.resize(_slotFFDVertices->size(), 0.f);
+    _ffdVertices.resize(_slotFFDVertices->size(), 0.f);
 }
 
 void FFDTimelineState::_onArriveAtFrame(bool isUpdate)
@@ -493,7 +534,7 @@ void FFDTimelineState::_onArriveAtFrame(bool isUpdate)
         const auto& currentFFDVertices = this->_currentFrame->tweens;
         for (std::size_t i = 0, l = currentFFDVertices.size(); i < l; ++i)
         {
-            if ((*_ffdVertices)[i] != currentFFDVertices[i])
+            if ((*_slotFFDVertices)[i] != currentFFDVertices[i])
             {
                 _tweenFFD = TweenType::Once;
                 break;
@@ -517,38 +558,39 @@ void FFDTimelineState::_onUpdateFrame(bool isUpdate)
         const auto& nextFFDVertices = _durationFFDFrame->tweens;
         for (std::size_t i = 0, l = currentFFDVertices.size(); i < l; ++i)
         {
-            (*_ffdVertices)[i] = currentFFDVertices[i] + nextFFDVertices[i] * this->_tweenProgress;
+            _ffdVertices[i] = currentFFDVertices[i] + nextFFDVertices[i] * this->_tweenProgress;
         }
 
         slot->_ffdDirty = true;
     }
 }
 
-void FFDTimelineState::fadeOut()
-{
-    _tweenFFD = TweenType::None;
-}
-
 void FFDTimelineState::update(int time)
 {
     TweenTimelineState::update(time);
 
-    if (_tweenFFD != TweenType::None)
+    const auto weight = this->_animationState->_weightResult;
+    if (weight > 0.f)
     {
-        const auto weight = this->_animationState->_weightResult;
-        if (weight > 0.f)
+        if (this->_animationState->_index <= 1)
         {
-            const auto fadeProgress = this->_animationState->_fadeProgress;
-            if (fadeProgress < 1.f)
+            for (std::size_t i = 0, l = _ffdVertices.size(); i < l; ++i)
             {
-                const auto& currentFFD = this->_currentFrame->tweens;
-                for (std::size_t i = 0, l = currentFFD.size(); i < l; ++i)
-                {
-                    (*_ffdVertices)[i] += (currentFFD[i] + _durationFFDFrame->tweens[i] * this->_tweenProgress - _ffdVertices->at(i)) * fadeProgress;
-                }
-
-                slot->_ffdDirty = true;
+                (*_slotFFDVertices)[i] = _ffdVertices[i] * weight;
             }
+        }
+        else
+        {
+            for (std::size_t i = 0, l = _ffdVertices.size(); i < l; ++i)
+            {
+                (*_slotFFDVertices)[i] += _ffdVertices[i] * weight;
+            }
+        }
+
+        const auto fadeProgress = this->_animationState->_fadeProgress;
+        if (fadeProgress < 1.f)
+        {
+            slot->_ffdDirty = true;
         }
     }
 }

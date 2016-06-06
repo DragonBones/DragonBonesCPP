@@ -11,6 +11,7 @@ class AnimationData final : public TimelineData<AnimationFrameData>
 
 public:
     bool hasAsynchronyTimeline;
+    bool hasBoneTimelineEvent;
     unsigned frameCount;
     unsigned playTimes;
     unsigned position;
@@ -59,7 +60,7 @@ public:
             if (iteratorSlot != skin.end())
             {
                 const auto& slot = iteratorSlot->second;
-                return mapFind(slot, std::to_string(displayIndex));
+                return mapFind(slot, to_string(displayIndex)); // std::to_string
             }
         }
 

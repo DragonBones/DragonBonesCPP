@@ -17,7 +17,7 @@ class EventData final : public BaseObject
 public:
     EventType type;
     std::string name;
-    //void* data;
+    //void* data; //TODO
     BoneData* bone;
     SlotData* slot;
 
@@ -37,7 +37,7 @@ class ActionData final : public BaseObject
 
 public:
     ActionType type;
-    //params;
+    //params; // TODO
     BoneData* bone;
     SlotData* slot;
 
@@ -60,6 +60,9 @@ public:
     T* prev;
     T* next;
 
+    std::vector<ActionData*> actions;
+    std::vector<EventData*> events;
+
     FrameData() {}
     virtual ~FrameData() {}
 
@@ -70,6 +73,19 @@ protected:
         duration = 0;
         prev = nullptr;
         next = nullptr;
+
+        for (const auto action : actions)
+        {
+            action->returnToPool();
+        }
+
+        for (const auto event : events)
+        {
+            event->returnToPool();
+        }
+
+        actions.clear();
+        events.clear();
     }
 };
 
@@ -143,9 +159,6 @@ class AnimationFrameData final : public FrameData<AnimationFrameData>
     BIND_CLASS_TYPE(AnimationFrameData);
 
 public:
-    std::vector<ActionData*> actions;
-    std::vector<EventData*> events;
-
     AnimationFrameData();
     ~AnimationFrameData();
 
