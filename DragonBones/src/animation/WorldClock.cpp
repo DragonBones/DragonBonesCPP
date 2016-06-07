@@ -1,6 +1,6 @@
 #include "WorldClock.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 WorldClock WorldClock::clock;
 
@@ -107,4 +107,4 @@ void WorldClock::advanceTime(float passedTime)
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

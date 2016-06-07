@@ -3,7 +3,7 @@
 #include "CCArmatureDisplayContainer.h"
 #include "CCSlot.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 CCFactory::CCFactory() 
 {
@@ -105,11 +105,6 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
     return slot;
 }
 
-void * CCFactory::_generateDisplay(const BuildArmaturePackage& dataPackage, const DisplayData& displayData, const DisplayData& rawDisplayData) const
-{
-    return nullptr;
-}
-
 DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, const std::string& dragonBonesName)
 {
     if (!dragonBonesName.empty())
@@ -128,7 +123,7 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
         return nullptr;
     }
 
-    //const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor();
+    //const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor(); // TODO
 
     return parseDragonBonesData(data.c_str(), dragonBonesName);
 }
@@ -198,4 +193,4 @@ TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, c
     return textureAtlasData;
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

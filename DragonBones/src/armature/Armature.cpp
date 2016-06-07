@@ -4,7 +4,9 @@
 #include "../animation/Animation.h"
 #include "../events/EventObject.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
+
+IEventDispatcher* Armature::soundEventManager = nullptr;
 
 Armature::Armature() :
     _animation(nullptr)
@@ -32,6 +34,7 @@ void Armature::_onClear()
     }
 
     _display = nullptr;
+    _replaceTexture = nullptr;
     _parent = nullptr;
 
     _delayDispose = false;
@@ -82,15 +85,16 @@ void Armature::_sortBones()
         if (bone->getIK() && bone->getIKChain() > 0 && bone->getIKChainIndex() == bone->getIKChain())
         {
             auto parentInerator = std::find(_bones.begin(), _bones.end(), bone->getParent());
-            _bones.insert(parentInerator++, bone);
+            _bones.insert(parentInerator + 1, bone);
             count++;
         }
         else
         {
             _bones[count++] = bone;
         }
-
     }
+
+    _bones.resize(total);
 }
 
 void Armature::_sortSlots()
@@ -196,14 +200,14 @@ void Armature::advanceTime(float passedTime)
 
         for (const auto event : _events)
         {
-            /*if (Armature::soundEventManager && event->type == EventObject::SOUND_EVENT)
+            if (Armature::soundEventManager && event->type == EventObject::SOUND_EVENT)
             {
                 Armature::soundEventManager->_dispatchEvent(event);
             }
             else
             {
-                _display._dispatchEvent(event);
-            }*/
+                _display->_dispatchEvent(event);
+            }
 
             event->returnToPool();
         }
@@ -347,7 +351,7 @@ void Armature::setCacheFrameRate(unsigned value)
         return;
     }
 
-    _armatureData->cacheFrame(value);
+    _armatureData->cacheFrames(value);
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

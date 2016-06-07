@@ -3,21 +3,25 @@
 
 #include "../core/DragonBones.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class EventObject;
 
 class IEventDispatcher 
 {
 public:
+    /** @private */
     IEventDispatcher() {};
+    /** @private */
     virtual ~IEventDispatcher() {};
 
+    /** @private */
     virtual void _dispatchEvent(EventObject* value) = 0;
+
     virtual bool hasEvent(const std::string& type) const = 0;
     virtual void addEvent(const std::string& type) = 0;
     virtual void removeEvent(const std::string& type) = 0;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_I_EVENT_DISPATCHER_H

@@ -4,7 +4,7 @@
 #include "../core/DragonBones.h"
 #include "Matrix.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Transform final
 {
@@ -94,13 +94,23 @@ public:
         x = matrix.tx;
         y = matrix.ty;
 
-        skewX = atan(-matrix.c / matrix.d);
-        skewY = atan(matrix.b / matrix.a);
-        if (skewX != skewX) skewX = 0.f;
-        if (skewY != skewY) skewY = 0.f;
+        skewX = std::atan2(-matrix.c, matrix.d);
+        skewY = std::atan2(matrix.b, matrix.a);
         
         scaleY = (skewX > -PI_Q && skewX < PI_Q)? matrix.d / cos(skewX): -matrix.c / sin(skewX);
         scaleX = (skewY > -PI_Q && skewY < PI_Q)? matrix.a / cos(skewY):  matrix.b / sin(skewY);
+
+        if (scaleX < 0.f)
+        {
+            scaleX = -scaleX;
+            skewY = skewY - PI;
+        }
+
+        if (scaleY < 0.f)
+        {
+            scaleY = -scaleY;
+            skewX = skewX - PI;
+        }
 
         return *this;
     }
@@ -128,5 +138,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_TRANSFORM_H

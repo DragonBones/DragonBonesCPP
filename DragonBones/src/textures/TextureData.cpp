@@ -1,8 +1,8 @@
 #include "TextureData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
-Rectangle * TextureData::generateRectangle()
+Rectangle* TextureData::generateRectangle()
 {
     return new Rectangle();
 }
@@ -55,8 +55,8 @@ void TextureAtlasData::addTexture(TextureData * value)
     }
     else
     {
-        // throw new Error();
+        DRAGONBONES_ASSERT(true, "Arguments error");
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

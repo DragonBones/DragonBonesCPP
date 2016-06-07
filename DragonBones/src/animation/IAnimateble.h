@@ -3,7 +3,7 @@
 
 #include "../core/DragonBones.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class IAnimateble
 {
@@ -14,5 +14,5 @@ public:
     virtual void advanceTime(float passedTime) = 0;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_ANIMATEBLE_H

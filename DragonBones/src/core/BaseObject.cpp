@@ -1,5 +1,5 @@
 #include "BaseObject.h"
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 std::size_t BaseObject::_hashCode = 0;
 std::size_t BaseObject::_defaultMaxCount = 5000;
@@ -127,4 +127,4 @@ void BaseObject::_returnObject(BaseObject* object)
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

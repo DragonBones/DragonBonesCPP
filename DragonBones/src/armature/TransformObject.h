@@ -5,7 +5,7 @@
 #include "../geom/Matrix.h"
 #include "../geom/Transform.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Armature;
 class Bone;
@@ -22,14 +22,18 @@ public:
     Transform offset;
 
 public:
+    /** @private */
     Armature* _armature;
+    /** @private */
     Bone* _parent;
 
 protected:
     Matrix _globalTransformMatrix;
 
 public:
+    /** @private */
     TransformObject() {}
+    /** @private */
     virtual ~TransformObject() {};
 
 protected:
@@ -48,11 +52,13 @@ protected:
     }
 
 public:
+    /** @private */
     virtual void _setArmature(Armature* value)
     {
         _armature = value;
     }
 
+    /** @private */
     virtual void _setParent(Bone* value)
     {
         _parent = value;
@@ -70,5 +76,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_TRANSFORM_OBJECT_H

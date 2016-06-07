@@ -1,6 +1,6 @@
 #include "DragonBonesData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 DragonBonesData::DragonBonesData()
 {
@@ -33,8 +33,8 @@ void DragonBonesData::addArmature(ArmatureData * value)
     }
     else
     {
-        //throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

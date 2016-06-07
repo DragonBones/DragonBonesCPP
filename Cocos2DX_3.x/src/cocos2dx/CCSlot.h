@@ -6,7 +6,7 @@
 #include "CCArmatureDisplayContainer.h"
 #include "cocos2d.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 class CCSlot : public Slot
 {
     BIND_CLASS_TYPE(CCSlot);
@@ -42,5 +42,5 @@ public:
     virtual void _updateBlendMode() override;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_CC_SLOT_H

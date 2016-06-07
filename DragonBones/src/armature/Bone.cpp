@@ -3,7 +3,7 @@
 #include "Slot.h"
 #include "../model/TimelineData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 Bone::Bone()
 {
@@ -18,11 +18,11 @@ void Bone::_onClear()
 {
     TransformObject::_onClear();
 
-    inheritTranslation = true;
-    inheritRotation = true;
-    inheritScale = true;
-    ikBendPositive = true;
-    ikWeight = 1.f;
+    inheritTranslation = false;
+    inheritRotation = false;
+    inheritScale = false;
+    ikBendPositive = false;
+    ikWeight = 0.f;
     length = 0.f;
 
     _transformDirty = BoneTransformDirty::All;
@@ -89,8 +89,99 @@ void Bone::_updateGlobalTransformMatrix()
     }
 }
 
-void Bone::_computeIK()
+void Bone::_computeIKA()
 {
+    const auto& ikGlobal = _ik->global;
+    const auto x = this->globalTransformMatrix->a * length;
+    const auto y = this->globalTransformMatrix->b * length;
+
+    const auto ikRadian =
+        (
+            std::atan2(ikGlobal.y - this->global.y, ikGlobal.x - this->global.x) + 
+            this->offset.skewY -
+            this->global.skewY * 2.f + 
+            std::atan2(y, x)
+        ) * ikWeight;
+
+    this->global.skewX += ikRadian;
+    this->global.skewY += ikRadian;
+    this->global.toMatrix(*this->globalTransformMatrix);
+}
+
+void Bone::_computeIKB()
+{
+    auto& parentGlobal = this->_parent->global;
+    const auto& ikGlobal = _ik->global;
+
+    const auto x = this->globalTransformMatrix->a * length;
+    const auto y = this->globalTransformMatrix->b * length;
+
+    const auto lLL = x * x + y * y;
+    const auto lL = std::sqrt(lLL);
+
+    auto dX = this->global.x - parentGlobal.x;
+    auto dY = this->global.y - parentGlobal.y;
+    const auto lPP = dX * dX + dY * dY;
+    const auto lP = std::sqrt(lPP);
+
+    dX = ikGlobal.x - parentGlobal.x;
+    dY = ikGlobal.y - parentGlobal.y;
+    const auto lTT = dX * dX + dY * dY;
+    const auto lT = std::sqrt(lTT);
+
+    auto ikRadianA = 0.f;
+    if (lL + lP <= lT || lT + lL <= lP || lT + lP <= lL)
+    {
+        ikRadianA = std::atan2(ikGlobal.y - parentGlobal.y, ikGlobal.x - parentGlobal.x) + this->_parent->offset.skewY;
+        if (lL + lP <= lT)
+        {
+        }
+        else if (lP < lL)
+        {
+            ikRadianA += PI;
+        }
+    }
+    else
+    {
+        const auto h = (lPP - lLL + lTT) / (2.f * lTT);
+        const auto r = std::sqrt(lPP - h * h * lTT) / lT;
+        const auto hX = parentGlobal.x + (dX * h);
+        const auto hY = parentGlobal.y + (dY * h);
+        const auto rX = -dY * r;
+        const auto rY = dX * r;
+
+        if (ikBendPositive)
+        {
+            this->global.x = hX - rX;
+            this->global.y = hY - rY;
+        }
+        else
+        {
+            this->global.x = hX + rX;
+            this->global.y = hY + rY;
+        }
+
+        ikRadianA = std::atan2(this->global.y - parentGlobal.y, this->global.x - parentGlobal.x) + this->_parent->offset.skewY;
+    }
+
+    ikRadianA = (ikRadianA - parentGlobal.skewY) * ikWeight;
+    parentGlobal.skewX += ikRadianA;
+    parentGlobal.skewY += ikRadianA;
+    this->global.x = parentGlobal.x + std::cos(parentGlobal.skewY) * lP;
+    this->global.y = parentGlobal.y + std::sin(parentGlobal.skewY) * lP;
+    parentGlobal.toMatrix(*this->_parent->globalTransformMatrix);
+
+    const auto ikRadianB =
+        (
+            std::atan2(ikGlobal.y - this->global.y, ikGlobal.x - this->global.x) + 
+            this->offset.skewY -
+            this->global.skewY * 2.f +
+            std::atan2(y, x)
+        ) * ikWeight;
+
+    this->global.skewX += ikRadianB;
+    this->global.skewY += ikRadianB;
+    this->global.toMatrix(*this->globalTransformMatrix);
 }
 
 void Bone::_setArmature(Armature* value)
@@ -237,9 +328,16 @@ void Bone::_update(int cacheFrameIndex)
 
             _updateGlobalTransformMatrix();
 
-            if (_ik && ikWeight)
+            if (_ik && _ikChainIndex == _ikChain  && ikWeight > 0.f)
             {
-                _computeIK();
+                if (this->inheritTranslation && _ikChain > 0 && this->_parent)
+                {
+                    _computeIKB();
+                }
+                else
+                {
+                    _computeIKA();
+                }
             }
 
             if (cacheFrameIndex >= 0)
@@ -290,4 +388,4 @@ void Bone::setVisible(bool value)
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

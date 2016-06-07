@@ -1,6 +1,6 @@
 #include "ArmatureData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 BoneData::BoneData()
 {
@@ -126,15 +126,12 @@ void SlotDisplayDataSet::_onClear()
 {
     slot = nullptr;
 
-    if (!displays.empty())
+    for (const auto displayData : displays)
     {
-        for (const auto displayData : displays)
-        {
-            displayData->returnToPool();
-        }
-
-        displays.clear();
+        displayData->returnToPool();
     }
+
+    displays.clear();
 }
 
 SkinData::SkinData() 
@@ -166,7 +163,7 @@ void SkinData::addSlot(SlotDisplayDataSet* value)
     }
     else
     {
-        //throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -268,7 +265,7 @@ void ArmatureData::_sortBones()
         if (bone->ik && bone->chain > 0 && bone->chainIndex == bone->chain)
         {
             auto parentInerator = std::find(_sortedBones.begin(), _sortedBones.end(), bone->parent);
-            _sortedBones.insert(parentInerator++, bone);
+            _sortedBones.insert(parentInerator + 1, bone);
             count++;
         }
         else
@@ -291,7 +288,7 @@ void ArmatureData::_sortSlots()
     copy.swap(_sortedSlots);
 }
 
-void ArmatureData::cacheFrame(unsigned value)
+void ArmatureData::cacheFrames(unsigned value)
 {
     if (cacheFrameRate == value)
     {
@@ -303,7 +300,7 @@ void ArmatureData::cacheFrame(unsigned value)
     const auto frameScale = (float)cacheFrameRate / frameRate;
     for (const auto& pair : animations)
     {
-        pair.second->cacheFrame(frameScale);
+        pair.second->cacheFrames(frameScale);
     }
 }
 
@@ -320,7 +317,6 @@ void ArmatureData::addBone(BoneData* value, const std::string& parentName)
             }
             else
             {
-                //std::make_pair(_bonesChildren, parentName);
                 auto& children = _bonesChildren[parentName];
                 children.push_back(value);
             }
@@ -343,7 +339,7 @@ void ArmatureData::addBone(BoneData* value, const std::string& parentName)
     }
     else
     {
-        //throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -357,7 +353,7 @@ void ArmatureData::addSlot(SlotData* value)
     }
     else
     {
-        //throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -373,7 +369,7 @@ void ArmatureData::addSkin(SkinData* value)
     }
     else
     {
-        //throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -389,8 +385,8 @@ void ArmatureData::addAnimation(AnimationData* value)
     }
     else
     {
-        //throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

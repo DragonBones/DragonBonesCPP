@@ -1,26 +1,29 @@
 #ifndef DRAGONBONES_DRAGON_BONES_H
 #define DRAGONBONES_DRAGON_BONES_H
 
-#include <algorithm>
 #include <cmath>
-#include <locale>
+#include <string>
+#include <algorithm>
 #include <vector>
 #include <map>
+#include <tuple>
 #include <functional>
 #include <sstream>
-//#include <cstdlib>
 #include <assert.h>
 
+// dragonBones assert
 #ifndef DRAGONBONES_ASSERT
 #define DRAGONBONES_ASSERT(cond, msg) do { \
         assert(cond); \
     } while (0)
-#endif // DRAGONBONES_ASSERT
+#endif
 
 // namespace dragonBones {}
-#define NAMESPACE_DRAGONBONES_BEGIN namespace dragonBones {
-#define NAMESPACE_DRAGONBONES_END }
-#define USING_NAME_SPACE_DRAGON_BONES using namespace dragonBones
+#define DRAGONBONES_NAMESPACE_BEGIN namespace dragonBones {
+#define DRAGONBONES_NAMESPACE_END }
+
+// using dragonBones namespace
+#define DRAGONBONES_USING_NAME_SPACE using namespace dragonBones
 
 /**
  * A macro to disallow the copy constructor and operator= functions
@@ -30,7 +33,7 @@
     CLASS(const CLASS&);\
     void operator=(const CLASS&)\
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 enum class TextureFormat
 {
@@ -144,95 +147,7 @@ inline int indexOf(const std::vector<T>& vector, const T& value)
     
     return -1;
 }
-/*
-inline DisplayType getDisplayTypeByString(std::string displayType)
-{
-    if (displayType == "image")
-    {
-        return DisplayType::DT_IMAGE;
-    }
-    else if (displayType == "armature")
-    {
-        return DisplayType::DT_ARMATURE;
-    }
-    else if (displayType == "frame")
-    {
-        return DisplayType::DT_FRAME;
-    }
-    else if (displayType == "text")
-    {
-        return DisplayType::DT_TEXT;
-    }
 
-    return DisplayType::DT_IMAGE;
-}
-
-inline BlendMode getBlendModeByString(const std::string &blendMode)
-{
-    if (blendMode == "normal")
-    {
-        return BlendMode::BM_NORMAL;
-    }
-    else if (blendMode == "add")
-    {
-        return BlendMode::BM_ADD;
-    }
-    else if (blendMode == "alpha")
-    {
-        return BlendMode::BM_ALPHA;
-    }
-    else if (blendMode == "darken")
-    {
-        return BlendMode::BM_DARKEN;
-    }
-    else if (blendMode == "difference")
-    {
-        return BlendMode::BM_DIFFERENCE;
-    }
-    else if (blendMode == "erase")
-    {
-        return BlendMode::BM_ERASE;
-    }
-    else if (blendMode == "hardLight")
-    {
-        return BlendMode::BM_HARDLIGHT;
-    }
-    else if (blendMode == "invert")
-    {
-        return BlendMode::BM_INVERT;
-    }
-    else if (blendMode == "layer")
-    {
-        return BlendMode::BM_LAYER;
-    }
-    else if (blendMode == "lighten")
-    {
-        return BlendMode::BM_LIGHTEN;
-    }
-    else if (blendMode == "multiply")
-    {
-        return BlendMode::BM_MULTIPLY;
-    }
-    else if (blendMode == "overlay")
-    {
-        return BlendMode::BM_OVERLAY;
-    }
-    else if (blendMode == "screen")
-    {
-        return BlendMode::BM_SCREEN;
-    }
-    else if (blendMode == "shader")
-    {
-        return BlendMode::BM_SHADER;
-    }
-    else if (blendMode == "subtract")
-    {
-        return BlendMode::BM_SUBTRACT;
-    }
-
-    return BlendMode::BM_NORMAL;
-}
-*/
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 
 #endif // DRAGONBONES_DRAGON_BONES_H

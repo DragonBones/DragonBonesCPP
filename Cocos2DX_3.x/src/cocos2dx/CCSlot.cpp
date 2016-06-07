@@ -1,6 +1,6 @@
 #include "CCSlot.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 CCSlot::CCSlot() 
 {
@@ -13,16 +13,33 @@ CCSlot::~CCSlot()
 
 void CCSlot::_onClear()
 {
-    // _displayList // TODO
+    std::vector<void*> disposeDisplayList;
+    for (const auto& pair : this->_displayList)
+    {
+        if (pair.second == DisplayType::Armature)
+        {
+            static_cast<Armature*>(pair.first)->returnToPool();
+        }
+        else if (std::find(disposeDisplayList.cbegin(), disposeDisplayList.cend(), pair.first) != disposeDisplayList.cend())
+        {
+            disposeDisplayList.push_back(pair.first);
+        }
+    }
+
+    for (const auto renderDisplay : disposeDisplayList)
+    {
+        this->_disposeDisplay(renderDisplay);
+    }
 
     Slot::_onClear();
 
     _renderDisplay = nullptr;
 }
 
-void CCSlot::_initDisplay(void * value)
+void CCSlot::_initDisplay(void* value)
 {
-    // TODO
+    auto renderDisplay = static_cast<cocos2d::Node*>(value);
+    renderDisplay->retain();
 }
 
 void CCSlot::_onUpdateDisplay()
@@ -32,7 +49,7 @@ void CCSlot::_onUpdateDisplay()
 
 void CCSlot::_addDisplay()
 {
-    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay()); //reinterpret_cast
+    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay());
     container->addChild(_renderDisplay);
 }
 
@@ -49,9 +66,10 @@ void CCSlot::_removeDisplay()
     _renderDisplay->removeFromParent();
 }
 
-void CCSlot::_disposeDisplay(void * value)
+void CCSlot::_disposeDisplay(void* value)
 {
-    // TODO
+    auto renderDisplay = static_cast<cocos2d::Node*>(value);
+    renderDisplay->release();
 }
 
 void CCSlot::_updateVisible()
@@ -101,11 +119,11 @@ void CCSlot::_updateBlendMode()
 
 void CCSlot::_updateColor()
 {
-    /*_renderDisplay->setOpacity(this->_colorTransform.alphaMultiplier * 255.f);
+    _renderDisplay->setOpacity(this->_colorTransform.alphaMultiplier * 255.f);
     _helpColor.r = this->_colorTransform.redMultiplier * 255.f;
     _helpColor.g = this->_colorTransform.greenMultiplier * 255.f;
     _helpColor.b = this->_colorTransform.blueMultiplier * 255.f;
-    _renderDisplay->setColor(_helpColor);*/
+    _renderDisplay->setColor(_helpColor);
 }
 
 void CCSlot::_updateFilters() 
@@ -117,121 +135,142 @@ void CCSlot::_updateFrame()
     const auto frameDisplay = static_cast<cocos2d::Sprite*>(_renderDisplay);
     const unsigned displayIndex = this->_displayIndex;
 
-    if (this->_display && displayIndex >= 0 && displayIndex < this->_displayDataSet->displays.size())
+    if (this->_display && displayIndex >= 0)
     {
-        const auto displayData = this->_displayDataSet->displays[displayIndex];
-        const auto textureData = static_cast<CCTextureData*>(displayData->textureData);
+        const auto rawDisplayData = displayIndex < this->_displayDataSet->displays.size() ? this->_displayDataSet->displays[displayIndex] : nullptr;
+        const auto replaceDisplayData = displayIndex < this->_replaceDisplayDataSet.size() ? this->_replaceDisplayDataSet[displayIndex] : nullptr;
+        const auto contentDisplayData = replaceDisplayData ? replaceDisplayData : rawDisplayData;
+        const auto contentTextureData = static_cast<CCTextureData*>(contentDisplayData->textureData);
 
-        if (textureData && !textureData->texture)
+        if (contentTextureData)
         {
-            const auto textureAtlasTexture = static_cast<CCTextureAtlasData*>(textureData->parent)->texture;
-            if (textureAtlasTexture)
+            if (!contentTextureData->texture)
             {
-                cocos2d::Rect rect(textureData->region.x, textureData->region.y, textureData->region.width, textureData->region.height);
-                cocos2d::Vec2 offset(0.f, 0.f);
-                cocos2d::Size originSize(textureData->region.width, textureData->region.height);
-                textureData->texture = cocos2d::SpriteFrame::createWithTexture(textureAtlasTexture, rect, textureData->rotated, offset, originSize);
-                textureData->texture->retain();
-            }
-        }
-
-        if (textureData && textureData->texture)
-        {
-            const auto& rect = textureData->frame ? *textureData->frame : textureData->region;
-
-            auto width = rect.width;
-            auto height = rect.height;
-            if (textureData->rotated)
-            {
-                width = rect.height;
-                height = rect.width;
+                const auto textureAtlasTexture = static_cast<CCTextureAtlasData*>(contentTextureData->parent)->texture;
+                if (textureAtlasTexture)
+                {
+                    cocos2d::Rect rect(contentTextureData->region.x, contentTextureData->region.y, contentTextureData->region.width, contentTextureData->region.height);
+                    cocos2d::Vec2 offset(0.f, 0.f);
+                    cocos2d::Size originSize(contentTextureData->region.width, contentTextureData->region.height);
+                    contentTextureData->texture = cocos2d::SpriteFrame::createWithTexture(textureAtlasTexture, rect, contentTextureData->rotated, offset, originSize);
+                    contentTextureData->texture->retain();
+                }
             }
 
-            if (this->_meshData && this->_display == this->_meshDisplay)
+            const auto currentTexture = this->_armature->_replaceTexture ? static_cast<cocos2d::Texture2D*>(this->_armature->_replaceTexture) : contentTextureData->texture->getTexture();
+
+            if (currentTexture)
             {
-                const auto& offset = textureData->texture->getRect().origin;
-                const auto& textureSize = textureData->texture->getTexture()->getContentSize();
-                auto displayVertices = new cocos2d::V3F_C4B_T2F[this->_meshData->uvs.size() / 2];
-                auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()];
+                const auto& rect = contentTextureData->frame ? *contentTextureData->frame : contentTextureData->region;
 
-                for (std::size_t i = 0, l = this->_meshData->uvs.size(); i < l; i += 2)
+                auto width = rect.width;
+                auto height = rect.height;
+                if (contentTextureData->rotated)
                 {
-                    const auto iH = unsigned(i / 2);
-                    cocos2d::V3F_C4B_T2F vertexData;
-                    vertexData.vertices.set(this->_meshData->vertices[i] + width * 0.5f, height * 0.5f - this->_meshData->vertices[i + 1], 0.f);
-                    vertexData.texCoords.u = (offset.x + this->_meshData->uvs[i] * width) / textureSize.width;
-                    vertexData.texCoords.v = (offset.y + this->_meshData->uvs[i + 1] * height) / textureSize.height;
-                    vertexData.colors = cocos2d::Color4B::WHITE;
-                    displayVertices[iH] = vertexData;
+                    width = rect.height;
+                    height = rect.width;
                 }
 
-                for (std::size_t i = 0, l = this->_meshData->vertexIndices.size(); i < l; ++i)
+                if (this->_meshData && this->_display == this->_meshDisplay)
                 {
-                    vertexIndices[i] = this->_meshData->vertexIndices[i];
-                }
+                    const auto& offset = contentTextureData->texture->getRect().origin;
+                    const auto& textureSize = contentTextureData->texture->getTexture()->getContentSize();
+                    auto displayVertices = new cocos2d::V3F_C4B_T2F[this->_meshData->uvs.size() / 2]; // does cocos2dx release it?
+                    auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()]; // does cocos2dx release it?
 
-                cocos2d::PolygonInfo polygonInfo;
-                auto& triangles = polygonInfo.triangles;
-                triangles.verts = displayVertices;
-                triangles.indices = vertexIndices;
-                triangles.vertCount = unsigned(this->_meshData->uvs.size() / 2);
-                triangles.indexCount = unsigned(this->_meshData->vertexIndices.size());
-                polygonInfo.rect.setRect(0.f, 0.f, width, height);
+                    for (std::size_t i = 0, l = this->_meshData->uvs.size(); i < l; i += 2)
+                    {
+                        const auto iH = unsigned(i / 2);
+                        cocos2d::V3F_C4B_T2F vertexData;
+                        vertexData.vertices.set(this->_meshData->vertices[i] + width * 0.5f, height * 0.5f - this->_meshData->vertices[i + 1], 0.f);
+                        vertexData.texCoords.u = (offset.x + this->_meshData->uvs[i] * width) / textureSize.width;
+                        vertexData.texCoords.v = (offset.y + this->_meshData->uvs[i + 1] * height) / textureSize.height;
+                        vertexData.colors = cocos2d::Color4B::WHITE;
+                        displayVertices[iH] = vertexData;
+                    }
 
-                auto has = textureData->texture->hasPolygonInfo();
-                frameDisplay->setSpriteFrame(textureData->texture);
-                frameDisplay->setPolygonInfo(polygonInfo);
-                frameDisplay->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));
+                    for (std::size_t i = 0, l = this->_meshData->vertexIndices.size(); i < l; ++i)
+                    {
+                        vertexIndices[i] = this->_meshData->vertexIndices[i];
+                    }
 
-                if (this->_meshData->skinned)
-                {
-                    frameDisplay->setScale(1.f, 1.f);
-                    frameDisplay->setRotationSkewX(0.f);
-                    frameDisplay->setRotationSkewY(0.f);
-                    frameDisplay->setPosition(0.f, 0.f);
-                    frameDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
+                    cocos2d::PolygonInfo polygonInfo;
+                    auto& triangles = polygonInfo.triangles;
+                    triangles.verts = displayVertices;
+                    triangles.indices = vertexIndices;
+                    triangles.vertCount = unsigned(this->_meshData->uvs.size() / 2);
+                    triangles.indexCount = unsigned(this->_meshData->vertexIndices.size());
+                    polygonInfo.rect.setRect(0.f, 0.f, width, height);
+
+                    // In cocos2dx render meshDisplay and frameDisplay are the same display
+                    frameDisplay->setSpriteFrame(contentTextureData->texture);
+                    frameDisplay->setPolygonInfo(polygonInfo);
+                    frameDisplay->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));
+
+                    if (currentTexture != contentTextureData->texture->getTexture())
+                    {
+                        frameDisplay->setTexture(currentTexture); // relpace texture
+                    }
+
+                    if (this->_meshData->skinned)
+                    {
+                        frameDisplay->setScale(1.f, 1.f);
+                        frameDisplay->setRotationSkewX(0.f);
+                        frameDisplay->setRotationSkewY(0.f);
+                        frameDisplay->setPosition(0.f, 0.f);
+                        frameDisplay->setAnchorPoint(cocos2d::Vec2::ANCHOR_MIDDLE); // TODO cocos2d::Vec2::ZERO
+                    }
+                    else
+                    {
+                        frameDisplay->setAnchorPoint(cocos2d::Vec2::ANCHOR_MIDDLE);
+                    }
                 }
                 else
                 {
-                    frameDisplay->setAnchorPoint(cocos2d::Vec2::ANCHOR_MIDDLE);
+                    cocos2d::Vec2 pivot(contentDisplayData->pivot.x, contentDisplayData->pivot.y);
+
+                    if (contentDisplayData->isRelativePivot)
+                    {
+                        pivot.x *= width;
+                        pivot.y *= height;
+                    }
+
+                    if (contentTextureData->frame)
+                    {
+                        pivot.x -= contentTextureData->frame->x;
+                        pivot.y -= contentTextureData->frame->y;
+                    }
+
+                    if (rawDisplayData && replaceDisplayData)
+                    {
+                        pivot.x += replaceDisplayData->transform.x - rawDisplayData->transform.x;
+                        pivot.y += replaceDisplayData->transform.y - rawDisplayData->transform.y;
+                    }
+
+                    if (contentTextureData->rotated)
+                    {
+                        pivot.x = pivot.x / contentTextureData->region.height;
+                        pivot.y = 1.f - pivot.y / contentTextureData->region.width;
+                    }
+                    else
+                    {
+                        pivot.x = pivot.x / contentTextureData->region.width;
+                        pivot.y = 1.f - pivot.y / contentTextureData->region.height;
+                    }
+
+                    frameDisplay->setSpriteFrame(contentTextureData->texture);
+                    frameDisplay->setAnchorPoint(pivot);
+
+                    if (currentTexture != contentTextureData->texture->getTexture())
+                    {
+                        frameDisplay->setTexture(currentTexture); // relpace texture
+                    }
                 }
+
+                this->_updateVisible();
+
+                return;
             }
-            else
-            {
-                cocos2d::Vec2 pivot(displayData->pivot.x, displayData->pivot.y);
-
-                if (displayData->isRelativePivot)
-                {
-                    pivot.x *= width;
-                    pivot.y *= height;
-                }
-
-                if (textureData->frame)
-                {
-                    pivot.x -= textureData->frame->x;
-                    pivot.y -= textureData->frame->y;
-                }
-
-                if (textureData->rotated)
-                {
-                    pivot.x = pivot.x / textureData->region.height;
-                    pivot.y = 1.f - pivot.y / textureData->region.width;
-                }
-                else
-                {
-                    pivot.x = pivot.x / textureData->region.width;
-                    pivot.y = 1.f - pivot.y / textureData->region.height;
-                }
-
-                auto has = textureData->texture->hasPolygonInfo();
-
-                frameDisplay->setSpriteFrame(textureData->texture);
-                frameDisplay->setAnchorPoint(pivot);
-            }
-
-            this->_updateVisible();
-
-            return;
         }
     }
 
@@ -318,4 +357,4 @@ void CCSlot::_updateTransform()
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

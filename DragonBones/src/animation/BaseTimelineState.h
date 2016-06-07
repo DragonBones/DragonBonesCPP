@@ -6,7 +6,7 @@
 #include "../model/TimelineData.h"
 #include "../model/AnimationData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Armature;
 class AnimationState;
@@ -485,5 +485,5 @@ protected:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_BASE_TIMELINE_STATE_H

@@ -3,8 +3,11 @@
 
 #include "../core/DragonBones.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
+/**
+ * @private
+ */
 class Point final
 {
 public:
@@ -34,5 +37,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_POINT_H

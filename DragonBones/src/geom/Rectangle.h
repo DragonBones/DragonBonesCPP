@@ -3,8 +3,11 @@
 
 #include "../core/DragonBones.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
+/**
+ * @private
+ */
 class Rectangle final
 {
 public:
@@ -41,5 +44,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_RECTANGLE_H

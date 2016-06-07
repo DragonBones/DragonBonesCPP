@@ -3,29 +3,39 @@
 
 #include "TimelineData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class AnimationData final : public TimelineData<AnimationFrameData>
 {
     BIND_CLASS_TYPE(AnimationData);
 
 public:
+    /** @private */
     bool hasAsynchronyTimeline;
+    /** @private */
     bool hasBoneTimelineEvent;
     unsigned frameCount;
     unsigned playTimes;
     unsigned position;
     unsigned duration;
     float fadeInTime;
+    /** @private */
     float cacheTimeToFrameScale;
     std::string name;
+    /** @private */
     AnimationData* animation;
+    /** @private */
     std::map<std::string, BoneTimelineData*> boneTimelines;
+    /** @private */
     std::map<std::string, SlotTimelineData*> slotTimelines;
+    /** @private */
     std::map<std::string, std::map<std::string, std::map<std::string, FFDTimelineData*>>> ffdTimelines; // skin slot displayIndex
-    std::vector<bool> cacheFrames;
+    /** @private */
+    std::vector<bool> cachedFrames;
 
+    /** @private */
     AnimationData();
+    /** @private */
     ~AnimationData();
 
 private:
@@ -35,21 +45,28 @@ protected:
     void _onClear() override;
 
 public:
-    void cacheFrame(float value);
+    /** @private */
+    void cacheFrames(float value);
+    /** @private */
     void addBoneTimeline(BoneTimelineData* value);
+    /** @private */
     void addSlotTimeline(SlotTimelineData* value);
+    /** @private */
     void addFFDTimeline(FFDTimelineData* value);
 
+    /** @private */
     inline BoneTimelineData* getBoneTimeline(const std::string& name) const
     {
         return mapFind(boneTimelines, name);
     }
 
+    /** @private */
     inline SlotTimelineData* getSlotTimeline(const std::string& name) const
     {
         return mapFind(slotTimelines, name);
     }
 
+    /** @private */
     inline FFDTimelineData* getFFDTimeline(const std::string& skinName, const std::string& slotName, unsigned displayIndex) const
     {
         const auto iteratorSkin = ffdTimelines.find(skinName);
@@ -68,5 +85,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_ANIMATION_DATA_H

@@ -1,6 +1,6 @@
 #include "FrameData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 EventData::EventData()
 {
@@ -32,9 +32,12 @@ ActionData::~ActionData()
 void ActionData::_onClear()
 {
     type = ActionType::Play;
-    //params;
     bone = nullptr;
     slot = nullptr;
+
+    std::get<0>(data).clear();
+    std::get<1>(data).clear();
+    std::get<2>(data).clear();
 }
 
 AnimationFrameData::AnimationFrameData()
@@ -122,4 +125,4 @@ void ExtensionFrameData::_onClear()
     clearVector(keys);
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

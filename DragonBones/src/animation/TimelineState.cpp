@@ -4,7 +4,7 @@
 #include "../armature/Bone.h"
 #include "../armature/Slot.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 AnimationTimelineState::AnimationTimelineState() 
 {
@@ -94,7 +94,7 @@ void BoneTimelineState::_onArriveAtFrame(bool isUpdate)
 
     if (this->_keyFrameCount > 1 && (this->_tweenEasing != NO_TWEEN || this->_curve))
     {
-        const auto& nextFrame = *reinterpret_cast<BoneFrameData*>(this->_currentFrame->next);
+        const auto& nextFrame = *static_cast<BoneFrameData*>(this->_currentFrame->next);
         const auto& nextTransform = nextFrame.transform;
 
         // Transform
@@ -514,14 +514,6 @@ void FFDTimelineState::_onArriveAtFrame(bool isUpdate)
 {
     TweenTimelineState::_onArriveAtFrame(isUpdate);
 
-    if (this->_animationState->_isDisabled(*slot))
-    {
-        this->_tweenEasing = NO_TWEEN;
-        this->_curve = nullptr;
-        _tweenFFD = TweenType::None;
-        return;
-    }
-
     _tweenFFD = TweenType::None;
 
     if (this->_tweenEasing != NO_TWEEN || this->_curve)
@@ -595,4 +587,4 @@ void FFDTimelineState::update(int time)
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

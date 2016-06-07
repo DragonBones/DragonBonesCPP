@@ -1,6 +1,6 @@
 #include "BaseFactory.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 BaseFactory::BaseFactory() :
     autoSearch(false),
@@ -11,7 +11,7 @@ BaseFactory::BaseFactory() :
 {}
 BaseFactory::~BaseFactory() {}
 
-TextureData * BaseFactory::_getTextureData(const std::string& textureAtlasName, const std::string& textureName) const
+TextureData* BaseFactory::_getTextureData(const std::string& textureAtlasName, const std::string& textureName) const
 {
     const auto iterator = _textureAtlasDataMap.find(textureAtlasName);
     if (iterator != _textureAtlasDataMap.end())
@@ -47,7 +47,7 @@ TextureData * BaseFactory::_getTextureData(const std::string& textureAtlasName, 
     return nullptr;
 }
 
-bool BaseFactory::_fillBuildArmaturePackage(const std::string & dragonBonesName, const std::string & armatureName, const std::string & skinName, BuildArmaturePackage & dataPackage) const
+bool BaseFactory::_fillBuildArmaturePackage(const std::string& dragonBonesName, const std::string& armatureName, const std::string& skinName, BuildArmaturePackage& dataPackage) const
 {
     if (!dragonBonesName.empty())
     {
@@ -100,8 +100,7 @@ bool BaseFactory::_fillBuildArmaturePackage(const std::string & dragonBonesName,
 
 void BaseFactory::_buildBones(const BuildArmaturePackage& dataPackage, Armature& armature) const
 {
-    const auto& bones = dataPackage.armature->getSortedBones();
-    for (const auto boneData : bones)
+    for (const auto boneData : dataPackage.armature->getSortedBones())
     {
         const auto bone = BaseObject::borrowObject<Bone>();
         bone->name = boneData->name;
@@ -129,7 +128,7 @@ void BaseFactory::_buildBones(const BuildArmaturePackage& dataPackage, Armature&
     }
 }
 
-void BaseFactory::_buildSlots(const BuildArmaturePackage & dataPackage, Armature & armature) const
+void BaseFactory::_buildSlots(const BuildArmaturePackage& dataPackage, Armature& armature) const
 {
     const auto currentSkin = dataPackage.skin;
     const auto defaultSkin = dataPackage.armature->getDefaultSkin();
@@ -147,7 +146,7 @@ void BaseFactory::_buildSlots(const BuildArmaturePackage & dataPackage, Armature
     for (const auto slotData : dataPackage.armature->getSortedSlots())
     {
         const auto itetator = slotDisplayDataSetMap.find(slotData->name);
-        if (itetator == slotDisplayDataSetMap.end())
+        if (itetator == slotDisplayDataSetMap.cend())
         {
             continue;
         }
@@ -157,8 +156,45 @@ void BaseFactory::_buildSlots(const BuildArmaturePackage & dataPackage, Armature
         slot->_setDisplayIndex(slotData->displayIndex);
         slot->_setBlendMode(slotData->blendMode);
         slot->_setColor(*slotData->color);
+        slot->_replaceDisplayDataSet.resize(slot->_displayDataSet->displays.size(), nullptr);
 
         armature.addSlot(slot, slotData->parent->name);
+    }
+}
+
+void BaseFactory::_replaceSlotDisplay(const BuildArmaturePackage& dataPackage, const DisplayData& displayData, Slot& slot, int displayIndex) const
+{
+    if (displayIndex < 0)
+    {
+        displayIndex = slot.getDisplayIndex();
+    }
+
+    if (displayIndex >= 0)
+    {
+        if (slot._replaceDisplayDataSet.size() <= displayIndex)
+        {
+            slot._replaceDisplayDataSet.resize(displayIndex + 1); // TODO
+        }
+
+        slot._replaceDisplayDataSet[displayIndex] = const_cast<DisplayData*>(&displayData);
+
+        auto displayList = slot.getDisplayList(); // copy
+        if (displayList.size() <= displayIndex)
+        {
+            displayList.resize(displayIndex + 1); // TODO
+        }
+
+        if (displayData.meshData)
+        {
+            //displayList[displayIndex] = slot.getMeshDisplay(); // TODO
+        }
+        else
+        {
+            //displayList[displayIndex] = std::make_pair(slot.getRawDisplay(), displayData.type); // TODO
+        }
+
+        slot.setDisplayList(displayList);
+        slot.invalidUpdate();
     }
 }
 
@@ -194,26 +230,26 @@ void BaseFactory::addDragonBonesData(DragonBonesData* data, const std::string& d
             }
             else
             {
-                //throw new ArgumentError("Same name data");
+                DRAGONBONES_ASSERT(false, "Same name data.");
             }
         }
         else
         {
-            //throw new ArgumentError("Unnamed data");
+            DRAGONBONES_ASSERT(false, "Unnamed data.");
         }
     }
     else
     {
-        //throw new ArgumentError();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
-void BaseFactory::removeDragonBonesData(const std::string& dragonBonesName, bool dispose)
+void BaseFactory::removeDragonBonesData(const std::string& dragonBonesName, bool disposeData)
 {
     const auto iterator = _dragonBonesDataMap.find(dragonBonesName);
     if (iterator != _dragonBonesDataMap.end())
     {
-        if (dispose)
+        if (disposeData)
         {
             iterator->second->returnToPool();
         }
@@ -222,18 +258,13 @@ void BaseFactory::removeDragonBonesData(const std::string& dragonBonesName, bool
     }
 }
 
-void BaseFactory::addTextureAtlasData(TextureAtlasData* data, const std::string& name)
+void BaseFactory::addTextureAtlasData(TextureAtlasData* data, const std::string& dragonBonesName)
 {
     if (data)
     {
-        const auto& mapName = name.empty() ? data->name : name;
+        const auto& mapName = dragonBonesName.empty() ? data->name : dragonBonesName;
         if (!mapName.empty())
         {
-            /*if (_textureAtlasDataMap.find(mapName) == _textureAtlasDataMap.end())
-            {
-                std::make_pair(_textureAtlasDataMap, mapName);
-            }*/
-
             auto& textureAtlasList = _textureAtlasDataMap[mapName];
             if (std::find(textureAtlasList.begin(), textureAtlasList.end(), data) == textureAtlasList.end())
             {
@@ -242,24 +273,23 @@ void BaseFactory::addTextureAtlasData(TextureAtlasData* data, const std::string&
         }
         else
         {
-            //throw new ArgumentError("Unnamed data");
+            DRAGONBONES_ASSERT(false, "Unnamed data.");
         }
     }
     else
     {
-        //throw new ArgumentError();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
-void BaseFactory::removeTextureAtlasData(const std::string& name, bool dispose)
+void BaseFactory::removeTextureAtlasData(const std::string& dragonBonesName, bool disposeData)
 {
-    const auto iterator = _textureAtlasDataMap.find(name);
+    const auto iterator = _textureAtlasDataMap.find(dragonBonesName);
     if (iterator != _textureAtlasDataMap.end())
     {
-        if (dispose)
+        if (disposeData)
         {
-            const auto& textureAtlasList = iterator->second;
-            for (auto textureAtlasData : textureAtlasList)
+            for (auto textureAtlasData : iterator->second)
             {
                 textureAtlasData->returnToPool();
             }
@@ -269,8 +299,26 @@ void BaseFactory::removeTextureAtlasData(const std::string& name, bool dispose)
     }
 }
 
-void BaseFactory::clear()
+void BaseFactory::clear(bool disposeData)
 {
+    if (disposeData)
+    {
+        for (const auto& pair : _dragonBonesDataMap)
+        {
+            pair.second->returnToPool();
+        }
+
+        for (const auto& pair : _textureAtlasDataMap)
+        {
+            for (const auto textureAtlasData : pair.second)
+            {
+                textureAtlasData->returnToPool();
+            }
+        }
+    }
+
+    _dragonBonesDataMap.clear();
+    _textureAtlasDataMap.clear();
 }
 
 Armature * BaseFactory::buildArmature(const std::string & armatureName, const std::string & dragonBonesName, const std::string & skinName) const
@@ -348,4 +396,41 @@ bool BaseFactory::copyAnimationsToArmature(
     return false;
 }
 
-NAMESPACE_DRAGONBONES_END
+void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, const std::string& displayName, Slot& slot, int displayIndex) const
+{
+    BuildArmaturePackage dataPackage;
+    if (_fillBuildArmaturePackage(dragonBonesName, armatureName, nullptr, dataPackage))
+    {
+        const auto slotDisplayDataSet = dataPackage.skin->getSlot(slotName);
+        if (slotDisplayDataSet)
+        {
+            for (const auto displayData : slotDisplayDataSet->displays)
+            {
+                if (displayData->name == displayName)
+                {
+                    _replaceSlotDisplay(dataPackage, *displayData, slot, displayIndex);
+                }
+            }
+        }
+    }
+
+}
+
+void BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, Slot& slot) const
+{
+    BuildArmaturePackage dataPackage;
+    if (_fillBuildArmaturePackage(dragonBonesName, armatureName, nullptr, dataPackage))
+    {
+        const auto slotDisplayDataSet = dataPackage.skin->getSlot(slotName);
+        if (slotDisplayDataSet)
+        {
+            int displayIndex = 0;
+            for (const auto displayData : slotDisplayDataSet->displays)
+            {
+                _replaceSlotDisplay(dataPackage, *displayData, slot, displayIndex++);
+            }
+        }
+    }
+}
+
+DRAGONBONES_NAMESPACE_END

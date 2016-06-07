@@ -3,7 +3,7 @@
 #include "../model/TimelineData.h"
 #include "../animation/Animation.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 Slot::Slot() {}
 Slot::~Slot() {}
@@ -25,6 +25,7 @@ void Slot::_onClear()
     _meshDisplay = nullptr;
     _colorTransform.identity();
     clearVector(_ffdVertices);
+    _replaceDisplayDataSet.clear();
 
     _displayDirty = false;
     _blendModeDirty = false;
@@ -309,8 +310,27 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
 
         for (std::size_t i = 0, l = _displayList.size(); i < l; ++i)
         {
-            _displayList[i].first = value[i].first;
-            _displayList[i].second = value[i].second;
+            const auto& eachPair = value[i];
+            if (eachPair.first && eachPair.first != _rawDisplay)
+            {
+                auto isInited = false;
+                for (const auto& pair : _displayList)
+                {
+                    if (pair.first == eachPair.first)
+                    {
+                        isInited = true;
+                        break;
+                    }
+                }
+
+                if (!isInited)
+                {
+                    _initDisplay(eachPair.first);
+                }
+            }
+
+            _displayList[i].first = eachPair.first;
+            _displayList[i].second = eachPair.second;
         }
     }
     else if (!_displayList.empty())
@@ -358,7 +378,7 @@ bool Slot::_setBlendMode(BlendMode value)
 
 bool Slot::_setColor(const ColorTransform& value)
 {
-    _colorTransform = value;
+    _colorTransform = value; // copy
     _colorDirty = true;
 
     return true;
@@ -412,13 +432,8 @@ void Slot::setDisplay(void* value, DisplayType displayType)
     }
 
     const auto displayListLength = _displayList.size();
-    if (displayListLength <= 1)
+    if (_displayIndex < 0 && displayListLength == 0)  // Emprty
     {
-        if (displayListLength == 0)
-        {
-            _displayList.resize(1);
-        }
-
         _displayIndex = 0;
     }
 
@@ -450,4 +465,4 @@ void Slot::setChildArmature(Armature* value)
     setDisplay(value, DisplayType::Armature);
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

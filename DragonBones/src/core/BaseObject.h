@@ -15,7 +15,7 @@ virtual std::size_t getClassTypeIndex() const\
     return CLASS::getTypeIndex();\
 }\
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class BaseObject
 {
@@ -57,7 +57,9 @@ public:
     const std::size_t hashCode;
 
 public:
+    /** @private */
     BaseObject();
+    /** @private */
     virtual ~BaseObject() = 0;
 
 protected:
@@ -67,5 +69,5 @@ public:
     void returnToPool();
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_BASE_OBJECT_H

@@ -1,7 +1,7 @@
 #include "AnimationData.h"
 #include "ArmatureData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 AnimationData::AnimationData() 
 {
@@ -37,24 +37,24 @@ void AnimationData::_onClear()
         pair.second->returnToPool();
     }
 
-    /*for (const auto& skinPair : ffdTimelines)
+    for (const auto& skinPair : ffdTimelines)
     {
         for (const auto& slotPair : skinPair.second)
         {
-            for (const auto pair : slotPair.second)
+            for (const auto& pair : slotPair.second)
             {
                 pair.second->returnToPool();
             }
         }
-    }*/
+    }
 
     boneTimelines.clear();
     slotTimelines.clear();
-    //ffdTimelines.clear();
-    clearVector(cacheFrames);
+    ffdTimelines.clear();
+    clearVector(cachedFrames);
 }
 
-void AnimationData::cacheFrame(float value)
+void AnimationData::cacheFrames(float value)
 {
     if (animation)
     {
@@ -64,16 +64,16 @@ void AnimationData::cacheFrame(float value)
     const auto cacheFrameCount = (unsigned)(frameCount * scale * value);
 
     cacheTimeToFrameScale = (float)cacheFrameCount / (duration + 1);
-    cacheFrames.resize(cacheFrameCount, false);
+    cachedFrames.resize(cacheFrameCount, false);
 
     for (const auto& pair : boneTimelines)
     {
-        pair.second->cacheFrames.resize(cacheFrameCount, nullptr); // TODO
+        pair.second->cacheFrames(cacheFrameCount);
     }
 
     for (const auto& pair : slotTimelines)
     {
-        pair.second->cacheFrames.resize(cacheFrameCount, nullptr); // TODO
+        pair.second->cacheFrames(cacheFrameCount);
     }
 }
 
@@ -85,7 +85,7 @@ void AnimationData::addBoneTimeline(BoneTimelineData* value)
     }
     else
     {
-        // throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -97,7 +97,7 @@ void AnimationData::addSlotTimeline(SlotTimelineData* value)
     }
     else
     {
-        // throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -117,13 +117,13 @@ void AnimationData::addFFDTimeline(FFDTimelineData* value)
         }
         else
         {
-            //throw new Error();
+            DRAGONBONES_ASSERT(false, "Argument error.");
         }
     }
     else
     {
-        //throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

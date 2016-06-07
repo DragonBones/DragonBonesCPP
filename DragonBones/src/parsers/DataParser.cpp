@@ -1,6 +1,10 @@
 #include "DataParser.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
+
+const char* DataParser::PARENT_COORDINATE_DATA_VERSION = "3.0";
+const char* DataParser::DATA_VERSION_4_0 = "4.0";
+const char* DataParser::DATA_VERSION = "4.5";
 
 const char* DataParser::TEXTURE_ATLAS = "TextureAtlas";
 const char* DataParser::SUB_TEXTURE = "SubTexture";
@@ -96,11 +100,7 @@ TextureFormat DataParser::_getTextureFormat(const std::string& value)
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-    if (lower.empty())
-    {
-        return TextureFormat::DEFAULT;
-    }
-    else if (lower == "rgba8888")
+    if (lower == "rgba8888")
     {
         return TextureFormat::RGBA8888;
     }
@@ -133,7 +133,7 @@ ArmatureType DataParser::_getArmatureType(const std::string& value)
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-    if (lower.empty() || lower == "armature")
+    if (lower == "armature")
     {
         return ArmatureType::Armature;
     }
@@ -154,7 +154,7 @@ DisplayType DataParser::_getDisplayType(const std::string& value)
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-    if (lower.empty() || lower == "image")
+    if (lower == "image")
     {
         return DisplayType::Image;
     }
@@ -175,7 +175,7 @@ BlendMode DataParser::_getBlendMode(const std::string& value)
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-    if (lower.empty() || lower == "normal")
+    if (lower == "normal")
     {
         return BlendMode::Normal;
     }
@@ -240,7 +240,7 @@ ActionType DataParser::_getActionType(const std::string& value)
     auto lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-    if (lower.empty() || lower == "fadeIn")
+    if (lower == "fadeIn")
     {
         return ActionType::FadeIn;
     }
@@ -282,4 +282,4 @@ DataParser::DataParser() :
 {}
 DataParser::~DataParser() {}
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

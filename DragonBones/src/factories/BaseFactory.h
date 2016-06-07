@@ -7,8 +7,11 @@
 #include "../armature/Bone.h"
 #include "../armature/Slot.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
+/**
+ * @private
+ */
 class BuildArmaturePackage final
 {
 public:
@@ -42,28 +45,30 @@ protected:
     std::map<std::string, std::vector<TextureAtlasData*>> _textureAtlasDataMap;
 
 public:
+    /** @private */
     BaseFactory();
+    /** @private */
     virtual ~BaseFactory() = 0;
 
 protected:
-    TextureData* _getTextureData(const std::string& textureAtlasName, const std::string& textureName) const;
-    bool _fillBuildArmaturePackage(const std::string& dragonBonesName, const std::string& armatureName, const std::string& skinName, BuildArmaturePackage& dataPackage) const;
-    void _buildBones(const BuildArmaturePackage& dataPackage, Armature& armature) const;
-    void _buildSlots(const BuildArmaturePackage& dataPackage, Armature& armature) const;
+    virtual TextureData* _getTextureData(const std::string& textureAtlasName, const std::string& textureName) const;
+    virtual bool _fillBuildArmaturePackage(const std::string& dragonBonesName, const std::string& armatureName, const std::string& skinName, BuildArmaturePackage& dataPackage) const;
+    virtual void _buildBones(const BuildArmaturePackage& dataPackage, Armature& armature) const;
+    virtual void _buildSlots(const BuildArmaturePackage& dataPackage, Armature& armature) const;
+    virtual void _replaceSlotDisplay(const BuildArmaturePackage& dataPackage, const DisplayData& displayData, Slot& slot, int displayIndex) const;
 
     virtual TextureAtlasData* _generateTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const = 0;
     virtual Armature* _generateArmature(const BuildArmaturePackage& dataPackage) const = 0;
     virtual Slot* _generateSlot(const BuildArmaturePackage& dataPackage, const SlotDisplayDataSet& slotDisplayDataSet) const = 0;
-    virtual void* _generateDisplay(const BuildArmaturePackage& dataPackage, const DisplayData& displayData, const DisplayData& rawDisplayData) const = 0;
 
 public:
-    DragonBonesData* parseDragonBonesData(const char* rawData, const std::string& dragonBonesName = "");
-    TextureAtlasData* parseTextureAtlasData(const char* rawData, void* textureAtlas, const std::string& dragonBonesName = "", float scale = 0.f);
-    void addDragonBonesData(DragonBonesData* data, const std::string& dragonBonesName = "");
-    void removeDragonBonesData(const std::string& dragonBonesName, bool dispose = true);
-    void addTextureAtlasData(TextureAtlasData* data, const std::string& name = "");
-    void removeTextureAtlasData(const std::string& name, bool dispose = true);
-    virtual void clear();
+    virtual DragonBonesData* parseDragonBonesData(const char* rawData, const std::string& dragonBonesName = "");
+    virtual TextureAtlasData* parseTextureAtlasData(const char* rawData, void* textureAtlas, const std::string& dragonBonesName = "", float scale = 0.f);
+    virtual void addDragonBonesData(DragonBonesData* data, const std::string& dragonBonesName = "");
+    virtual void removeDragonBonesData(const std::string& dragonBonesName, bool disposeData = true);
+    virtual void addTextureAtlasData(TextureAtlasData* data, const std::string& dragonBonesName = "");
+    virtual void removeTextureAtlasData(const std::string& dragonBonesName, bool disposeData = true);
+    virtual void clear(bool disposeData = true);
 
     virtual Armature* buildArmature(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "") const;
     virtual bool copyAnimationsToArmature(
@@ -71,18 +76,20 @@ public:
         const std::string& fromArmatreName, const std::string& fromSkinName = "", const std::string& fromDragonBonesDataName = "", 
         bool ifRemoveOriginalAnimationList = true
     ) const;
+    virtual void replaceSlotDisplay(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, const std::string& displayName, Slot& slot, int displayIndex = -1) const;
+    virtual void replaceSlotDisplayList(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, Slot& slot) const;
 
     inline DragonBonesData* getDragonBonesData(const std::string& dragonBonesName) const 
     {
         return mapFind(_dragonBonesDataMap, dragonBonesName);
     }
 
-    inline std::vector<TextureAtlasData*>* getTextureAtlasData(const std::string& name) const
+    inline std::vector<TextureAtlasData*>* getTextureAtlasData(const std::string& dragonBonesName) const
     {
-        const auto iterator = _textureAtlasDataMap.find(name);
+        const auto iterator = _textureAtlasDataMap.find(dragonBonesName);
         return (iterator != _textureAtlasDataMap.end()) ? &const_cast<std::vector<TextureAtlasData*>&>(iterator->second) : nullptr;
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_BASE_FACTORY_H

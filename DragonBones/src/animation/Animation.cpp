@@ -3,7 +3,7 @@
 #include "../armature/Slot.h"
 #include "AnimationState.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 bool Animation::_sortAnimationState(AnimationState* a, AnimationState* b)
 {
@@ -411,4 +411,4 @@ void Animation::setAnimations(const std::map<std::string, AnimationData*>& value
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

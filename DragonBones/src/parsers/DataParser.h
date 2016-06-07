@@ -5,10 +5,17 @@
 #include "../model/DragonBonesData.h"
 #include "../textures/TextureData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
+
+/**
+ * @private
+ */
 class DataParser
 {
 protected:
+    static const char* PARENT_COORDINATE_DATA_VERSION;
+    static const char* DATA_VERSION_4_0;
+    static const char* DATA_VERSION;
     static const char* TEXTURE_ATLAS;
     static const char* SUB_TEXTURE;
     static const char* FORMAT;
@@ -112,7 +119,7 @@ protected:
     SlotDisplayDataSet* _slotDisplayDataSet;
     MeshData* _mesh;
     AnimationData* _animation;
-    void* _timeline; // TimelineData
+    void* _timeline; // TimelineData*
 
     Point _helpPoint;
     std::vector<BoneData*> _rawBones;
@@ -121,9 +128,9 @@ public:
     DataParser();
     virtual ~DataParser() = 0;
 
-    virtual TextureAtlasData& parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale) = 0;
+    virtual void parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale) = 0;
     virtual DragonBonesData* parseDragonBonesData(const char* rawData) = 0;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_DATA_PARSER_H

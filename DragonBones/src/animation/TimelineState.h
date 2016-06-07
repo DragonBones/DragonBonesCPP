@@ -3,7 +3,7 @@
 
 #include "BaseTimelineState.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Bone;
 class Slot;
@@ -126,5 +126,5 @@ public:
     void update(int time) override;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_TIMELINE_STATE_H

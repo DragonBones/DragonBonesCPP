@@ -1,6 +1,6 @@
 #include "EventObject.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 const char* EventObject::START = "start";
 const char* EventObject::LOOP_COMPLETE = "loopComplete";
@@ -36,4 +36,4 @@ void EventObject::_onClear()
     animationState = nullptr;
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

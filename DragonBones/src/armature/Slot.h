@@ -5,7 +5,7 @@
 #include "../model/ArmatureData.h"
 #include "Bone.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Slot : public TransformObject
 {
@@ -14,17 +14,30 @@ public:
     std::string displayController;
 
 public:
+    /** @private */
     bool _colorDirty;
+    /** @private */
     bool _ffdDirty;
+    /** @private */
     int _zOrder;
+    /** @private */
     BlendMode _blendMode;
+    /** @private */
     SlotDisplayDataSet* _displayDataSet;
+    /** @private */
     MeshData* _meshData;
+    /** @private */
     std::vector<Matrix*>* _cacheFrames;
+    /** @private */
     void* _rawDisplay;
+    /** @private */
     void* _meshDisplay;
+    /** @private */
     ColorTransform _colorTransform;
+    /** @private */
     std::vector<float> _ffdVertices;
+    /** @private */
+    std::vector<DisplayData*> _replaceDisplayDataSet;
 
 protected:
     bool _displayDirty;
@@ -39,7 +52,9 @@ protected:
     std::vector<Bone*> _meshBones;
 
 public:
+    /** @private */
     Slot();
+    /** @private */
     virtual ~Slot() = 0;
 
 protected:
@@ -85,19 +100,32 @@ protected:
     }
 
 public:
+    /** @private */
     virtual void _updateVisible() = 0;
+    /** @private */
     virtual void _updateBlendMode() = 0;
 
+    /** @private */
     virtual void _setArmature(Armature* value) override;
+    /** @private */
     void _updateMeshData(bool isTimelineUpdate);
+    /** @private */
     void _update(int cacheFrameIndex);
+    /** @private */
     bool _setDisplayList(const std::vector<std::pair<void*, DisplayType>>& value);
+    /** @private */
     bool _setDisplayIndex(int value);
+    /** @private */
     bool _setBlendMode(BlendMode value);
+    /** @private */
     bool _setColor(const ColorTransform& value);
 
 public:
-    inline void invalidUpdate() {} // TODO
+    inline void invalidUpdate() 
+    {
+        _displayDirty = true;
+    }
+
     inline void* getRawDisplay() const
     {
         return _rawDisplay;
@@ -128,5 +156,5 @@ public:
     void setChildArmature(Armature* value);
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_SLOT_H

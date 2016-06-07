@@ -4,7 +4,7 @@
 #include "DataParser.h"
 #include "./rapidjson/document.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class JSONDataParser : public DataParser
 {
@@ -21,6 +21,23 @@ protected:
             else if (value.IsNumber())
             {
                 return value.GetInt() != 0;
+            }
+            else if (value.IsString())
+            {
+                const std::string stringValue = value.GetString();
+                if (
+                    stringValue == "0" ||
+                    stringValue == "NaN" ||
+                    stringValue == "" ||
+                    stringValue == "false" ||
+                    stringValue == "null" ||
+                    stringValue == "undefined"
+                )
+                {
+                    return false;
+                }
+
+                return true;
             }
         }
 
@@ -181,7 +198,7 @@ protected:
                     T* frame = nullptr;
                     T* prevFrame = nullptr;
 
-                    for (std::size_t i = 0, iW = 0, l = this->_animation->frameCount + 1; i < l; ++i)
+                    for (unsigned i = 0, iW = 0, l = this->_animation->frameCount + 1; i < l; ++i)
                     {
                         if (frameStart + frameCount <= i && iW < rawFrames.Size())
                         {
@@ -211,13 +228,14 @@ protected:
             }
         }
     }
+
     virtual void _parseTransform(const rapidjson::Value& rawData, Transform& transform) const;
     virtual void _parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color) const;
 
 public:
-    virtual TextureAtlasData& parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale) override;
+    virtual void parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale) override;
     virtual DragonBonesData* parseDragonBonesData(const char* rawData) override;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_JSON_DATA_PARSER_H

@@ -4,11 +4,14 @@
 #include "../core/BaseObject.h"
 #include "FrameData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class SkinData;
 class SlotDisplayDataSet;
 
+/**
+ * @private
+ */
 template<class T>
 class TimelineData : public BaseObject
 {
@@ -42,6 +45,9 @@ protected:
     }
 };
 
+/**
+ * @private
+ */
 class BoneTimelineData final : public TimelineData<BoneFrameData>
 {
     BIND_CLASS_TYPE(BoneTimelineData);
@@ -52,7 +58,7 @@ public:
 public:
     BoneData* bone;
     Transform originTransform;
-    std::vector<Matrix*> cacheFrames;
+    std::vector<Matrix*> cachedFrames;
 
     BoneTimelineData();
     ~BoneTimelineData();
@@ -62,8 +68,15 @@ private:
 
 protected:
     void _onClear() override;
+
+public:
+    /** @private */
+    void cacheFrames(std::size_t cacheFrameCount);
 };
 
+/**
+ * @private
+ */
 class SlotTimelineData final : public TimelineData<SlotFrameData>
 {
     BIND_CLASS_TYPE(SlotTimelineData);
@@ -73,7 +86,7 @@ public:
 
 public:
     SlotData* slot;
-    std::vector<Matrix*> cacheFrames;
+    std::vector<Matrix*> cachedFrames;
 
     SlotTimelineData();
     ~SlotTimelineData();
@@ -83,8 +96,15 @@ private:
 
 protected:
     void _onClear() override;
+
+public:
+    /** @private */
+    void cacheFrames(std::size_t cacheFrameCount);
 };
 
+/**
+ * @private
+ */
 class FFDTimelineData final : public TimelineData<ExtensionFrameData>
 {
     BIND_CLASS_TYPE(FFDTimelineData);
@@ -104,5 +124,5 @@ protected:
     void _onClear() override;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_TIMELINE_DATA_H

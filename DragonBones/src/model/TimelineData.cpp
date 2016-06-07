@@ -1,8 +1,8 @@
 #include "TimelineData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
-Matrix * BoneTimelineData::cacheFrame(std::vector<Matrix*>& cacheFrames, std::size_t cacheFrameIndex, const Matrix& globalTransformMatrix)
+Matrix* BoneTimelineData::cacheFrame(std::vector<Matrix*>& cacheFrames, std::size_t cacheFrameIndex, const Matrix& globalTransformMatrix)
 {
     const auto cacheMatrix = cacheFrames[cacheFrameIndex] = new Matrix();
     *cacheMatrix = globalTransformMatrix;
@@ -27,7 +27,7 @@ void BoneTimelineData::_onClear()
     originTransform.identity();
 
     Matrix* prevMatrix = nullptr;
-    for (const auto matrix : cacheFrames)
+    for (const auto matrix : cachedFrames)
     {
         if (matrix)
         {
@@ -40,10 +40,29 @@ void BoneTimelineData::_onClear()
         }
     }
 
-    clearVector(cacheFrames);
+    clearVector(cachedFrames);
 }
 
-Matrix * SlotTimelineData::cacheFrame(std::vector<Matrix*>& cacheFrames, std::size_t cacheFrameIndex, const Matrix& globalTransformMatrix)
+void BoneTimelineData::cacheFrames(std::size_t cacheFrameCount)
+{
+    Matrix* prevMatrix = nullptr;
+    for (const auto matrix : cachedFrames)
+    {
+        if (matrix)
+        {
+            if (prevMatrix && prevMatrix != matrix)
+            {
+                delete prevMatrix;
+            }
+
+            prevMatrix = matrix;
+        }
+    }
+
+    cachedFrames.resize(cacheFrameCount, nullptr);
+}
+
+Matrix* SlotTimelineData::cacheFrame(std::vector<Matrix*>& cacheFrames, std::size_t cacheFrameIndex, const Matrix& globalTransformMatrix)
 {
     const auto cacheMatrix = cacheFrames[cacheFrameIndex] = new Matrix();
     *cacheMatrix = globalTransformMatrix;
@@ -67,7 +86,7 @@ void SlotTimelineData::_onClear()
     slot = nullptr;
 
     Matrix* prevMatrix = nullptr;
-    for (const auto matrix : cacheFrames)
+    for (const auto matrix : cachedFrames)
     {
         if (matrix)
         {
@@ -80,7 +99,26 @@ void SlotTimelineData::_onClear()
         }
     }
 
-    clearVector(cacheFrames);
+    clearVector(cachedFrames);
+}
+
+void SlotTimelineData::cacheFrames(std::size_t cacheFrameCount)
+{
+    Matrix* prevMatrix = nullptr;
+    for (const auto matrix : cachedFrames)
+    {
+        if (matrix)
+        {
+            if (prevMatrix && prevMatrix != matrix)
+            {
+                delete prevMatrix;
+            }
+
+            prevMatrix = matrix;
+        }
+    }
+
+    cachedFrames.resize(cacheFrameCount, nullptr);
 }
 
 FFDTimelineData::FFDTimelineData()
@@ -101,4 +139,4 @@ void FFDTimelineData::_onClear()
     slot = nullptr;
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

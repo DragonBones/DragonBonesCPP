@@ -4,7 +4,7 @@
 #include "../core/BaseObject.h"
 #include "../model/AnimationData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 enum class AnimationFadeOutMode { None, SameLayer, SameGroup, SameLayerAndGroup, All };
 
@@ -97,5 +97,5 @@ public:
     );*/
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif  // DRAGONBONES_ANIMATION_H

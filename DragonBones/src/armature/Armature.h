@@ -8,7 +8,7 @@
 #include "../events/IEventDispatcher.h"
 #include "IArmatureDisplayContainer.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Bone;
 class Slot;
@@ -19,19 +19,30 @@ class Armature : public BaseObject, public IAnimateble
     BIND_CLASS_TYPE(Armature);
 
 public:
-    static const IEventDispatcher* soundEventManager;
+    static IEventDispatcher* soundEventManager;
 
 public:
     void* userData;
 
-public:
+public: // private
+    /** @private */
     bool _bonesDirty;
+    /** @private */
     int _cacheFrameIndex;
+    /** @private */
     ArmatureData* _armatureData;
+    /** @private */
     SkinData* _skinData;
+    /** @private */
     Animation* _animation;
+    /** @private */
     IArmatureDisplayContainer* _display;
+    /** @private */
+    void* _replaceTexture;
+    /** @private */
     Slot* _parent;
+    /** @private */
+    ActionData* _action;
 
 protected:
     bool _delayDispose;
@@ -55,10 +66,15 @@ protected:
     void _sortSlots();
 
 public:
+    /** @private */
     void _addBoneToBoneList(Bone* value);
+    /** @private */
     void _removeBoneFromBoneList(Bone* value);
+    /** @private */
     void _addSlotToSlotList(Slot* value);
+    /** @private */
     void _removeSlotFromSlotList(Slot* value);
+    /** @private */
     void _bufferEvent(EventObject* value, const std::string& type);
 
 public:
@@ -116,5 +132,5 @@ public:
     void setCacheFrameRate(unsigned value);
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_ARMATURE_H

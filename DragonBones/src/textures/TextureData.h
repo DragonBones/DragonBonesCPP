@@ -4,10 +4,13 @@
 #include "../core/BaseObject.h"
 #include "../geom/Rectangle.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class TextureAtlasData;
 
+/**
+ * @private
+ */
 class TextureData : public BaseObject
 {
 public:
@@ -37,21 +40,25 @@ public:
     std::string imagePath;
     std::map<std::string, TextureData*> textures;
 
+    /** @private */
     TextureAtlasData();
+    /** @private */
     virtual ~TextureAtlasData() = 0;
 
 protected:
     virtual void _onClear() override;
 
 public:
+    /** @private */
     virtual TextureData* generateTexture() const = 0;
+    /** @private */
     virtual void addTexture(TextureData* value);
-
+    /** @private */
     inline TextureData* getTexture(const std::string& name) const
     {
         return mapFind(textures, name);
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_TEXTURE_DATA_H

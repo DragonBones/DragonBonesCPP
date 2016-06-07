@@ -4,7 +4,7 @@
 #include "DragonBonesHeaders.h"
 #include "cocos2d.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 class CCTextureData final : public TextureData
 {
     BIND_CLASS_TYPE(CCTextureData);
@@ -42,5 +42,5 @@ public:
     virtual TextureData* generateTexture() const override;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_CC_TEXTURE_DATA_H

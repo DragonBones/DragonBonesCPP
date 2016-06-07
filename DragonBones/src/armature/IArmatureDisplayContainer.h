@@ -4,7 +4,7 @@
 #include "../core/DragonBones.h"
 #include "../events/IEventDispatcher.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Armature;
 class Animation;
@@ -21,5 +21,5 @@ public:
     virtual Animation& getAnimation() const = 0;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES__ARMATURE_DISPLAY_CONTAINER_H

@@ -1,6 +1,6 @@
 #include "CCArmatureDisplayContainer.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 CCArmatureDisplayContainer* CCArmatureDisplayContainer::create()
 {
@@ -23,4 +23,4 @@ CCArmatureDisplayContainer::CCArmatureDisplayContainer() :
 {}
 CCArmatureDisplayContainer::~CCArmatureDisplayContainer() {}
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

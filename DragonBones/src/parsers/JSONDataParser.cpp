@@ -1,96 +1,9 @@
 #include "JSONDataParser.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 JSONDataParser::JSONDataParser() {}
 JSONDataParser::~JSONDataParser() {}
-
-TextureAtlasData& JSONDataParser::parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale)
-{
-    if (!rawData)
-    {
-
-    }
-
-    rapidjson::Document document;
-    document.Parse(rawData);
-
-    textureAtlasData.format = _getTextureFormat(_getString(document, FORMAT, ""));
-    textureAtlasData.name = _getString(document, NAME, "");
-    textureAtlasData.imagePath = _getString(document, IMAGE_PATH, "");
-
-    if (scale > 0.f)
-    {
-        textureAtlasData.scale = scale;
-    }
-    else
-    {
-        scale = textureAtlasData.scale = _getNumber(document, SCALE, textureAtlasData.scale);
-    }
-
-    scale = 1.f / scale;
-
-    if (document.HasMember(SUB_TEXTURE))
-    {
-        for (const auto& textureObject : document[SUB_TEXTURE].GetArray())
-        {
-            const auto textureData = textureAtlasData.generateTexture();
-            textureData->name = _getString(textureObject, NAME, "");
-            textureData->rotated = _getBoolean(textureObject, ROTATED, false);
-            textureData->region.x = _getNumber(textureObject, X, 0.f) * scale;
-            textureData->region.y = _getNumber(textureObject, Y, 0.f) * scale;
-            textureData->region.width = _getNumber(textureObject, WIDTH, 0.f) * scale;
-            textureData->region.height = _getNumber(textureObject, HEIGHT, 0.f) * scale;
-
-            const auto frameWidth = _getNumber(textureObject, FRAME_WIDTH, -1.f);
-            const auto frameHeight = _getNumber(textureObject, FRAME_HEIGHT, -1.f);
-            if (frameWidth > 0.f && frameHeight > 0.f)
-            {
-                textureData->frame = TextureData::generateRectangle();
-                textureData->frame->x = _getNumber(textureObject, FRAME_X, 0.f) * scale;
-                textureData->frame->y = _getNumber(textureObject, FRAME_Y, 0.f) * scale;
-                textureData->frame->width = frameWidth * scale;
-                textureData->frame->height = frameHeight * scale;
-            }
-
-            textureAtlasData.addTexture(textureData);
-        }
-    }
-
-    return textureAtlasData;
-}
-
-DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData)
-{
-    if (!rawData)
-    {
-
-    }
-
-    rapidjson::Document document;
-    document.Parse(rawData);
-
-    const auto version = _getString(document, VERSION, ""); // TODO
-
-
-    const auto data = BaseObject::borrowObject<DragonBonesData>();
-    data->name = _getString(document, NAME, "");
-    data->frameRate = _getNumber(document, FRAME_RATE, (unsigned)24);
-
-    if (document.HasMember(ARMATURE))
-    {
-        this->_data = data;
-
-        for (const auto& armatureObject : document[ARMATURE].GetArray())
-        {
-            data->addArmature(_parseArmature(armatureObject));
-        }
-
-        this->_data = nullptr;
-    }
-
-    return data;
-}
 
 ArmatureData * JSONDataParser::_parseArmature(const rapidjson::Value & rawData)
 {
@@ -180,6 +93,7 @@ void JSONDataParser::_parseIK(const rapidjson::Value & rawData)
         {
             bone->parent->ik = bone->ik;
             bone->parent->chainIndex = 0;
+            bone->parent->chain = 0;
             bone->chainIndex = 1;
         }
         else
@@ -322,10 +236,6 @@ DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
 
         case DisplayType::Mesh:
             display->meshData = _parseMesh(rawData);
-            break;
-
-        default:
-            // throw new Error();
             break;
     }
 
@@ -520,7 +430,17 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
             const auto slotFrame = BaseObject::borrowObject<SlotFrameData>();
             slotTimeline->slot = pair.second;
             slotFrame->displayIndex = pair.second->displayIndex;
-            slotFrame->color = &SlotFrameData::DEFAULT_COLOR;
+
+            if (pair.second->color == &SlotFrameData::DEFAULT_COLOR)
+            {
+                slotFrame->color = &SlotFrameData::DEFAULT_COLOR;
+            }
+            else 
+            {
+                slotFrame->color = SlotFrameData::generateColor();
+                *slotFrame->color = *pair.second->color; // copy
+            }
+
             slotTimeline->frames.reserve(1);
             slotTimeline->frames[0] = slotFrame;
             animation->addSlotTimeline(slotTimeline);
@@ -585,7 +505,7 @@ FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value& rawD
 {
     const auto timeline = BaseObject::borrowObject<FFDTimelineData>();
     timeline->skin = this->_armature->getSkin(_getString(rawData, SKIN, ""));
-    timeline->slot = timeline->skin->getSlot(_getString(rawData, SLOT, "")); // NAME;
+    timeline->slot = timeline->skin->getSlot(_getString(rawData, SLOT, ""));
 
     const auto meshName = _getString(rawData, NAME, "");
     for (std::size_t i = 0, l = timeline->slot->displays.size(); i < l; ++i)
@@ -593,7 +513,7 @@ FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value& rawD
         const auto displayData = timeline->slot->displays[i];
         if (displayData->meshData && displayData->name == meshName)
         {
-            timeline->displayIndex = i; // rawData[DISPLAY_INDEX];
+            timeline->displayIndex = i;
             this->_mesh = displayData->meshData;
             break;
         }
@@ -641,8 +561,9 @@ BoneFrameData * JSONDataParser::_parseBoneFrame(const rapidjson::Value& rawData,
 
     if (rawData.HasMember(EVENT) || rawData.HasMember(SOUND))
     {
-        const auto bone = static_cast<BoneTimelineData*>(this->_timeline);
-        _parseEventData(rawData, frame->events, nullptr, nullptr);
+        const auto bone = static_cast<BoneTimelineData*>(this->_timeline)->bone;
+        _parseEventData(rawData, frame->events, bone, nullptr);
+
         this->_animation->hasBoneTimelineEvent = true;
     }
 
@@ -664,6 +585,12 @@ SlotFrameData * JSONDataParser::_parseSlotFrame(const rapidjson::Value & rawData
     else
     {
         frame->color = &SlotFrameData::DEFAULT_COLOR;
+    }
+
+    if (rawData.HasMember(ACTION))
+    {
+        const auto slot = static_cast<SlotTimelineData*>(this->_timeline)->slot;
+        _parseActionData(rawData, frame->actions, slot->parent, slot);
     }
 
     return frame;
@@ -725,7 +652,10 @@ void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vect
     {
         const auto actionData = BaseObject::borrowObject<ActionData>();
         actionData->type = ActionType::FadeIn;
-        // actionData->params = [actionsObject];
+
+        auto& strings = std::get<2>(actionData->data);
+        strings.push_back(actionsObject.GetString());
+
         actionData->bone = bone;
         actionData->slot = slot;
         actions.push_back(actionData);
@@ -745,42 +675,36 @@ void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vect
                 actionData->type = (ActionType)_getParameter(actionObject, 0, (int)ActionType::FadeIn);
             }
 
+            auto& ints = std::get<0>(actionData->data);
+            auto& floats = std::get<1>(actionData->data);
+            auto& strings = std::get<2>(actionData->data);
+
             switch (actionData->type)
             {
                 case ActionType::Play:
-                    /*actionDataA.params = [
-                        _getParameter(actionObject, 1, null), // animationName
-                            _getParameter(actionObject, 2, -1), // playTimes
-                    ];*/
+                    strings.push_back(_getParameter(actionObject, 1, ""));
+                    ints.push_back(_getParameter(actionObject, 2, (int)-1));
                     break;
 
                 case ActionType::Stop:
-                    /*actionDataA.params = [
-                        _getParameter(actionObject, 1, null) // animation
-                    ];*/
+                    strings.push_back(_getParameter(actionObject, 1, ""));
                     break;
 
                 case ActionType::GotoAndPlay:
-                    /*actionDataA.params = [
-                        _getParameter(actionObject, 1, null), // animationName
-                            _getParameter(actionObject, 2, 0), // time
-                            _getParameter(actionObject, 3, -1) // playTimes
-                    ];*/
+                    strings.push_back(_getParameter(actionObject, 1, ""));
+                    floats.push_back(_getParameter(actionObject, 2, 0.f));
+                    ints.push_back(_getParameter(actionObject, 3, (int)-1));
                     break;
 
                 case ActionType::GotoAndStop:
-                    /*actionDataA.params = [
-                        _getParameter(actionObject, 1, null), // animationName
-                            _getParameter(actionObject, 2, 0), // time
-                    ];*/
+                    strings.push_back(_getParameter(actionObject, 1, ""));
+                    floats.push_back(_getParameter(actionObject, 2, 0.f));
                     break;
 
                 case ActionType::FadeIn:
-                    /*actionDataA.params = [
-                        _getParameter(actionObject, 1, null), // animationName
-                            _getParameter(actionObject, 2, -1), // playTimes
-                            _getParameter(actionObject, 3, 0) // fadeInTime
-                    ];*/
+                    strings.push_back(_getParameter(actionObject, 1, ""));
+                    ints.push_back(_getParameter(actionObject, 2, (int)-1));
+                    floats.push_back(_getParameter(actionObject, 3, 0.f));
                     break;
 
                 case ActionType::FadeOut:
@@ -836,14 +760,110 @@ void JSONDataParser::_parseTransform(const rapidjson::Value& rawData, Transform&
 
 void JSONDataParser::_parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color) const
 {
-    color.alphaMultiplier = _getNumber(rawData, ALPHA_MULTIPLIER, int(100)) * 0.01f;
-    color.redMultiplier = _getNumber(rawData, RED_MULTIPLIER, int(100)) * 0.01f;
-    color.greenMultiplier = _getNumber(rawData, GREEN_MULTIPLIER, int(100)) * 0.01f;
-    color.blueMultiplier = _getNumber(rawData, BLUE_MULTIPLIER, int(100)) * 0.01f;
-    color.alphaOffset = _getNumber(rawData, ALPHA_OFFSET, int(0));
-    color.redOffset = _getNumber(rawData, RED_OFFSET, int(0));
-    color.greenOffset = _getNumber(rawData, GREEN_OFFSET, int(0));
-    color.blueOffset = _getNumber(rawData, BLUE_OFFSET, int(0));
+    color.alphaMultiplier = _getNumber(rawData, ALPHA_MULTIPLIER, (int)100) * 0.01f;
+    color.redMultiplier = _getNumber(rawData, RED_MULTIPLIER, (int)100) * 0.01f;
+    color.greenMultiplier = _getNumber(rawData, GREEN_MULTIPLIER, (int)100) * 0.01f;
+    color.blueMultiplier = _getNumber(rawData, BLUE_MULTIPLIER, (int)100) * 0.01f;
+    color.alphaOffset = _getNumber(rawData, ALPHA_OFFSET, (int)0);
+    color.redOffset = _getNumber(rawData, RED_OFFSET, (int)0);
+    color.greenOffset = _getNumber(rawData, GREEN_OFFSET, (int)0);
+    color.blueOffset = _getNumber(rawData, BLUE_OFFSET, (int)0);
 }
 
-NAMESPACE_DRAGONBONES_END
+void JSONDataParser::parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale)
+{
+    if (rawData)
+    {
+        rapidjson::Document document;
+        document.Parse(rawData);
+
+        textureAtlasData.format = _getTextureFormat(_getString(document, FORMAT, ""));
+        textureAtlasData.name = _getString(document, NAME, "");
+        textureAtlasData.imagePath = _getString(document, IMAGE_PATH, "");
+
+        if (scale > 0.f)
+        {
+            textureAtlasData.scale = scale;
+        }
+        else
+        {
+            scale = textureAtlasData.scale = _getNumber(document, SCALE, textureAtlasData.scale);
+        }
+
+        scale = 1.f / scale;
+
+        if (document.HasMember(SUB_TEXTURE))
+        {
+            for (const auto& textureObject : document[SUB_TEXTURE].GetArray())
+            {
+                const auto textureData = textureAtlasData.generateTexture();
+                textureData->name = _getString(textureObject, NAME, "");
+                textureData->rotated = _getBoolean(textureObject, ROTATED, false);
+                textureData->region.x = _getNumber(textureObject, X, 0.f) * scale;
+                textureData->region.y = _getNumber(textureObject, Y, 0.f) * scale;
+                textureData->region.width = _getNumber(textureObject, WIDTH, 0.f) * scale;
+                textureData->region.height = _getNumber(textureObject, HEIGHT, 0.f) * scale;
+
+                const auto frameWidth = _getNumber(textureObject, FRAME_WIDTH, -1.f);
+                const auto frameHeight = _getNumber(textureObject, FRAME_HEIGHT, -1.f);
+                if (frameWidth > 0.f && frameHeight > 0.f)
+                {
+                    textureData->frame = TextureData::generateRectangle();
+                    textureData->frame->x = _getNumber(textureObject, FRAME_X, 0.f) * scale;
+                    textureData->frame->y = _getNumber(textureObject, FRAME_Y, 0.f) * scale;
+                    textureData->frame->width = frameWidth * scale;
+                    textureData->frame->height = frameHeight * scale;
+                }
+
+                textureAtlasData.addTexture(textureData);
+            }
+        }
+    }
+    else
+    {
+        DRAGONBONES_ASSERT(false, "Argument error.");
+    }
+}
+
+DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData)
+{
+    if (rawData)
+    {
+        rapidjson::Document document;
+        document.Parse(rawData);
+
+        std::string version = _getString(document, VERSION, "");
+        if (version == DATA_VERSION)
+        {
+            const auto data = BaseObject::borrowObject<DragonBonesData>();
+            data->name = _getString(document, NAME, "");
+            data->frameRate = _getNumber(document, FRAME_RATE, (unsigned)24);
+
+            if (document.HasMember(ARMATURE))
+            {
+                this->_data = data;
+
+                for (const auto& armatureObject : document[ARMATURE].GetArray())
+                {
+                    data->addArmature(_parseArmature(armatureObject));
+                }
+
+                this->_data = nullptr;
+            }
+
+            return data;
+        }
+        else // TODO
+        {
+            DRAGONBONES_ASSERT(false, "Nonsupport data version.");
+        }
+    }
+    else
+    {
+        DRAGONBONES_ASSERT(false, "Argument error.");
+    }
+
+    return nullptr;
+}
+
+DRAGONBONES_NAMESPACE_END

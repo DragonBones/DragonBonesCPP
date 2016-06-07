@@ -4,7 +4,7 @@
 #include "../core/BaseObject.h"
 #include "ArmatureData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class DragonBonesData final : public BaseObject
 {
@@ -16,7 +16,9 @@ public:
     std::string name;
     std::map<std::string, ArmatureData*> armatures;
 
+    /** @private */
     DragonBonesData();
+    /** @private */
     ~DragonBonesData();
 
 private:
@@ -26,6 +28,7 @@ protected:
     void _onClear() override;
 
 public:
+    /** @private */
     void addArmature(ArmatureData* value);
 
     inline ArmatureData* getArmature(const std::string& name) const
@@ -34,5 +37,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_DRAGON_BONES_DATA_H

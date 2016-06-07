@@ -3,7 +3,7 @@
 
 #include "TransformObject.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Bone final : public TransformObject
 {
@@ -45,7 +45,8 @@ private:
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(Bone);
 
     void _updateGlobalTransformMatrix();
-    void _computeIK();
+    void _computeIKA();
+    void _computeIKB();
 
 protected:
     void _onClear() override;
@@ -95,5 +96,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_BONE_H

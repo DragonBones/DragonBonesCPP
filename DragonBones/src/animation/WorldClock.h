@@ -4,7 +4,7 @@
 #include "../core/DragonBones.h"
 #include "IAnimateble.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 class WorldClock final : public IAnimateble
 {
 public:
@@ -31,5 +31,5 @@ private:
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(WorldClock);
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_WORLD_CLOCK_H

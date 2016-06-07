@@ -10,27 +10,41 @@
 class ArmatureData;
 class TextureData;
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class BoneData : public BaseObject 
 {
     BIND_CLASS_TYPE(BoneData);
 
 public:
+    /** @private */
     bool inheritTranslation;
+    /** @private */
     bool inheritRotation;
+    /** @private */
     bool inheritScale;
+    /** @private */
     bool bendPositive;
+    /** @private */
     unsigned chain;
+    /** @private */
     unsigned chainIndex;
+    /** @private */
     float weight;
+    /** @private */
     float length;
+
     std::string name;
+
     BoneData* parent;
+    /** @private */
     BoneData* ik;
+    /** @private */
     Transform transform;
 
+    /** @private */
     BoneData();
+    /** @private */
     ~BoneData();
 
 private:
@@ -45,18 +59,28 @@ class SlotData final : public BaseObject
     BIND_CLASS_TYPE(SlotData);
 
 public:
+    /** @private */
     static ColorTransform DEFAULT_COLOR;
+    /** @private */
     static ColorTransform* generateColor();
 
 public:
+    /** @private */
     int displayIndex;
+    /** @private */
     int zOrder;
+    /** @private */
     BlendMode blendMode;
+
     std::string name;
+
     BoneData* parent;
+    /** @private */
     ColorTransform* color;
 
+    /** @private */
     SlotData();
+    /** @private */
     ~SlotData();
 
 private:
@@ -66,6 +90,9 @@ protected:
     void _onClear() override;
 };
 
+/** 
+ * @private
+ */
 class MeshData final : public BaseObject
 {
     BIND_CLASS_TYPE(MeshData);
@@ -95,6 +122,9 @@ protected:
     void _onClear() override;
 };
 
+/**
+ * @private
+ */
 class DisplayData final : public BaseObject
 {
     BIND_CLASS_TYPE(DisplayData);
@@ -119,6 +149,9 @@ protected:
     void _onClear() override;
 };
 
+/**
+ * @private
+ */
 class SlotDisplayDataSet final : public BaseObject
 {
     BIND_CLASS_TYPE(SlotDisplayDataSet);
@@ -143,9 +176,12 @@ class SkinData final : public BaseObject
 
 public:
     std::string name;
+    /** @private */
     std::map<std::string, SlotDisplayDataSet*> slots;
 
+    /** @private */
     SkinData();
+    /** @private */
     ~SkinData();
 
 protected:
@@ -155,8 +191,10 @@ private:
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(SkinData);
 
 public:
+    /** @private */
     void addSlot(SlotDisplayDataSet* value);
 
+    /** @private */
     inline SlotDisplayDataSet* getSlot(const std::string& name) const
     {
         return mapFind(slots, name);
@@ -172,12 +210,19 @@ private:
 
 public:
     unsigned frameRate;
+    /** @private */
     unsigned cacheFrameRate;
+
     ArmatureType type;
+
     std::string name;
+
     std::map<std::string, BoneData*> bones;
+
     std::map<std::string, SlotData*> slots;
+
     std::map<std::string, SkinData*> skins;
+
     std::map<std::string, AnimationData*> animations;
 
 private:
@@ -190,7 +235,9 @@ private:
     std::map<std::string, std::vector<BoneData*>> _bonesChildren;
 
 public:
+    /** @private */
     ArmatureData();
+    /** @private */
     ~ArmatureData();
 
 private:
@@ -203,10 +250,15 @@ protected:
     void _onClear() override;
 
 public:
-    void cacheFrame(unsigned value);
+    /** @private */
+    void cacheFrames(unsigned value);
+    /** @private */
     void addBone(BoneData* value, const std::string& parentName = "");
+    /** @private */
     void addSlot(SlotData* value);
+    /** @private */
     void addSkin(SkinData* value);
+    /** @private */
     void addAnimation(AnimationData* value);
 
     inline BoneData* getBone(const std::string& name) const
@@ -272,5 +324,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_ARMATURE_DATA_H

@@ -1,6 +1,6 @@
 #include "CCTextureData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 CCTextureData::CCTextureData() :
     texture(nullptr)
@@ -49,4 +49,4 @@ TextureData * CCTextureAtlasData::generateTexture() const
     return BaseObject::borrowObject<CCTextureData>();
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END

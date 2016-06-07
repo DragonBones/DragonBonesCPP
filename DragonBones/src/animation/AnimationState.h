@@ -4,7 +4,7 @@
 #include "../core/BaseObject.h"
 #include "../model/AnimationData.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class Armature;
 class Bone;
@@ -129,5 +129,5 @@ public:
     }
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif  // DRAGONBONES_ANIMATION_STATE_H

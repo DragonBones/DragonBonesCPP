@@ -5,11 +5,37 @@
 #include "../geom/Transform.h"
 #include "../geom/ColorTransform.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 class BoneData;
 class SlotData;
 
+/**
+ * @private
+ */
+class ActionData final : public BaseObject
+{
+    BIND_CLASS_TYPE(ActionData);
+
+public:
+    ActionType type;
+    BoneData* bone;
+    SlotData* slot;
+    std::tuple<std::vector<int>, std::vector<float>, std::vector<std::string>> data;
+
+    ActionData();
+    ~ActionData();
+
+private:
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(ActionData);
+
+protected:
+    void _onClear() override;
+};
+
+/**
+ * @private
+ */
 class EventData final : public BaseObject
 {
     BIND_CLASS_TYPE(EventData);
@@ -31,26 +57,9 @@ protected:
     void _onClear() override;
 };
 
-class ActionData final : public BaseObject
-{
-    BIND_CLASS_TYPE(ActionData);
-
-public:
-    ActionType type;
-    //params; // TODO
-    BoneData* bone;
-    SlotData* slot;
-
-    ActionData();
-    ~ActionData();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(ActionData);
-
-protected:
-    void _onClear() override;
-};
-
+/**
+ * @private
+ */
 template<class T>
 class FrameData : public BaseObject
 {
@@ -89,6 +98,9 @@ protected:
     }
 };
 
+/**
+ * @private
+ */
 template<class T>
 class TweenFrameData : public FrameData<T>
 {
@@ -154,6 +166,9 @@ protected:
     }
 };
 
+/**
+ * @private
+ */
 class AnimationFrameData final : public FrameData<AnimationFrameData>
 {
     BIND_CLASS_TYPE(AnimationFrameData);
@@ -169,6 +184,9 @@ protected:
     void _onClear() override;
 };
 
+/**
+ * @private
+ */
 class BoneFrameData final : public TweenFrameData<BoneFrameData>
 {
     BIND_CLASS_TYPE(BoneFrameData);
@@ -189,6 +207,9 @@ protected:
     void _onClear() override;
 };
 
+/**
+ * @private
+ */
 class SlotFrameData final : public TweenFrameData<SlotFrameData>
 {
     BIND_CLASS_TYPE(SlotFrameData);
@@ -212,6 +233,9 @@ protected:
     void _onClear() override;
 };
 
+/**
+ * @private
+ */
 class ExtensionFrameData final : public TweenFrameData<ExtensionFrameData>
 {
     BIND_CLASS_TYPE(ExtensionFrameData);
@@ -231,5 +255,5 @@ protected:
     void _onClear() override;
 };
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_FRAME_DATA_H

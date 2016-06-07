@@ -4,7 +4,7 @@
 #include "../armature/Bone.h"
 #include "../armature/Slot.h"
 
-NAMESPACE_DRAGONBONES_BEGIN
+DRAGONBONES_NAMESPACE_BEGIN
 
 AnimationState::AnimationState() :
     _timeline(nullptr)
@@ -100,13 +100,27 @@ void AnimationState::_advanceFadeTime(float passedTime)
     {
         _fadeProgress = fadeProgress;
 
+        const auto eventDispatcher = _armature->getDisplay();
+
         if (_fadeTime <= passedTime)
         {
             if (_isFadeOut)
             {
+                if (eventDispatcher->hasEvent(EventObject::FADE_OUT))
+                {
+                    auto event = BaseObject::borrowObject<EventObject>();
+                    event->animationState = this;
+                    _armature->_bufferEvent(event, EventObject::FADE_OUT);
+                }
             }
             else
             {
+                if (eventDispatcher->hasEvent(EventObject::FADE_IN))
+                {
+                    auto event = BaseObject::borrowObject<EventObject>();
+                    event->animationState = this;
+                    _armature->_bufferEvent(event, EventObject::FADE_IN);
+                }
             }
         }
 
@@ -115,10 +129,24 @@ void AnimationState::_advanceFadeTime(float passedTime)
             if (_isFadeOut)
             {
                 _isFadeOutComplete = true;
+
+                if (eventDispatcher->hasEvent(EventObject::FADE_OUT_COMPLETE))
+                {
+                    auto event = BaseObject::borrowObject<EventObject>();
+                    event->animationState = this;
+                    _armature->_bufferEvent(event, EventObject::FADE_OUT_COMPLETE);
+                }
             }
             else
             {
                 _isPausePlayhead = false;
+
+                if (eventDispatcher->hasEvent(EventObject::FADE_IN_COMPLETE))
+                {
+                    auto event = BaseObject::borrowObject<EventObject>();
+                    event->animationState = this;
+                    _armature->_bufferEvent(event, EventObject::FADE_IN_COMPLETE);
+                }
             }
         }
     }
@@ -202,7 +230,7 @@ void AnimationState::_updateTimelineStates()
                 _boneTimelines.push_back(timelineState);
                 if (_armature->getCacheFrameRate() > 0)
                 {
-                    bone->_cacheFrames = &timelineData->cacheFrames;
+                    bone->_cacheFrames = &timelineData->cachedFrames;
                 }
             }
         }
@@ -243,7 +271,7 @@ void AnimationState::_updateTimelineStates()
 
                 if (_armature->getCacheFrameRate() > 0)
                 {
-                    slot->_cacheFrames = &slotTimelineData->cacheFrames;
+                    slot->_cacheFrames = &slotTimelineData->cachedFrames;
                 }
             }
         }
@@ -359,9 +387,9 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
             std::size_t cacheFrameIndex = _timeline->_currentTime * _clip->cacheTimeToFrameScale;
             _armature->_cacheFrameIndex = cacheFrameIndex;
 
-            if (!_clip->cacheFrames[cacheFrameIndex])
+            if (!_clip->cachedFrames[cacheFrameIndex] || _clip->hasBoneTimelineEvent)
             {
-                _clip->cacheFrames[cacheFrameIndex] = true;
+                _clip->cachedFrames[cacheFrameIndex] = true;
 
                 for (const auto timelineState : _boneTimelines)
                 {
@@ -554,4 +582,4 @@ void AnimationState::setCurrentTime(float value)
     }
 }
 
-NAMESPACE_DRAGONBONES_END
+DRAGONBONES_NAMESPACE_END
