@@ -5,6 +5,7 @@
 #include "../model/FrameData.h"
 #include "../model/TimelineData.h"
 #include "../model/AnimationData.h"
+#include "AnimationState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -381,7 +382,7 @@ public:
 protected:
     virtual void _onClear() override
     {
-        TimelineState::_onClear();
+        TimelineState<T, M>::_onClear();
 
         _tweenProgress = 0.f;
         _tweenEasing = NO_TWEEN;

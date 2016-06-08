@@ -196,8 +196,6 @@ DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
         display->type = (DisplayType)_getNumber(rawData, TYPE, (int)DisplayType::Image);
     }
 
-    const auto transformObject = rawData.HasMember(TRANSFORM) ? &rawData[TRANSFORM] : nullptr;
-
     display->isRelativePivot = true;
     if (rawData.HasMember(PIVOT))
     {
@@ -207,11 +205,15 @@ DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
     }
     else
     {
-        if (transformObject && transformObject->HasMember(PIVOT_X) || transformObject->HasMember(PIVOT_Y))
+        if (rawData.HasMember(TRANSFORM))
         {
-            display->isRelativePivot = false;
-            display->pivot.x = _getNumber(*transformObject, PIVOT_X, 0.f);
-            display->pivot.y = _getNumber(*transformObject, PIVOT_Y, 0.f);
+            const auto& transformObject = rawData[TRANSFORM];
+            if (transformObject.HasMember(PIVOT_X) || transformObject.HasMember(PIVOT_Y))
+            {
+                display->isRelativePivot = false;
+                display->pivot.x = _getNumber(transformObject, PIVOT_X, 0.f);
+                display->pivot.y = _getNumber(transformObject, PIVOT_Y, 0.f);
+            }
         }
 
         if (display->isRelativePivot)
@@ -221,9 +223,9 @@ DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
         }
     }
 
-    if (transformObject)
+    if (rawData.HasMember(TRANSFORM))
     {
-        _parseTransform(*transformObject, display->transform);
+        _parseTransform(rawData[TRANSFORM], display->transform);
     }
 
     switch (display->type)
@@ -249,14 +251,14 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
     const auto rawVertices = rawData[VERTICES].GetArray();
     const auto rawUVs = rawData[UVS].GetArray();
     const auto rawTriangles = rawData[TRIANGLES].GetArray();
-    const auto rawWeights = rawData.HasMember(WEIGHTS) ? &rawData[WEIGHTS].GetArray() : nullptr;
+    const auto skinned = rawData.HasMember(WEIGHTS) && !rawData[WEIGHTS].GetArray().Empty();
 
     const auto numVertices = (unsigned)(rawVertices.Size() / 2);
     const auto numTriangles = (unsigned)(rawTriangles.Size() / 3);
 
     std::vector<Matrix> inverseBindPose(this->_armature->getSortedBones().size(), Matrix());
 
-    mesh->skinned = rawWeights && !rawWeights->Empty();
+    mesh->skinned = skinned;
     mesh->uvs.resize(numVertices * 2);
     mesh->vertices.resize(numVertices * 2);
     mesh->vertexIndices.resize(numTriangles * 3);
@@ -308,7 +310,8 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
 
         if (mesh->skinned)
         {
-            const auto numBones = (*rawWeights)[iW].GetUint();
+            const auto rawWeights = rawData[WEIGHTS].GetArray();
+            const auto numBones = rawWeights[iW].GetUint();
             auto& indices = mesh->boneIndices[vertexIndex];
             auto& weights = mesh->weights[vertexIndex];
             auto& boneVertices = mesh->boneVertices[vertexIndex];
@@ -319,7 +322,7 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
             for (std::size_t iB = 0; iB < numBones; ++iB)
             {
                 const auto iI = iW + 1 + iB * 2;
-                const auto rawBoneIndex = (*rawWeights)[iI].GetUint();
+                const auto rawBoneIndex = rawWeights[iI].GetUint();
                 const auto boneData = this->_rawBones[rawBoneIndex];
 
                 const auto iderator = std::find(mesh->bones.cbegin(), mesh->bones.cend(), boneData);
@@ -338,7 +341,7 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
                 mesh->inverseBindPose[boneIndex].transformPoint(x, y, _helpPoint);
 
                 indices.push_back(boneIndex);
-                weights.push_back((*rawWeights)[iI + 1].GetFloat());
+                weights.push_back(rawWeights[iI + 1].GetFloat());
                 boneVertices.push_back(_helpPoint.x);
                 boneVertices.push_back(_helpPoint.y);
             }
