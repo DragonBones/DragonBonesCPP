@@ -116,8 +116,8 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
         }
     }
 
-    const auto& fullpath = cocos2d::FileUtils::getInstance()->fullPathForFilename(filePath);
-    const auto& data = cocos2d::FileUtils::getInstance()->getStringFromFile(fullpath);
+    const auto fullpath = cocos2d::FileUtils::getInstance()->fullPathForFilename(filePath);
+    const auto data = cocos2d::FileUtils::getInstance()->getStringFromFile(fullpath);
     if (data.empty())
     {
         return nullptr;
@@ -130,8 +130,8 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
 
 TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, const std::string& dragonBonesName, float scale)
 {
-    const auto& fullpath = cocos2d::FileUtils::getInstance()->fullPathForFilename(filePath);
-    const auto& data = cocos2d::FileUtils::getInstance()->getStringFromFile(fullpath);
+    const auto fullpath = cocos2d::FileUtils::getInstance()->fullPathForFilename(filePath);
+    const auto data = cocos2d::FileUtils::getInstance()->getStringFromFile(fullpath);
     if (data.empty())
     {
         return nullptr;
@@ -142,7 +142,7 @@ TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, c
     const auto pos = filePath.find_last_of("/");
     if (std::string::npos != pos)
     {
-        const auto& basePath = filePath.substr(0, pos + 1);
+        const auto basePath = filePath.substr(0, pos + 1);
         textureAtlasData->imagePath = basePath + textureAtlasData->imagePath;
     }
     

@@ -251,14 +251,13 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
     const auto rawVertices = rawData[VERTICES].GetArray();
     const auto rawUVs = rawData[UVS].GetArray();
     const auto rawTriangles = rawData[TRIANGLES].GetArray();
-    const auto skinned = rawData.HasMember(WEIGHTS) && !rawData[WEIGHTS].GetArray().Empty();
 
     const auto numVertices = (unsigned)(rawVertices.Size() / 2);
     const auto numTriangles = (unsigned)(rawTriangles.Size() / 3);
 
     std::vector<Matrix> inverseBindPose(this->_armature->getSortedBones().size(), Matrix());
 
-    mesh->skinned = skinned;
+    mesh->skinned = rawData.HasMember(WEIGHTS) && !rawData[WEIGHTS].GetArray().Empty();
     mesh->uvs.resize(numVertices * 2);
     mesh->vertices.resize(numVertices * 2);
     mesh->vertexIndices.resize(numTriangles * 3);
@@ -606,21 +605,21 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & raw
 
     _parseTweenFrame<ExtensionFrameData>(rawData, *frame, frameStart, frameCount);
 
-    const auto rawVertices = rawData.HasMember(VERTICES) ? &rawData[VERTICES].GetArray() : nullptr;
+    const auto& rawVertices = rawData[VERTICES].GetArray();
     const auto offset = _getNumber(rawData, OFFSET, (unsigned)0);
     auto x = 0.f;
     auto y = 0.f;
     for (std::size_t i = 0, l = this->_mesh->vertices.size(); i < l; i += 2)
     {
-        if (!rawVertices || i < offset || i - offset >= rawVertices->Size())
+        if (i < offset || i - offset >= rawVertices.Size())
         {
             x = 0.f;
             y = 0.f;
         }
         else
         {
-            x = (*rawVertices)[i - offset].GetFloat();
-            y = (*rawVertices)[i + 1 - offset].GetFloat();
+            x = rawVertices[i - offset].GetFloat();
+            y = rawVertices[i + 1 - offset].GetFloat();
         }
 
         if (this->_mesh->skinned)
