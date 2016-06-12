@@ -54,7 +54,9 @@ protected:
     std::vector<EventObject*> _events;
 
 public:
+    /** @private */
     Armature();
+    /** @private */
     ~Armature();
 
 private:
@@ -78,8 +80,9 @@ public:
     void _bufferEvent(EventObject* value, const std::string& type);
 
 public:
-    virtual void advanceTime(float passedTime) override;
-    void invalidUpdate(const std::string& boneName = "");
+    void dispose();
+    void advanceTime(float passedTime) override;
+    void invalidUpdate(const std::string& boneName = "", bool updateSlotDisplay = false);
     Slot* getSlot(const std::string& name) const;
     Slot* getSlotByDisplay(void* display) const;
     void addSlot(Slot* value, const std::string& boneName);

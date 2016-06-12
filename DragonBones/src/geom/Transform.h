@@ -11,7 +11,7 @@ class Transform final
 public:
     static float normalizeRadian(float value)
     {
-        value = fmod(value + PI, PI * 2.f);
+        value = std::fmod(value + PI, PI * 2.f);
         value += value > 0.f ? -PI : PI;
 
         return value;

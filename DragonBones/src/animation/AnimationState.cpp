@@ -27,11 +27,11 @@ void AnimationState::_onClear()
     fadeTotalTime = 0.f;
 
     _isFadeOutComplete = false;
-    _position = 0;
-    _duration = 0;
-    _clipDutation = 0;
-    _index = 0;
-    _layer = 0;
+	_index = 0;
+	_layer = 0;
+    _position = 0.f;
+    _duration = 0.f;
+    _clipDutation = 0.f;
     _weightResult = 0.f;
     _fadeProgress = 0.f;
     _group.clear();
@@ -171,7 +171,7 @@ bool AnimationState::_isDisabled(const Slot& slot) const
 
 void AnimationState::_fadeIn(
     Armature* armature, AnimationData* clip, const std::string& animationName, 
-    unsigned playTimes, std::size_t position, std::size_t duration, float timeScale, float fadeInTime,
+    unsigned playTimes, float position, float duration, float timeScale, float fadeInTime,
     bool pausePlayhead
 )
 {
@@ -228,10 +228,6 @@ void AnimationState::_updateTimelineStates()
                 timelineState->bone = bone;
                 timelineState->fadeIn(_armature, this, timelineData);
                 _boneTimelines.push_back(timelineState);
-                if (_armature->getCacheFrameRate() > 0)
-                {
-                    bone->_cacheFrames = &timelineData->cachedFrames;
-                }
             }
         }
     }
@@ -268,11 +264,6 @@ void AnimationState::_updateTimelineStates()
                 slotTimelineState->slot = slot;
                 slotTimelineState->fadeIn(_armature, this, slotTimelineData);
                 _slotTimelines.push_back(slotTimelineState);
-
-                if (_armature->getCacheFrameRate() > 0)
-                {
-                    slot->_cacheFrames = &slotTimelineData->cachedFrames;
-                }
             }
         }
     }
@@ -357,26 +348,20 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
 
     passedTime *= timeScale;
 
-    int time = 0;
-
     if (passedTime != 0.f && _isPlaying && !_isPausePlayhead)
     {
         _time += passedTime;
-        time = _time * SECOND_TO_MICROSECOND;
-        _timeline->update(time);
+        _timeline->update(_time);
 
         if (autoFadeOutTime >= 0.f && _fadeProgress >= 1.f && _timeline->_isCompleted)
         {
             fadeOut(autoFadeOutTime);
         }
     }
-    else
-    {
-        time = _time * SECOND_TO_MICROSECOND;
-    }
 
     if (_weightResult != 0.f)
     {
+		float time = _time;
         if (!_clip->hasAsynchronyTimeline)
         {
             time = _timeline->_currentTime;
@@ -384,9 +369,20 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
 
         if (_fadeProgress >= 1.f && _index == 0 && _armature->getCacheFrameRate() > 0)
         {
-            std::size_t cacheFrameIndex = _timeline->_currentTime * _clip->cacheTimeToFrameScale;
+            std::size_t cacheFrameIndex = (unsigned)(_timeline->_currentTime * _clip->cacheTimeToFrameScale);
             _armature->_cacheFrameIndex = cacheFrameIndex;
 
+            // TODO
+            /*
+            if (_armature->getCacheFrameRate() > 0)
+            {
+                bone->_cacheFrames = &timelineData->cachedFrames;
+            }
+            if (_armature->getCacheFrameRate() > 0)
+            {
+                slot->_cacheFrames = &slotTimelineData->cachedFrames;
+            }
+            */
             if (!_clip->cachedFrames[cacheFrameIndex] || _clip->hasBoneTimelineEvent)
             {
                 _clip->cachedFrames[cacheFrameIndex] = true;
@@ -543,7 +539,7 @@ bool AnimationState::getIsCompleted() const
 
 float AnimationState::getCurrentTime() const
 {
-    return _timeline->_currentTime / SECOND_TO_MICROSECOND;
+    return _timeline->_currentTime;
 }
 
 void AnimationState::setCurrentTime(float value)
@@ -554,12 +550,11 @@ void AnimationState::setCurrentTime(float value)
     }
 
     _time = value;
-
-    auto time = _time * SECOND_TO_MICROSECOND;
-    _timeline->setCurrentTime(time);
+    _timeline->setCurrentTime(_time);
 
     if (_weightResult != 0.f)
     {
+        float time = _time;
         if (!_clip->hasAsynchronyTimeline)
         {
             time = _timeline->_currentTime;

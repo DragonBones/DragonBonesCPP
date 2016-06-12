@@ -24,6 +24,7 @@ void Animation::_onClear()
     timeScale = 1.f;
 
     _timelineStateDirty = false;
+	_animationStateDirty = false;
     _armature = nullptr;
 
     _isPlaying = false;
@@ -113,6 +114,7 @@ void Animation::_advanceTime(float passedTime)
         if (animationState->_isFadeOutComplete)
         {
             animationState->returnToPool();
+			_animationStateDirty = true;
             _animationStates.clear();
             _lastAnimationState = nullptr;
         }
@@ -140,6 +142,7 @@ void Animation::_advanceTime(float passedTime)
             {
                 r++;
                 animationState->returnToPool();
+				_animationStateDirty = true;
 
                 if (_lastAnimationState == animationState)
                 {
@@ -277,6 +280,7 @@ AnimationState* Animation::fadeIn(
         pauseFadeIn
     );
     _animationStates.push_back(_lastAnimationState);
+	_animationStateDirty = true;
 
     if (_animationStates.size() > 1)
     {

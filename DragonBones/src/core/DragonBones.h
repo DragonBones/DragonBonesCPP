@@ -110,7 +110,6 @@ const float PI_Q = PI * 0.25f;
 const float ANGLE_TO_RADIAN = PI / 180.f;
 const float RADIAN_TO_ANGLE = 180.f / PI;
 const float SECOND_TO_MILLISECOND = 1000.f;
-const float SECOND_TO_MICROSECOND = 1000000.f;
 const float NO_TWEEN = 100.f;
 
 template <class T>

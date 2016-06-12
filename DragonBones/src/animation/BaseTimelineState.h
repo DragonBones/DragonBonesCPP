@@ -17,22 +17,22 @@ class TimelineState : public BaseObject
 {
 public:
     bool _isCompleted;
-    std::size_t _currentTime;
+    unsigned _currentPlayTimes;
+    float _currentTime;
+    M* _timeline;
 
 protected:
     bool _isReverse;
     bool _hasAsynchronyTimeline;
     unsigned _keyFrameCount;
     unsigned _frameCount;
-    unsigned _currentPlayTimes;
-    std::size_t _position;
-    std::size_t _duration;
-    std::size_t _clipDutation;
+    float _position;
+    float _duration;
+    float _clipDutation;
     float _timeScale;
     float _timeOffset;
     float _timeToFrameSccale;
     T* _currentFrame;
-    M* _timeline;
     Armature* _armature;
     AnimationState* _animationState;
 
@@ -44,21 +44,21 @@ protected:
     virtual void _onClear() override
     {
         _isCompleted = false;
-        _currentTime = 0;
+        _currentPlayTimes = 0;
+        _currentTime = 0.f;
+        _timeline = nullptr;
 
         _isReverse = false;
         _hasAsynchronyTimeline = false;
         _keyFrameCount = 0;
         _frameCount = 0;
-        _currentPlayTimes = 0;
-        _position = 0;
-        _duration = 0;
-        _clipDutation = 0;
+        _position = 0.f;
+        _duration = 0.f;
+        _clipDutation = 0.f;
         _timeScale = 1.f;
         _timeOffset = 0.f;
         _timeToFrameSccale = 0.f;
         _currentFrame = nullptr;
-        _timeline = nullptr;
         _armature = nullptr;
         _animationState = nullptr;
     }
@@ -127,7 +127,7 @@ protected:
         }*/
     }
 
-    bool _setCurrentTime(int value)
+    bool _setCurrentTime(float value)
     {
         if (_hasAsynchronyTimeline)
         {
@@ -145,9 +145,9 @@ protected:
                 _isCompleted = true;
                 _currentPlayTimes = playTimes;
 
-                if (value < 0)
+                if (value < 0.f)
                 {
-                    value = 0;
+                    value = 0.f;
                 }
                 else
                 {
@@ -158,15 +158,15 @@ protected:
             {
                 _isCompleted = false;
 
-                if (value < 0)
+                if (value < 0.f)
                 {
                     _currentPlayTimes = -value / _duration;
-                    value = _duration - (value % _duration);
+                    value = _duration - std::fmod(value, _duration);
                 }
                 else
                 {
                     _currentPlayTimes = value / _duration;
-                    value %= _duration;
+                    value = std::fmod(value, _duration);
                 }
 
                 if (_currentPlayTimes > playTimes)
@@ -179,8 +179,8 @@ protected:
         }
         else
         {
-            // _isCompleted = _animationState._timeline._isCompleted;
-            // _currentPlayTimes = _animationState._timeline._currentPlayTimes;
+            _isCompleted = _animationState->_timeline->_isCompleted;
+            _currentPlayTimes = _animationState->_timeline->_currentPlayTimes;
         }
 
         if (_currentTime == value)
@@ -200,7 +200,7 @@ protected:
     }
 
 public:
-    void setCurrentTime(std::size_t value)
+    void setCurrentTime(float value)
     {
         _setCurrentTime(value);
 
@@ -216,7 +216,7 @@ public:
                 break;
 
             default:
-                _currentFrame = _timeline->frames[unsigned(_currentTime * _timeToFrameSccale)];
+                _currentFrame = _timeline->frames[(unsigned)(_currentTime * _timeToFrameSccale)];
                 _onArriveAtFrame(false);
                 _onUpdateFrame(false);
                 break;
@@ -241,18 +241,18 @@ public:
         _clipDutation = _animationState->_clipDutation;
         _timeScale = isMainTimeline ? 1.f : (1.f / _timeline->scale);
         _timeOffset = isMainTimeline ? 0.f : _timeline->offset;
-        _timeToFrameSccale = (float)_frameCount / (_clipDutation + 1);
+        _timeToFrameSccale = _frameCount /_clipDutation;
 
         _onFadeIn();
 
-        setCurrentTime(0);
+        setCurrentTime(0.f);
     }
 
     virtual void fadeOut() 
     {
     }
 
-    virtual void update(int time)
+    virtual void update(float time)
     {
         if (!_isCompleted && _setCurrentTime(time) && _keyFrameCount)
         {

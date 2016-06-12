@@ -266,10 +266,9 @@ void Bone::_setIK(Bone* value, unsigned chain, unsigned chainIndex)
 
 void Bone::_update(int cacheFrameIndex)
 {
-    if (cacheFrameIndex >= 0)
+    if (cacheFrameIndex >= 0 && _cacheFrames)
     {
-        auto& cacheFrames = *_cacheFrames;
-        const auto cacheFrame = cacheFrames[cacheFrameIndex];
+        const auto cacheFrame = (*_cacheFrames)[cacheFrameIndex];
 
         if (this->globalTransformMatrix == cacheFrame)
         {
@@ -292,7 +291,7 @@ void Bone::_update(int cacheFrameIndex)
         else if (this->globalTransformMatrix != &this->_globalTransformMatrix)
         {
             _transformDirty = BoneTransformDirty::None;
-            cacheFrames[cacheFrameIndex] = this->globalTransformMatrix;
+            (*_cacheFrames)[cacheFrameIndex] = this->globalTransformMatrix;
         }
         else
         {
@@ -340,7 +339,7 @@ void Bone::_update(int cacheFrameIndex)
                 }
             }
 
-            if (cacheFrameIndex >= 0)
+            if (cacheFrameIndex >= 0 && _cacheFrames)
             {
                 this->globalTransformMatrix = BoneTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, *this->globalTransformMatrix);
             }

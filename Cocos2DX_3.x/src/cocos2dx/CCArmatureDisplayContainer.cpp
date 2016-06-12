@@ -19,8 +19,24 @@ CCArmatureDisplayContainer* CCArmatureDisplayContainer::create()
 }
 
 CCArmatureDisplayContainer::CCArmatureDisplayContainer() :
-    _armature(nullptr)
-{}
+    _armature(nullptr),
+	_dispatcher()
+{
+}
 CCArmatureDisplayContainer::~CCArmatureDisplayContainer() {}
+
+void CCArmatureDisplayContainer::_onClear()
+{
+    this->release();
+
+    _armature = nullptr;
+
+	_dispatcher.removeAllEventListeners();
+}
+
+void CCArmatureDisplayContainer::_dispatchEvent(EventObject* value)
+{
+	_dispatcher.dispatchCustomEvent(value->type, value);
+}
 
 DRAGONBONES_NAMESPACE_END

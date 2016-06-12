@@ -84,27 +84,27 @@ void CCSlot::_updateBlendMode()
     {
         switch (this->_blendMode)
         {
-        case BlendMode::Normal:
-            //spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
-            break;
+            case BlendMode::Normal:
+                //spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
+                break;
 
-        case BlendMode::Add:
-        {
-            const auto texture = spriteDisplay->getTexture();
-            if (texture && texture->hasPremultipliedAlpha())
+            case BlendMode::Add:
             {
-                cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
-                spriteDisplay->setBlendFunc(blendFunc);
+                const auto texture = spriteDisplay->getTexture();
+                if (texture && texture->hasPremultipliedAlpha())
+                {
+                    cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
+                    spriteDisplay->setBlendFunc(blendFunc);
+                }
+                else
+                {
+                    spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
+                }
+                break;
             }
-            else
-            {
-                spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
-            }
-            break;
-        }
 
-        default:
-            break;
+            default:
+                break;
         }
     }
     else if (this->_childArmature)
@@ -132,7 +132,7 @@ void CCSlot::_updateFilters()
 
 void CCSlot::_updateFrame()
 {
-    const auto frameDisplay = static_cast<cocos2d::Sprite*>(_renderDisplay);
+    const auto frameDisplay = static_cast<cocos2d::Sprite*>(this->_rawDisplay);
     const unsigned displayIndex = this->_displayIndex;
 
     if (this->_display && displayIndex >= 0)
@@ -174,7 +174,7 @@ void CCSlot::_updateFrame()
                 if (this->_meshData && this->_display == this->_meshDisplay)
                 {
                     const auto& offset = contentTextureData->texture->getRect().origin;
-                    const auto& textureSize = contentTextureData->texture->getTexture()->getContentSize();
+                    const auto textureSize = contentTextureData->texture->getTexture()->getContentSize();
                     auto displayVertices = new cocos2d::V3F_C4B_T2F[this->_meshData->uvs.size() / 2]; // does cocos2dx release it?
                     auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()]; // does cocos2dx release it?
 
@@ -205,7 +205,6 @@ void CCSlot::_updateFrame()
                     // In cocos2dx render meshDisplay and frameDisplay are the same display
                     frameDisplay->setSpriteFrame(contentTextureData->texture);
                     frameDisplay->setPolygonInfo(polygonInfo);
-                    frameDisplay->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));
 
                     if (currentTexture != contentTextureData->texture->getTexture())
                     {
@@ -282,7 +281,7 @@ void CCSlot::_updateFrame()
 
 void CCSlot::_updateMesh() 
 {
-    const auto meshDisplay = static_cast<cocos2d::Sprite*>(_renderDisplay);
+    const auto meshDisplay = static_cast<cocos2d::Sprite*>(this->_meshDisplay);
     const auto hasFFD = !this->_ffdVertices.empty();
     const auto& textureRect = meshDisplay->getTextureRect();
     const auto width = textureRect.size.width;
@@ -319,14 +318,16 @@ void CCSlot::_updateMesh()
                     yL = boneVertices[iB * 2 + 1];
                 }
 
-
                 xG += (matrix->a * xL + matrix->c * yL + matrix->tx) * weight;
                 yG += (matrix->b * xL + matrix->d * yL + matrix->ty) * weight;
 
                 iF += 2;
             }
 
-            displayVertices[iH].vertices.set(xG + width * 0.5f, height * 0.5f - yG, 0.f);
+            auto& vertices = displayVertices[iH];
+            auto& vertex = vertices.vertices;
+
+            vertex.set(xG + width * 0.5f, height * 0.5f - yG, 0.f);
         }
     }
     else if (hasFFD)
@@ -337,11 +338,11 @@ void CCSlot::_updateMesh()
             const auto iH = unsigned(i / 2);
             const auto xG = vertices[i] + _ffdVertices[i];
             const auto yG = vertices[i + 1] + _ffdVertices[i + 1];
+
             auto& vertices = displayVertices[iH];
             auto& vertex = vertices.vertices;
+
             vertex.set(xG + width * 0.5f, height * 0.5f - yG, 0.f);
-            bool test = false;
-            test = true;
         }
     }
 }

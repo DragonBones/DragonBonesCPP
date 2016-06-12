@@ -9,12 +9,13 @@ class EventObject;
 
 class IEventDispatcher 
 {
-public:
-    /** @private */
+protected:
     IEventDispatcher() {};
-    /** @private */
     virtual ~IEventDispatcher() {};
 
+public:
+    /** @private */
+    virtual void _onClear() = 0;
     /** @private */
     virtual void _dispatchEvent(EventObject* value) = 0;
 

@@ -9,7 +9,8 @@ DRAGONBONES_NAMESPACE_BEGIN
 IEventDispatcher* Armature::soundEventManager = nullptr;
 
 Armature::Armature() :
-    _animation(nullptr)
+    _animation(nullptr),
+    _display(nullptr)
 {
     _onClear();
 }
@@ -33,7 +34,12 @@ void Armature::_onClear()
         _animation = nullptr;
     }
 
-    _display = nullptr;
+    if (_display)
+    {
+        _display->_onClear();
+        _display = nullptr;
+    }
+
     _replaceTexture = nullptr;
     _parent = nullptr;
 
@@ -148,9 +154,21 @@ void Armature::_bufferEvent(EventObject* value, const std::string& type)
     _events.push_back(value);
 }
 
+void Armature::dispose()
+{
+    _delayDispose = true;
+
+    if (!_lockDispose)
+    {
+        this->returnToPool();
+    }
+}
+
 void Armature::advanceTime(float passedTime)
 {
     _lockDispose = true;
+
+    const auto scaledPassedTime = passedTime * _animation->timeScale;
 
     //
     _animation->_advanceTime(passedTime);
@@ -173,8 +191,6 @@ void Armature::advanceTime(float passedTime)
     {
         bone->_update(_cacheFrameIndex);
     }
-
-    const auto scaledPassedTime = passedTime * _animation->timeScale;
 
     for (const auto slot : _slots)
     {
@@ -219,14 +235,13 @@ void Armature::advanceTime(float passedTime)
 
     _lockDispose = false;
 
-    //
     if (_delayDispose)
     {
-        //dispose();
+        this->returnToPool();
     }
 }
 
-void Armature::invalidUpdate(const std::string& boneName)
+void Armature::invalidUpdate(const std::string& boneName, bool updateSlotDisplay)
 {
     if (boneName.empty())
     {
@@ -234,6 +249,14 @@ void Armature::invalidUpdate(const std::string& boneName)
         {
             bone->invalidUpdate();
         }
+
+		if (updateSlotDisplay)
+		{
+			for (const auto slot : _slots)
+			{
+				slot->invalidUpdate();
+			}
+		}
     }
     else
     {
@@ -241,6 +264,17 @@ void Armature::invalidUpdate(const std::string& boneName)
         if (bone)
         {
             bone->invalidUpdate();
+
+			if (updateSlotDisplay)
+			{
+				for (const auto slot : _slots)
+				{
+					if (slot->getParent() == bone)
+					{
+						slot->invalidUpdate();
+					}
+				}
+			}
         }
     }
 }

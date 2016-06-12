@@ -22,6 +22,7 @@ public:
     float timeScale;
 
 public:
+    bool _animationStateDirty;
     bool _timelineStateDirty;
     Armature* _armature;
     

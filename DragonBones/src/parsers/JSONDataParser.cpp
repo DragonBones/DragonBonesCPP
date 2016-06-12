@@ -366,9 +366,9 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
         animation->name = "__default";
     }
 
-    animation->frameCount = _getNumber(rawData, DURATION, (unsigned)1);
-    animation->position = (unsigned)(_getNumber(rawData, POSITION, (unsigned)0) * SECOND_TO_MICROSECOND / this->_armature->frameRate);
-    animation->duration = (unsigned)(animation->frameCount * SECOND_TO_MICROSECOND / this->_armature->frameRate);
+    animation->frameCount = std::max(_getNumber(rawData, DURATION, (unsigned)1), (unsigned)1);
+    animation->position = _getNumber(rawData, POSITION, 0.f) / this->_armature->frameRate;
+    animation->duration = (float)animation->frameCount / this->_armature->frameRate;
     animation->playTimes = _getNumber(rawData, PLAY_TIMES, (unsigned)1);
     animation->fadeInTime = _getNumber(rawData, FADE_IN_TIME, 0.f);
 
@@ -419,7 +419,7 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
             const auto boneFrame = BaseObject::borrowObject<BoneFrameData>();
             boneTimeline->bone = pair.second;
             boneTimeline->frames.reserve(1);
-            boneTimeline->frames[0] = boneFrame;
+			boneTimeline->frames.push_back(boneFrame);
             animation->addBoneTimeline(boneTimeline);
         }
     }
@@ -444,7 +444,7 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
             }
 
             slotTimeline->frames.reserve(1);
-            slotTimeline->frames[0] = slotFrame;
+			slotTimeline->frames.push_back(slotFrame);
             animation->addSlotTimeline(slotTimeline);
         }
     }
@@ -561,7 +561,7 @@ BoneFrameData * JSONDataParser::_parseBoneFrame(const rapidjson::Value& rawData,
         _parseTransform(rawData[TRANSFORM], frame->transform);
     }
 
-    if (rawData.HasMember(EVENT) || rawData.HasMember(SOUND))
+    if ((rawData.HasMember(EVENT) || rawData.HasMember(SOUND)) && this->_timeline)
     {
         const auto bone = static_cast<BoneTimelineData*>(this->_timeline)->bone;
         _parseEventData(rawData, frame->events, bone, nullptr);
@@ -589,7 +589,7 @@ SlotFrameData * JSONDataParser::_parseSlotFrame(const rapidjson::Value & rawData
         frame->color = &SlotFrameData::DEFAULT_COLOR;
     }
 
-    if (rawData.HasMember(ACTION))
+    if (rawData.HasMember(ACTION) && this->_timeline)
     {
         const auto slot = static_cast<SlotTimelineData*>(this->_timeline)->slot;
         _parseActionData(rawData, frame->actions, slot->parent, slot);
