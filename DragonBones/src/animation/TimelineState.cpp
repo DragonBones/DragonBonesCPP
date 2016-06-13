@@ -20,7 +20,7 @@ void AnimationTimelineState::_onClear()
     _isStarted = false;
 }
 
-void AnimationTimelineState::update(int time)
+void AnimationTimelineState::update(float time)
 {
     const auto prevPlayTimes = this->_currentPlayTimes;
 
@@ -28,7 +28,7 @@ void AnimationTimelineState::update(int time)
 
     const auto eventDispatcher = this->_armature->getDisplay();
 
-    if (!_isStarted && this->_currentTime > 0)
+    if (!_isStarted && this->_currentTime > 0.f)
     {
         _isStarted = true;
 
@@ -239,7 +239,7 @@ void BoneTimelineState::fadeOut()
     _transform.skewY = Transform::normalizeRadian(_transform.skewY);
 }
 
-void BoneTimelineState::update(int time)
+void BoneTimelineState::update(float time)
 {
     TweenTimelineState::update(time);
 
@@ -431,7 +431,7 @@ void SlotTimelineState::fadeOut()
     _tweenColor = TweenType::None;
 }
 
-void SlotTimelineState::update(int time)
+void SlotTimelineState::update(float time)
 {
     TweenTimelineState::update(time);
 
@@ -443,7 +443,6 @@ void SlotTimelineState::update(int time)
             const auto fadeProgress = this->_animationState->_fadeProgress;
             if (fadeProgress < 1.f)
             {
-                const auto& currentColor = *this->_currentFrame->color;
                 _slotColor->alphaMultiplier += (_color.alphaMultiplier - _slotColor->alphaMultiplier) * fadeProgress;
                 _slotColor->redMultiplier += (_color.alphaMultiplier - _slotColor->redMultiplier) * fadeProgress;
                 _slotColor->greenMultiplier += (_color.alphaMultiplier - _slotColor->greenMultiplier) * fadeProgress;
@@ -557,7 +556,7 @@ void FFDTimelineState::_onUpdateFrame(bool isUpdate)
     }
 }
 
-void FFDTimelineState::update(int time)
+void FFDTimelineState::update(float time)
 {
     TweenTimelineState::update(time);
 

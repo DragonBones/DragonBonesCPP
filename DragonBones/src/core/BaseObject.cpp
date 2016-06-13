@@ -104,11 +104,6 @@ void BaseObject::_returnObject(BaseObject* object)
     const auto maxCountIterator = _maxCountMap.find(classTypeIndex);
     const auto maxCount = maxCountIterator != _maxCountMap.end() ? maxCountIterator->second : _defaultMaxCount;
     
-    /*if (_poolsMap.find(classTypeIndex) == _poolsMap.end())
-    {
-        std::make_pair(_poolsMap, classTypeIndex);
-    }*/
-
     auto& pool = _poolsMap[classTypeIndex];
     if (pool.size() < maxCount)
     {
@@ -118,7 +113,7 @@ void BaseObject::_returnObject(BaseObject* object)
         }
         else 
         {
-            //throw new Error();
+            DRAGONBONES_ASSERT(false, "The object aleady in pool.");
         }
     }
     else

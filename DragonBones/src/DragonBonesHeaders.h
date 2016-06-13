@@ -1,5 +1,5 @@
-#ifndef DRAGONBONES_DRAGONBONES_HEADERS_H
-#define DRAGONBONES_DRAGONBONES_HEADERS_H
+#ifndef DRAGONBONES_HEADERS_H
+#define DRAGONBONES_HEADERS_H
 
 // core
 #include "core/DragonBones.h"
@@ -48,4 +48,4 @@
 #include "events/EventObject.h"
 #include "events/IEventDispatcher.h"
 
-#endif // DRAGONBONES_DRAGONBONES_HEADERS_H
+#endif // DRAGONBONES_HEADERS_H

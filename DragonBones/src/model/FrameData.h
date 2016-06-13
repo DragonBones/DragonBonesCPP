@@ -64,8 +64,8 @@ template<class T>
 class FrameData : public BaseObject
 {
 public:
-    unsigned position;
-    unsigned duration;
+    float position;
+    float duration;
     T* prev;
     T* next;
 
@@ -78,8 +78,8 @@ public:
 protected:
     virtual void _onClear() override
     {
-        position = 0;
-        duration = 0;
+        position = 0.f;
+        duration = 0.f;
         prev = nullptr;
         next = nullptr;
 

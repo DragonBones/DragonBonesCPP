@@ -9,7 +9,8 @@ DRAGONBONES_NAMESPACE_BEGIN
 IEventDispatcher* Armature::soundEventManager = nullptr;
 
 Armature::Armature() :
-    _animation(nullptr)
+    _animation(nullptr),
+    _display(nullptr)
 {
     _onClear();
 }
@@ -33,9 +34,15 @@ void Armature::_onClear()
         _animation = nullptr;
     }
 
-    _display = nullptr;
+    if (_display)
+    {
+        _display->_onClear();
+        _display = nullptr;
+    }
+
     _replaceTexture = nullptr;
     _parent = nullptr;
+    _action = nullptr;
 
     _delayDispose = false;
     _lockDispose = false;
@@ -148,9 +155,21 @@ void Armature::_bufferEvent(EventObject* value, const std::string& type)
     _events.push_back(value);
 }
 
+void Armature::dispose()
+{
+    _delayDispose = true;
+
+    if (!_lockDispose)
+    {
+        this->returnToPool();
+    }
+}
+
 void Armature::advanceTime(float passedTime)
 {
     _lockDispose = true;
+
+    const auto scaledPassedTime = passedTime * _animation->timeScale;
 
     //
     _animation->_advanceTime(passedTime);
@@ -173,8 +192,6 @@ void Armature::advanceTime(float passedTime)
     {
         bone->_update(_cacheFrameIndex);
     }
-
-    const auto scaledPassedTime = passedTime * _animation->timeScale;
 
     for (const auto slot : _slots)
     {
@@ -217,22 +234,65 @@ void Armature::advanceTime(float passedTime)
         _lockEvent = false;
     }
 
+    if (_action)
+    {
+        const auto& ints = std::get<0>(_action->data);
+        const auto& floats = std::get<1>(_action->data);
+        const auto& strings = std::get<2>(_action->data);
+
+        switch (_action->type)
+        {
+            case ActionType::Play:
+                _animation->play(strings[0], ints[0]);
+                break;
+
+            case ActionType::Stop:
+                _animation->stop(strings[0]);
+                break;
+
+            case ActionType::GotoAndPlay:
+                _animation->gotoAndPlayByTime(strings[0], floats[0], ints[0]);
+                break;
+
+            case ActionType::GotoAndStop:
+                _animation->gotoAndStopByTime(strings[0], floats[0]);
+                break;
+
+            case ActionType::FadeIn:
+                _animation->fadeIn(strings[0], floats[0], ints[0]);
+                break;
+
+            case ActionType::FadeOut:
+                // TODO
+                break;
+        }
+
+        _action = nullptr;
+    }
+
     _lockDispose = false;
 
-    //
     if (_delayDispose)
     {
-        //dispose();
+        this->returnToPool();
     }
 }
 
-void Armature::invalidUpdate(const std::string& boneName)
+void Armature::invalidUpdate(const std::string& boneName, bool updateSlotDisplay)
 {
     if (boneName.empty())
     {
         for (const auto bone: _bones)
         {
             bone->invalidUpdate();
+        }
+
+        if (updateSlotDisplay)
+        {
+            for (const auto slot : _slots)
+            {
+                slot->invalidUpdate();
+            }
         }
     }
     else
@@ -241,6 +301,17 @@ void Armature::invalidUpdate(const std::string& boneName)
         if (bone)
         {
             bone->invalidUpdate();
+
+            if (updateSlotDisplay)
+            {
+                for (const auto slot : _slots)
+                {
+                    if (slot->getParent() == bone)
+                    {
+                        slot->invalidUpdate();
+                    }
+                }
+            }
         }
     }
 }
@@ -281,7 +352,7 @@ void Armature::addSlot(Slot* value, const std::string& boneName)
     }
     else
     {
-        // throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -294,7 +365,7 @@ void Armature::removeSlot(Slot* value)
     }
     else
     {
-        // throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -327,7 +398,7 @@ void Armature::addBone(Bone* value, const std::string& parentName)
     }
     else
     {
-        // throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 
@@ -340,7 +411,7 @@ void Armature::removeBone(Bone* value)
     }
     else
     {
-        // throw new Error();
+        DRAGONBONES_ASSERT(false, "Argument error.");
     }
 }
 

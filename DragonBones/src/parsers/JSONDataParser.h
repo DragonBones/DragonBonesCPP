@@ -167,8 +167,8 @@ protected:
     template<class T>
     void _parseFrame(const rapidjson::Value& rawData, FrameData<T>& frame, unsigned frameStart, unsigned frameCount) const
     {
-        frame.position = (unsigned)(frameStart * SECOND_TO_MICROSECOND / this->_armature->frameRate);
-        frame.duration = (unsigned)(frameCount * SECOND_TO_MICROSECOND / this->_armature->frameRate);
+        frame.position = (float)frameStart / this->_armature->frameRate;
+        frame.duration = (float)frameCount / this->_armature->frameRate;
     }
 
     template<class T>
@@ -176,6 +176,8 @@ protected:
     {
         timeline.scale = _getNumber(rawData, SCALE, 1.f);
         timeline.offset = _getNumber(rawData, OFFSET, 0.f);
+
+        //this->_timeline = (void*)(&timeline); // TODO
 
         if (rawData.HasMember(FRAME))
         {
@@ -227,6 +229,8 @@ protected:
                 }
             }
         }
+
+        //this->_timeline = nullptr;
     }
 
     virtual void _parseTransform(const rapidjson::Value& rawData, Transform& transform) const;

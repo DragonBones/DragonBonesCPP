@@ -246,7 +246,7 @@ void Slot::_update(int cacheFrameIndex)
         _updateLocalTransformMatrix();
     }
 
-    if (cacheFrameIndex >= 0)
+    if (cacheFrameIndex >= 0 && _cacheFrames)
     {
         const auto cacheFrame = (*_cacheFrames)[cacheFrameIndex];
 
@@ -289,7 +289,7 @@ void Slot::_update(int cacheFrameIndex)
         {
             _updateGlobalTransformMatrix();
 
-            if (cacheFrameIndex >= 0)
+            if (cacheFrameIndex >= 0 && _cacheFrames)
             {
                 this->globalTransformMatrix = SlotTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, this->_globalTransformMatrix);
             }

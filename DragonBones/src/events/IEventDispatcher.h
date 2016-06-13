@@ -1,5 +1,5 @@
-#ifndef DRAGONBONES_I_EVENT_DISPATCHER_H
-#define DRAGONBONES_I_EVENT_DISPATCHER_H
+#ifndef DRAGONBONES_EVENT_DISPATCHER_H
+#define DRAGONBONES_EVENT_DISPATCHER_H
 
 #include "../core/DragonBones.h"
 
@@ -9,19 +9,18 @@ class EventObject;
 
 class IEventDispatcher 
 {
-public:
-    /** @private */
+protected:
     IEventDispatcher() {};
-    /** @private */
     virtual ~IEventDispatcher() {};
 
+public:
+    /** @private */
+    virtual void _onClear() = 0;
     /** @private */
     virtual void _dispatchEvent(EventObject* value) = 0;
 
     virtual bool hasEvent(const std::string& type) const = 0;
-    virtual void addEvent(const std::string& type) = 0;
-    virtual void removeEvent(const std::string& type) = 0;
 };
 
 DRAGONBONES_NAMESPACE_END
-#endif // DRAGONBONES_I_EVENT_DISPATCHER_H
+#endif // DRAGONBONES_EVENT_DISPATCHER_H

@@ -20,8 +20,8 @@ void AnimationData::_onClear()
     hasAsynchronyTimeline = false;
     frameCount = 0;
     playTimes = 0;
-    position = 0;
-    duration = 0;
+    position = 0.f;
+    duration = 0.f;
     fadeInTime = 0.f;
     cacheTimeToFrameScale = 0.f;
     name.clear();
@@ -63,7 +63,7 @@ void AnimationData::cacheFrames(float value)
 
     const auto cacheFrameCount = (unsigned)(frameCount * scale * value);
 
-    cacheTimeToFrameScale = (float)cacheFrameCount / (duration + 1);
+    cacheTimeToFrameScale = cacheFrameCount / duration;
     cachedFrames.resize(cacheFrameCount, false);
 
     for (const auto& pair : boneTimelines)

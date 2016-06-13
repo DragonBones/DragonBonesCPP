@@ -26,7 +26,7 @@ protected:
     void _onClear() override;
 
 public:
-    void update(int time) override;
+    void update(float time) override;
 };
 
 class BoneTimelineState final : public TweenTimelineState<BoneFrameData, BoneTimelineData>
@@ -61,7 +61,7 @@ protected:
 
 public:
     void fadeOut() override;
-    void update(int time) override;
+    void update(float time) override;
 };
 
 class SlotTimelineState final : public TweenTimelineState<SlotFrameData, SlotTimelineData>
@@ -93,7 +93,7 @@ protected:
 
 public:
     void fadeOut() override;
-    void update(int time) override;
+    void update(float time) override;
 };
 
 class FFDTimelineState final : public TweenTimelineState<ExtensionFrameData, FFDTimelineData>
@@ -123,7 +123,7 @@ protected:
     void _onUpdateFrame(bool isUpdate) override;
 
 public:
-    void update(int time) override;
+    void update(float time) override;
 };
 
 DRAGONBONES_NAMESPACE_END

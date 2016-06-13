@@ -171,26 +171,34 @@ void BaseFactory::_replaceSlotDisplay(const BuildArmaturePackage& dataPackage, c
 
     if (displayIndex >= 0)
     {
-        if (slot._replaceDisplayDataSet.size() <= displayIndex)
-        {
-            slot._replaceDisplayDataSet.resize(displayIndex + 1); // TODO
-        }
-
-        slot._replaceDisplayDataSet[displayIndex] = const_cast<DisplayData*>(&displayData);
-
         auto displayList = slot.getDisplayList(); // copy
-        if (displayList.size() <= displayIndex)
+        if (displayList.size() <= (unsigned)displayIndex)
         {
-            displayList.resize(displayIndex + 1); // TODO
+            displayList.resize(displayIndex + 1, std::make_pair(nullptr, DisplayType::Image));
         }
 
-        if (displayData.meshData)
+        if (displayData.type == DisplayType::Armature)
         {
-            //displayList[displayIndex] = slot.getMeshDisplay(); // TODO
+            const auto childArmature = buildArmature(displayData.name, dataPackage.dataName);
+            displayList[displayIndex] = std::make_pair(childArmature, DisplayType::Armature);
         }
         else
         {
-            //displayList[displayIndex] = std::make_pair(slot.getRawDisplay(), displayData.type); // TODO
+            if (slot._replaceDisplayDataSet.size() <= (unsigned)displayIndex)
+            {
+                slot._replaceDisplayDataSet.resize(displayIndex + 1, nullptr);
+            }
+
+            slot._replaceDisplayDataSet[displayIndex] = const_cast<DisplayData*>(&displayData);
+
+            if (displayData.meshData)
+            {
+                displayList[displayIndex] = std::make_pair(slot.getMeshDisplay(), displayData.type);
+            }
+            else
+            {
+                displayList[displayIndex] = std::make_pair(slot.getRawDisplay(), displayData.type);
+            }
         }
 
         slot.setDisplayList(displayList);

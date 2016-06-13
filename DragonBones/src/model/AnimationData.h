@@ -16,8 +16,8 @@ public:
     bool hasBoneTimelineEvent;
     unsigned frameCount;
     unsigned playTimes;
-    unsigned position;
-    unsigned duration;
+    float position;
+    float duration;
     float fadeInTime;
     /** @private */
     float cacheTimeToFrameScale;

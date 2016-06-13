@@ -22,7 +22,11 @@ public:
     float timeScale;
 
 public:
+    /** @private */
+    bool _animationStateDirty;
+    /** @private */
     bool _timelineStateDirty;
+    /** @private */
     Armature* _armature;
     
 private:
@@ -49,20 +53,20 @@ public:
 
 public:
     void reset();
-    void stop();
+    void stop(const std::string& animationName);
     AnimationState* play(const std::string& animationName = "", int playTimes = -1);
     AnimationState* fadeIn(
-        const std::string& animationName, int playTimes = -1, float fadeInTime = -1.f,
+        const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1,
         int layer = 0, const std::string& group = "", AnimationFadeOutMode fadeOutMode = AnimationFadeOutMode::SameLayerAndGroup,
         bool additiveBlending = false,
         bool pauseFadeOut = true, bool pauseFadeIn = true
     );
-    AnimationState* gotoAndPlayWithTime(const std::string& animationName, float time = 0.f, int playTimes = -1);
-    AnimationState* gotoAndPlayWithFrame(const std::string& animationName, unsigned frame = 0, int playTimes = -1);
-    AnimationState* gotoAndPlayWithProgress(const std::string& animationName, float progress = 0.f, int playTimes = -1);
-    AnimationState* gotoAndStopWithTime(const std::string& animationName, float time = 0.f);
-    AnimationState* gotoAndStopWithFrame(const std::string& animationName, unsigned frame = 0);
-    AnimationState* gotoAndStopWithProgress(const std::string& animationName, float progress = 0.f);
+    AnimationState* gotoAndPlayByTime(const std::string& animationName, float time = 0.f, int playTimes = -1);
+    AnimationState* gotoAndPlayByFrame(const std::string& animationName, unsigned frame = 0, int playTimes = -1);
+    AnimationState* gotoAndPlayByProgress(const std::string& animationName, float progress = 0.f, int playTimes = -1);
+    AnimationState* gotoAndStopByTime(const std::string& animationName, float time = 0.f);
+    AnimationState* gotoAndStopByFrame(const std::string& animationName, unsigned frame = 0);
+    AnimationState* gotoAndStopByProgress(const std::string& animationName, float progress = 0.f);
     bool hasAnimation(const std::string& animationName);
     AnimationState* getState(const std::string& animationName);
     bool getIsPlaying() const;
@@ -71,30 +75,6 @@ public:
     AnimationState* lastAnimationState() const;
     const std::map<std::string, AnimationData*>& getAnimations() const;
     void setAnimations(const std::map<std::string, AnimationData*>& value);
-
-
-    /*virtual AnimationState* gotoAndPlay(
-        const std::string &animationName,
-        float fadeInTime = -1.f,
-        float duration = -1.f,
-        int playTimes = -1,
-        int layer = 0,
-        const std::string &group = "",
-        AnimationFadeOutMode fadeOutMode = AnimationFadeOutMode::SAME_LAYER_AND_GROUP,
-        bool pauseFadeOut = true,
-        bool pauseFadeIn = true
-    );
-    
-    virtual AnimationState* gotoAndStop(
-        const std::string &animationName,
-        float time,
-        float normalizedTime = -1.f,
-        float fadeInTime = 0.f,
-        float duration = -1.f,
-        int layer = 0,
-        const std::string &group = "",
-        AnimationFadeOutMode fadeOutMode = AnimationFadeOutMode::ALL
-    );*/
 };
 
 DRAGONBONES_NAMESPACE_END

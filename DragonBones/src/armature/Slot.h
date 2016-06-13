@@ -131,6 +131,11 @@ public:
         return _rawDisplay;
     }
 
+    inline void* getMeshDisplay() const
+    {
+        return _meshDisplay;
+    }
+
     inline int getDisplayIndex() const
     {
         return _displayIndex;

@@ -59,6 +59,7 @@ void BoneTimelineData::cacheFrames(std::size_t cacheFrameCount)
         }
     }
 
+    cachedFrames.clear();
     cachedFrames.resize(cacheFrameCount, nullptr);
 }
 
@@ -118,6 +119,7 @@ void SlotTimelineData::cacheFrames(std::size_t cacheFrameCount)
         }
     }
 
+    cachedFrames.clear();
     cachedFrames.resize(cacheFrameCount, nullptr);
 }
 

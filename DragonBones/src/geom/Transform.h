@@ -11,7 +11,7 @@ class Transform final
 public:
     static float normalizeRadian(float value)
     {
-        value = fmod(value + PI, PI * 2.f);
+        value = std::fmod(value + PI, PI * 2.f);
         value += value > 0.f ? -PI : PI;
 
         return value;
@@ -91,6 +91,8 @@ public:
 
     inline Transform& fromMatrix(const Matrix& matrix)
     {
+        const auto  backupScaleX = scaleX, backupScaleY = scaleY;
+
         x = matrix.tx;
         y = matrix.ty;
 
@@ -100,13 +102,13 @@ public:
         scaleY = (skewX > -PI_Q && skewX < PI_Q)? matrix.d / cos(skewX): -matrix.c / sin(skewX);
         scaleX = (skewY > -PI_Q && skewY < PI_Q)? matrix.a / cos(skewY):  matrix.b / sin(skewY);
 
-        if (scaleX < 0.f)
+        if (backupScaleX >= 0.f && scaleX < 0.f)
         {
             scaleX = -scaleX;
             skewY = skewY - PI;
         }
 
-        if (scaleY < 0.f)
+        if (backupScaleY >= 0.f && scaleY < 0.f)
         {
             scaleY = -scaleY;
             skewX = skewX - PI;

@@ -11,15 +11,15 @@ class Animation;
 
 class IArmatureDisplayContainer : public IEventDispatcher
 {
-public:
+protected:
     IArmatureDisplayContainer() {};
     virtual ~IArmatureDisplayContainer() {};
 
-    virtual void dispose() = 0;
-    virtual void advanceTimeSelf(bool on) = 0;
+public:
+    virtual void advanceTimeBySelf(bool on) = 0;
     virtual Armature& getArmature() const = 0;
     virtual Animation& getAnimation() const = 0;
 };
 
 DRAGONBONES_NAMESPACE_END
-#endif // DRAGONBONES__ARMATURE_DISPLAY_CONTAINER_H
+#endif // DRAGONBONES_ARMATURE_DISPLAY_CONTAINER_H

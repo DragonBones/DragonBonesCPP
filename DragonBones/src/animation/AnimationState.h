@@ -29,11 +29,11 @@ public:
 
 public:
     bool _isFadeOutComplete;
-    std::size_t _position;
-    std::size_t _duration;
-    std::size_t _clipDutation;
     int _index;
     int _layer;
+    float _position;
+    float _duration;
+    float _clipDutation;
     float _weightResult;
     float _fadeProgress;
     std::string _group;
@@ -69,7 +69,7 @@ protected:
 public:
     bool _isDisabled(const Slot& slot) const;
     void _fadeIn(Armature* armature, AnimationData* clip, const std::string& animationName,
-        unsigned playTimes, std::size_t position, std::size_t duration, float timeScale, float fadeInTime,
+        unsigned playTimes, float position, float duration, float timeScale, float fadeInTime,
         bool pausePlayhead
     );
     void _updateTimelineStates();
@@ -108,9 +108,9 @@ public:
         return _group;
     }
 
-    inline const AnimationData* getClip() const
+    inline const AnimationData& getClip() const
     {
-        return _clip;
+        return *_clip;
     }
 
     inline bool isPlaying() const
@@ -123,9 +123,9 @@ public:
         return _currentPlayTimes;
     }
 
-    inline float totalTime() const
+    inline float getTotalTime() const
     {
-        return _duration / SECOND_TO_MICROSECOND;
+        return _duration;
     }
 };
 

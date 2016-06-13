@@ -32,12 +32,15 @@ Armature * CCFactory::_generateArmature(const BuildArmaturePackage & dataPackage
 {
     const auto armature = BaseObject::borrowObject<Armature>();
     const auto armatureDisplayContainer = CCArmatureDisplayContainer::create();
-    armatureDisplayContainer->retain();
+
     armature->_armatureData = dataPackage.armature;
     armature->_skinData = dataPackage.skin;
     armature->_animation = BaseObject::borrowObject<Animation>();
     armature->_display = armatureDisplayContainer;
 
+    armatureDisplayContainer->retain();
+    armatureDisplayContainer->setCascadeOpacityEnabled(true);
+    armatureDisplayContainer->setCascadeColorEnabled(true);
     armatureDisplayContainer->_armature = armature;
     armature->_animation->_armature = armature;
 
@@ -59,6 +62,8 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
 
     displayList.reserve(slotDisplayDataSet.displays.size());
     rawDisplay->retain();
+    rawDisplay->setCascadeOpacityEnabled(true);
+    rawDisplay->setCascadeColorEnabled(true);
 
     for (const auto displayData : slotDisplayDataSet.displays)
     {
@@ -123,7 +128,7 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
         return nullptr;
     }
 
-    //const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor(); // TODO
+    const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor(); // TODO
 
     return parseDragonBonesData(data.c_str(), dragonBonesName);
 }
@@ -191,6 +196,18 @@ TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, c
     textureAtlasData->texture = texture;
 
     return textureAtlasData;
+}
+
+CCArmatureDisplayContainer * CCFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName) const
+{
+    const auto armature = this->buildArmature(armatureName, dragonBonesName, skinName);
+    const auto armatureDisplay = armature ? static_cast<CCArmatureDisplayContainer*>(armature->getDisplay()) : nullptr;
+    if (armatureDisplay)
+    {
+        armatureDisplay->advanceTimeBySelf(true);
+    }
+
+    return armatureDisplay;
 }
 
 DRAGONBONES_NAMESPACE_END
