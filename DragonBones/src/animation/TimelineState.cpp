@@ -107,7 +107,7 @@ void BoneTimelineState::_onArriveAtFrame(bool isUpdate)
 
         // Rotate
         const auto tweenRotate = this->_currentFrame->tweenRotate;
-        if (tweenRotate == tweenRotate)
+        if (tweenRotate == tweenRotate) // TODO
         {
             if (tweenRotate)
             {
@@ -497,7 +497,7 @@ void FFDTimelineState::_onClear()
         _durationFFDFrame = nullptr;
     }
 
-    clearVector(_ffdVertices);
+    _ffdVertices.clear();
 }
 
 void FFDTimelineState::_onFadeIn()

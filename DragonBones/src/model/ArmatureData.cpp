@@ -75,14 +75,14 @@ void MeshData::_onClear()
 {
     skinned = false;
     slotPose.identity();
-    clearVector(uvs);
-    clearVector(vertices);
-    clearVector(vertexIndices);
-    clearVector(boneIndices);
-    clearVector(weights);
-    clearVector(boneVertices);
-    clearVector(bones);
-    clearVector(inverseBindPose);
+    uvs.clear();
+    vertices.clear();
+    vertexIndices.clear();
+    boneIndices.clear();
+    weights.clear();
+    boneVertices.clear();
+    bones.clear();
+    inverseBindPose.clear();
 }
 
 DisplayData::DisplayData() :

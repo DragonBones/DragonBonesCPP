@@ -341,7 +341,7 @@ void Bone::_update(int cacheFrameIndex)
 
             if (cacheFrameIndex >= 0 && _cacheFrames)
             {
-                this->globalTransformMatrix = BoneTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, *this->globalTransformMatrix);
+                this->globalTransformMatrix = BoneTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, this->_globalTransformMatrix);
             }
         }
     }

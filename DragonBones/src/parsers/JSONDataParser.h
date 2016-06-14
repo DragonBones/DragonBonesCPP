@@ -75,7 +75,7 @@ protected:
         return defaultValue;
     }
 
-    inline static const char* _getString(const rapidjson::Value& rawData, const char*& key, const char* defaultValue)
+    inline static std::string _getString(const rapidjson::Value& rawData, const char*& key, const std::string& defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -85,7 +85,7 @@ protected:
         return defaultValue;
     }
 
-    inline static const int _getParameter(const rapidjson::Value& rawData, std::size_t index, int defaultValue)
+    inline static int _getParameter(const rapidjson::Value& rawData, std::size_t index, int defaultValue)
     {
         if (rawData.Size() > index)
         {
@@ -95,7 +95,7 @@ protected:
         return defaultValue;
     }
 
-    inline static const float _getParameter(const rapidjson::Value& rawData, std::size_t index, float defaultValue)
+    inline static float _getParameter(const rapidjson::Value& rawData, std::size_t index, float defaultValue)
     {
         if (rawData.Size() > index)
         {
@@ -105,7 +105,7 @@ protected:
         return defaultValue;
     }
 
-    inline static const char* _getParameter(const rapidjson::Value& rawData, std::size_t index, char* defaultValue)
+    inline static std::string _getParameter(const rapidjson::Value& rawData, std::size_t index, const std::string& defaultValue)
     {
         if (rawData.Size() > index)
         {
@@ -131,14 +131,14 @@ protected:
     virtual SlotDisplayDataSet* _parseSlotDisplaySet(const rapidjson::Value& rawData);
     virtual DisplayData* _parseDisplay(const rapidjson::Value& rawData);
     virtual MeshData* _parseMesh(const rapidjson::Value& rawData);
-    virtual AnimationData* _parseAnimation(const rapidjson::Value& rawData);
+    virtual AnimationData* _parseAnimation(const rapidjson::Value& rawData) const;
     virtual BoneTimelineData* _parseBoneTimeline(const rapidjson::Value& rawData) const;
     virtual SlotTimelineData* _parseSlotTimeline(const rapidjson::Value& rawData) const;
-    virtual FFDTimelineData* _parseFFDTimeline(const rapidjson::Value& rawData);
+    virtual FFDTimelineData* _parseFFDTimeline(const rapidjson::Value& rawData) const;
     virtual AnimationFrameData* _parseAnimationFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual BoneFrameData* _parseBoneFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual SlotFrameData* _parseSlotFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
-    virtual ExtensionFrameData* _parseFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual ExtensionFrameData* _parseFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual void _parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData* bone, SlotData* slot) const;
     virtual void _parseEventData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const;
 
@@ -172,12 +172,14 @@ protected:
     }
 
     template<class T>
-    void _parseTimeline(const rapidjson::Value& rawData, TimelineData<T>& timeline, const std::function<T*(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)>& frameParser) const
+    void _parseTimeline(const rapidjson::Value& rawData,
+        TimelineData<T>& timeline,
+        const std::function<T*(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)>& frameParser) const
     {
         timeline.scale = _getNumber(rawData, SCALE, 1.f);
         timeline.offset = _getNumber(rawData, OFFSET, 0.f);
 
-        //this->_timeline = (void*)(&timeline); // TODO
+        _timeline = (void*)(&timeline);
 
         if (rawData.HasMember(FRAME))
         {
@@ -230,7 +232,7 @@ protected:
             }
         }
 
-        //this->_timeline = nullptr;
+        _timeline = nullptr;
     }
 
     virtual void _parseTransform(const rapidjson::Value& rawData, Transform& transform) const;

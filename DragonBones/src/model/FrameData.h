@@ -162,7 +162,7 @@ protected:
         FrameData<T>::_onClear();
 
         tweenEasing = 0.f;
-        clearVector(curve);
+        curve.clear();
     }
 };
 

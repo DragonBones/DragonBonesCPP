@@ -16,6 +16,10 @@ public:
     std::string name;
     std::map<std::string, ArmatureData*> armatures;
 
+private:
+    std::vector<std::string> _armatureNames;
+
+public:
     /** @private */
     DragonBonesData();
     /** @private */
@@ -34,6 +38,11 @@ public:
     inline ArmatureData* getArmature(const std::string& name) const
     {
         return mapFind(armatures, name);
+    }
+
+    inline const std::vector<std::string>& getArmatureNames() const 
+    {
+        return _armatureNames;
     }
 };
 

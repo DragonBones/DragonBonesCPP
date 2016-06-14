@@ -24,7 +24,7 @@ void Slot::_onClear()
     _rawDisplay = nullptr;
     _meshDisplay = nullptr;
     _colorTransform.identity();
-    clearVector(_ffdVertices);
+    _ffdVertices.clear();
     _replaceDisplayDataSet.clear();
 
     _displayDirty = false;

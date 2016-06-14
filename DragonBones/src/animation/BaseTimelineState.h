@@ -5,12 +5,10 @@
 #include "../model/FrameData.h"
 #include "../model/TimelineData.h"
 #include "../model/AnimationData.h"
+#include "../armature/Armature.h"
 #include "AnimationState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-class Armature;
-class AnimationState;
 
 /** @private */
 template<class T, class M>
@@ -180,8 +178,8 @@ protected:
         }
         else
         {
-            _isCompleted = _animationState->_timeline->_isCompleted;
-            _currentPlayTimes = _animationState->_timeline->_currentPlayTimes;
+            //_isCompleted = _animationState->_timeline->_isCompleted; // TODO
+            //_currentPlayTimes = _animationState->_timeline->_currentPlayTimes;
         }
 
         if (_currentTime == value)

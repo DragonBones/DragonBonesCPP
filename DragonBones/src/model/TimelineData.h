@@ -41,7 +41,7 @@ protected:
             prevFrame = frame;
         }
 
-        clearVector(frames);
+        frames.clear();
     }
 };
 

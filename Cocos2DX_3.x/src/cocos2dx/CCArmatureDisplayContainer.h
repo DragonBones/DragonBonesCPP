@@ -30,7 +30,7 @@ public:
     /** @private */
     virtual void _onClear() override;
     /** @private */
-    virtual void _dispatchEvent(EventObject* value);
+    virtual void _dispatchEvent(EventObject* value) override;
     /** @private */
     virtual void update(float passedTime) override;
 
@@ -42,9 +42,9 @@ public:
         return _dispatcher.isEnabled();
     }
 
-    inline virtual Armature& getArmature() const override 
+    inline virtual Armature* getArmature() const override 
     {
-        return *_armature;
+        return _armature;
     }
 
     virtual Animation& getAnimation() const override 

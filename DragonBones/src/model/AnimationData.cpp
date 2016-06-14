@@ -51,7 +51,7 @@ void AnimationData::_onClear()
     boneTimelines.clear();
     slotTimelines.clear();
     ffdTimelines.clear();
-    clearVector(cachedFrames);
+    cachedFrames.clear();
 }
 
 void AnimationData::cacheFrames(float value)

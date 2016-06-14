@@ -110,7 +110,7 @@ SlotData * JSONDataParser::_parseSlot(const rapidjson::Value & rawData)
     slot->name = _getString(rawData, NAME, "");
     slot->parent = this->_armature->getBone(_getString(rawData, PARENT, ""));
     slot->displayIndex = _getNumber(rawData, DISPLAY_INDEX, (int)0);
-    slot->zOrder = _getNumber(rawData, Z_ORDER, this->_armature->getSortedSlots().size());
+    //slot->zOrder = _getNumber(rawData, Z_ORDER, this->_armature->getSortedSlots().size());
 
     if (rawData.HasMember(COLOR))
     {
@@ -357,7 +357,7 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
     return mesh;
 }
 
-AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData)
+AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData) const
 {
     const auto animation = BaseObject::borrowObject<AnimationData>();
     animation->name = _getString(rawData, NAME, "__default");
@@ -503,7 +503,7 @@ SlotTimelineData * JSONDataParser::_parseSlotTimeline(const rapidjson::Value& ra
     return timeline;
 }
 
-FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value& rawData)
+FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value& rawData) const
 {
     const auto timeline = BaseObject::borrowObject<FFDTimelineData>();
     timeline->skin = this->_armature->getSkin(_getString(rawData, SKIN, ""));
@@ -598,7 +598,7 @@ SlotFrameData * JSONDataParser::_parseSlotFrame(const rapidjson::Value & rawData
     return frame;
 }
 
-ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & rawData, unsigned frameStart, unsigned frameCount)
+ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & rawData, unsigned frameStart, unsigned frameCount) const
 {
     const auto frame  = BaseObject::borrowObject<ExtensionFrameData>();
     frame->type = (ExtensionType)_getNumber(rawData, TYPE, (int)ExtensionType::FFD);

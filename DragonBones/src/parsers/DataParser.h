@@ -117,11 +117,11 @@ protected:
     ArmatureData* _armature;
     SkinData* _skin;
     SlotDisplayDataSet* _slotDisplayDataSet;
-    MeshData* _mesh;
-    AnimationData* _animation;
-    void* _timeline; // TimelineData*
+    mutable MeshData* _mesh;
+    mutable AnimationData* _animation;
+    mutable void* _timeline; // TimelineData*
 
-    Point _helpPoint;
+    mutable Point _helpPoint;
     std::vector<BoneData*> _rawBones;
 
 public:

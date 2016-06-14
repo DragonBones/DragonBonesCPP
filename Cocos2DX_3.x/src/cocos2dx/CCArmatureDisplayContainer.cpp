@@ -21,11 +21,16 @@ CCArmatureDisplayContainer* CCArmatureDisplayContainer::create()
 CCArmatureDisplayContainer::CCArmatureDisplayContainer() :
     _armature(nullptr),
     _dispatcher()
-{}
+{
+    this->setEventDispatcher(&_dispatcher);
+}
 CCArmatureDisplayContainer::~CCArmatureDisplayContainer() {}
 
 void CCArmatureDisplayContainer::_onClear()
 {
+    _dispatcher.removeAllEventListeners();
+
+    this->setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
     this->release();
 
     _armature = nullptr;

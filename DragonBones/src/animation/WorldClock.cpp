@@ -102,7 +102,7 @@ void WorldClock::advanceTime(float passedTime)
                 }
             }
 
-            _animatebles.reserve(l - r);
+            _animatebles.resize(l - r);
         }
     }
 }

@@ -40,7 +40,7 @@ void BoneTimelineData::_onClear()
         }
     }
 
-    clearVector(cachedFrames);
+    cachedFrames.clear();
 }
 
 void BoneTimelineData::cacheFrames(std::size_t cacheFrameCount)
@@ -100,7 +100,7 @@ void SlotTimelineData::_onClear()
         }
     }
 
-    clearVector(cachedFrames);
+    cachedFrames.clear();
 }
 
 void SlotTimelineData::cacheFrames(std::size_t cacheFrameCount)

@@ -121,8 +121,8 @@ void ExtensionFrameData::_onClear()
     TweenFrameData::_onClear();
 
     type = ExtensionType::FFD;
-    clearVector(tweens);
-    clearVector(keys);
+    tweens.clear();
+    keys.clear();
 }
 
 DRAGONBONES_NAMESPACE_END

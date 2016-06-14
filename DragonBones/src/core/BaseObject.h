@@ -10,7 +10,7 @@ static std::size_t getTypeIndex()\
     static const auto typeIndex = typeid(CLASS).hash_code();\
     return typeIndex;\
 }\
-virtual std::size_t getClassTypeIndex() const\
+virtual std::size_t getClassTypeIndex() const override\
 {\
     return CLASS::getTypeIndex();\
 }\
@@ -19,8 +19,6 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 class BaseObject
 {
-    BIND_CLASS_TYPE(BaseObject);
-
 private:
     static std::size_t _hashCode;
     static std::size_t _defaultMaxCount;
@@ -66,6 +64,9 @@ protected:
     virtual void _onClear() = 0;
 
 public:
+    /** @private */
+    virtual std::size_t getClassTypeIndex() const = 0;
+    
     void returnToPool();
 };
 

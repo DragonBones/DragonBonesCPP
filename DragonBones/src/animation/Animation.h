@@ -67,14 +67,27 @@ public:
     AnimationState* gotoAndStopByTime(const std::string& animationName, float time = 0.f);
     AnimationState* gotoAndStopByFrame(const std::string& animationName, unsigned frame = 0);
     AnimationState* gotoAndStopByProgress(const std::string& animationName, float progress = 0.f);
-    bool hasAnimation(const std::string& animationName);
-    AnimationState* getState(const std::string& animationName);
+    AnimationState* getState(const std::string& animationName) const;
+    void setAnimations(const std::map<std::string, AnimationData*>& value);
+    bool hasAnimation(const std::string& animationName) const;
     bool getIsPlaying() const;
     bool getIsCompleted() const;
-    const std::string& lastAnimationName() const;
-    AnimationState* lastAnimationState() const;
-    const std::map<std::string, AnimationData*>& getAnimations() const;
-    void setAnimations(const std::map<std::string, AnimationData*>& value);
+    const std::string& getLastAnimationName() const;
+
+    inline AnimationState* getLastAnimationState() const
+    {
+        return _lastAnimationState;
+    }
+
+    inline const std::map<std::string, AnimationData*>& getAnimations() const
+    {
+        return _animations;
+    }
+
+    inline const std::vector<std::string>& getAnimationNames() const
+    {
+        return _animationNames;
+    }
 };
 
 DRAGONBONES_NAMESPACE_END

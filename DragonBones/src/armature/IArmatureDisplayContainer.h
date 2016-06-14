@@ -17,7 +17,7 @@ protected:
 
 public:
     virtual void advanceTimeBySelf(bool on) = 0;
-    virtual Armature& getArmature() const = 0;
+    virtual Armature* getArmature() const = 0;
     virtual Animation& getAnimation() const = 0;
 };
 

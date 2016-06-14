@@ -121,12 +121,6 @@ std::string to_string(const T& value)
 }
 
 template<class T>
-inline void clearVector(std::vector<T>& value)
-{
-    std::vector<T>().swap(value);
-}
-
-template<class T>
 inline T* mapFind(const std::map<std::string, T*>& map, const std::string& key)
 {
     const auto iterator = map.find(key);

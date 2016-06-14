@@ -1,4 +1,6 @@
 #include "CCSlot.h"
+#include "CCTextureData.h"
+#include "CCArmatureDisplayContainer.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -38,7 +40,7 @@ void CCSlot::_onClear()
 
 void CCSlot::_initDisplay(void* value)
 {
-    auto renderDisplay = static_cast<cocos2d::Node*>(value);
+    const auto renderDisplay = static_cast<cocos2d::Node*>(value);
     renderDisplay->retain();
 }
 
@@ -68,7 +70,7 @@ void CCSlot::_removeDisplay()
 
 void CCSlot::_disposeDisplay(void* value)
 {
-    auto renderDisplay = static_cast<cocos2d::Node*>(value);
+    const auto renderDisplay = static_cast<cocos2d::Node*>(value);
     renderDisplay->release();
 }
 
@@ -133,10 +135,10 @@ void CCSlot::_updateFilters()
 void CCSlot::_updateFrame()
 {
     const auto frameDisplay = static_cast<cocos2d::Sprite*>(this->_rawDisplay);
-    const unsigned displayIndex = this->_displayIndex;
 
-    if (this->_display && displayIndex >= 0)
+    if (this->_display && this->_displayIndex >= 0)
     {
+        const unsigned displayIndex = this->_displayIndex;
         const auto rawDisplayData = displayIndex < this->_displayDataSet->displays.size() ? this->_displayDataSet->displays[displayIndex] : nullptr;
         const auto replaceDisplayData = displayIndex < this->_replaceDisplayDataSet.size() ? this->_replaceDisplayDataSet[displayIndex] : nullptr;
         const auto contentDisplayData = replaceDisplayData ? replaceDisplayData : rawDisplayData;
@@ -344,10 +346,32 @@ void CCSlot::_updateTransform()
 {
     if (_renderDisplay)
     {
+        this->global.fromMatrix(*this->globalTransformMatrix);
         _renderDisplay->setScale(this->global.scaleX, this->global.scaleY);
         _renderDisplay->setRotationSkewX(this->global.skewX * RADIAN_TO_ANGLE);
         _renderDisplay->setRotationSkewY(this->global.skewY * RADIAN_TO_ANGLE);
         _renderDisplay->setPosition(this->global.x, -this->global.y);
+
+        /*static cocos2d::Mat4 transform;
+        const auto& pivot = _renderDisplay->getAnchorPoint();
+        const auto& size = textureSize;
+        transform.m[0] = this->globalTransformMatrix->a;
+        transform.m[1] = this->globalTransformMatrix->c;
+        transform.m[4] = this->globalTransformMatrix->b;
+        transform.m[5] = this->globalTransformMatrix->d;
+
+        if (pivot.x != 0.f || pivot.y != 0.f)
+        {
+            transform.m[12] = this->globalTransformMatrix->tx - (this->globalTransformMatrix->a * pivot.x + this->globalTransformMatrix->c * pivot.y);
+            transform.m[13] = -this->globalTransformMatrix->ty - (this->globalTransformMatrix->b * pivot.x + this->globalTransformMatrix->d * pivot.y);
+        }
+        else
+        {
+            transform.m[12] = this->globalTransformMatrix->tx;
+            transform.m[13] = -this->globalTransformMatrix->ty;
+        }
+
+        _renderDisplay->setNodeToParentTransform(transform);*/
     }
 }
 

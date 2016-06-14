@@ -2,8 +2,6 @@
 #define DRAGONBONES_CC_SLOT_H
 
 #include "DragonBonesHeaders.h"
-#include "CCTextureData.h"
-#include "CCArmatureDisplayContainer.h"
 #include "cocos2d.h"
 
 DRAGONBONES_NAMESPACE_BEGIN

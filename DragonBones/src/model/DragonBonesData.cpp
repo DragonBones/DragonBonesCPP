@@ -23,6 +23,8 @@ void DragonBonesData::_onClear()
     }
 
     armatures.clear();
+
+    _armatureNames.clear();
 }
 
 void DragonBonesData::addArmature(ArmatureData * value)
@@ -30,6 +32,7 @@ void DragonBonesData::addArmature(ArmatureData * value)
     if (value && !value->name.empty() && armatures.find(value->name) == armatures.end())
     {
         armatures[value->name] = value;
+        _armatureNames.push_back(value->name);
     }
     else
     {

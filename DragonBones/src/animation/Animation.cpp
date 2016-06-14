@@ -146,7 +146,7 @@ void Animation::_advanceTime(float passedTime)
 
                 if (_lastAnimationState == animationState)
                 {
-                    if (i - r >= 0)
+                    if (i >= r)
                     {
                         _lastAnimationState = _animationStates[i - r];
                     }
@@ -318,7 +318,7 @@ AnimationState* Animation::fadeIn(
     return _lastAnimationState;
 }
 
-AnimationState * Animation::gotoAndPlayByTime(const std::string & animationName, float time, int playTimes)
+AnimationState * Animation::gotoAndPlayByTime(const std::string& animationName, float time, int playTimes)
 {
     auto animationState = getState(animationName);
     if (!animationState)
@@ -336,7 +336,7 @@ AnimationState * Animation::gotoAndPlayByTime(const std::string & animationName,
     return animationState;
 }
 
-AnimationState * Animation::gotoAndPlayByFrame(const std::string & animationName, unsigned frame, int playTimes)
+AnimationState * Animation::gotoAndPlayByFrame(const std::string& animationName, unsigned frame, int playTimes)
 {
     auto animationState = getState(animationName);
     if (!animationState)
@@ -354,7 +354,7 @@ AnimationState * Animation::gotoAndPlayByFrame(const std::string & animationName
     return animationState;
 }
 
-AnimationState * Animation::gotoAndPlayByProgress(const std::string & animationName, float progress, int playTimes)
+AnimationState * Animation::gotoAndPlayByProgress(const std::string& animationName, float progress, int playTimes)
 {
     auto animationState = getState(animationName);
     if (!animationState)
@@ -372,7 +372,7 @@ AnimationState * Animation::gotoAndPlayByProgress(const std::string & animationN
     return animationState;
 }
 
-AnimationState * Animation::gotoAndStopByTime(const std::string & animationName, float time)
+AnimationState * Animation::gotoAndStopByTime(const std::string& animationName, float time)
 {
     const auto animationState = gotoAndPlayByTime(animationName, time, 1);
     if (animationState)
@@ -383,7 +383,7 @@ AnimationState * Animation::gotoAndStopByTime(const std::string & animationName,
     return animationState;
 }
 
-AnimationState * Animation::gotoAndStopByFrame(const std::string & animationName, unsigned frame)
+AnimationState * Animation::gotoAndStopByFrame(const std::string& animationName, unsigned frame)
 {
     const auto animationState = gotoAndPlayByFrame(animationName, frame, 1);
     if (animationState)
@@ -394,7 +394,7 @@ AnimationState * Animation::gotoAndStopByFrame(const std::string & animationName
     return animationState;
 }
 
-AnimationState * Animation::gotoAndStopByProgress(const std::string & animationName, float progress)
+AnimationState * Animation::gotoAndStopByProgress(const std::string& animationName, float progress)
 {
     const auto animationState = gotoAndPlayByProgress(animationName, progress, 1);
     if (animationState)
@@ -405,12 +405,12 @@ AnimationState * Animation::gotoAndStopByProgress(const std::string & animationN
     return animationState;
 }
 
-bool Animation::hasAnimation(const std::string & animationName)
+bool Animation::hasAnimation(const std::string& animationName) const
 {
     return _animations.find(animationName) != _animations.end();
 }
 
-AnimationState * Animation::getState(const std::string & animationName)
+AnimationState * Animation::getState(const std::string& animationName) const
 {
     for (std::size_t i = 0, l = _animationStates.size(); i < l; ++i)
     {
@@ -450,20 +450,10 @@ bool Animation::getIsCompleted() const
     return true;
 }
 
-const std::string& Animation::lastAnimationName() const
+const std::string& Animation::getLastAnimationName() const
 {
     static const auto DEFAULT_NAME = "";
     return _lastAnimationState ? _lastAnimationState->getName() : DEFAULT_NAME;
-}
-
-AnimationState * Animation::lastAnimationState() const
-{
-    return _lastAnimationState;
-}
-
-const std::map<std::string, AnimationData*>& Animation::getAnimations() const
-{
-    return _animations;
 }
 
 void Animation::setAnimations(const std::map<std::string, AnimationData*>& value)
