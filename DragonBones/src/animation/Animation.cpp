@@ -28,6 +28,7 @@ void Animation::_onClear()
     _armature = nullptr;
 
     _isPlaying = false;
+    _time = 0.f;
     _lastAnimationState = nullptr;
 
     _animations.clear();
@@ -287,11 +288,12 @@ AnimationState* Animation::fadeIn(
     _lastAnimationState->additiveBlending = additiveBlending;
     _lastAnimationState->_fadeIn(
         _armature, clipData->animation ? clipData->animation : clipData, animationName,
-        playTimes, clipData->position, clipData->duration, 1.f / clipData->scale, fadeInTime,
+        playTimes, clipData->position, clipData->duration, _time, 1.f / clipData->scale, fadeInTime,
         pauseFadeIn
     );
     _animationStates.push_back(_lastAnimationState);
     _animationStateDirty = true;
+    _time = 0.f;
 
     if (_animationStates.size() > 1)
     {
@@ -318,61 +320,36 @@ AnimationState* Animation::fadeIn(
     return _lastAnimationState;
 }
 
-AnimationState * Animation::gotoAndPlayByTime(const std::string& animationName, float time, int playTimes)
+AnimationState* Animation::gotoAndPlayByTime(const std::string& animationName, float time, int playTimes)
 {
-    auto animationState = getState(animationName);
-    if (!animationState)
-    {
-        animationState = fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
-    }
+    _time = time;
 
-    if (animationState)
-    {
-        animationState->setCurrentTime(time);
-        animationState->play();
-        _armature->advanceTime(0.f);
-    }
-
-    return animationState;
+    return fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
 }
 
-AnimationState * Animation::gotoAndPlayByFrame(const std::string& animationName, unsigned frame, int playTimes)
+AnimationState* Animation::gotoAndPlayByFrame(const std::string& animationName, unsigned frame, int playTimes)
 {
-    auto animationState = getState(animationName);
-    if (!animationState)
+    const auto clipData = _animations[animationName];
+    if (clipData)
     {
-        animationState = fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
+        _time = clipData->duration * frame / clipData->frameCount;
     }
 
-    if (animationState)
-    {
-        animationState->setCurrentTime(animationState->getTotalTime() * frame / animationState->getClip().frameCount);
-        animationState->play();
-        _armature->advanceTime(0.f);
-    }
-
-    return animationState;
+    return fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
 }
 
-AnimationState * Animation::gotoAndPlayByProgress(const std::string& animationName, float progress, int playTimes)
+AnimationState* Animation::gotoAndPlayByProgress(const std::string& animationName, float progress, int playTimes)
 {
-    auto animationState = getState(animationName);
-    if (!animationState)
+    const auto clipData = _animations[animationName];
+    if (clipData)
     {
-        animationState = fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
+        _time = clipData->duration * std::max(progress, 0.f);
     }
 
-    if (animationState)
-    {
-        animationState->setCurrentTime(animationState->getTotalTime() * progress);
-        animationState->play();
-        _armature->advanceTime(0.f);
-    }
-
-    return animationState;
+    return fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
 }
 
-AnimationState * Animation::gotoAndStopByTime(const std::string& animationName, float time)
+AnimationState* Animation::gotoAndStopByTime(const std::string& animationName, float time)
 {
     const auto animationState = gotoAndPlayByTime(animationName, time, 1);
     if (animationState)
@@ -383,7 +360,7 @@ AnimationState * Animation::gotoAndStopByTime(const std::string& animationName, 
     return animationState;
 }
 
-AnimationState * Animation::gotoAndStopByFrame(const std::string& animationName, unsigned frame)
+AnimationState* Animation::gotoAndStopByFrame(const std::string& animationName, unsigned frame)
 {
     const auto animationState = gotoAndPlayByFrame(animationName, frame, 1);
     if (animationState)
@@ -394,7 +371,7 @@ AnimationState * Animation::gotoAndStopByFrame(const std::string& animationName,
     return animationState;
 }
 
-AnimationState * Animation::gotoAndStopByProgress(const std::string& animationName, float progress)
+AnimationState* Animation::gotoAndStopByProgress(const std::string& animationName, float progress)
 {
     const auto animationState = gotoAndPlayByProgress(animationName, progress, 1);
     if (animationState)
@@ -410,7 +387,7 @@ bool Animation::hasAnimation(const std::string& animationName) const
     return _animations.find(animationName) != _animations.end();
 }
 
-AnimationState * Animation::getState(const std::string& animationName) const
+AnimationState* Animation::getState(const std::string& animationName) const
 {
     for (std::size_t i = 0, l = _animationStates.size(); i < l; ++i)
     {

@@ -17,18 +17,17 @@ AnimationTimelineState::~AnimationTimelineState()
 
 void AnimationTimelineState::_onClear()
 {
+    TimelineState::_onClear();
+
     _isStarted = false;
 }
 
 void AnimationTimelineState::update(float time)
 {
     const auto prevPlayTimes = this->_currentPlayTimes;
-
-    TimelineState::update(time);
-
     const auto eventDispatcher = this->_armature->getDisplay();
 
-    if (!_isStarted && this->_currentTime > 0.f)
+    if (!_isStarted && time > 0.f)
     {
         _isStarted = true;
 
@@ -39,6 +38,8 @@ void AnimationTimelineState::update(float time)
             this->_armature->_bufferEvent(eventObject, EventObject::START);
         }
     }
+
+    TimelineState::update(time);
 
     if (prevPlayTimes != this->_currentPlayTimes)
     {
@@ -369,24 +370,15 @@ void SlotTimelineState::_onArriveAtFrame(bool isUpdate)
 
         if (_tweenColor == TweenType::None)
         {
-            _durationColor.alphaMultiplier = currentColor.alphaMultiplier - _slotColor->alphaMultiplier;
-            _durationColor.redMultiplier = currentColor.redMultiplier - _slotColor->redMultiplier;
-            _durationColor.greenMultiplier = currentColor.greenMultiplier - _slotColor->greenMultiplier;
-            _durationColor.blueMultiplier = currentColor.blueMultiplier - _slotColor->blueMultiplier;
-            _durationColor.alphaOffset = currentColor.alphaOffset - _slotColor->alphaOffset;
-            _durationColor.redOffset = currentColor.redOffset - _slotColor->redOffset;
-            _durationColor.greenOffset = currentColor.greenOffset - _slotColor->greenOffset;
-            _durationColor.blueOffset = currentColor.blueOffset - _slotColor->blueOffset;
-
             if (
-                _durationColor.alphaMultiplier != 0.f ||
-                _durationColor.redMultiplier != 0.f ||
-                _durationColor.greenMultiplier != 0.f ||
-                _durationColor.blueMultiplier != 0.f ||
-                _durationColor.alphaOffset != 0.f ||
-                _durationColor.redOffset != 0.f ||
-                _durationColor.greenOffset != 0.f ||
-                _durationColor.blueOffset != 0.f
+                currentColor.alphaMultiplier - _slotColor->alphaMultiplier != 0.f ||
+                currentColor.redMultiplier - _slotColor->redMultiplier != 0.f ||
+                currentColor.greenMultiplier - _slotColor->greenMultiplier != 0.f ||
+                currentColor.blueMultiplier - _slotColor->blueMultiplier != 0.f ||
+                currentColor.alphaOffset - _slotColor->alphaOffset != 0.f ||
+                currentColor.redOffset - _slotColor->redOffset != 0.f ||
+                currentColor.greenOffset - _slotColor->greenOffset != 0.f ||
+                currentColor.blueOffset - _slotColor->blueOffset != 0.f
                 )
             {
                 _tweenColor = TweenType::Once;

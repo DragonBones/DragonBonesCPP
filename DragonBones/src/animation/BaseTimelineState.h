@@ -168,7 +168,7 @@ protected:
                     value = std::fmod(value, _duration);
                 }
 
-                if (_currentPlayTimes > playTimes)
+                if (playTimes > 0 && _currentPlayTimes > playTimes)
                 {
                     _currentPlayTimes = playTimes;
                 }
@@ -221,10 +221,13 @@ public:
                 break;
         }
 
-        _currentFrame = nullptr;
+        if (_currentTime == 0.f)
+        {
+            _currentFrame = nullptr;
+        }
     }
 
-    void fadeIn(Armature* armature, AnimationState* animationState, M* timelineData)
+    void fadeIn(Armature* armature, AnimationState* animationState, M* timelineData, float time)
     {
         _armature = armature;
         _animationState = animationState;
@@ -244,7 +247,7 @@ public:
 
         _onFadeIn();
 
-        setCurrentTime(0.f);
+        setCurrentTime(time);
     }
 
     virtual void fadeOut() 

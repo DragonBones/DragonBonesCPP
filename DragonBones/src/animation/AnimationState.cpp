@@ -172,7 +172,7 @@ bool AnimationState::_isDisabled(const Slot& slot) const
 
 void AnimationState::_fadeIn(
     Armature* armature, AnimationData* clip, const std::string& animationName, 
-    unsigned playTimes, float position, float duration, float timeScale, float fadeInTime,
+    unsigned playTimes, float position, float duration, float time, float timeScale, float fadeInTime,
     bool pausePlayhead
 )
 {
@@ -186,6 +186,7 @@ void AnimationState::_fadeIn(
 
     _position = position;
     _duration = duration;
+    _time = time;
     _clipDutation = _clip->duration;
     _isPausePlayhead = pausePlayhead;
     if (fadeTotalTime == 0.f)
@@ -194,13 +195,19 @@ void AnimationState::_fadeIn(
     }
 
     _timeline = BaseObject::borrowObject<AnimationTimelineState>();
-    _timeline->fadeIn(_armature, this, _clip);
+    _timeline->fadeIn(_armature, this, _clip, _time);
 
     _updateTimelineStates();
 }
 
 void AnimationState::_updateTimelineStates()
 {
+    auto time = _time;
+    if (!_clip->hasAsynchronyTimeline)
+    {
+        time = _timeline->_currentTime;
+    }
+
     std::map<std::string, BoneTimelineState*> boneTimelineStates;
     std::map<std::string, SlotTimelineState*> slotTimelineStates;
 
@@ -227,7 +234,7 @@ void AnimationState::_updateTimelineStates()
             {
                 const auto timelineState = BaseObject::borrowObject<BoneTimelineState>();
                 timelineState->bone = bone;
-                timelineState->fadeIn(_armature, this, timelineData);
+                timelineState->fadeIn(_armature, this, timelineData, time);
                 _boneTimelines.push_back(timelineState);
             }
         }
@@ -263,7 +270,7 @@ void AnimationState::_updateTimelineStates()
             {
                 const auto slotTimelineState = BaseObject::borrowObject<SlotTimelineState>();
                 slotTimelineState->slot = slot;
-                slotTimelineState->fadeIn(_armature, this, slotTimelineData);
+                slotTimelineState->fadeIn(_armature, this, slotTimelineData, time);
                 _slotTimelines.push_back(slotTimelineState);
             }
         }
@@ -281,6 +288,12 @@ void AnimationState::_updateTimelineStates()
 
 void AnimationState::_updateFFDTimelineStates()
 {
+    auto time = _time;
+    if (!_clip->hasAsynchronyTimeline)
+    {
+        time = _timeline->_currentTime;
+    }
+
     std::map<std::string, FFDTimelineState*> ffdTimelineStates;
 
     for (const auto timelineState : _ffdTimelines)
@@ -307,7 +320,7 @@ void AnimationState::_updateFFDTimelineStates()
                 {
                     const auto timelineState = BaseObject::borrowObject<FFDTimelineState>();
                     timelineState->slot = slot;
-                    timelineState->fadeIn(_armature, this, timelineData);
+                    timelineState->fadeIn(_armature, this, timelineData, time);
                     _ffdTimelines.push_back(timelineState);
                 }
             }
@@ -362,7 +375,7 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
 
     if (_weightResult != 0.f)
     {
-        float time = _time;
+        auto time = _time;
         if (!_clip->hasAsynchronyTimeline)
         {
             time = _timeline->_currentTime;
@@ -422,12 +435,12 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
 
 void AnimationState::play()
 {
-    _isPlaying = false;
+    _isPlaying = true;
 }
 
 void AnimationState::stop()
 {
-    _isPlaying = true;
+    _isPlaying = false;
 }
 
 void AnimationState::fadeOut(float fadeOutTime, bool pausePlayhead)
@@ -455,6 +468,11 @@ void AnimationState::fadeOut(float fadeOutTime, bool pausePlayhead)
         }
 
         for (const auto timelineState : _boneTimelines)
+        {
+            timelineState->fadeOut();
+        }
+
+        for (const auto timelineState : _slotTimelines)
         {
             timelineState->fadeOut();
         }
@@ -559,7 +577,7 @@ void AnimationState::setCurrentTime(float value)
 
     if (_weightResult != 0.f)
     {
-        float time = _time;
+        auto time = _time;
         if (!_clip->hasAsynchronyTimeline)
         {
             time = _timeline->_currentTime;

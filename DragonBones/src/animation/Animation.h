@@ -31,6 +31,7 @@ public:
     
 private:
     bool _isPlaying;
+    float _time;
     AnimationState* _lastAnimationState;
     std::map<std::string, AnimationData*> _animations;
     std::vector<std::string> _animationNames;

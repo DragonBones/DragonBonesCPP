@@ -69,7 +69,7 @@ protected:
 public:
     bool _isDisabled(const Slot& slot) const;
     void _fadeIn(Armature* armature, AnimationData* clip, const std::string& animationName,
-        unsigned playTimes, float position, float duration, float timeScale, float fadeInTime,
+        unsigned playTimes, float position, float duration, float time, float timeScale, float fadeInTime,
         bool pausePlayhead
     );
     void _updateTimelineStates();

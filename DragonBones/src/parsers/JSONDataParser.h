@@ -172,7 +172,8 @@ protected:
     }
 
     template<class T>
-    void _parseTimeline(const rapidjson::Value& rawData,
+    void _parseTimeline(
+        const rapidjson::Value& rawData,
         TimelineData<T>& timeline,
         const std::function<T*(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)>& frameParser) const
     {
