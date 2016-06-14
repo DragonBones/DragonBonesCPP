@@ -22,15 +22,6 @@ bool HelloDragonBones::init()
     const auto dragonBonesData = _factory.loadDragonBonesData("Ubbie/Ubbie.json");
     _factory.loadTextureAtlasData("Ubbie/texture.json");
 
-
-    _armatureDisplay = _factory.buildArmatureDisplay(dragonBonesData->getArmatureNames()[0]);
-    _armature = _armatureDisplay->getArmature();
-    _armatureDisplay->setPosition(200.f, 200.f);
-    _armatureDisplay->setScale(0.5f);
-    this->addChild(_armatureDisplay);
-    _armatureDisplay->getAnimation().play(_armatureDisplay->getAnimation().getAnimationNames()[0], 0);
-
-
     // a. Build Armature Display. (buildArmatureDisplay will advanceTime animation by Armature Display)
     _armatureDisplay = _factory.buildArmatureDisplay(dragonBonesData->getArmatureNames()[0]);
     _armature = _armatureDisplay->getArmature();
