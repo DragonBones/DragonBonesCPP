@@ -128,6 +128,8 @@ protected:
 
     bool _setCurrentTime(float value)
     {
+        unsigned currentPlayTimes = 0;
+
         if (_hasAsynchronyTimeline)
         {
             const auto playTimes = _animationState->playTimes;
@@ -142,7 +144,7 @@ protected:
             if (playTimes > 0 && (value >= totalTimes || value <= -totalTimes))
             {
                 _isCompleted = true;
-                _currentPlayTimes = playTimes;
+                currentPlayTimes = playTimes;
 
                 if (value < 0.f)
                 {
@@ -159,18 +161,18 @@ protected:
 
                 if (value < 0.f)
                 {
-                    _currentPlayTimes = -value / _duration;
+                    currentPlayTimes = -value / _duration;
                     value = _duration - std::fmod(value, _duration);
                 }
                 else
                 {
-                    _currentPlayTimes = value / _duration;
+                    currentPlayTimes = value / _duration;
                     value = std::fmod(value, _duration);
                 }
 
-                if (playTimes > 0 && _currentPlayTimes > playTimes)
+                if (playTimes > 0 && currentPlayTimes > playTimes)
                 {
-                    _currentPlayTimes = playTimes;
+                    currentPlayTimes = playTimes;
                 }
             }
 
@@ -192,8 +194,9 @@ protected:
             _isCompleted = true;
         }
 
-        _isReverse = _currentTime > value;
+        _isReverse = _currentTime > value && _currentPlayTimes == currentPlayTimes;
         _currentTime = value;
+        _currentPlayTimes = currentPlayTimes;
 
         return true;
     }

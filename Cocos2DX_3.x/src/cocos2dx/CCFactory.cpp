@@ -7,7 +7,6 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 CCFactory::CCFactory() 
 {
-    clear();
 }
 CCFactory::~CCFactory() 
 {
@@ -64,6 +63,7 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
     rawDisplay->retain();
     rawDisplay->setCascadeOpacityEnabled(true);
     rawDisplay->setCascadeColorEnabled(true);
+    rawDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
 
     for (const auto displayData : slotDisplayDataSet.displays)
     {
@@ -128,9 +128,8 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
         return nullptr;
     }
 
-    const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor(); // TODO
-
-    return parseDragonBonesData(data.c_str(), dragonBonesName);
+    const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor();
+    return parseDragonBonesData(data.c_str(), dragonBonesName, 1.f / scale);
 }
 
 TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, const std::string& dragonBonesName, float scale)

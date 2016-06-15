@@ -121,6 +121,7 @@ protected:
     mutable AnimationData* _animation;
     mutable void* _timeline; // TimelineData*
 
+    float _armatureScale;
     mutable Point _helpPoint;
     std::vector<BoneData*> _rawBones;
 
@@ -128,8 +129,8 @@ public:
     DataParser();
     virtual ~DataParser() = 0;
 
-    virtual void parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale) = 0;
-    virtual DragonBonesData* parseDragonBonesData(const char* rawData) = 0;
+    virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.f) = 0;
+    virtual void parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale = 0.f) = 0;
 };
 
 DRAGONBONES_NAMESPACE_END

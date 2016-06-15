@@ -211,8 +211,8 @@ DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
             if (transformObject.HasMember(PIVOT_X) || transformObject.HasMember(PIVOT_Y))
             {
                 display->isRelativePivot = false;
-                display->pivot.x = _getNumber(transformObject, PIVOT_X, 0.f);
-                display->pivot.y = _getNumber(transformObject, PIVOT_Y, 0.f);
+                display->pivot.x = _getNumber(transformObject, PIVOT_X, 0.f) * this->_armatureScale;
+                display->pivot.y = _getNumber(transformObject, PIVOT_Y, 0.f) * this->_armatureScale;
             }
         }
 
@@ -302,8 +302,8 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
         const auto iN = i + 1;
         const auto vertexIndex = (unsigned)(i / 2);
 
-        auto x = mesh->vertices[i] = rawVertices[i].GetFloat();
-        auto y = mesh->vertices[iN] = rawVertices[iN].GetFloat();
+        auto x = mesh->vertices[i] = rawVertices[i].GetFloat() * this->_armatureScale;
+        auto y = mesh->vertices[iN] = rawVertices[iN].GetFloat() * this->_armatureScale;
         mesh->uvs[i] = rawUVs[i].GetFloat();
         mesh->uvs[iN] = rawUVs[iN].GetFloat();
 
@@ -618,8 +618,8 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & raw
         }
         else
         {
-            x = rawVertices[i - offset].GetFloat();
-            y = rawVertices[i + 1 - offset].GetFloat();
+            x = rawVertices[i - offset].GetFloat() * this->_armatureScale;
+            y = rawVertices[i + 1 - offset].GetFloat() * this->_armatureScale;
         }
 
         if (this->_mesh->skinned)
@@ -753,8 +753,8 @@ void JSONDataParser::_parseEventData(const rapidjson::Value& rawData, std::vecto
 
 void JSONDataParser::_parseTransform(const rapidjson::Value& rawData, Transform& transform) const
 {
-    transform.x = _getNumber(rawData, X, 0.f);
-    transform.y = _getNumber(rawData, Y, 0.f);
+    transform.x = _getNumber(rawData, X, 0.f) * this->_armatureScale;
+    transform.y = _getNumber(rawData, Y, 0.f) * this->_armatureScale;
     transform.skewX = _getNumber(rawData, SKEW_X, 0.f) * ANGLE_TO_RADIAN;
     transform.skewY = _getNumber(rawData, SKEW_Y, 0.f) * ANGLE_TO_RADIAN;
     transform.scaleX = _getNumber(rawData, SCALE_X, 1.f);
@@ -771,6 +771,49 @@ void JSONDataParser::_parseColorTransform(const rapidjson::Value& rawData, Color
     color.redOffset = _getNumber(rawData, RED_OFFSET, (int)0);
     color.greenOffset = _getNumber(rawData, GREEN_OFFSET, (int)0);
     color.blueOffset = _getNumber(rawData, BLUE_OFFSET, (int)0);
+}
+
+DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, float scale)
+{
+    if (rawData)
+    {
+        this->_armatureScale = scale;
+
+        rapidjson::Document document;
+        document.Parse(rawData);
+
+        std::string version = _getString(document, VERSION, "");
+        if (version == DATA_VERSION)
+        {
+            const auto data = BaseObject::borrowObject<DragonBonesData>();
+            data->name = _getString(document, NAME, "");
+            data->frameRate = _getNumber(document, FRAME_RATE, (unsigned)24);
+
+            if (document.HasMember(ARMATURE))
+            {
+                this->_data = data;
+
+                for (const auto& armatureObject : document[ARMATURE].GetArray())
+                {
+                    data->addArmature(_parseArmature(armatureObject));
+                }
+
+                this->_data = nullptr;
+            }
+
+            return data;
+        }
+        else // TODO
+        {
+            DRAGONBONES_ASSERT(false, "Nonsupport data version.");
+        }
+    }
+    else
+    {
+        DRAGONBONES_ASSERT(false, "Argument error.");
+    }
+
+    return nullptr;
 }
 
 void JSONDataParser::parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale)
@@ -826,47 +869,6 @@ void JSONDataParser::parseTextureAtlasData(const char* rawData, TextureAtlasData
     {
         DRAGONBONES_ASSERT(false, "Argument error.");
     }
-}
-
-DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData)
-{
-    if (rawData)
-    {
-        rapidjson::Document document;
-        document.Parse(rawData);
-
-        std::string version = _getString(document, VERSION, "");
-        if (version == DATA_VERSION)
-        {
-            const auto data = BaseObject::borrowObject<DragonBonesData>();
-            data->name = _getString(document, NAME, "");
-            data->frameRate = _getNumber(document, FRAME_RATE, (unsigned)24);
-
-            if (document.HasMember(ARMATURE))
-            {
-                this->_data = data;
-
-                for (const auto& armatureObject : document[ARMATURE].GetArray())
-                {
-                    data->addArmature(_parseArmature(armatureObject));
-                }
-
-                this->_data = nullptr;
-            }
-
-            return data;
-        }
-        else // TODO
-        {
-            DRAGONBONES_ASSERT(false, "Nonsupport data version.");
-        }
-    }
-    else
-    {
-        DRAGONBONES_ASSERT(false, "Argument error.");
-    }
-
-    return nullptr;
 }
 
 DRAGONBONES_NAMESPACE_END

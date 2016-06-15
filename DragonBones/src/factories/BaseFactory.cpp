@@ -206,9 +206,9 @@ void BaseFactory::_replaceSlotDisplay(const BuildArmaturePackage& dataPackage, c
     }
 }
 
-DragonBonesData* BaseFactory::parseDragonBonesData(const char* rawData, const std::string& dragonBonesName)
+DragonBonesData* BaseFactory::parseDragonBonesData(const char* rawData, const std::string& dragonBonesName, float scale)
 {
-    const auto dragonBonesData = _jsonDataParser.parseDragonBonesData(rawData);
+    const auto dragonBonesData = _jsonDataParser.parseDragonBonesData(rawData, scale);
     addDragonBonesData(dragonBonesData, dragonBonesName);
 
     return dragonBonesData;
@@ -421,7 +421,6 @@ void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const s
             }
         }
     }
-
 }
 
 void BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, Slot& slot) const

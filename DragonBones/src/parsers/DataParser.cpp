@@ -277,6 +277,7 @@ DataParser::DataParser() :
     _animation(nullptr),
     _timeline(nullptr),
 
+    _armatureScale(1.f),
     _helpPoint(),
     _rawBones()
 {}

@@ -62,7 +62,7 @@ protected:
     virtual Slot* _generateSlot(const BuildArmaturePackage& dataPackage, const SlotDisplayDataSet& slotDisplayDataSet) const = 0;
 
 public:
-    virtual DragonBonesData* parseDragonBonesData(const char* rawData, const std::string& dragonBonesName = "");
+    virtual DragonBonesData* parseDragonBonesData(const char* rawData, const std::string& dragonBonesName = "", float scale = 1.f);
     virtual TextureAtlasData* parseTextureAtlasData(const char* rawData, void* textureAtlas, const std::string& dragonBonesName = "", float scale = 0.f);
     virtual void addDragonBonesData(DragonBonesData* data, const std::string& dragonBonesName = "");
     virtual void removeDragonBonesData(const std::string& dragonBonesName, bool disposeData = true);

@@ -240,8 +240,8 @@ protected:
     virtual void _parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color) const;
 
 public:
-    virtual void parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale) override;
-    virtual DragonBonesData* parseDragonBonesData(const char* rawData) override;
+    virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.f) override;
+    virtual void parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale = 0.f) override;
 };
 
 DRAGONBONES_NAMESPACE_END
