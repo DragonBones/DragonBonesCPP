@@ -11,9 +11,9 @@ BaseFactory::BaseFactory() :
 {}
 BaseFactory::~BaseFactory() {}
 
-TextureData* BaseFactory::_getTextureData(const std::string& textureAtlasName, const std::string& textureName) const
+TextureData* BaseFactory::_getTextureData(const std::string& dragonBonesName, const std::string& textureName) const
 {
-    const auto iterator = _textureAtlasDataMap.find(textureAtlasName);
+    const auto iterator = _textureAtlasDataMap.find(dragonBonesName);
     if (iterator != _textureAtlasDataMap.end())
     {
         for (const auto textureAtlasData : iterator->second)

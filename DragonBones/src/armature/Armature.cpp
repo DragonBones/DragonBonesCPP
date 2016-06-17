@@ -46,8 +46,27 @@ void Armature::_onClear()
 
     _delayDispose = false;
     _lockDispose = false;
-    _lockEvent = false;
+    _lockActionAndEvent = false;
     _slotsDirty = false;
+
+    for (const auto bone : _bones)
+    {
+        bone->returnToPool();
+    }
+
+    for (const auto slot : _slots)
+    {
+        slot->returnToPool();
+    }
+
+    for (const auto event : _events)
+    {
+        event->returnToPool();
+    }
+
+    _bones.clear();
+    _slots.clear();
+    _events.clear();
 }
 
 void Armature::_sortBones()
@@ -211,37 +230,37 @@ void Armature::advanceTime(float passedTime)
         }
     }
 
-    if (!_lockEvent && !_events.empty())
+    if (!_lockActionAndEvent)
     {
-        _lockEvent = true;
+        _lockActionAndEvent = true;
 
-        for (const auto event : _events)
+        if (!_events.empty())
         {
-            if (Armature::soundEventManager && event->type == EventObject::SOUND_EVENT)
+            for (const auto event : _events)
             {
-                Armature::soundEventManager->_dispatchEvent(event);
-            }
-            else
-            {
-                _display->_dispatchEvent(event);
+                if (Armature::soundEventManager && event->type == EventObject::SOUND_EVENT)
+                {
+                    Armature::soundEventManager->_dispatchEvent(event);
+                }
+                else
+                {
+                    _display->_dispatchEvent(event);
+                }
+
+                event->returnToPool();
             }
 
-            event->returnToPool();
+            _events.clear();
         }
 
-        _events.clear();
-
-        _lockEvent = false;
-    }
-
-    if (_action)
-    {
-        const auto& ints = std::get<0>(_action->data);
-        const auto& floats = std::get<1>(_action->data);
-        const auto& strings = std::get<2>(_action->data);
-
-        switch (_action->type)
+        if (_action)
         {
+            const auto& ints = std::get<0>(_action->data);
+            const auto& floats = std::get<1>(_action->data);
+            const auto& strings = std::get<2>(_action->data);
+
+            switch (_action->type)
+            {
             case ActionType::Play:
                 _animation->play(strings[0], ints[0]);
                 break;
@@ -265,9 +284,12 @@ void Armature::advanceTime(float passedTime)
             case ActionType::FadeOut:
                 // TODO
                 break;
+            }
+
+            _action = nullptr;
         }
 
-        _action = nullptr;
+        _lockActionAndEvent = false;
     }
 
     _lockDispose = false;
@@ -331,11 +353,14 @@ Slot* Armature::getSlot(const std::string& name) const
 
 Slot* Armature::getSlotByDisplay(void* display) const
 {
-    for (const auto slot : _slots)
+    if (display)
     {
-        if (slot->getDisplay() == display)
+        for (const auto slot : _slots)
         {
-            return slot;
+            if (slot->getDisplay() == display)
+            {
+                return slot;
+            }
         }
     }
 

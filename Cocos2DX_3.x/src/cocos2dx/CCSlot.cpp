@@ -55,7 +55,7 @@ void CCSlot::_addDisplay()
     container->addChild(_renderDisplay);
 }
 
-void CCSlot::_replaceDisplay(void * value)
+void CCSlot::_replaceDisplay(void* value)
 {
     const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay());
     const auto prevDisplay = static_cast<cocos2d::Node*>(value);
@@ -180,14 +180,14 @@ void CCSlot::_updateFrame()
                             pivot.y -= contentTextureData->frame->y;
                         }
 
-                        if (rawDisplayData && replaceDisplayData)
+                        if (rawDisplayData && contentDisplayData != rawDisplayData)
                         {
-                            pivot.x += replaceDisplayData->transform.x - rawDisplayData->transform.x;
-                            pivot.y += replaceDisplayData->transform.y - rawDisplayData->transform.y;
+                            pivot.x += contentDisplayData->transform.x - rawDisplayData->transform.x;
+                            pivot.y += contentDisplayData->transform.y - rawDisplayData->transform.y;
                         }
 
                         pivot.x = -pivot.x;
-                        pivot.y = -pivot.y;
+                        pivot.y = pivot.y - originSize.height;
                     }
 
                     contentTextureData->texture = cocos2d::SpriteFrame::createWithTexture(textureAtlasTexture, rect, contentTextureData->rotated, pivot, originSize); // TODO multiply textureAtlas
@@ -346,8 +346,8 @@ void CCSlot::_updateTransform()
 
         static cocos2d::Mat4 transform;
         transform.m[0] = this->globalTransformMatrix->a;
-        transform.m[1] = this->globalTransformMatrix->c;
-        transform.m[4] = this->globalTransformMatrix->b;
+        transform.m[1] = -this->globalTransformMatrix->b;
+        transform.m[4] = -this->globalTransformMatrix->c;
         transform.m[5] = this->globalTransformMatrix->d;
         transform.m[12] = this->globalTransformMatrix->tx;
         transform.m[13] = -this->globalTransformMatrix->ty;

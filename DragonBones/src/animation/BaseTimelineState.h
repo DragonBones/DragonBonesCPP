@@ -162,7 +162,7 @@ protected:
                 if (value < 0.f)
                 {
                     currentPlayTimes = -value / _duration;
-                    value = _duration - std::fmod(value, _duration);
+                    value = _duration - std::fmod(-value, _duration);
                 }
                 else
                 {

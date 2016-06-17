@@ -462,7 +462,7 @@ void AnimationState::fadeOut(float fadeOutTime, bool pausePlayhead)
     else
     {
         _isFadeOut = true;
-        if (fadeTotalTime == 0.f)
+        if (fadeOutTime == 0.f)
         {
             _fadeProgress = 0.000001f;
         }
@@ -479,7 +479,7 @@ void AnimationState::fadeOut(float fadeOutTime, bool pausePlayhead)
     }
 
     displayControl = false;
-    fadeTotalTime = _fadeProgress ? fadeOutTime / _fadeProgress : 0.f;
+    fadeTotalTime = _fadeProgress > 0.000001f ? fadeOutTime / _fadeProgress : 0.f;
     _fadeTime = fadeTotalTime * (1.f - _fadeProgress);
 }
 

@@ -51,7 +51,7 @@ public:
     virtual ~BaseFactory() = 0;
 
 protected:
-    virtual TextureData* _getTextureData(const std::string& textureAtlasName, const std::string& textureName) const;
+    virtual TextureData* _getTextureData(const std::string& dragonBonesName, const std::string& textureName) const;
     virtual bool _fillBuildArmaturePackage(const std::string& dragonBonesName, const std::string& armatureName, const std::string& skinName, BuildArmaturePackage& dataPackage) const;
     virtual void _buildBones(const BuildArmaturePackage& dataPackage, Armature& armature) const;
     virtual void _buildSlots(const BuildArmaturePackage& dataPackage, Armature& armature) const;

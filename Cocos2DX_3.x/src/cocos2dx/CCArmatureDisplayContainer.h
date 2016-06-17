@@ -6,7 +6,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class CCArmatureDisplayContainer : public cocos2d::Node, public IArmatureDisplayContainer
+class CCArmatureDisplayContainer : public IArmatureDisplayContainer, public cocos2d::Node
 {
 public:
     /** @private */
@@ -17,7 +17,7 @@ public:
     Armature* _armature;
 
 protected:
-    cocos2d::EventDispatcher _dispatcher;
+    //cocos2d::EventDispatcher _dispatcher;
 
 protected:
     CCArmatureDisplayContainer();
@@ -39,7 +39,7 @@ public:
 
     inline virtual bool hasEvent(const std::string& type) const override
     {
-        return _dispatcher.isEnabled();
+        return false;//_dispatcher.isEnabled();
     }
 
     inline virtual Armature* getArmature() const override 

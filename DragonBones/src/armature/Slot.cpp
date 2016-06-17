@@ -443,16 +443,17 @@ void Slot::setDisplay(void* value, DisplayType displayType)
     }
     else
     {
+        auto relpaceDisplayList = _displayList; // copy
         if (displayListLength <= (std::size_t)_displayIndex)
         {
-            _displayList.resize(_displayIndex + 1);
+            relpaceDisplayList.resize(_displayIndex + 1);
         }
 
-        _displayList[_displayIndex].first = value;
-        _displayList[_displayIndex].second = displayType;
-    }
+        relpaceDisplayList[_displayIndex].first = value;
+        relpaceDisplayList[_displayIndex].second = displayType;
 
-    setDisplayList(_displayList);
+        setDisplayList(relpaceDisplayList);
+    }
 }
 
 void Slot::setChildArmature(Armature* value)

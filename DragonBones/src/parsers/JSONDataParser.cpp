@@ -655,8 +655,13 @@ void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vect
         const auto actionData = BaseObject::borrowObject<ActionData>();
         actionData->type = ActionType::FadeIn;
 
+        auto& ints = std::get<0>(actionData->data);
+        auto& floats = std::get<1>(actionData->data);
         auto& strings = std::get<2>(actionData->data);
+
         strings.push_back(actionsObject.GetString());
+        floats.push_back(-1.f);
+        ints.push_back(-1);
 
         actionData->bone = bone;
         actionData->slot = slot;

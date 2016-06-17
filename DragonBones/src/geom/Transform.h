@@ -96,11 +96,13 @@ public:
         x = matrix.tx;
         y = matrix.ty;
 
-        skewX = std::atan2(-matrix.c, matrix.d);
-        skewY = std::atan2(matrix.b, matrix.a);
+        skewX = std::atan(-matrix.c / matrix.d);
+        skewY = std::atan(matrix.b / matrix.a);
+        if (skewX != skewX) skewX = 0.f;
+        if (skewY != skewY) skewY = 0.f;
         
-        scaleY = (skewX > -PI_Q && skewX < PI_Q)? matrix.d / cos(skewX): -matrix.c / sin(skewX);
-        scaleX = (skewY > -PI_Q && skewY < PI_Q)? matrix.a / cos(skewY):  matrix.b / sin(skewY);
+        scaleY = (skewX > -PI_Q && skewX < PI_Q) ? (matrix.d / std::cos(skewX)) : (-matrix.c / std::sin(skewX));
+        scaleX = (skewY > -PI_Q && skewY < PI_Q) ? (matrix.a / std::cos(skewY)) : (matrix.b / std::sin(skewY));
 
         if (backupScaleX >= 0.f && scaleX < 0.f)
         {

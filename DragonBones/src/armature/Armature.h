@@ -47,7 +47,7 @@ public: // private
 protected:
     bool _delayDispose;
     bool _lockDispose;
-    bool _lockEvent;
+    bool _lockActionAndEvent;
     bool _slotsDirty;
     std::vector<Bone*> _bones;
     std::vector<Slot*> _slots;

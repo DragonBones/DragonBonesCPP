@@ -14,11 +14,16 @@ public:
     CREATE_FUNC(HelloDragonBones);
 
 private:
+    unsigned _armatureIndex;
+    unsigned _animationIndex;
+    dragonBones::DragonBonesData* _dragonBonesData;
     dragonBones::Armature* _armature;
     dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
     dragonBones::CCFactory _factory;
 
-    bool _touchHandler(const cocos2d::Touch* touch, cocos2d::Event* event) const;
+    void _changeArmature();
+    void _changeAnimation();
+    bool _touchHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
 };
 
 #endif // __HELLO_DRAGONBONES_H__

@@ -27,7 +27,7 @@ void AnimationTimelineState::update(float time)
     const auto prevPlayTimes = this->_currentPlayTimes;
     const auto eventDispatcher = this->_armature->getDisplay();
 
-    if (!_isStarted && time > 0.f)
+    if (!_isStarted && time != 0.f)
     {
         _isStarted = true;
 

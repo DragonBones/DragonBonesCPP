@@ -21,8 +21,8 @@ bool PerformanceTest::init()
     _addingArmature = false;
     _removingArmature = false;
 
-    _dragonBonesData = _factory.loadDragonBonesData("Ubbie/Ubbie.json");
-    _factory.loadTextureAtlasData("Ubbie/texture.json");
+    _dragonBonesData = _factory.loadDragonBonesData("DragonBoy/DragonBoy.json");
+    _factory.loadTextureAtlasData("DragonBoy/DragonBoy_texture_1.json");
 
     cocos2d::Director::getInstance()->getScheduler()->schedule(
         [&](float passedTime)
@@ -81,13 +81,13 @@ bool PerformanceTest::init()
 
 void PerformanceTest::_addArmature()
 {
-    const auto armature = _factory.buildArmature(_dragonBonesData->getArmatureNames()[0]);
+    const auto armature = _factory.buildArmature(_dragonBonesData->getArmatureNames()[1]);
     const auto armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplayContainer*>(armature->getDisplay());
 
     armatureDisplay->setScale(0.3f);
     this->addChild(armatureDisplay);
 
-    armature->setCacheFrameRate(24);
+    //armature->setCacheFrameRate(24);
     armature->getAnimation().play(armature->getAnimation().getAnimationNames()[0], 0);
     dragonBones::WorldClock::clock.add(armature);
 
@@ -141,10 +141,9 @@ void PerformanceTest::_updateText()
 
 bool PerformanceTest::_touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
 {
-    const auto touchX = touch->getLocation().x;
-    const auto lineX = 960.f * 0.5f;
-    _addingArmature = touchX > lineX;
-    _removingArmature = touchX < lineX;
+    const auto touchRight = touch->getLocation().x > 960.f * 0.5f;
+    _addingArmature = touchRight;
+    _removingArmature = !touchRight;
 
     return true;
 }

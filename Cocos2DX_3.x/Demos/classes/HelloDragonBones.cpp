@@ -18,16 +18,60 @@ bool HelloDragonBones::init()
         return false;
     }
 
-    // Load DragonBones Data
-    const auto dragonBonesData = _factory.loadDragonBonesData("Ubbie/Ubbie.json");
-    _factory.loadTextureAtlasData("Ubbie/texture.json");
+    _armatureIndex = 0;
+    _animationIndex = 0;
+    _armature = nullptr;
+    _armatureDisplay = nullptr;
+
+    // Load DragonBones Data.
+    _dragonBonesData = _factory.loadDragonBonesData("AnimationBaseTest/AnimationBaseTest.json");
+    _factory.loadTextureAtlasData("AnimationBaseTest/texture.json");
+
+    if (_dragonBonesData)
+    {
+        _changeArmature();
+        _changeAnimation();
+
+        const auto listener = cocos2d::EventListenerTouchOneByOne::create();
+        listener->onTouchBegan = CC_CALLBACK_2(HelloDragonBones::_touchHandler, this);
+        this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+    }
+    else
+    {
+        assert(false);
+    }
+
+    return true;
+}
+
+void HelloDragonBones::_changeArmature()
+{
+    // Remove prev Armature.
+    if (_armature)
+    {
+        _armature->dispose();
+        this->removeChild(_armatureDisplay);
+
+        // b.
+        // dragonBones::WorldClock::clock.remove(_armature);
+    }
+
+    // Get Next Armature name.
+    const auto& armatureNames = _dragonBonesData->getArmatureNames();
+    _armatureIndex++;
+    if (_armatureIndex >= armatureNames.size())
+    {
+        _armatureIndex = 0;
+    }
+
+    const auto& armatureName = armatureNames[_armatureIndex];
 
     // a. Build Armature Display. (buildArmatureDisplay will advanceTime animation by Armature Display)
-    _armatureDisplay = _factory.buildArmatureDisplay(dragonBonesData->getArmatureNames()[0]);
+    _armatureDisplay = _factory.buildArmatureDisplay(armatureName);
     _armature = _armatureDisplay->getArmature();
 
     // b. Build Armature. (buildArmature will advanceTime animation by WorldClock)
-    /*_armature = _factory.buildArmature(dragonBonesData->getArmatureNames()[0]);
+    /*_armature = _factory.buildArmature(armatureName);
     _armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplayContainer*>(_armature->getDisplay());
     dragonBones::WorldClock::clock.add(_armature);
     cocos2d::Director::getInstance()->getScheduler()->schedule(
@@ -42,32 +86,35 @@ bool HelloDragonBones::init()
     _armatureDisplay->setPosition(480.f, 200.f);
     _armatureDisplay->setScale(0.5f);
     this->addChild(_armatureDisplay);
-
-    // Play animation.
-    _armatureDisplay->getAnimation().play(_armatureDisplay->getAnimation().getAnimationNames()[0], 0);
-    //_armature->getAnimation().play(_armature->getAnimation().getAnimationNames()[0], 0);
-
-    const auto listener = cocos2d::EventListenerTouchOneByOne::create();
-    listener->onTouchBegan = CC_CALLBACK_2(HelloDragonBones::_touchHandler, this);
-    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
-
-    return true;
 }
 
-// Touch to change Armature animation.
-bool HelloDragonBones::_touchHandler(const cocos2d::Touch* touch, cocos2d::Event* event) const
+void HelloDragonBones::_changeAnimation()
 {
-    const auto& animationNames = _armature->getAnimation().getAnimationNames();
-    const auto iterator = std::find(animationNames.cbegin(), animationNames.cend(), _armature->getAnimation().getLastAnimationName());
-    auto animationIndex = std::distance(animationNames.cbegin(), iterator);
-    animationIndex++;
-    if (animationIndex >= animationNames.size())
+    // Get next Animation name.
+    const auto& animationNames = _armatureDisplay->getAnimation().getAnimationNames();
+    _animationIndex++;
+    if (_animationIndex >= animationNames.size())
     {
-        animationIndex = 0;
+        _animationIndex = 0;
     }
 
-    const auto& animationName = animationNames[animationIndex];
-    _armature->getAnimation().play(animationName, 0);
+    const auto& animationName = animationNames[_animationIndex];
+
+    // Play Animation.
+    _armatureDisplay->getAnimation().play(animationName);
+    //_armature->getAnimation().play(animationName);
+}
+
+bool HelloDragonBones::_touchHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
+{
+    const auto touchRight = touch->getLocation().x > 960.f * 0.5f;
+
+    if (_dragonBonesData->getArmatureNames().size() > 1 && !touchRight)
+    {
+        _changeArmature();
+    }
+
+    _changeAnimation();
     
     return true;
 }
