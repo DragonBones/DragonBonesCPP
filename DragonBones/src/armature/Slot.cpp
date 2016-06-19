@@ -47,7 +47,7 @@ void Slot::_updateDisplay()
 
     if (_displayIndex >= 0 && (std::size_t)_displayIndex < _displayList.size())
     {
-        const auto displayPair = _displayList[_displayIndex];
+        const auto& displayPair = _displayList[_displayIndex];
         if (displayPair.second == DisplayType::Armature)
         {
             _childArmature = (Armature*)displayPair.first;
@@ -73,7 +73,7 @@ void Slot::_updateDisplay()
 
         if (prevDisplay)
         {
-            _replaceDisplay(prevDisplay);
+            _replaceDisplay(prevDisplay, prevChildArmature != nullptr);
         }
         else
         {
@@ -311,7 +311,7 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
         for (std::size_t i = 0, l = _displayList.size(); i < l; ++i)
         {
             const auto& eachPair = value[i];
-            if (eachPair.first && eachPair.first != _rawDisplay)
+            if (eachPair.first && eachPair.first != _rawDisplay && eachPair.second != DisplayType::Armature)
             {
                 auto isInited = false;
                 for (const auto& pair : _displayList)

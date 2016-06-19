@@ -63,7 +63,7 @@ protected:
     virtual void _onUpdateDisplay() = 0;
     virtual void _initDisplay(void* value) = 0;
     virtual void _addDisplay() = 0;
-    virtual void _replaceDisplay(void* value) = 0;
+    virtual void _replaceDisplay(void* value, bool isArmatureDisplayContainer) = 0;
     virtual void _removeDisplay() = 0;
     virtual void _disposeDisplay(void* value) = 0;
     virtual void _updateColor() = 0;

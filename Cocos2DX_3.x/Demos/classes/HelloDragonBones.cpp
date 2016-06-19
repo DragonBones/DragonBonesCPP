@@ -84,7 +84,7 @@ void HelloDragonBones::_changeArmature()
 
     // Add Armature Display.
     _armatureDisplay->setPosition(480.f, 200.f);
-    _armatureDisplay->setScale(0.5f);
+    _armatureDisplay->setScale(1.0f);
     this->addChild(_armatureDisplay);
 }
 

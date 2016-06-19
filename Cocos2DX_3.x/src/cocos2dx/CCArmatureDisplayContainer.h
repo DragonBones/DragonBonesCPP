@@ -17,7 +17,7 @@ public:
     Armature* _armature;
 
 protected:
-    //cocos2d::EventDispatcher _dispatcher;
+    cocos2d::EventDispatcher _dispatcher;
 
 protected:
     CCArmatureDisplayContainer();
@@ -28,21 +28,21 @@ private:
 
 public:
     /** @private */
-    virtual void _onClear() override;
+    void _onClear() override;
     /** @private */
-    virtual void _dispatchEvent(EventObject* value) override;
+    void _dispatchEvent(EventObject* value) override;
     /** @private */
-    virtual void update(float passedTime) override;
+    void update(float passedTime) override;
 
 public:
-    virtual void advanceTimeBySelf(bool on) override;
+    void advanceTimeBySelf(bool on) override;
 
-    inline virtual bool hasEvent(const std::string& type) const override
+    inline bool hasEvent(const std::string& type) const override
     {
-        return false;//_dispatcher.isEnabled();
+        return _dispatcher.isEnabled();
     }
 
-    inline virtual Armature* getArmature() const override 
+    inline Armature* getArmature() const override 
     {
         return _armature;
     }

@@ -46,7 +46,21 @@ void CCSlot::_initDisplay(void* value)
 
 void CCSlot::_onUpdateDisplay()
 {
-    _renderDisplay = static_cast<cocos2d::Node*>(this->_display ? this->_display : this->_rawDisplay);
+	if (this->_display)
+	{
+		if (this->_childArmature)
+		{
+			_renderDisplay = static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplayContainer*>(this->_display));
+		}
+		else
+		{
+			_renderDisplay = static_cast<cocos2d::Node*>(this->_display);
+		}
+	}
+	else
+	{
+		_renderDisplay = static_cast<cocos2d::Node*>(this->_rawDisplay);
+	}
 }
 
 void CCSlot::_addDisplay()
@@ -55,10 +69,10 @@ void CCSlot::_addDisplay()
     container->addChild(_renderDisplay);
 }
 
-void CCSlot::_replaceDisplay(void* value)
+void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplayContainer)
 {
     const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay());
-    const auto prevDisplay = static_cast<cocos2d::Node*>(value);
+	const auto prevDisplay = static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplayContainer*>(value) : value);
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
 }
