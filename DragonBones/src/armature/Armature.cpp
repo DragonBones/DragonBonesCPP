@@ -25,6 +25,7 @@ void Armature::_onClear()
 
     _bonesDirty = false;
     _cacheFrameIndex = -1;
+    _delayAdvanceTime = -1.f;
     _armatureData = nullptr;
     _skinData = nullptr;
 
@@ -297,6 +298,12 @@ void Armature::advanceTime(float passedTime)
     if (_delayDispose)
     {
         this->returnToPool();
+    }
+    else if (_delayAdvanceTime >= 0.f)
+    {
+        const auto delayAdvanceTime = _delayAdvanceTime;
+        _delayAdvanceTime = -1.f;
+        advanceTime(delayAdvanceTime);
     }
 }
 

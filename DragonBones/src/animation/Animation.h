@@ -59,7 +59,7 @@ public:
     AnimationState* fadeIn(
         const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1,
         int layer = 0, const std::string& group = "", AnimationFadeOutMode fadeOutMode = AnimationFadeOutMode::SameLayerAndGroup,
-        bool additiveBlending = false,
+        bool additiveBlending = false, bool displayControl = true,
         bool pauseFadeOut = true, bool pauseFadeIn = true
     );
     AnimationState* gotoAndPlayByTime(const std::string& animationName, float time = 0.f, int playTimes = -1);

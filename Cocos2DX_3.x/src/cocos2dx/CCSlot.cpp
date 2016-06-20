@@ -72,7 +72,7 @@ void CCSlot::_addDisplay()
 void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplayContainer)
 {
     const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay());
-	const auto prevDisplay = static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplayContainer*>(value) : value);
+    const auto prevDisplay = isArmatureDisplayContainer ? static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplayContainer*>(value)) : static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplayContainer*>(value) : value); // WTF
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
 }

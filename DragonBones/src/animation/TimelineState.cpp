@@ -318,7 +318,7 @@ void SlotTimelineState::_onArriveAtFrame(bool isUpdate)
         const auto displayIndex = this->_currentFrame->displayIndex;
         if (slot->getDisplayIndex() >= 0 && displayIndex >= 0)
         {
-            if (!slot->_displayDataSet->displays.empty())
+            if (slot->_displayDataSet->displays.size() > 1)
             {
                 slot->_setDisplayIndex(displayIndex);
             }

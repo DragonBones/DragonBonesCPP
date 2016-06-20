@@ -5,10 +5,10 @@
 #include "../geom/Transform.h"
 #include "../geom/Point.h"
 #include "../geom/ColorTransform.h"
+#include "../textures/TextureData.h"
 #include "AnimationData.h"
 
 class ArmatureData;
-class TextureData;
 
 DRAGONBONES_NAMESPACE_BEGIN
 

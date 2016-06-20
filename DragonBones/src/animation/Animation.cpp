@@ -259,12 +259,14 @@ AnimationState* Animation::play(const std::string& animationName, int playTimes)
 AnimationState* Animation::fadeIn(
     const std::string& animationName, float fadeInTime, int playTimes,
     int layer, const std::string& group, AnimationFadeOutMode fadeOutMode, 
-    bool additiveBlending, bool pauseFadeOut, bool pauseFadeIn
+    bool additiveBlending, bool displayControl,
+    bool pauseFadeOut, bool pauseFadeIn
 )
 {
     const auto clipData = mapFind(_animations, animationName);
     if (!clipData)
     {
+        _time = 0.f;
         return nullptr;
     }
 
@@ -286,6 +288,7 @@ AnimationState* Animation::fadeIn(
     _lastAnimationState->_layer = layer;
     _lastAnimationState->_group = group;
     _lastAnimationState->additiveBlending = additiveBlending;
+    _lastAnimationState->displayControl = displayControl;
     _lastAnimationState->_fadeIn(
         _armature, clipData->animation ? clipData->animation : clipData, animationName,
         playTimes, clipData->position, clipData->duration, _time, 1.f / clipData->scale, fadeInTime,
@@ -305,7 +308,7 @@ AnimationState* Animation::fadeIn(
         if (slot->inheritAnimation)
         {
             const auto childArmature = slot->getChildArmature();
-            if (childArmature)
+            if (childArmature && childArmature->getAnimation().hasAnimation(animationName) && !childArmature->getAnimation().getState(animationName))
             {
                 childArmature->getAnimation().fadeIn(animationName);
             }
@@ -324,7 +327,7 @@ AnimationState* Animation::gotoAndPlayByTime(const std::string& animationName, f
 {
     _time = time;
 
-    return fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
+    return fadeIn(animationName, 0.f, playTimes, 0, "", AnimationFadeOutMode::All);
 }
 
 AnimationState* Animation::gotoAndPlayByFrame(const std::string& animationName, unsigned frame, int playTimes)
@@ -335,7 +338,7 @@ AnimationState* Animation::gotoAndPlayByFrame(const std::string& animationName, 
         _time = clipData->duration * frame / clipData->frameCount;
     }
 
-    return fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
+    return fadeIn(animationName, 0.f, playTimes, 0, "", AnimationFadeOutMode::All);
 }
 
 AnimationState* Animation::gotoAndPlayByProgress(const std::string& animationName, float progress, int playTimes)
@@ -346,7 +349,7 @@ AnimationState* Animation::gotoAndPlayByProgress(const std::string& animationNam
         _time = clipData->duration * std::max(progress, 0.f);
     }
 
-    return fadeIn(animationName, 0.f, playTimes, 0, nullptr, AnimationFadeOutMode::All);
+    return fadeIn(animationName, 0.f, playTimes, 0, "", AnimationFadeOutMode::All);
 }
 
 AnimationState* Animation::gotoAndStopByTime(const std::string& animationName, float time)

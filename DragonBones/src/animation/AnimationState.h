@@ -113,7 +113,7 @@ public:
         return *_clip;
     }
 
-    inline bool isPlaying() const
+    inline bool getIsPlaying() const
     {
         return (_isPlaying && !getIsCompleted());
     }

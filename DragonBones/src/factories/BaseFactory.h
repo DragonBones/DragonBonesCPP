@@ -55,7 +55,7 @@ protected:
     virtual bool _fillBuildArmaturePackage(const std::string& dragonBonesName, const std::string& armatureName, const std::string& skinName, BuildArmaturePackage& dataPackage) const;
     virtual void _buildBones(const BuildArmaturePackage& dataPackage, Armature& armature) const;
     virtual void _buildSlots(const BuildArmaturePackage& dataPackage, Armature& armature) const;
-    virtual void _replaceSlotDisplay(const BuildArmaturePackage& dataPackage, const DisplayData& displayData, Slot& slot, int displayIndex) const;
+    virtual void _replaceSlotDisplay(const BuildArmaturePackage& dataPackage, DisplayData& displayData, Slot& slot, int displayIndex) const;
 
     virtual TextureAtlasData* _generateTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const = 0;
     virtual Armature* _generateArmature(const BuildArmaturePackage& dataPackage) const = 0;

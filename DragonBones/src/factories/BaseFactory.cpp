@@ -162,7 +162,7 @@ void BaseFactory::_buildSlots(const BuildArmaturePackage& dataPackage, Armature&
     }
 }
 
-void BaseFactory::_replaceSlotDisplay(const BuildArmaturePackage& dataPackage, const DisplayData& displayData, Slot& slot, int displayIndex) const
+void BaseFactory::_replaceSlotDisplay(const BuildArmaturePackage& dataPackage, DisplayData& displayData, Slot& slot, int displayIndex) const
 {
     if (displayIndex < 0)
     {
@@ -175,6 +175,11 @@ void BaseFactory::_replaceSlotDisplay(const BuildArmaturePackage& dataPackage, c
         if (displayList.size() <= (unsigned)displayIndex)
         {
             displayList.resize(displayIndex + 1, std::make_pair(nullptr, DisplayType::Image));
+        }
+
+        if (!displayData.textureData)
+        {
+            displayData.textureData = _getTextureData(dataPackage.dataName, displayData.name);
         }
 
         if (displayData.type == DisplayType::Armature)
@@ -407,7 +412,7 @@ bool BaseFactory::copyAnimationsToArmature(
 void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, const std::string& displayName, Slot& slot, int displayIndex) const
 {
     BuildArmaturePackage dataPackage;
-    if (_fillBuildArmaturePackage(dragonBonesName, armatureName, nullptr, dataPackage))
+    if (_fillBuildArmaturePackage(dragonBonesName, armatureName, "", dataPackage))
     {
         const auto slotDisplayDataSet = dataPackage.skin->getSlot(slotName);
         if (slotDisplayDataSet)
@@ -426,7 +431,7 @@ void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const s
 void BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, Slot& slot) const
 {
     BuildArmaturePackage dataPackage;
-    if (_fillBuildArmaturePackage(dragonBonesName, armatureName, nullptr, dataPackage))
+    if (_fillBuildArmaturePackage(dragonBonesName, armatureName, "", dataPackage))
     {
         const auto slotDisplayDataSet = dataPackage.skin->getSlot(slotName);
         if (slotDisplayDataSet)

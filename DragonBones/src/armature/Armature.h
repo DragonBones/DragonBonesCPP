@@ -30,6 +30,8 @@ public: // private
     /** @private */
     int _cacheFrameIndex;
     /** @private */
+    float _delayAdvanceTime;
+    /** @private */
     ArmatureData* _armatureData;
     /** @private */
     SkinData* _skinData;
