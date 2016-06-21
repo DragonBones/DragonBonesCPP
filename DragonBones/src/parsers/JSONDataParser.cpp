@@ -69,7 +69,7 @@ BoneData * JSONDataParser::_parseBone(const rapidjson::Value & rawData)
     bone->inheritTranslation = _getBoolean(rawData, INHERIT_TRANSLATION, true);
     bone->inheritRotation = _getBoolean(rawData, INHERIT_ROTATION, true);
     bone->inheritScale = _getBoolean(rawData, INHERIT_SCALE, true);
-    bone->length = _getNumber(rawData, LENGTH, 0.f);
+    bone->length = _getNumber(rawData, LENGTH, 0.f) * _armatureScale;
 
     if (rawData.HasMember(TRANSFORM))
     {
