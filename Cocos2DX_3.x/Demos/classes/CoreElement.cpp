@@ -54,7 +54,7 @@ bool CoreElementGame::init()
 
         const auto text = cocos2d::Label::create();
         text->setPosition(480.f, 60.f);
-        text->setString("Press W/A/S/D to move. Press Q/E/SPACE to switch weapens.\nMove mouse to aim. Click to fire.");
+        text->setString("Press W/A/S/D to move. Press Q/E/SPACE to switch weapens.\nMouse move to aim. Click to fire.");
         text->setAlignment(cocos2d::TextHAlignment::CENTER);
 
         this->addChild(text);
