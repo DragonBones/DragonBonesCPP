@@ -247,7 +247,7 @@ void BoneTimelineState::update(float time)
     const auto weight = this->_animationState->_weightResult;
     if (weight > 0.f)
     {
-        if (this->_animationState->_index <= 1)
+        if (bone->_blendIndex == 0)
         {
             _boneTransform->x = _transform.x * weight;
             _boneTransform->y = _transform.y * weight;
@@ -265,6 +265,8 @@ void BoneTimelineState::update(float time)
             _boneTransform->scaleX += (_transform.scaleX - 1.f) * weight;
             _boneTransform->scaleY += (_transform.scaleY - 1.f) * weight;
         }
+
+        bone->_blendIndex++;
 
         const auto fadeProgress = this->_animationState->_fadeProgress;
         if (fadeProgress < 1.f)
@@ -555,7 +557,7 @@ void FFDTimelineState::update(float time)
     const auto weight = this->_animationState->_weightResult;
     if (weight > 0.f)
     {
-        if (this->_animationState->_index <= 1)
+        if (slot->_blendIndex == 0)
         {
             for (std::size_t i = 0, l = _ffdVertices.size(); i < l; ++i)
             {
@@ -569,6 +571,8 @@ void FFDTimelineState::update(float time)
                 (*_slotFFDVertices)[i] += _ffdVertices[i] * weight;
             }
         }
+
+        slot->_blendIndex++;
 
         const auto fadeProgress = this->_animationState->_fadeProgress;
         if (fadeProgress < 1.f)

@@ -190,8 +190,8 @@ void CCSlot::_updateFrame()
 
                         if (contentTextureData->frame)
                         {
-                            pivot.x -= contentTextureData->frame->x;
-                            pivot.y -= contentTextureData->frame->y;
+                            pivot.x += contentTextureData->frame->x;
+                            pivot.y += contentTextureData->frame->y;
                         }
 
                         if (rawDisplayData && contentDisplayData != rawDisplayData)
@@ -209,7 +209,7 @@ void CCSlot::_updateFrame()
                 }
             }
 
-            const auto currentTexture = this->_armature->_replaceTexture ? static_cast<cocos2d::Texture2D*>(this->_armature->_replaceTexture) : contentTextureData->texture->getTexture();
+            const auto currentTexture = this->_armature->_replaceTexture ? static_cast<cocos2d::Texture2D*>(this->_armature->_replaceTexture) : (contentTextureData->texture ? contentTextureData->texture->getTexture() : nullptr);
 
             if (currentTexture)
             {

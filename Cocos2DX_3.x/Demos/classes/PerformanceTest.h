@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 #include "cocos2dx/CCDragonBonesHeaders.h"
 
-class PerformanceTest : public cocos2d::Layer
+class PerformanceTest : public cocos2d::LayerColor
 {
 public:
     static cocos2d::Scene* createScene();
@@ -21,6 +21,8 @@ private:
     dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
     dragonBones::CCFactory _factory;
     std::vector<dragonBones::Armature*> _armatures;
+
+    cocos2d::Label* _text;
 
     bool _touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
     void _touchEndedHandler(const cocos2d::Touch* touch, cocos2d::Event* event);

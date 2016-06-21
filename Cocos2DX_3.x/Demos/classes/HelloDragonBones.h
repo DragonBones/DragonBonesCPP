@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 #include "cocos2dx/CCDragonBonesHeaders.h"
 
-class HelloDragonBones : public cocos2d::Layer
+class HelloDragonBones : public cocos2d::LayerColor
 {
 public:
     static cocos2d::Scene* createScene();
@@ -14,6 +14,11 @@ public:
     CREATE_FUNC(HelloDragonBones);
 
 private:
+    bool _isMoved;
+    float _prevArmatureScale;
+    float _armatureScale;
+    cocos2d::Vec2 _startPoint;
+
     unsigned _armatureIndex;
     unsigned _animationIndex;
     dragonBones::DragonBonesData* _dragonBonesData;
@@ -23,7 +28,10 @@ private:
 
     void _changeArmature();
     void _changeAnimation();
-    bool _touchHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
+
+    bool _touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
+    void _touchEndedHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
+    void _touchMovedHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
 };
 
 #endif // __HELLO_DRAGONBONES_H__

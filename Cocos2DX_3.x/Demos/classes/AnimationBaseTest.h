@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 #include "cocos2dx/CCDragonBonesHeaders.h"
 
-class AnimationBaseTest : public cocos2d::Layer
+class AnimationBaseTest : public cocos2d::LayerColor
 {
 public:
     static cocos2d::Scene* createScene();
@@ -20,11 +20,10 @@ private:
     dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
     dragonBones::CCFactory _factory;
 
-    void _animationEventHandler(cocos2d::EventCustom* event) const;
-
     bool _touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
     void _touchEndedHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
     void _touchMovedHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
+    void _animationEventHandler(cocos2d::EventCustom* event) const;
 };
 
 #endif // __ANIMATION_BASE_TEST_H__

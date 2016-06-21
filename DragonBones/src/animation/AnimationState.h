@@ -29,7 +29,6 @@ public:
 
 public:
     bool _isFadeOutComplete;
-    int _index;
     int _layer;
     float _position;
     float _duration;

@@ -107,6 +107,8 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
 
     slot->_setDisplayList(displayList);
 
+    rawDisplay->setLocalZOrder(slotData->zOrder);
+
     return slot;
 }
 

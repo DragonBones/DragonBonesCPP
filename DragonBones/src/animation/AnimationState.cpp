@@ -28,7 +28,6 @@ void AnimationState::_onClear()
     fadeTotalTime = 0.f;
 
     _isFadeOutComplete = false;
-    _index = 0;
     _layer = 0;
     _position = 0.f;
     _duration = 0.f;
@@ -223,14 +222,14 @@ void AnimationState::_updateTimelineStates()
         const auto& timelineName = bone->name;
         const auto timelineData = _clip->getBoneTimeline(timelineName);
 
-        if (timelineData)
+        if (timelineData && containsBoneMask(timelineName))
         {
             const auto iterator = boneTimelineStates.find(timelineName);
             if (iterator != boneTimelineStates.end())
             {
                 boneTimelineStates.erase(iterator);
             }
-            else if (containsBoneMask(timelineName))
+            else
             {
                 const auto timelineState = BaseObject::borrowObject<BoneTimelineState>();
                 timelineState->bone = bone;
@@ -259,24 +258,24 @@ void AnimationState::_updateTimelineStates()
         const auto& parentTimelineName = slot->getParent()->name;
         const auto slotTimelineData = _clip->getSlotTimeline(timelineName);
 
-        if (slotTimelineData)
+        if (slotTimelineData && containsBoneMask(parentTimelineName) && !_isFadeOut)
         {
             const auto iterator = slotTimelineStates.find(timelineName);
             if (iterator != slotTimelineStates.end())
             {
                 slotTimelineStates.erase(iterator);
             }
-            else if (containsBoneMask(parentTimelineName) && !_isFadeOut)
+            else
             {
-                const auto slotTimelineState = BaseObject::borrowObject<SlotTimelineState>();
-                slotTimelineState->slot = slot;
-                slotTimelineState->fadeIn(_armature, this, slotTimelineData, time);
-                _slotTimelines.push_back(slotTimelineState);
+                const auto timelineState = BaseObject::borrowObject<SlotTimelineState>();
+                timelineState->slot = slot;
+                timelineState->fadeIn(_armature, this, slotTimelineData, time);
+                _slotTimelines.push_back(timelineState);
             }
         }
     }
 
-    for (auto& pair : slotTimelineStates)
+    for (const auto& pair : slotTimelineStates)
     {
         const auto timelineState = pair.second;
         _slotTimelines.erase(std::find(_slotTimelines.cbegin(), _slotTimelines.cend(), timelineState));
@@ -309,14 +308,14 @@ void AnimationState::_updateFFDTimelineStates()
         if (slot->_meshData)
         {
             const auto timelineData = _clip->getFFDTimeline(_armature->_skinData->name, timelineName, slot->getDisplayIndex());
-            if (timelineData)
+            if (timelineData && containsBoneMask(parentTimelineName)) //  && !_isFadeOut
             {
                 const auto iterator = ffdTimelineStates.find(timelineName);
                 if (iterator != ffdTimelineStates.end())
                 {
                     ffdTimelineStates.erase(iterator);
                 }
-                else if (containsBoneMask(parentTimelineName) && !_isFadeOut)
+                else
                 {
                     const auto timelineState = BaseObject::borrowObject<FFDTimelineState>();
                     timelineState->slot = slot;
@@ -334,7 +333,7 @@ void AnimationState::_updateFFDTimelineStates()
         }
     }
 
-    for (auto& pair : ffdTimelineStates)
+    for (const auto& pair : ffdTimelineStates)
     {
         const auto timelineState = pair.second;
         _ffdTimelines.erase(std::find(_ffdTimelines.cbegin(), _ffdTimelines.cend(), timelineState));
@@ -347,17 +346,6 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
     if (passedTime != 0.f)
     {
         _advanceFadeTime(passedTime);
-    }
-
-    _weightResult = weight * _fadeProgress * weightLeft;
-
-    if (_weightResult != 0.f)
-    {
-        _index = index;
-    }
-    else
-    {
-        _index = -1;
     }
 
     passedTime *= timeScale;
@@ -373,6 +361,8 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
         }
     }
 
+    _weightResult = weight * _fadeProgress * weightLeft;
+
     if (_weightResult != 0.f)
     {
         auto time = _time;
@@ -381,7 +371,7 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
             time = _timeline->_currentTime;
         }
 
-        if (_fadeProgress >= 1.f && _index == 0 && _armature->getCacheFrameRate() > 0)
+        if (_fadeProgress >= 1.f && index == 0 && _armature->getCacheFrameRate() > 0)
         {
             std::size_t cacheFrameIndex = (unsigned)(_timeline->_currentTime * _clip->cacheTimeToFrameScale);
             _armature->_cacheFrameIndex = cacheFrameIndex;

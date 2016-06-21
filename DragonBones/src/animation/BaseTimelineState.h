@@ -81,7 +81,18 @@ protected:
                     }
                 }
             }
-            else 
+            else if (actionData->bone)
+            {
+                for (const auto slot : _armature->getSlots())
+                {
+                    const auto childArmature = slot->getChildArmature();
+                    if (childArmature)
+                    {
+                        childArmature->_action = actionData;
+                    }
+                }
+            }
+            else
             {
                 _armature->_action = actionData;
             }

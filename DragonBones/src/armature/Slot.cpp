@@ -17,6 +17,7 @@ void Slot::_onClear()
 
     _colorDirty = false;
     _ffdDirty = false;
+    _blendIndex = 0;
     _zOrder = 0;
     _displayDataSet = nullptr;
     _meshData = nullptr;
@@ -202,6 +203,8 @@ void Slot::_updateMeshData(bool isTimelineUpdate)
 
 void Slot::_update(int cacheFrameIndex)
 {
+    _blendIndex = 0;
+
     if (_displayDirty)
     {
         _displayDirty = false;

@@ -110,7 +110,7 @@ SlotData * JSONDataParser::_parseSlot(const rapidjson::Value & rawData)
     slot->name = _getString(rawData, NAME, "");
     slot->parent = this->_armature->getBone(_getString(rawData, PARENT, ""));
     slot->displayIndex = _getNumber(rawData, DISPLAY_INDEX, (int)0);
-    //slot->zOrder = _getNumber(rawData, Z_ORDER, this->_armature->getSortedSlots().size());
+    slot->zOrder = _getNumber(rawData, Z_ORDER, this->_armature->getSortedSlots().size());
 
     if (rawData.HasMember(COLOR))
     {
@@ -561,11 +561,18 @@ BoneFrameData * JSONDataParser::_parseBoneFrame(const rapidjson::Value& rawData,
         _parseTransform(rawData[TRANSFORM], frame->transform);
     }
 
+    const auto bone = static_cast<BoneTimelineData*>(this->_timeline)->bone;
+
     if ((rawData.HasMember(EVENT) || rawData.HasMember(SOUND)) && this->_timeline)
     {
-        const auto bone = static_cast<BoneTimelineData*>(this->_timeline)->bone;
         _parseEventData(rawData, frame->events, bone, nullptr);
+        this->_animation->hasBoneTimelineEvent = true;
+    }
 
+    if (rawData.HasMember(ACTION) && this->_timeline)
+    {
+        const auto slot = this->_armature->getSlot(bone->name);
+        _parseActionData(rawData, frame->actions, bone, slot);
         this->_animation->hasBoneTimelineEvent = true;
     }
 

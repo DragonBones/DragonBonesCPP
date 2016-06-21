@@ -26,6 +26,7 @@ void Bone::_onClear()
     length = 0.f;
 
     _transformDirty = BoneTransformDirty::All;
+    _blendIndex = 0;
     _cacheFrames = nullptr;
     _animationPose.identity();
 
@@ -266,6 +267,8 @@ void Bone::_setIK(Bone* value, unsigned chain, unsigned chainIndex)
 
 void Bone::_update(int cacheFrameIndex)
 {
+    _blendIndex = 0;
+
     if (cacheFrameIndex >= 0 && _cacheFrames)
     {
         const auto cacheFrame = (*_cacheFrames)[cacheFrameIndex];

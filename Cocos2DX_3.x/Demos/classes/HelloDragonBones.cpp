@@ -13,10 +13,14 @@ Scene* HelloDragonBones::createScene()
 
 bool HelloDragonBones::init()
 {
-    if ( !Layer::init() )
+    if ( !LayerColor::initWithColor(cocos2d::Color4B(105, 105, 105, 255)))
     {
         return false;
     }
+
+    _isMoved = false;
+    _prevArmatureScale = 1.f;
+    _armatureScale = 1.f;
 
     _armatureIndex = 0;
     _animationIndex = 0;
@@ -24,8 +28,8 @@ bool HelloDragonBones::init()
     _armatureDisplay = nullptr;
 
     // Load DragonBones Data.
-    _dragonBonesData = _factory.loadDragonBonesData("AnimationBaseTest/AnimationBaseTest.json");
-    _factory.loadTextureAtlasData("AnimationBaseTest/texture.json");
+    _dragonBonesData = _factory.loadDragonBonesData("DragonBoy/DragonBoy.json");
+    _factory.loadTextureAtlasData("DragonBoy/DragonBoy_texture_1.json");
 
     if (_dragonBonesData)
     {
@@ -33,13 +37,21 @@ bool HelloDragonBones::init()
         _changeAnimation();
 
         const auto listener = cocos2d::EventListenerTouchOneByOne::create();
-        listener->onTouchBegan = CC_CALLBACK_2(HelloDragonBones::_touchHandler, this);
+        listener->onTouchBegan = CC_CALLBACK_2(HelloDragonBones::_touchBeganHandler, this);
+        listener->onTouchEnded = CC_CALLBACK_2(HelloDragonBones::_touchEndedHandler, this);
+        listener->onTouchMoved = CC_CALLBACK_2(HelloDragonBones::_touchMovedHandler, this);
         this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
     }
     else
     {
         assert(false);
     }
+
+    const auto text = cocos2d::Label::create();
+    text->setPosition(cocos2d::Director::getInstance()->getVisibleSize().width * 0.5f, 60.f);
+    text->setString("Touch screen left to change Armature / right to change Animation.");
+    text->setAlignment(cocos2d::TextHAlignment::CENTER);
+    this->addChild(text);
 
     return true;
 }
@@ -83,9 +95,11 @@ void HelloDragonBones::_changeArmature()
     );*/
 
     // Add Armature Display.
-    _armatureDisplay->setPosition(480.f, 200.f);
-    _armatureDisplay->setScale(1.0f);
+    _armatureDisplay->setPosition(cocos2d::Director::getInstance()->getVisibleSize().width * 0.5f, 200.f);
+    _armatureDisplay->setScale(_armatureScale);
     this->addChild(_armatureDisplay);
+
+    _animationIndex = 0;
 }
 
 void HelloDragonBones::_changeAnimation()
@@ -105,16 +119,36 @@ void HelloDragonBones::_changeAnimation()
     //_armature->getAnimation().play(animationName);
 }
 
-bool HelloDragonBones::_touchHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
+bool HelloDragonBones::_touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
 {
-    const auto touchRight = touch->getLocation().x > 960.f * 0.5f;
-
-    if (_dragonBonesData->getArmatureNames().size() > 1 && !touchRight)
-    {
-        _changeArmature();
-    }
-
-    _changeAnimation();
+    _prevArmatureScale = _armatureScale;
+    _startPoint = touch->getLocation();
     
     return true;
+}
+
+void HelloDragonBones::_touchEndedHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
+{
+    if (_isMoved)
+    {
+        _isMoved = false;
+    }
+    else 
+    {
+        const auto touchRight = touch->getLocation().x > cocos2d::Director::getInstance()->getVisibleSize().width * 0.5f;
+
+        if (_dragonBonesData->getArmatureNames().size() > 1 && !touchRight)
+        {
+            _changeArmature();
+        }
+
+        _changeAnimation();
+    }
+}
+
+void HelloDragonBones::_touchMovedHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
+{
+    _isMoved = true;
+    _armatureScale = std::max((touch->getLocation().y - _startPoint.y) / 200.f + _prevArmatureScale, 0.1f);
+    _armatureDisplay->setScale(_armatureScale);
 }

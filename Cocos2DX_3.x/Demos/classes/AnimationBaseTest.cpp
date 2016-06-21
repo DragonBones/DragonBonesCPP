@@ -13,7 +13,7 @@ Scene* AnimationBaseTest::createScene()
 
 bool AnimationBaseTest::init()
 {
-    if ( !Layer::init() )
+    if (!LayerColor::initWithColor(cocos2d::Color4B(105, 105, 105, 255)))
     {
         return false;
     }
@@ -67,13 +67,6 @@ bool AnimationBaseTest::init()
     return true;
 }
 
-void AnimationBaseTest::_animationEventHandler(cocos2d::EventCustom* event) const
-{
-    const auto eventObject = (dragonBones::EventObject*)event->getUserData();
-
-    cocos2d::log("%s %s %s", eventObject->animationState->getName().c_str(), eventObject->type.c_str(), eventObject->name.c_str());
-}
-
 bool AnimationBaseTest::_touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
 {
     _isTouched = true;
@@ -105,4 +98,11 @@ void AnimationBaseTest::_touchMovedHandler(const cocos2d::Touch* touch, cocos2d:
 
         _armature->getAnimation().gotoAndStopByProgress("idle", progress);
     }
+}
+
+void AnimationBaseTest::_animationEventHandler(cocos2d::EventCustom* event) const
+{
+    const auto eventObject = (dragonBones::EventObject*)event->getUserData();
+
+    cocos2d::log("%s %s %s", eventObject->animationState->getName().c_str(), eventObject->type.c_str(), eventObject->name.c_str());
 }

@@ -13,11 +13,13 @@ public:
     bool inheritAnimation;
     std::string displayController;
 
-public:
+public: // private friend class
     /** @private */
     bool _colorDirty;
     /** @private */
     bool _ffdDirty;
+    /** @private */
+    int _blendIndex;
     /** @private */
     int _zOrder;
     /** @private */

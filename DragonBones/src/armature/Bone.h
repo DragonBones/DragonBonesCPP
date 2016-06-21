@@ -26,6 +26,7 @@ public:
 
 public:
     BoneTransformDirty _transformDirty;
+    int _blendIndex;
     std::vector<Matrix*>* _cacheFrames;
     Transform _animationPose;
 
