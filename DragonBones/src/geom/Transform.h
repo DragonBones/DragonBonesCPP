@@ -58,13 +58,6 @@ public:
         return *this;
     }
 
-    inline Transform& clear()
-    {
-        x = y = skewX = skewY = scaleX = scaleY = 0.f;
-
-        return *this;
-    }
-
     inline Transform& add(const Transform& value)
     {
         x += value.x;

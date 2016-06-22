@@ -48,5 +48,20 @@ private:
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(EventObject);
 };
 
+class IEventDispatcher
+{
+protected:
+    IEventDispatcher() {};
+    virtual ~IEventDispatcher() {};
+
+public:
+    /** @private */
+    virtual void _onClear() = 0;
+    /** @private */
+    virtual void _dispatchEvent(EventObject* value) = 0;
+
+    virtual bool hasEvent(const std::string& type) const = 0;
+};
+
 DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_EVENT_OBJECT_H

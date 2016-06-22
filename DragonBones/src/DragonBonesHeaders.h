@@ -46,6 +46,5 @@
 
 // events
 #include "events/EventObject.h"
-#include "events/IEventDispatcher.h"
 
 #endif // DRAGONBONES_HEADERS_H

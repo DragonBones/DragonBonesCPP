@@ -27,7 +27,7 @@ public:
 protected:
     virtual void _onClear() override
     {
-        scale = 0.f;
+        scale = 1.f;
         offset = 0.f;
 
         T* prevFrame = nullptr;

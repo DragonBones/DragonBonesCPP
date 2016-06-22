@@ -61,7 +61,7 @@ void AnimationData::cacheFrames(float value)
         return;
     }
 
-    const auto cacheFrameCount = (unsigned)(frameCount * scale * value);
+    const auto cacheFrameCount = (unsigned)std::max(std::floor(frameCount * scale * value), 1.f);
 
     cacheTimeToFrameScale = cacheFrameCount / duration;
     cachedFrames.resize(cacheFrameCount, false);

@@ -45,8 +45,8 @@ public:
         blueMultiplier = value.blueMultiplier;
         alphaOffset = value.alphaOffset;
         redOffset = value.redOffset;
-        redOffset = value.redOffset;
-        greenOffset = value.blueOffset;
+        greenOffset = value.greenOffset;
+        blueOffset = value.blueOffset;
     }
 
     inline void identity()

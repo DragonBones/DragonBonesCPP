@@ -11,6 +11,15 @@ ArmatureData * JSONDataParser::_parseArmature(const rapidjson::Value & rawData)
     armature->name = _getString(rawData, NAME, "");
     armature->frameRate = _getNumber(rawData, FRAME_RATE, this->_data->frameRate);
 
+    if (rawData.HasMember(TYPE) && rawData[TYPE].IsString())
+    {
+        armature->type = _getArmatureType(rawData[TYPE].GetString());
+    }
+    else
+    {
+        armature->type = (ArmatureType)_getNumber(rawData, TYPE, (int)ArmatureType::Armature);
+    }
+
     this->_armature = armature;
     this->_rawBones.clear();
 
@@ -300,7 +309,7 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
     for (std::size_t i = 0, iW = 0, l = rawVertices.Size(); i < l; i += 2)
     {
         const auto iN = i + 1;
-        const auto vertexIndex = (unsigned)(i / 2);
+        const auto vertexIndex = i / 2;
 
         auto x = mesh->vertices[i] = rawVertices[i].GetFloat() * this->_armatureScale;
         auto y = mesh->vertices[iN] = rawVertices[iN].GetFloat() * this->_armatureScale;
@@ -433,7 +442,7 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
             slotTimeline->slot = pair.second;
             slotFrame->displayIndex = pair.second->displayIndex;
 
-            if (pair.second->color == &SlotFrameData::DEFAULT_COLOR)
+            if (pair.second->color == &SlotData::DEFAULT_COLOR)
             {
                 slotFrame->color = &SlotFrameData::DEFAULT_COLOR;
             }

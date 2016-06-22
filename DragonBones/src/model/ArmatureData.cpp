@@ -236,7 +236,6 @@ void ArmatureData::_sortBones()
     std::size_t count = 0;
 
     _sortedBones.clear();
-    _sortedBones.resize(total, nullptr);
 
     while (count < total)
     {
@@ -266,18 +265,14 @@ void ArmatureData::_sortBones()
         {
             auto parentInerator = std::find(_sortedBones.begin(), _sortedBones.end(), bone->parent);
             _sortedBones.insert(parentInerator + 1, bone);
-            count++;
         }
         else
         {
-            _sortedBones[count++] = bone;
+            _sortedBones.push_back(bone);
         }
+        
+        count++;
     }
-
-    _sortedBones.resize(total);
-
-    auto copy = _sortedBones;
-    copy.swap(_sortedBones);
 }
 
 void ArmatureData::_sortSlots()

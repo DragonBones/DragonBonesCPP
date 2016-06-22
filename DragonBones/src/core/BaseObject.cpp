@@ -6,6 +6,30 @@ std::size_t BaseObject::_defaultMaxCount = 5000;
 std::map<std::size_t, std::size_t> BaseObject::_maxCountMap;
 std::map<std::size_t, std::vector<BaseObject*>> BaseObject::_poolsMap;
 
+void BaseObject::_returnObject(BaseObject* object)
+{
+    const auto classTypeIndex = object->getClassTypeIndex();
+    const auto maxCountIterator = _maxCountMap.find(classTypeIndex);
+    const auto maxCount = maxCountIterator != _maxCountMap.end() ? maxCountIterator->second : _defaultMaxCount;
+
+    auto& pool = _poolsMap[classTypeIndex];
+    if (pool.size() < maxCount)
+    {
+        if (std::find(pool.cbegin(), pool.cend(), object) == pool.cend())
+        {
+            pool.push_back(object);
+        }
+        else
+        {
+            DRAGONBONES_ASSERT(false, "The object aleady in pool.");
+        }
+    }
+    else
+    {
+        delete object;
+    }
+}
+
 void BaseObject::setMaxCount(std::size_t classTypeIndex, std::size_t maxCount)
 {
     if (classTypeIndex)
@@ -96,30 +120,6 @@ void BaseObject::returnToPool()
 {
     _onClear();
     _returnObject(this);
-}
-
-void BaseObject::_returnObject(BaseObject* object)
-{
-    const auto classTypeIndex = object->getClassTypeIndex();
-    const auto maxCountIterator = _maxCountMap.find(classTypeIndex);
-    const auto maxCount = maxCountIterator != _maxCountMap.end() ? maxCountIterator->second : _defaultMaxCount;
-    
-    auto& pool = _poolsMap[classTypeIndex];
-    if (pool.size() < maxCount)
-    {
-        if (std::find(pool.cbegin(), pool.cend(), object) == pool.cend())
-        {
-            pool.push_back(object);
-        }
-        else 
-        {
-            DRAGONBONES_ASSERT(false, "The object aleady in pool.");
-        }
-    }
-    else
-    {
-        delete object;
-    }
 }
 
 DRAGONBONES_NAMESPACE_END

@@ -2,7 +2,7 @@
 #define DRAGONBONES_ARMATURE_DISPLAY_CONTAINER_H
 
 #include "../core/DragonBones.h"
-#include "../events/IEventDispatcher.h"
+#include "../events/EventObject.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 

@@ -55,7 +55,7 @@ void TextureAtlasData::addTexture(TextureData * value)
     }
     else
     {
-        DRAGONBONES_ASSERT(true, "Arguments error");
+        DRAGONBONES_ASSERT(true, "Argument error.");
     }
 }
 

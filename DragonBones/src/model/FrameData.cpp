@@ -2,24 +2,6 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-EventData::EventData()
-{
-    _onClear();
-}
-EventData::~EventData()
-{
-    _onClear();
-}
-
-void EventData::_onClear()
-{
-    type = EventType::Frame;
-    name.clear();
-    //data = nullptr;
-    bone = nullptr;
-    slot = nullptr;
-}
-
 ActionData::ActionData()
 {
     _onClear();
@@ -38,6 +20,24 @@ void ActionData::_onClear()
     std::get<0>(data).clear();
     std::get<1>(data).clear();
     std::get<2>(data).clear();
+}
+
+EventData::EventData()
+{
+    _onClear();
+}
+EventData::~EventData()
+{
+    _onClear();
+}
+
+void EventData::_onClear()
+{
+    type = EventType::Frame;
+    name.clear();
+    //data = nullptr;
+    bone = nullptr;
+    slot = nullptr;
 }
 
 AnimationFrameData::AnimationFrameData()
