@@ -12,6 +12,24 @@ void Slot::_onClear()
 {
     TransformObject::_onClear();
 
+    std::vector<void*> disposeDisplayList;
+    for (const auto& pair : this->_displayList)
+    {
+        if (pair.second == DisplayType::Armature)
+        {
+            static_cast<Armature*>(pair.first)->returnToPool();
+        }
+        else if (std::find(disposeDisplayList.cbegin(), disposeDisplayList.cend(), pair.first) != disposeDisplayList.cend())
+        {
+            disposeDisplayList.push_back(pair.first);
+        }
+    }
+
+    for (const auto renderDisplay : disposeDisplayList)
+    {
+        this->_disposeDisplay(renderDisplay);
+    }
+
     inheritAnimation = true;
     displayController.clear();
 
@@ -51,7 +69,7 @@ void Slot::_updateDisplay()
         const auto& displayPair = _displayList[_displayIndex];
         if (displayPair.second == DisplayType::Armature)
         {
-            _childArmature = (Armature*)displayPair.first;
+            _childArmature = static_cast<Armature*>(displayPair.first);
             _display = _childArmature->getDisplay();
         }
         else
@@ -87,8 +105,8 @@ void Slot::_updateDisplay()
 
     if (_displayDataSet && _displayIndex >= 0 && (std::size_t)_displayIndex < _displayDataSet->displays.size())
     {
-        _originDirty = true;
         this->origin = _displayDataSet->displays[_displayIndex]->transform; // copy
+        _originDirty = true;
     }
 
     _updateMeshData(false);
@@ -188,7 +206,7 @@ void Slot::_updateMeshData(bool isTimelineUpdate)
 
             _ffdDirty = true;
         }
-        else if (!_meshBones.empty())
+        else
         {
             _meshBones.clear();
             _ffdVertices.clear();
@@ -314,22 +332,9 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
         for (std::size_t i = 0, l = _displayList.size(); i < l; ++i)
         {
             const auto& eachPair = value[i];
-            if (eachPair.first && eachPair.first != _rawDisplay && eachPair.second != DisplayType::Armature)
+            if (eachPair.first && eachPair.first != _rawDisplay && eachPair.second != DisplayType::Armature && std::find(_displayList.cbegin(), _displayList.cend(), eachPair) == _displayList.cend())
             {
-                auto isInited = false;
-                for (const auto& pair : _displayList)
-                {
-                    if (pair.first == eachPair.first)
-                    {
-                        isInited = true;
-                        break;
-                    }
-                }
-
-                if (!isInited)
-                {
-                    _initDisplay(eachPair.first);
-                }
+                _initDisplay(eachPair.first);
             }
 
             _displayList[i].first = eachPair.first;

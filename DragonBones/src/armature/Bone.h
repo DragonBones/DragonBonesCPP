@@ -12,9 +12,9 @@ class Bone final : public TransformObject
 public:
     enum class BoneTransformDirty
     {
-        None,
-        Self,
-        All
+        None = 0,
+        Self = 1,
+        All = 2
     };
 
     bool inheritTranslation;

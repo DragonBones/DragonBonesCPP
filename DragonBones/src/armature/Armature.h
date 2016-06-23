@@ -92,6 +92,7 @@ public:
     Bone* getBoneByDisplay(void* display) const;
     void addBone(Bone* value, const std::string& parentName = "");
     void removeBone(Bone* value);
+    void setReplaceTexture(void* texture);
 
     inline const std::vector<Bone*>& getBones() const
     {

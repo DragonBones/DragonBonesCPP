@@ -75,19 +75,6 @@ protected:
     virtual void _updateTransform() = 0;
     void _updateDisplay();
 
-    inline void _updateLocalTransformMatrix()
-    {
-        this->global = this->origin;
-        this->global.add(this->offset).toMatrix(_localMatrix);
-    }
-
-    inline void _updateGlobalTransformMatrix()
-    {
-        *this->globalTransformMatrix = _localMatrix; // copy
-        this->globalTransformMatrix->concat(*this->_parent->globalTransformMatrix);
-        this->global.fromMatrix(*this->globalTransformMatrix);
-    }
-
     inline bool _isMeshBonesUpdate() const
     {
         for (auto bone : _meshBones)
@@ -99,6 +86,19 @@ protected:
         }
 
         return false;
+    }
+
+    inline void _updateLocalTransformMatrix()
+    {
+        this->global = this->origin;
+        this->global.add(this->offset).toMatrix(_localMatrix);
+    }
+
+    inline void _updateGlobalTransformMatrix()
+    {
+        *this->globalTransformMatrix = _localMatrix; // copy
+        this->globalTransformMatrix->concat(*this->_parent->globalTransformMatrix);
+        this->global.fromMatrix(*this->globalTransformMatrix);
     }
 
 public:

@@ -83,7 +83,6 @@ void Armature::_sortBones()
     std::size_t count = 0;
 
     _bones.clear();
-    _bones.resize(total, nullptr);
 
     while (count < total)
     {
@@ -113,15 +112,14 @@ void Armature::_sortBones()
         {
             auto parentInerator = std::find(_bones.begin(), _bones.end(), bone->getParent());
             _bones.insert(parentInerator + 1, bone);
-            count++;
         }
         else
         {
-            _bones[count++] = bone;
+            _bones.push_back(bone);
         }
-    }
 
-    _bones.resize(total);
+        count++;
+    }
 }
 
 void Armature::_sortSlots()
@@ -447,14 +445,21 @@ void Armature::removeBone(Bone* value)
     }
 }
 
+void Armature::setReplaceTexture(void* texture)
+{
+    _replaceTexture = texture;
+    for (auto const slot : _slots) 
+    {
+        slot->invalidUpdate();
+    }
+}
+
 void Armature::setCacheFrameRate(unsigned value)
 {
-    if (_armatureData->cacheFrameRate == value)
+    if (_armatureData->cacheFrameRate != value)
     {
-        return;
+        _armatureData->cacheFrames(value);
     }
-
-    _armatureData->cacheFrames(value);
 }
 
 DRAGONBONES_NAMESPACE_END

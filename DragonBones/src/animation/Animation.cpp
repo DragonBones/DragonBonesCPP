@@ -115,8 +115,8 @@ void Animation::_advanceTime(float passedTime)
         if (animationState->_isFadeOutComplete)
         {
             animationState->returnToPool();
-            _animationStateDirty = true;
             _animationStates.clear();
+            _animationStateDirty = true;
             _lastAnimationState = nullptr;
         }
         else
@@ -308,7 +308,11 @@ AnimationState* Animation::fadeIn(
         if (slot->inheritAnimation)
         {
             const auto childArmature = slot->getChildArmature();
-            if (childArmature && childArmature->getAnimation().hasAnimation(animationName) && !childArmature->getAnimation().getState(animationName))
+            if (
+                childArmature && 
+                childArmature->getAnimation().hasAnimation(animationName) && 
+                !childArmature->getAnimation().getState(animationName)
+            )
             {
                 childArmature->getAnimation().fadeIn(animationName);
             }

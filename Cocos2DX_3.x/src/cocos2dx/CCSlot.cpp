@@ -15,24 +15,6 @@ CCSlot::~CCSlot()
 
 void CCSlot::_onClear()
 {
-    std::vector<void*> disposeDisplayList;
-    for (const auto& pair : this->_displayList)
-    {
-        if (pair.second == DisplayType::Armature)
-        {
-            static_cast<Armature*>(pair.first)->returnToPool();
-        }
-        else if (std::find(disposeDisplayList.cbegin(), disposeDisplayList.cend(), pair.first) != disposeDisplayList.cend())
-        {
-            disposeDisplayList.push_back(pair.first);
-        }
-    }
-
-    for (const auto renderDisplay : disposeDisplayList)
-    {
-        this->_disposeDisplay(renderDisplay);
-    }
-
     Slot::_onClear();
 
     _renderDisplay = nullptr;
@@ -136,10 +118,11 @@ void CCSlot::_updateBlendMode()
 void CCSlot::_updateColor()
 {
     _renderDisplay->setOpacity(this->_colorTransform.alphaMultiplier * 255.f);
-    _helpColor.r = this->_colorTransform.redMultiplier * 255.f;
-    _helpColor.g = this->_colorTransform.greenMultiplier * 255.f;
-    _helpColor.b = this->_colorTransform.blueMultiplier * 255.f;
-    _renderDisplay->setColor(_helpColor);
+    static cocos2d::Color3B helpColor;
+    helpColor.r = this->_colorTransform.redMultiplier * 255.f;
+    helpColor.g = this->_colorTransform.greenMultiplier * 255.f;
+    helpColor.b = this->_colorTransform.blueMultiplier * 255.f;
+    _renderDisplay->setColor(helpColor);
 }
 
 void CCSlot::_updateFilters() 

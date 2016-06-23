@@ -11,7 +11,6 @@ class CCSlot : public Slot
 
 private:
     cocos2d::Node* _renderDisplay;
-    cocos2d::Color3B _helpColor;
 
 public:
     CCSlot();
