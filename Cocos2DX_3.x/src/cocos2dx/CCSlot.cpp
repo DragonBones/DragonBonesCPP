@@ -28,6 +28,11 @@ void CCSlot::_initDisplay(void* value)
 
 void CCSlot::_onUpdateDisplay()
 {
+    if (!this->_rawDisplay)
+    {
+        // TODO
+    }
+
     if (this->_display)
     {
         if (this->_childArmature)

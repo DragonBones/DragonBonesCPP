@@ -274,7 +274,14 @@ AnimationState* Animation::fadeIn(
 
     if (fadeInTime != fadeInTime || fadeInTime < 0.f)
     {
-        fadeInTime = clipData->fadeInTime;
+        if (_lastAnimationState)
+        {
+            fadeInTime = clipData->fadeInTime;
+        }
+        else
+        {
+            fadeInTime = 0.f;
+        }
     }
 
     if (playTimes < 0)
