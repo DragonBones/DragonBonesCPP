@@ -15,8 +15,6 @@ public:
 
 private:
     bool _isTouched;
-    dragonBones::DragonBonesData* _dragonBonesData;
-    dragonBones::Armature* _armature;
     dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
     dragonBones::CCFactory _factory;
 

@@ -58,6 +58,12 @@ bool HelloDragonBones::init()
 
 void HelloDragonBones::_changeArmature()
 {
+    const auto& armatureNames = _dragonBonesData->getArmatureNames();
+    if (armatureNames.empty())
+    {
+        return;
+    }
+
     // Remove prev Armature.
     if (_armature)
     {
@@ -69,7 +75,6 @@ void HelloDragonBones::_changeArmature()
     }
 
     // Get Next Armature name.
-    const auto& armatureNames = _dragonBonesData->getArmatureNames();
     _armatureIndex++;
     if (_armatureIndex >= armatureNames.size())
     {
@@ -104,8 +109,13 @@ void HelloDragonBones::_changeArmature()
 
 void HelloDragonBones::_changeAnimation()
 {
-    // Get next Animation name.
     const auto& animationNames = _armatureDisplay->getAnimation().getAnimationNames();
+    if (animationNames.empty())
+    {
+        return;
+    }
+
+    // Get next Animation name.
     _animationIndex++;
     if (_animationIndex >= animationNames.size())
     {

@@ -119,7 +119,7 @@ SlotData * JSONDataParser::_parseSlot(const rapidjson::Value & rawData)
     slot->name = _getString(rawData, NAME, "");
     slot->parent = this->_armature->getBone(_getString(rawData, PARENT, ""));
     slot->displayIndex = _getNumber(rawData, DISPLAY_INDEX, (int)0);
-    slot->zOrder = _getNumber(rawData, Z_ORDER, this->_armature->getSortedSlots().size());
+    slot->zOrder = _getNumber(rawData, Z_ORDER, (unsigned)this->_armature->getSortedSlots().size());
 
     if (rawData.HasMember(COLOR))
     {

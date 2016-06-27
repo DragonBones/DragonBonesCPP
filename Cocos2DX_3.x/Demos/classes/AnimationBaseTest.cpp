@@ -19,20 +19,18 @@ bool AnimationBaseTest::init()
     }
 
     _isTouched = false;
-    _armature = nullptr;
     _armatureDisplay = nullptr;
 
     // Load DragonBones Data.
-    _dragonBonesData = _factory.loadDragonBonesData("AnimationBaseTest/AnimationBaseTest.json");
+    const auto dragonBonesData = _factory.loadDragonBonesData("AnimationBaseTest/AnimationBaseTest.json");
     _factory.loadTextureAtlasData("AnimationBaseTest/texture.json");
 
-    if (_dragonBonesData)
+    if (dragonBonesData)
     {
-        const auto& armatureNames = _dragonBonesData->getArmatureNames();
+        const auto& armatureNames = dragonBonesData->getArmatureNames();
         const auto& armatureName = armatureNames[0];
 
         _armatureDisplay = _factory.buildArmatureDisplay(armatureName);
-        _armature = _armatureDisplay->getArmature();
 
         _armatureDisplay->setPosition(480.f, 320.f);
         _armatureDisplay->setScale(1.0f);
@@ -73,14 +71,14 @@ bool AnimationBaseTest::_touchBeganHandler(const cocos2d::Touch* touch, cocos2d:
 
     const auto progress = std::min(std::max((touch->getLocation().x - _armatureDisplay->getPosition().x + 300.f) / 600.f, 0.f), 1.f);
 
-    _armature->getAnimation().gotoAndPlayByTime("idle", 0.5, 1);
-    _armature->getAnimation().gotoAndStopByTime("idle", 1);
+    _armatureDisplay->getAnimation().gotoAndPlayByTime("idle", 0.5, 1);
+    _armatureDisplay->getAnimation().gotoAndStopByTime("idle", 1);
 
-    //_armature->getAnimation().gotoAndPlayByFrame("idle", 25, 2);
-    //_armature->getAnimation().gotoAndStopByFrame("idle", 50);
+    //_armatureDisplay->getAnimation().gotoAndPlayByFrame("idle", 25, 2);
+    //_armatureDisplay->getAnimation().gotoAndStopByFrame("idle", 50);
 
-    _armature->getAnimation().gotoAndPlayByProgress("idle", progress, 3);
-    //_armature->getAnimation().gotoAndStopByProgress("idle", progress);
+    _armatureDisplay->getAnimation().gotoAndPlayByProgress("idle", progress, 3);
+    //_armatureDisplay->getAnimation().gotoAndStopByProgress("idle", progress);
     
     return true;
 }
@@ -92,11 +90,11 @@ void AnimationBaseTest::_touchEndedHandler(const cocos2d::Touch* touch, cocos2d:
 
 void AnimationBaseTest::_touchMovedHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
 {
-    if (_isTouched && _armature->getAnimation().getState("idle") && !_armature->getAnimation().getState("idle")->getIsPlaying())
+    if (_isTouched && _armatureDisplay->getAnimation().getState("idle") && !_armatureDisplay->getAnimation().getState("idle")->getIsPlaying())
     {
         const auto progress = std::min(std::max((touch->getLocation().x - _armatureDisplay->getPosition().x + 300.f) / 600.f, 0.f), 1.f);
 
-        _armature->getAnimation().gotoAndStopByProgress("idle", progress);
+        _armatureDisplay->getAnimation().gotoAndStopByProgress("idle", progress);
     }
 }
 

@@ -6,6 +6,7 @@
 #include "../model/TimelineData.h"
 #include "../model/AnimationData.h"
 #include "../armature/Armature.h"
+#include "../armature/Slot.h"
 #include "AnimationState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -172,12 +173,12 @@ protected:
 
                 if (value < 0.f)
                 {
-                    currentPlayTimes = -value / _duration;
+                    currentPlayTimes = (unsigned)(-value / _duration);
                     value = _duration - std::fmod(-value, _duration);
                 }
                 else
                 {
-                    currentPlayTimes = value / _duration;
+                    currentPlayTimes = (unsigned)(value / _duration);
                     value = std::fmod(value, _duration);
                 }
 

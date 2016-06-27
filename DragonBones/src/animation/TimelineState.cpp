@@ -532,7 +532,7 @@ void FFDTimelineState::_onUpdateFrame(bool isUpdate)
 {
     TweenTimelineState::_onUpdateFrame(isUpdate);
 
-    if (_tweenFFD != TweenType::None && this->_animationState->_fadeProgress >= 1.f)
+    if (_tweenFFD != TweenType::None)
     {
         if (_tweenFFD == TweenType::Once)
         {
