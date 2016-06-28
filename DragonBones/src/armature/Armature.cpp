@@ -190,7 +190,7 @@ void Armature::advanceTime(float passedTime)
     const auto scaledPassedTime = passedTime * _animation->timeScale;
 
     //
-    _animation->_advanceTime(passedTime);
+    _animation->_advanceTime(scaledPassedTime);
 
     //
     if (_bonesDirty)

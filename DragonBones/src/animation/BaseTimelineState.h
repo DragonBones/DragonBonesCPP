@@ -429,11 +429,7 @@ protected:
 
     virtual void _onUpdateFrame(bool isUpdate) override
     {
-        if (!this->_currentFrame->duration)
-        {
-            _tweenProgress = 0.f;
-        }
-        else if (_tweenEasing != NO_TWEEN)
+        if (_tweenEasing != NO_TWEEN && this->_currentFrame->duration > 0)
         {
             _tweenProgress = (float)(this->_currentTime - this->_currentFrame->position + this->_position) / this->_currentFrame->duration;
             if (_tweenEasing != 0.f)

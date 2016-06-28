@@ -333,16 +333,16 @@ void SlotTimelineState::_onArriveAtFrame(bool isUpdate)
         slot->_updateMeshData(true);
     }
 
-    if (slot->getDisplayIndex() >= 0)
+    if (this->_currentFrame->displayIndex >= 0)
     {
         _tweenColor = TweenType::None;
 
-        const auto& nextFrame = *static_cast<SlotFrameData*>(this->_currentFrame->next);
         const auto& currentColor = *this->_currentFrame->color;
 
         if (this->_keyFrameCount > 1 && (this->_tweenEasing != NO_TWEEN || this->_curve))
         {
-            if (this->_currentFrame->color != nextFrame.color)
+            const auto& nextFrame = *static_cast<SlotFrameData*>(this->_currentFrame->next);
+            if (this->_currentFrame->color != nextFrame.color && nextFrame.displayIndex >= 0)
             {
                 const auto& nextColor = *nextFrame.color;
                 _durationColor.alphaMultiplier = nextColor.alphaMultiplier - currentColor.alphaMultiplier;

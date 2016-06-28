@@ -19,7 +19,7 @@ void Slot::_onClear()
         {
             static_cast<Armature*>(pair.first)->returnToPool();
         }
-        else if (std::find(disposeDisplayList.cbegin(), disposeDisplayList.cend(), pair.first) != disposeDisplayList.cend())
+        else if (std::find(disposeDisplayList.cbegin(), disposeDisplayList.cend(), pair.first) == disposeDisplayList.cend())
         {
             disposeDisplayList.push_back(pair.first);
         }
