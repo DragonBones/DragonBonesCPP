@@ -41,7 +41,7 @@ protected:
     {
         userData = nullptr;
         name.clear();
-        globalTransformMatrix = nullptr;
+        globalTransformMatrix = &_globalTransformMatrix;
         global.identity();
         origin.identity();
         offset.identity();

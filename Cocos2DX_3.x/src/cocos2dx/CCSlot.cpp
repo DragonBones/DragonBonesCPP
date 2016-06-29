@@ -143,68 +143,73 @@ void CCSlot::_updateFrame()
         const unsigned displayIndex = this->_displayIndex;
         const auto rawDisplayData = displayIndex < this->_displayDataSet->displays.size() ? this->_displayDataSet->displays[displayIndex] : nullptr;
         const auto replaceDisplayData = displayIndex < this->_replaceDisplayDataSet.size() ? this->_replaceDisplayDataSet[displayIndex] : nullptr;
-        const auto contentDisplayData = replaceDisplayData ? replaceDisplayData : rawDisplayData;
-        const auto contentTextureData = static_cast<CCTextureData*>(contentDisplayData->textureData);
+        const auto currentDisplayData = replaceDisplayData ? replaceDisplayData : rawDisplayData;
+        const auto currentTextureData = static_cast<CCTextureData*>(currentDisplayData->textureData);
 
-        if (contentTextureData)
+        if (currentTextureData)
         {
-            if (!contentTextureData->texture)
+            if (!currentTextureData->texture)
             {
-                const auto textureAtlasTexture = static_cast<CCTextureAtlasData*>(contentTextureData->parent)->texture;
+                const auto textureAtlasTexture = static_cast<CCTextureAtlasData*>(currentTextureData->parent)->texture;
                 if (textureAtlasTexture)
                 {
                     cocos2d::Vec2 pivot;
-                    cocos2d::Rect rect(contentTextureData->region.x, contentTextureData->region.y, contentTextureData->region.width, contentTextureData->region.height);
-                    cocos2d::Size originSize(contentTextureData->region.width, contentTextureData->region.height);
+                    cocos2d::Rect rect(currentTextureData->region.x, currentTextureData->region.y, currentTextureData->region.width, currentTextureData->region.height);
+                    cocos2d::Size originSize(currentTextureData->region.width, currentTextureData->region.height);
 
-                    if (!contentDisplayData->meshData)
+                    // TODO
+                    /*if (currentTextureData->frame) {
+                        originSize.setSize(currentTextureData->frame->width, currentTextureData->frame->height);
+                    }*/
+
+                    if (!currentDisplayData->meshData)
                     {
-                        pivot.set(contentDisplayData->pivot.x, contentDisplayData->pivot.y);
+                        pivot.set(currentDisplayData->pivot.x, currentDisplayData->pivot.y);
 
-                        const auto& rectData = contentTextureData->frame ? *contentTextureData->frame : contentTextureData->region;
+                        const auto& rectData = currentTextureData->frame ? *currentTextureData->frame : currentTextureData->region;
                         auto width = rectData.width;
                         auto height = rectData.height;
-                        if (contentTextureData->rotated)
+                        if (currentTextureData->rotated)
                         {
                             width = rectData.height;
                             height = rectData.width;
                         }
 
-                        if (contentDisplayData->isRelativePivot)
+                        if (currentDisplayData->isRelativePivot)
                         {
                             pivot.x *= width;
                             pivot.y *= height;
                         }
 
-                        if (contentTextureData->frame)
+                        if (currentTextureData->frame)
                         {
-                            pivot.x += contentTextureData->frame->x;
-                            pivot.y += contentTextureData->frame->y;
+                            pivot.x += currentTextureData->frame->x;
+                            pivot.y += currentTextureData->frame->y;
                         }
 
-                        if (rawDisplayData && contentDisplayData != rawDisplayData)
+                        if (rawDisplayData && currentDisplayData != rawDisplayData)
                         {
-                            pivot.x += contentDisplayData->transform.x - rawDisplayData->transform.x;
-                            pivot.y += contentDisplayData->transform.y - rawDisplayData->transform.y;
+                            pivot.x += currentDisplayData->transform.x - rawDisplayData->transform.x;
+                            pivot.y += currentDisplayData->transform.y - rawDisplayData->transform.y;
                         }
 
                         pivot.x = -pivot.x;
                         pivot.y = pivot.y - originSize.height;
                     }
 
-                    contentTextureData->texture = cocos2d::SpriteFrame::createWithTexture(textureAtlasTexture, rect, contentTextureData->rotated, pivot, originSize); // TODO multiply textureAtlas
-                    contentTextureData->texture->retain();
+                    currentTextureData->texture = cocos2d::SpriteFrame::createWithTexture(textureAtlasTexture, rect, currentTextureData->rotated, pivot, originSize); // TODO multiply textureAtlas
+                    currentTextureData->texture->retain();
                 }
             }
 
-            const auto currentTexture = this->_armature->_replaceTexture ? static_cast<cocos2d::Texture2D*>(this->_armature->_replaceTexture) : (contentTextureData->texture ? contentTextureData->texture->getTexture() : nullptr);
+            const auto currentTexture = this->_armature->_replaceTexture ? static_cast<cocos2d::Texture2D*>(this->_armature->_replaceTexture) : (currentTextureData->texture ? currentTextureData->texture->getTexture() : nullptr);
 
             if (currentTexture)
             {
                 if (this->_meshData && this->_display == this->_meshDisplay)
                 {
-                    const auto& region = contentTextureData->region;
-                    const auto& textureAtlasSize = contentTextureData->texture->getTexture()->getContentSizeInPixels();
+                    const auto& region = currentTextureData->region;
+                    const auto& textureAtlasSize = currentTextureData->texture->getTexture()->getContentSizeInPixels();
                     auto displayVertices = new cocos2d::V3F_C4B_T2F[(unsigned)(this->_meshData->uvs.size() / 2)]; // does cocos2dx release it?
                     auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()]; // does cocos2dx release it?
                     cocos2d::Rect boundsRect(999999.f, 999999.f, -999999.f, -999999.f);
@@ -259,10 +264,10 @@ void CCSlot::_updateFrame()
                     polygonInfo.rect = boundsRect; // Copy
 
                     // In cocos2dx render meshDisplay and frameDisplay are the same display
-                    frameDisplay->setSpriteFrame(contentTextureData->texture);
+                    frameDisplay->setSpriteFrame(currentTextureData->texture);
                     frameDisplay->setPolygonInfo(polygonInfo);
 
-                    if (currentTexture != contentTextureData->texture->getTexture())
+                    if (currentTexture != currentTextureData->texture->getTexture())
                     {
                         frameDisplay->setTexture(currentTexture); // Relpace texture
                     }
@@ -277,9 +282,9 @@ void CCSlot::_updateFrame()
                 }
                 else
                 {
-                    frameDisplay->setSpriteFrame(contentTextureData->texture);
+                    frameDisplay->setSpriteFrame(currentTextureData->texture);
 
-                    if (currentTexture != contentTextureData->texture->getTexture())
+                    if (currentTexture != currentTextureData->texture->getTexture())
                     {
                         frameDisplay->setTexture(currentTexture); // Relpace texture
                     }

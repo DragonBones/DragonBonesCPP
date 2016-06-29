@@ -1,4 +1,4 @@
-#include "CoreElement.h"
+﻿#include "CoreElement.h"
 
 USING_NS_CC;
 
@@ -314,8 +314,8 @@ void Mecha::attack(bool isAttacking)
 void Mecha::switchWeaponR()
 {
     _weaponRIndex++;
-    
-    if (_weaponRIndex >= sizeof(WEAPON_R_LIST)/ sizeof(WEAPON_R_LIST[0]))
+
+    if (_weaponRIndex >= sizeof(WEAPON_R_LIST) / sizeof(WEAPON_R_LIST[0]))
     {
         _weaponRIndex = 0;
     }

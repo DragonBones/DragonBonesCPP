@@ -63,7 +63,7 @@ void AnimationData::cacheFrames(float value)
 
     const auto cacheFrameCount = (unsigned)std::max(std::floor(frameCount * scale * value), 1.f);
 
-    cacheTimeToFrameScale = cacheFrameCount / duration;
+    cacheTimeToFrameScale = cacheFrameCount / (duration + 0.0000001f);
     cachedFrames.resize(cacheFrameCount, false);
 
     for (const auto& pair : boneTimelines)
