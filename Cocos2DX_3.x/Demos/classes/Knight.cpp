@@ -178,7 +178,7 @@ void KnightGame::_updateMove(int dir) const
     }
 }
 
-const unsigned Hero::MAX_WEAPON_LEVEL = 3;
+const int Hero::MAX_WEAPON_LEVEL = 3;
 const float Hero::JUMP_SPEED = 20.f;
 const float Hero::MOVE_SPEED = 4.f;
 std::vector<std::string> Hero::WEAPON_LIST;

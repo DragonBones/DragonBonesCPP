@@ -100,7 +100,8 @@ void HelloDragonBones::_changeArmature()
     );*/
 
     // Add Armature Display.
-    _armatureDisplay->setPosition(cocos2d::Director::getInstance()->getVisibleSize().width * 0.5f, 200.f);
+    const auto center = cocos2d::Director::getInstance()->getVisibleSize();
+    _armatureDisplay->setPosition(center.width * 0.5f, center.height * 0.5f);
     _armatureDisplay->setScale(_armatureScale);
     this->addChild(_armatureDisplay);
 

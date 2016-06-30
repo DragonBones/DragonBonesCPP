@@ -2,7 +2,7 @@
 #define __ANIMATION_BASE_TEST_H__
 
 #include "cocos2d.h"
-#include "cocos2dx/CCDragonBonesHeaders.h"
+#include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
 
 class AnimationBaseTest : public cocos2d::LayerColor
 {

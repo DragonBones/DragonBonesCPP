@@ -63,7 +63,6 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
     rawDisplay->retain();
     rawDisplay->setCascadeOpacityEnabled(true);
     rawDisplay->setCascadeColorEnabled(true);
-    rawDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
 
     for (const auto displayData : slotDisplayDataSet.displays)
     {

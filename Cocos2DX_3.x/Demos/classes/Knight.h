@@ -2,7 +2,7 @@
 #define __KNIGHT_H__
 
 #include "cocos2d.h"
-#include "cocos2dx/CCDragonBonesHeaders.h"
+#include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
 
 class KnightBullet
 {
@@ -23,7 +23,7 @@ public:
 class Hero
 {
 public:
-    static const unsigned MAX_WEAPON_LEVEL;
+    static const int MAX_WEAPON_LEVEL;
     static const float JUMP_SPEED;
     static const float MOVE_SPEED;
     static std::vector<std::string> WEAPON_LIST;

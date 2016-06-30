@@ -66,10 +66,9 @@ protected:
 
     inline static float _getNumber(const rapidjson::Value& rawData, const char*& key, float defaultValue)
     {
-        if (rawData.HasMember(key))
+        if (rawData.HasMember(key) && rawData[key].IsNumber())
         {
-            const auto& value = rawData[key];
-            return value.IsNull() ? defaultValue : value.GetFloat();
+            return rawData[key].GetFloat();
         }
 
         return defaultValue;

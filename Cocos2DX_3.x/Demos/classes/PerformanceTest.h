@@ -2,7 +2,7 @@
 #define __PERFORMANCE_TEST_H__
 
 #include "cocos2d.h"
-#include "cocos2dx/CCDragonBonesHeaders.h"
+#include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
 
 class PerformanceTest : public cocos2d::LayerColor
 {
