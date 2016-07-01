@@ -53,6 +53,7 @@ public:
     }
 };
 
+/** @private */
 class DBCCSprite : public cocos2d::Sprite
 {
 public:
@@ -75,7 +76,7 @@ public:
     /**
      * Modify for polyInfo rect
      */
-    virtual void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags) override;
+    virtual void draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags) override;
     /**
      * Modify for cocos2dx 3.7, 3.8, 3.9
      */

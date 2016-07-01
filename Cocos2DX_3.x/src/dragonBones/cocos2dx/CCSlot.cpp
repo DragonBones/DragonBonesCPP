@@ -229,13 +229,14 @@ void CCSlot::_updateFrame()
                     }
 
                     //
-                    auto& polygonInfo = frameDisplay->getPolygonInfoModify();
+                    cocos2d::PolygonInfo polygonInfo;
                     auto& triangles = polygonInfo.triangles;
                     triangles.verts = displayVertices;
                     triangles.indices = vertexIndices;
                     triangles.vertCount = (unsigned)(this->_meshData->uvs.size() / 2);
                     triangles.indexCount = (unsigned)(this->_meshData->vertexIndices.size());
                     polygonInfo.rect = boundsRect; // Copy
+                    frameDisplay->setPolygonInfo(polygonInfo);
                     frameDisplay->setContentSize(boundsRect.size);
 
                     if (this->_meshData->skinned)
