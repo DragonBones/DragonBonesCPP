@@ -187,17 +187,17 @@ void DBCCSprite::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transfor
         for (ssize_t i = 0; i < count; i++)
         {
             //draw 3 lines
-            Vec3 from = verts[indices[i * 3]].vertices;
-            Vec3 to = verts[indices[i * 3 + 1]].vertices;
-            _debugDrawNode->drawLine(Vec2(from.x, from.y), Vec2(to.x, to.y), Color4F::WHITE);
+            auto from = verts[indices[i * 3]].vertices;
+            auto to = verts[indices[i * 3 + 1]].vertices;
+            _debugDrawNode->drawLine(cocos2d::Vec2(from.x, from.y), cocos2d::Vec2(to.x, to.y), cocos2d::Color4F::WHITE);
 
             from = verts[indices[i * 3 + 1]].vertices;
             to = verts[indices[i * 3 + 2]].vertices;
-            _debugDrawNode->drawLine(Vec2(from.x, from.y), Vec2(to.x, to.y), Color4F::WHITE);
+            _debugDrawNode->drawLine(cocos2d::Vec2(from.x, from.y), cocos2d::Vec2(to.x, to.y), cocos2d::Color4F::WHITE);
 
             from = verts[indices[i * 3 + 2]].vertices;
             to = verts[indices[i * 3]].vertices;
-            _debugDrawNode->drawLine(Vec2(from.x, from.y), Vec2(to.x, to.y), Color4F::WHITE);
+            _debugDrawNode->drawLine(cocos2d::Vec2(from.x, from.y), cocos2d::Vec2(to.x, to.y), cocos2d::Color4F::WHITE);
         }
 #endif //CC_SPRITE_DEBUG_DRAW
     }
