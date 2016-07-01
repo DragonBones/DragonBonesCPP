@@ -99,7 +99,7 @@ protected:
             }
         }
         
-        const auto eventDispatcher = _armature->getDisplay();
+        const auto eventDispatcher = _armature->_display;
 
         for (const auto eventData : frame->events)
         {

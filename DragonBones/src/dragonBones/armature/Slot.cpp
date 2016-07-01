@@ -70,7 +70,7 @@ void Slot::_updateDisplay()
         if (displayPair.second == DisplayType::Armature)
         {
             _childArmature = static_cast<Armature*>(displayPair.first);
-            _display = _childArmature->getDisplay();
+            _display = _childArmature->_display;
         }
         else
         {

@@ -53,7 +53,7 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
     const auto slot = BaseObject::borrowObject<CCSlot>();
     const auto slotData = slotDisplayDataSet.slot;
     std::vector<std::pair<void*, DisplayType>> displayList;
-    const auto rawDisplay = cocos2d::Sprite::create();
+    const auto rawDisplay = DBCCSprite::create();
 
     slot->name = slotData->name;
     slot->_rawDisplay = rawDisplay;
@@ -201,7 +201,7 @@ TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, c
 CCArmatureDisplayContainer * CCFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName) const
 {
     const auto armature = this->buildArmature(armatureName, dragonBonesName, skinName);
-    const auto armatureDisplay = armature ? static_cast<CCArmatureDisplayContainer*>(armature->getDisplay()) : nullptr;
+    const auto armatureDisplay = armature ? static_cast<CCArmatureDisplayContainer*>(armature->_display) : nullptr;
     if (armatureDisplay)
     {
         armatureDisplay->advanceTimeBySelf(true);

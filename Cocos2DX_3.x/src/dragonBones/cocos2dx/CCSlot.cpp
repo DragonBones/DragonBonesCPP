@@ -52,13 +52,13 @@ void CCSlot::_onUpdateDisplay()
 
 void CCSlot::_addDisplay()
 {
-    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay());
+    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->_display);
     container->addChild(_renderDisplay);
 }
 
 void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplayContainer)
 {
-    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->getDisplay());
+    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->_display);
     const auto prevDisplay = isArmatureDisplayContainer ? static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplayContainer*>(value)) : static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplayContainer*>(value) : value); // WTF
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
@@ -136,7 +136,7 @@ void CCSlot::_updateFilters()
 
 void CCSlot::_updateFrame()
 {
-    const auto frameDisplay = static_cast<cocos2d::Sprite*>(this->_rawDisplay);
+    const auto frameDisplay = (DBCCSprite*)(this->_rawDisplay);
 
     if (this->_display && this->_displayIndex >= 0)
     {
@@ -157,11 +157,11 @@ void CCSlot::_updateFrame()
                     cocos2d::Vec2 offset(0.f, 0.f);
                     cocos2d::Size originSize(currentTextureData->region.width, currentTextureData->region.height);
 
-                    if (currentTextureData->frame) 
+                    /*if (currentTextureData->frame) 
                     {
-                        //offset.setPoint(-currentTextureData->frame->x, -currentTextureData->frame->y);
-                        //originSize.setSize(currentTextureData->frame->width, currentTextureData->frame->height);
-                    }
+                        offset.setPoint(-currentTextureData->frame->x, -currentTextureData->frame->y);
+                        originSize.setSize(currentTextureData->frame->width, currentTextureData->frame->height);
+                    }*/
 
                     currentTextureData->texture = cocos2d::SpriteFrame::createWithTexture(textureAtlasTexture, rect, currentTextureData->rotated, offset, originSize); // TODO multiply textureAtlas
                     currentTextureData->texture->retain();
@@ -202,14 +202,14 @@ void CCSlot::_updateFrame()
                             boundsRect.size.width = x;
                         }
 
-                        if (boundsRect.origin.y > y)
+                        if (boundsRect.origin.y > -y)
                         {
-                            boundsRect.origin.y = y;
+                            boundsRect.origin.y = -y;
                         }
 
-                        if (boundsRect.size.height < y)
+                        if (boundsRect.size.height < -y)
                         {
-                            boundsRect.size.height = y;
+                            boundsRect.size.height = -y;
                         }
                     }
 
@@ -221,22 +221,22 @@ void CCSlot::_updateFrame()
                         vertexIndices[i] = this->_meshData->vertexIndices[i];
                     }
 
-                    cocos2d::PolygonInfo polygonInfo;
+                    // In cocos2dx render meshDisplay and frameDisplay are the same display
+                    frameDisplay->setSpriteFrame(currentTextureData->texture); // polygonInfo will be override
+                    if (currentTexture != currentTextureData->texture->getTexture())
+                    {
+                        frameDisplay->setTexture(currentTexture); // Relpace texture // polygonInfo will be override
+                    }
+
+                    //
+                    auto& polygonInfo = frameDisplay->getPolygonInfoModify();
                     auto& triangles = polygonInfo.triangles;
                     triangles.verts = displayVertices;
                     triangles.indices = vertexIndices;
                     triangles.vertCount = (unsigned)(this->_meshData->uvs.size() / 2);
                     triangles.indexCount = (unsigned)(this->_meshData->vertexIndices.size());
                     polygonInfo.rect = boundsRect; // Copy
-
-                    // In cocos2dx render meshDisplay and frameDisplay are the same display
-                    frameDisplay->setSpriteFrame(currentTextureData->texture);
-                    frameDisplay->setPolygonInfo(polygonInfo);
-
-                    if (currentTexture != currentTextureData->texture->getTexture())
-                    {
-                        frameDisplay->setTexture(currentTexture); // Relpace texture
-                    }
+                    frameDisplay->setContentSize(boundsRect.size);
 
                     if (this->_meshData->skinned)
                     {
@@ -282,11 +282,11 @@ void CCSlot::_updateFrame()
                     pivot.x = pivot.x / currentTextureData->region.width;
                     pivot.y = 1.f - pivot.y / currentTextureData->region.height;
 
-                    frameDisplay->setSpriteFrame(currentTextureData->texture);
+                    frameDisplay->setSpriteFrame(currentTextureData->texture); // polygonInfo will be override
 
                     if (currentTexture != currentTextureData->texture->getTexture())
                     {
-                        frameDisplay->setTexture(currentTexture); // Relpace texture
+                        frameDisplay->setTexture(currentTexture); // Relpace texture // polygonInfo will be override
                     }
 
                     frameDisplay->setAnchorPoint(pivot);
@@ -307,9 +307,10 @@ void CCSlot::_updateFrame()
 
 void CCSlot::_updateMesh() 
 {
-    const auto meshDisplay = static_cast<cocos2d::Sprite*>(this->_meshDisplay);
+    const auto meshDisplay = static_cast<DBCCSprite*>(this->_meshDisplay);
     const auto hasFFD = !this->_ffdVertices.empty();
-    const auto displayVertices = meshDisplay->getPolygonInfo().triangles.verts;
+
+    const auto displayVertices = meshDisplay->getPolygonInfoModify().triangles.verts;
     cocos2d::Rect boundsRect(999999.f, 999999.f, -999999.f, -999999.f);
 
     if (this->_meshData->skinned)
@@ -363,14 +364,14 @@ void CCSlot::_updateMesh()
                 boundsRect.size.width = xG;
             }
 
-            if (boundsRect.origin.y > yG)
+            if (boundsRect.origin.y > -yG)
             {
-                boundsRect.origin.y = yG;
+                boundsRect.origin.y = -yG;
             }
 
-            if (boundsRect.size.height < yG)
+            if (boundsRect.size.height < -yG)
             {
-                boundsRect.size.height = yG;
+                boundsRect.size.height = -yG;
             }
         }
     }
@@ -398,19 +399,23 @@ void CCSlot::_updateMesh()
                 boundsRect.size.width = xG;
             }
 
-            if (boundsRect.origin.y > yG)
+            if (boundsRect.origin.y > -yG)
             {
-                boundsRect.origin.y = yG;
+                boundsRect.origin.y = -yG;
             }
 
-            if (boundsRect.size.height < yG)
+            if (boundsRect.size.height < -yG)
             {
-                boundsRect.size.height = yG;
+                boundsRect.size.height = -yG;
             }
         }
     }
 
-    meshDisplay->getPolygonInfo().rect = boundsRect; // Copy
+    boundsRect.size.width -= boundsRect.origin.x;
+    boundsRect.size.height -= boundsRect.origin.y;
+    
+    meshDisplay->getPolygonInfo().rect = boundsRect; // copy
+    meshDisplay->setContentSize(boundsRect.size);
 }
 
 void CCSlot::_updateTransform()

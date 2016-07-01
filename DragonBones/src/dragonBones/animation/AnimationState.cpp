@@ -100,7 +100,7 @@ void AnimationState::_advanceFadeTime(float passedTime)
     {
         _fadeProgress = fadeProgress;
 
-        const auto eventDispatcher = _armature->getDisplay();
+        const auto eventDispatcher = _armature->_display;
 
         if (_fadeTime <= passedTime)
         {
