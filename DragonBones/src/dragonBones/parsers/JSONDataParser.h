@@ -2,7 +2,10 @@
 #define DRAGONBONES_JSON_DATA_PARSER_H
 
 #include "DataParser.h"
-#include "rapidjson/document.h"
+#include "json/rapidjson.h"
+#include "json/stringbuffer.h"
+#include "json/document.h"
+#include "json/writer.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -68,7 +71,7 @@ protected:
     {
         if (rawData.HasMember(key) && rawData[key].IsNumber())
         {
-            return rawData[key].GetFloat();
+            return rawData[key].GetDouble();
         }
 
         return defaultValue;
@@ -98,7 +101,7 @@ protected:
     {
         if (rawData.Size() > index)
         {
-            return rawData[index].GetFloat();
+            return rawData[index].GetDouble();
         }
 
         return defaultValue;
@@ -150,15 +153,15 @@ protected:
 
         if (rawData.HasMember(CURVE))
         {
-            const auto rawCurve = rawData[CURVE].GetArray();
+            const auto& rawCurve = rawData[CURVE];
 
             std::vector<float> curve;
             curve.reserve(rawCurve.Size());
-            for (const auto& curveValue : rawCurve)
-            {
-                curve.push_back(curveValue.GetFloat());
-            }
-
+			for (int i = 0; i < rawCurve.Size(); i++)
+			{
+				const auto& curveValue = rawCurve[i];
+				curve.push_back(curveValue.GetDouble());
+			}
             TweenFrameData<T>::samplingCurve(curve, frameCount, frame.curve);
         }
     }
@@ -183,7 +186,7 @@ protected:
 
         if (rawData.HasMember(FRAME))
         {
-            const auto& rawFrames = rawData[FRAME].GetArray();
+            const auto& rawFrames = rawData[FRAME];
             if (!rawFrames.Empty())
             {
                 if (rawFrames.Size() == 1)
