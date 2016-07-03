@@ -115,7 +115,7 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
 {
     if (!dragonBonesName.empty())
     {
-        const auto existData = getDragonBonesData(filePath);
+        const auto existData = getDragonBonesData(dragonBonesName);
         if (existData)
         {
             return existData;
