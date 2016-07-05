@@ -17,7 +17,7 @@ public:
     Armature* _armature;
 
 protected:
-    cocos2d::EventDispatcher _dispatcher;
+    cocos2d::EventDispatcher* _dispatcher;
 
 protected:
     CCArmatureDisplayContainer();
@@ -39,7 +39,7 @@ public:
 
     inline bool hasEvent(const std::string& type) const override
     {
-        return _dispatcher.isEnabled();
+        return _dispatcher->isEnabled();
     }
 
     inline Armature* getArmature() const override 

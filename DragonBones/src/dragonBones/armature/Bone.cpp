@@ -269,7 +269,7 @@ void Bone::_update(int cacheFrameIndex)
 {
     _blendIndex = 0;
 
-    if (cacheFrameIndex >= 0 && _cacheFrames)
+    if (cacheFrameIndex >= 0)
     {
         const auto cacheFrame = (*_cacheFrames)[cacheFrameIndex];
 
@@ -342,7 +342,7 @@ void Bone::_update(int cacheFrameIndex)
                 }
             }
 
-            if (cacheFrameIndex >= 0 && _cacheFrames)
+            if (cacheFrameIndex >= 0)
             {
                 this->globalTransformMatrix = BoneTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, this->_globalTransformMatrix);
             }

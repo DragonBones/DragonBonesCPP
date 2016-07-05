@@ -267,7 +267,7 @@ void Slot::_update(int cacheFrameIndex)
         _updateLocalTransformMatrix();
     }
 
-    if (cacheFrameIndex >= 0 && _cacheFrames)
+    if (cacheFrameIndex >= 0)
     {
         const auto cacheFrame = (*_cacheFrames)[cacheFrameIndex];
 
@@ -275,15 +275,15 @@ void Slot::_update(int cacheFrameIndex)
         {
             _transformDirty = false;
         }
-        else if (cacheFrame)
-        {
-            _transformDirty = true;
-            this->globalTransformMatrix = cacheFrame;
-        }
         else if (_transformDirty || this->_parent->_transformDirty != Bone::BoneTransformDirty::None)
         {
             _transformDirty = true;
             this->globalTransformMatrix = &this->_globalTransformMatrix;
+        }
+        else if (cacheFrame)
+        {
+            _transformDirty = true;
+            this->globalTransformMatrix = cacheFrame;
         }
         else if (this->globalTransformMatrix != &this->_globalTransformMatrix)
         {
@@ -310,7 +310,7 @@ void Slot::_update(int cacheFrameIndex)
         {
             _updateGlobalTransformMatrix();
 
-            if (cacheFrameIndex >= 0 && _cacheFrames)
+            if (cacheFrameIndex >= 0)
             {
                 this->globalTransformMatrix = SlotTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, this->_globalTransformMatrix);
             }

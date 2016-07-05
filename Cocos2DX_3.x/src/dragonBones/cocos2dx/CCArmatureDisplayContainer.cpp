@@ -20,25 +20,32 @@ CCArmatureDisplayContainer* CCArmatureDisplayContainer::create()
 
 CCArmatureDisplayContainer::CCArmatureDisplayContainer() :
     _armature(nullptr),
-    _dispatcher()
+    _dispatcher(nullptr)
 {
-    this->setEventDispatcher(&_dispatcher);
+    _dispatcher = new cocos2d::EventDispatcher();
+    this->setEventDispatcher(_dispatcher);
 }
 CCArmatureDisplayContainer::~CCArmatureDisplayContainer() {}
 
 void CCArmatureDisplayContainer::_onClear()
 {
-    _dispatcher.removeAllEventListeners();
+    //_dispatcher->removeAllEventListeners();
 
     this->setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
     this->release();
 
     _armature = nullptr;
+
+    if (_dispatcher)
+    {
+        delete _dispatcher;
+        _dispatcher = nullptr;
+    }
 }
 
 void CCArmatureDisplayContainer::_dispatchEvent(EventObject* value)
 {
-    _dispatcher.dispatchCustomEvent(value->type, value);
+    _dispatcher->dispatchCustomEvent(value->type, value);
 }
 
 void CCArmatureDisplayContainer::update(float passedTime)

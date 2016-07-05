@@ -233,25 +233,6 @@ void Armature::advanceTime(float passedTime)
     {
         _lockActionAndEvent = true;
 
-        if (!_events.empty())
-        {
-            for (const auto event : _events)
-            {
-                if (Armature::soundEventManager && event->type == EventObject::SOUND_EVENT)
-                {
-                    Armature::soundEventManager->_dispatchEvent(event);
-                }
-                else
-                {
-                    _display->_dispatchEvent(event);
-                }
-
-                event->returnToPool();
-            }
-
-            _events.clear();
-        }
-
         if (_action)
         {
             const auto& ints = std::get<0>(_action->data);
@@ -286,6 +267,25 @@ void Armature::advanceTime(float passedTime)
             }
 
             _action = nullptr;
+        }
+
+        if (!_events.empty())
+        {
+            for (const auto event : _events)
+            {
+                if (Armature::soundEventManager && event->type == EventObject::SOUND_EVENT)
+                {
+                    Armature::soundEventManager->_dispatchEvent(event);
+                }
+                else
+                {
+                    _display->_dispatchEvent(event);
+                }
+
+                event->returnToPool();
+            }
+
+            _events.clear();
         }
 
         _lockActionAndEvent = false;

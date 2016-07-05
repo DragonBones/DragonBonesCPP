@@ -242,7 +242,11 @@ AnimationState* Animation::play(const std::string& animationName, int playTimes)
     }
     else if (!_lastAnimationState)
     {
-        animationState = fadeIn(_armature->getArmatureData().getDefaultAnimation()->name, 0.f, -1, 0, "", AnimationFadeOutMode::All);
+        const auto defaultAnimation = _armature->getArmatureData().getDefaultAnimation();
+        if (defaultAnimation)
+        {
+            animationState = fadeIn(_armature->getArmatureData().getDefaultAnimation()->name, 0.f, -1, 0, "", AnimationFadeOutMode::All);
+        }
     }
     else if (!_isPlaying)
     {
