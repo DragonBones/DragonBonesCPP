@@ -23,6 +23,7 @@ CCArmatureDisplayContainer::CCArmatureDisplayContainer() :
     _dispatcher(nullptr)
 {
     _dispatcher = new cocos2d::EventDispatcher();
+    _dispatcher->retain();
     this->setEventDispatcher(_dispatcher);
 }
 CCArmatureDisplayContainer::~CCArmatureDisplayContainer() {}
@@ -38,6 +39,7 @@ void CCArmatureDisplayContainer::_onClear()
 
     if (_dispatcher)
     {
+        _dispatcher->release();
         delete _dispatcher;
         _dispatcher = nullptr;
     }
