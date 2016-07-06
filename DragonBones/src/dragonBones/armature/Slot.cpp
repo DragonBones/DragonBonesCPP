@@ -275,15 +275,15 @@ void Slot::_update(int cacheFrameIndex)
         {
             _transformDirty = false;
         }
-        else if (_transformDirty || this->_parent->_transformDirty != Bone::BoneTransformDirty::None)
-        {
-            _transformDirty = true;
-            this->globalTransformMatrix = &this->_globalTransformMatrix;
-        }
         else if (cacheFrame)
         {
             _transformDirty = true;
             this->globalTransformMatrix = cacheFrame;
+        }
+        else if (_transformDirty || this->_parent->_transformDirty != Bone::BoneTransformDirty::None)
+        {
+            _transformDirty = true;
+            this->globalTransformMatrix = &this->_globalTransformMatrix;
         }
         else if (this->globalTransformMatrix != &this->_globalTransformMatrix)
         {

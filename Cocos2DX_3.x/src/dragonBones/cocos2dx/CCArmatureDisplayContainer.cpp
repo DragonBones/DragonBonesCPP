@@ -33,7 +33,6 @@ void CCArmatureDisplayContainer::_onClear()
     //_dispatcher->removeAllEventListeners();
 
     this->setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
-    this->release();
 
     _armature = nullptr;
 
@@ -43,6 +42,8 @@ void CCArmatureDisplayContainer::_onClear()
         delete _dispatcher;
         _dispatcher = nullptr;
     }
+
+    this->release();
 }
 
 void CCArmatureDisplayContainer::_dispatchEvent(EventObject* value)
