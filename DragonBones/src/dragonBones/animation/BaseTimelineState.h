@@ -236,10 +236,7 @@ public:
                 break;
         }
 
-        if (_currentTime == 0.f)
-        {
-            _currentFrame = nullptr;
-        }
+        _currentFrame = nullptr;
     }
 
     void fadeIn(Armature* armature, AnimationState* animationState, M* timelineData, float time)
@@ -271,6 +268,8 @@ public:
 
     virtual void update(float time)
     {
+        const auto prevTime = _currentTime;
+
         if (!_isCompleted && _setCurrentTime(time) && _keyFrameCount)
         {
             const unsigned currentFrameIndex = _keyFrameCount > 1 ? unsigned(_currentTime * _timeToFrameSccale) : 0;
@@ -286,6 +285,12 @@ public:
                     {
                         while (crossedFrame != currentFrame)
                         {
+                            if (!crossedFrame)
+                            {
+                                const auto prevFrameIndex = unsigned(prevTime * _timeToFrameSccale);
+                                crossedFrame = _timeline->frames[prevFrameIndex];
+                            }
+
                             _onCrossFrame(crossedFrame);
                             crossedFrame = crossedFrame->prev;
                         }
@@ -294,7 +299,16 @@ public:
                     {
                         while (crossedFrame != currentFrame)
                         {
-                            crossedFrame = crossedFrame->next;
+                            if (crossedFrame)
+                            {
+                                crossedFrame = crossedFrame->next;
+                            }
+                            else
+                            {
+                                const auto prevFrameIndex = unsigned(prevTime * _timeToFrameSccale);
+                                crossedFrame = _timeline->frames[prevFrameIndex];
+                            }
+
                             _onCrossFrame(crossedFrame);
                         }
                     }
@@ -318,7 +332,8 @@ public:
 template<class T, class M>
 class TweenTimelineState : public TimelineState<T, M>
 {
-protected:
+public: // private
+    /** @private */
     static float _getEasingValue(float progress, float easing)
     {
         auto value = 1.f;
@@ -354,6 +369,7 @@ protected:
         return (value - progress) * easing + progress;
     }
 
+    /** @private */
     static float _getCurveEasingValue(float progress, const std::vector<float>& sampling)
     {
         auto x = 0.f;

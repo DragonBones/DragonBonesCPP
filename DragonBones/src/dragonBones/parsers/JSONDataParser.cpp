@@ -68,6 +68,12 @@ ArmatureData * JSONDataParser::_parseArmature(const rapidjson::Value & rawData)
     this->_armature = nullptr;
     this->_rawBones.clear();
 
+
+    if (this->_isParentCooriinate && _getBoolean(rawData, IS_GLOBAL, true)) 
+    {
+        this->_globalToLocal(armature);
+    }
+
     return armature;
 }
 
@@ -83,6 +89,12 @@ BoneData * JSONDataParser::_parseBone(const rapidjson::Value & rawData)
     if (rawData.HasMember(TRANSFORM))
     {
         _parseTransform(rawData[TRANSFORM], bone->transform);
+    }
+
+    if (this->_isParentCooriinate) 
+    {
+        bone->inheritRotation = true;
+        bone->inheritScale = false;
     }
 
     return bone;
@@ -140,6 +152,19 @@ SlotData * JSONDataParser::_parseSlot(const rapidjson::Value & rawData)
         slot->blendMode = (BlendMode)_getNumber(rawData, BLEND_MODE, (int)BlendMode::Normal);
     }
 
+    if (this->_isParentCooriinate) 
+    {
+        if (rawData.HasMember(COLOR_TRANSFORM)) 
+        {
+            slot->color = SlotData::generateColor();
+            _parseColorTransform(rawData[COLOR_TRANSFORM], *slot->color);
+        }
+        else 
+        {
+            slot->color = &SlotData::DEFAULT_COLOR;
+        }
+    }
+
     return slot;
 }
 
@@ -158,6 +183,11 @@ SkinData * JSONDataParser::_parseSkin(const rapidjson::Value & rawData)
 
         for (const auto& slotObject : rawData[SLOT].GetArray())
         {
+            if (this->_isParentCooriinate) 
+            {
+                this->_armature->addSlot(_parseSlot(slotObject));
+            }
+
             skin->addSlot(_parseSlotDisplaySet(slotObject));
         }
 
@@ -212,24 +242,17 @@ DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
         display->pivot.x = _getNumber(pivotObject, X, 0.f);
         display->pivot.y = _getNumber(pivotObject, Y, 0.f);
     }
+    else if (this->_isParentCooriinate)
+    {
+        const auto& transformObject = rawData[TRANSFORM];
+        display->isRelativePivot = false;
+        display->pivot.x = _getNumber(transformObject, PIVOT_X, 0.f) * this->_armatureScale;
+        display->pivot.y = _getNumber(transformObject, PIVOT_Y, 0.f) * this->_armatureScale;
+    }
     else
     {
-        if (rawData.HasMember(TRANSFORM))
-        {
-            const auto& transformObject = rawData[TRANSFORM];
-            if (transformObject.HasMember(PIVOT_X) || transformObject.HasMember(PIVOT_Y))
-            {
-                display->isRelativePivot = false;
-                display->pivot.x = _getNumber(transformObject, PIVOT_X, 0.f) * this->_armatureScale;
-                display->pivot.y = _getNumber(transformObject, PIVOT_Y, 0.f) * this->_armatureScale;
-            }
-        }
-
-        if (display->isRelativePivot)
-        {
-            display->pivot.x = 0.5f;
-            display->pivot.y = 0.5f;
-        }
+        display->pivot.x = 0.5f;
+        display->pivot.y = 0.5f;
     }
 
     if (rawData.HasMember(TRANSFORM))
@@ -420,6 +443,32 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
         }
     }
 
+    if (this->_isParentCooriinate) 
+    {
+        this->_isAutoTween = _getBoolean(rawData, AUTO_TWEEN, true);
+        this->_animationTweenEasing = _getNumber(rawData, TWEEN_EASING, 0.f) || 0.f;
+        animation->playTimes = _getNumber(rawData, LOOP, (unsigned)1);
+
+        if (rawData.HasMember(TIMELINE)) 
+        {
+            const auto timelines = rawData[TIMELINE].GetArray();
+            for (const auto& timeline : timelines) 
+            {
+                animation->addBoneTimeline(_parseBoneTimeline(timeline));
+            }
+
+            for (const auto& timeline : timelines)
+            {
+                animation->addSlotTimeline(_parseSlotTimeline(timeline));
+            }
+        }
+    }
+    else 
+    {
+        this->_isAutoTween = false;
+        this->_animationTweenEasing = 0.f;
+    }
+
     for (const auto& pair : this->_armature->bones)
     {
         if (!animation->getBoneTimeline(pair.second->name))
@@ -455,6 +504,11 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
             slotTimeline->frames.reserve(1);
             slotTimeline->frames.push_back(slotFrame);
             animation->addSlotTimeline(slotTimeline);
+
+            if (this->_isParentCooriinate) 
+            {
+                slotFrame->displayIndex = -1;
+            }
         }
     }
 
@@ -572,13 +626,13 @@ BoneFrameData * JSONDataParser::_parseBoneFrame(const rapidjson::Value& rawData,
 
     const auto bone = static_cast<BoneTimelineData*>(this->_timeline)->bone;
 
-    if ((rawData.HasMember(EVENT) || rawData.HasMember(SOUND)) && this->_timeline)
+    if ((rawData.HasMember(EVENT) || rawData.HasMember(SOUND)))
     {
         _parseEventData(rawData, frame->events, bone, nullptr);
         this->_animation->hasBoneTimelineEvent = true;
     }
 
-    if (rawData.HasMember(ACTION) && this->_timeline)
+    if (rawData.HasMember(ACTION))
     {
         const auto slot = this->_armature->getSlot(bone->name);
         _parseActionData(rawData, frame->actions, bone, slot);
@@ -605,7 +659,14 @@ SlotFrameData * JSONDataParser::_parseSlotFrame(const rapidjson::Value & rawData
         frame->color = &SlotFrameData::DEFAULT_COLOR;
     }
 
-    if (rawData.HasMember(ACTION) && this->_timeline)
+    if (this->_isParentCooriinate)
+    {
+        if (_getBoolean(rawData, HIDE, false)) 
+        {
+            frame->displayIndex = -1;
+        }
+    }
+    else if (rawData.HasMember(ACTION))
     {
         const auto slot = static_cast<SlotTimelineData*>(this->_timeline)->slot;
         _parseActionData(rawData, frame->actions, slot->parent, slot);
@@ -798,13 +859,14 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
 {
     if (rawData)
     {
-        this->_armatureScale = scale;
-
         rapidjson::Document document;
         document.Parse(rawData);
 
         std::string version = _getString(document, VERSION, "");
-        if (version == DATA_VERSION)
+        this->_isParentCooriinate = version == DATA_VERSION_2_3 || version == DATA_VERSION_3_0;
+        this->_armatureScale = scale;
+
+        if (version == DATA_VERSION || this->_isParentCooriinate)
         {
             const auto data = BaseObject::borrowObject<DragonBonesData>();
             data->name = _getString(document, NAME, "");
@@ -824,7 +886,7 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
 
             return data;
         }
-        else // TODO
+        else
         {
             DRAGONBONES_ASSERT(false, "Nonsupport data version.");
         }

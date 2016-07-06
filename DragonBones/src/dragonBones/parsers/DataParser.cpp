@@ -1,8 +1,10 @@
 #include "DataParser.h"
+#include "../animation/BaseTimelineState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-const char* DataParser::PARENT_COORDINATE_DATA_VERSION = "3.0";
+const char* DataParser::DATA_VERSION_2_3 = "2.3";
+const char* DataParser::DATA_VERSION_3_0 = "3.0";
 const char* DataParser::DATA_VERSION_4_0 = "4.0";
 const char* DataParser::DATA_VERSION = "4.5";
 
@@ -92,8 +94,13 @@ const char* DataParser::BONE_POSE = "bonePose";
 const char* DataParser::TWEEN = "tween";
 const char* DataParser::KEY = "key";
 
+const char* DataParser::COLOR_TRANSFORM = "colorTransform";
+const char* DataParser::TIMELINE = "timeline";
 const char* DataParser::PIVOT_X = "pX";
 const char* DataParser::PIVOT_Y = "pY";
+const char* DataParser::LOOP = "loop";
+const char* DataParser::AUTO_TWEEN = "autoTween";
+const char* DataParser::HIDE = "hide";
 
 TextureFormat DataParser::_getTextureFormat(const std::string& value)
 {
@@ -282,5 +289,111 @@ DataParser::DataParser() :
     _rawBones()
 {}
 DataParser::~DataParser() {}
+
+void DataParser::_getTimelineFrameMatrix(const AnimationData& animation, BoneTimelineData& timeline, float position, Transform& transform) const
+{
+    const auto frameIndex = unsigned(position * animation.frameCount / animation.duration);
+    if (timeline.frames.size() == 1 || frameIndex >= timeline.frames.size()) 
+    {
+        transform = timeline.frames[0]->transform; // copy
+    }
+    else 
+    {
+        const auto frame = timeline.frames[frameIndex];
+        auto tweenProgress = 0.f;
+
+        if (frame->duration > 0.f && frame->tweenEasing != NO_TWEEN) 
+        {
+            tweenProgress = (position - frame->position) / frame->duration;
+            if (frame->tweenEasing != 0.f) 
+            {
+                tweenProgress = TweenTimelineState<BoneFrameData, BoneTimelineData>::_getEasingValue(tweenProgress, frame->tweenEasing);
+            }
+        }
+        else if (!frame->curve.empty()) 
+        {
+            tweenProgress = (position - frame->position) / frame->duration;
+            tweenProgress = TweenTimelineState<BoneFrameData, BoneTimelineData>::_getCurveEasingValue(tweenProgress, frame->curve);
+        }
+
+        transform = frame->next->transform; // copy
+        transform.minus(frame->transform);
+
+        transform.x = frame->transform.x + transform.x * tweenProgress;
+        transform.y = frame->transform.y + transform.y * tweenProgress;
+        transform.skewX = frame->transform.skewX + transform.skewX * tweenProgress;
+        transform.skewY = frame->transform.skewY + transform.skewY * tweenProgress;
+        transform.scaleX = frame->transform.scaleX + transform.scaleX * tweenProgress;
+        transform.scaleY = frame->transform.scaleY + transform.scaleY * tweenProgress;
+        transform.add(timeline.originTransform);
+    }
+}
+
+void DataParser::_globalToLocal(ArmatureData* armature) const
+{
+    auto bones = armature->getSortedBones();
+    bones.reserve(bones.size());
+
+    for (const auto bone : bones) 
+    {
+        if (bone->parent) 
+        {
+            bone->parent->transform.toMatrix(_helpMatrix);
+            _helpMatrix.transformPoint(bone->transform.x, bone->transform.y, _helpPoint);
+            bone->transform.x = _helpPoint.x;
+            bone->transform.y = _helpPoint.y;
+            bone->transform.setRotation(
+                bone->transform.getRotation() + 
+                (bone->transform.getRotation() - bone->parent->transform.getRotation())
+            );
+        }
+    }
+
+    for (const auto& animationPair : armature->animations) 
+    {
+        const auto animation = animationPair.second;
+        for (const auto& timelinePair : animation->boneTimelines) 
+        {
+            const auto timeline = timelinePair.second;
+            if (timeline->bone->parent) 
+            {
+                const auto parentTimeline = animation->getBoneTimeline(timeline->bone->parent->name);
+
+                for (const auto frame : timeline->frames) 
+                {
+                    _getTimelineFrameMatrix(*animation, *parentTimeline, frame->position, _helpTransform);
+                    frame->transform.add(timeline->originTransform);
+                    _helpTransform.toMatrix(_helpMatrix);
+                    _helpMatrix.transformPoint(frame->transform.x, frame->transform.y, _helpPoint);
+                    frame->transform.x = _helpPoint.x;
+                    frame->transform.y = _helpPoint.y;
+                    frame->transform.setRotation(
+                        frame->transform.getRotation() +
+                        (frame->transform.getRotation() - _helpTransform.getRotation())
+                    );
+                }
+            }
+
+            _helpTransform = timeline->originTransform; // copy
+            auto isFirstFrame = true;
+            for (const auto frame : timeline->frames) 
+            {
+                frame->transform.add(_helpTransform);
+                frame->transform.minus(timeline->bone->transform);
+
+                if (isFirstFrame) 
+                {
+                    isFirstFrame = false;
+                    timeline->originTransform = frame->transform; // copy
+                    frame->transform.identity();
+                }
+                else 
+                {
+                    frame->transform.minus(timeline->originTransform);
+                }
+            }
+        }
+    }
+}
 
 DRAGONBONES_NAMESPACE_END

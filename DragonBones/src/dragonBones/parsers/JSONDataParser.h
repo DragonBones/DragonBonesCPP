@@ -146,7 +146,14 @@ protected:
     {
         _parseFrame(rawData, frame, frameStart, frameCount);
 
-        frame.tweenEasing = _getNumber(rawData, TWEEN_EASING, NO_TWEEN);
+        if (rawData.HasMember(TWEEN_EASING))
+        {
+            frame.tweenEasing = _getNumber(rawData, TWEEN_EASING, NO_TWEEN);
+        }
+        else if (this->_isParentCooriinate)
+        {
+            frame.tweenEasing = this->_isAutoTween ? this->_animationTweenEasing : NO_TWEEN;
+        }
 
         if (rawData.HasMember(CURVE))
         {
@@ -215,6 +222,15 @@ protected:
                             {
                                 prevFrame->next = frame;
                                 frame->prev = prevFrame;
+
+                                if (this->_isParentCooriinate) 
+                                {
+                                    const auto tweenFrame = dynamic_cast<TweenFrameData<T>*>(frame);
+                                    if (tweenFrame && frameObject.HasMember(DISPLAY_INDEX) && frameObject[DISPLAY_INDEX].GetInt() == -1)
+                                    {
+                                        tweenFrame->tweenEasing = NO_TWEEN;
+                                    }
+                                }
                             }
 
                             prevFrame = frame;
@@ -228,6 +244,16 @@ protected:
                     frame = timeline.frames[0];
                     prevFrame->next = frame;
                     frame->prev = prevFrame;
+
+                    if (this->_isParentCooriinate) 
+                    {
+                        const auto& frameObject = rawFrames[0];
+                        const auto tweenFrame = dynamic_cast<TweenFrameData<T>*>(prevFrame);
+                        if (tweenFrame  && frameObject.HasMember(DISPLAY_INDEX) && frameObject[DISPLAY_INDEX].GetInt() == -1)
+                        {
+                            tweenFrame->tweenEasing = NO_TWEEN;
+                        }
+                    }
                 }
             }
         }

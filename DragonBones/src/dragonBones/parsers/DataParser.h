@@ -13,7 +13,8 @@ DRAGONBONES_NAMESPACE_BEGIN
 class DataParser
 {
 protected:
-    static const char* PARENT_COORDINATE_DATA_VERSION;
+    static const char* DATA_VERSION_2_3;
+    static const char* DATA_VERSION_3_0;
     static const char* DATA_VERSION_4_0;
     static const char* DATA_VERSION;
     static const char* TEXTURE_ATLAS;
@@ -103,8 +104,13 @@ protected:
     static const char* TWEEN;
     static const char* KEY;
 
+    static const char* COLOR_TRANSFORM;
+    static const char* TIMELINE;
     static const char* PIVOT_X;
     static const char* PIVOT_Y;
+    static const char* LOOP;
+    static const char* AUTO_TWEEN;
+    static const char* HIDE;
 
     static TextureFormat _getTextureFormat(const std::string& value);
     static ArmatureType _getArmatureType(const std::string& value);
@@ -121,8 +127,13 @@ protected:
     mutable AnimationData* _animation;
     mutable void* _timeline; // TimelineData*
 
-    float _armatureScale;
+    bool _isParentCooriinate;
+    mutable bool _isAutoTween;
+    mutable float _animationTweenEasing;
+    mutable float _armatureScale;
     mutable Point _helpPoint;
+    mutable Transform _helpTransform;
+    mutable Matrix _helpMatrix;
     std::vector<BoneData*> _rawBones;
 
 public:
@@ -131,6 +142,13 @@ public:
 
     virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.f) = 0;
     virtual void parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale = 0.f) = 0;
+
+private:
+    void _getTimelineFrameMatrix(const AnimationData& animation, BoneTimelineData& timeline, float position, Transform& transform) const;
+
+protected:
+    void _globalToLocal(ArmatureData* armature) const;
+
 };
 
 DRAGONBONES_NAMESPACE_END
