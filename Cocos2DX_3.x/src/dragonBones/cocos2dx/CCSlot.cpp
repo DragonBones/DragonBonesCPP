@@ -1,6 +1,6 @@
 #include "CCSlot.h"
 #include "CCTextureData.h"
-#include "CCArmatureDisplayContainer.h"
+#include "CCArmatureDisplay.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -37,7 +37,7 @@ void CCSlot::_onUpdateDisplay()
     {
         if (this->_childArmature)
         {
-            _renderDisplay = static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplayContainer*>(this->_display));
+            _renderDisplay = static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplay*>(this->_display));
         }
         else
         {
@@ -52,14 +52,14 @@ void CCSlot::_onUpdateDisplay()
 
 void CCSlot::_addDisplay()
 {
-    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->_display);
+    const auto container = static_cast<CCArmatureDisplay*>(this->_armature->_display);
     container->addChild(_renderDisplay);
 }
 
 void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplayContainer)
 {
-    const auto container = static_cast<CCArmatureDisplayContainer*>(this->_armature->_display);
-    const auto prevDisplay = isArmatureDisplayContainer ? static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplayContainer*>(value)) : static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplayContainer*>(value) : value); // WTF
+    const auto container = static_cast<CCArmatureDisplay*>(this->_armature->_display);
+    const auto prevDisplay = isArmatureDisplayContainer ? static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplay*>(value)) : static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplay*>(value) : value); // WTF
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
 }
@@ -142,8 +142,8 @@ void CCSlot::_updateFrame()
     {
         const unsigned displayIndex = this->_displayIndex;
         const auto rawDisplayData = displayIndex < this->_displayDataSet->displays.size() ? this->_displayDataSet->displays[displayIndex] : nullptr;
-        const auto replaceDisplayData = displayIndex < this->_replaceDisplayDataSet.size() ? this->_replaceDisplayDataSet[displayIndex] : nullptr;
-        const auto currentDisplayData = replaceDisplayData ? replaceDisplayData : rawDisplayData;
+        const auto replacedDisplayData = displayIndex < this->_replacedDisplayDataSet.size() ? this->_replacedDisplayDataSet[displayIndex] : nullptr;
+        const auto currentDisplayData = replacedDisplayData ? replacedDisplayData : rawDisplayData;
         const auto currentTextureData = static_cast<CCTextureData*>(currentDisplayData->textureData);
 
         if (currentTextureData)
@@ -168,7 +168,7 @@ void CCSlot::_updateFrame()
                 }
             }
 
-            const auto currentTexture = this->_armature->_replaceTexture ? static_cast<cocos2d::Texture2D*>(this->_armature->_replaceTexture) : (currentTextureData->texture ? currentTextureData->texture->getTexture() : nullptr);
+            const auto currentTexture = this->_armature->_replacedTexture ? static_cast<cocos2d::Texture2D*>(this->_armature->_replacedTexture) : (currentTextureData->texture ? currentTextureData->texture->getTexture() : nullptr);
 
             if (currentTexture)
             {

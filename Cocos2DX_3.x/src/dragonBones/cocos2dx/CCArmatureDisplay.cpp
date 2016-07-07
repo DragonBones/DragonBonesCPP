@@ -1,10 +1,10 @@
-#include "CCArmatureDisplayContainer.h"
+#include "CCArmatureDisplay.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-CCArmatureDisplayContainer* CCArmatureDisplayContainer::create()
+CCArmatureDisplay* CCArmatureDisplay::create()
 {
-    CCArmatureDisplayContainer* displayContainer = new (std::nothrow) CCArmatureDisplayContainer();
+    CCArmatureDisplay* displayContainer = new (std::nothrow) CCArmatureDisplay();
 
     if (displayContainer && displayContainer->init())
     {
@@ -18,7 +18,7 @@ CCArmatureDisplayContainer* CCArmatureDisplayContainer::create()
     return displayContainer;
 }
 
-CCArmatureDisplayContainer::CCArmatureDisplayContainer() :
+CCArmatureDisplay::CCArmatureDisplay() :
     _armature(nullptr),
     _dispatcher(nullptr)
 {
@@ -26,9 +26,9 @@ CCArmatureDisplayContainer::CCArmatureDisplayContainer() :
     _dispatcher->retain();
     this->setEventDispatcher(_dispatcher);
 }
-CCArmatureDisplayContainer::~CCArmatureDisplayContainer() {}
+CCArmatureDisplay::~CCArmatureDisplay() {}
 
-void CCArmatureDisplayContainer::_onClear()
+void CCArmatureDisplay::_onClear()
 {
     //_dispatcher->removeAllEventListeners();
 
@@ -46,17 +46,17 @@ void CCArmatureDisplayContainer::_onClear()
     this->release();
 }
 
-void CCArmatureDisplayContainer::_dispatchEvent(EventObject* value)
+void CCArmatureDisplay::_dispatchEvent(EventObject* value)
 {
     _dispatcher->dispatchCustomEvent(value->type, value);
 }
 
-void CCArmatureDisplayContainer::update(float passedTime)
+void CCArmatureDisplay::update(float passedTime)
 {
     _armature->advanceTime(passedTime);
 }
 
-void CCArmatureDisplayContainer::advanceTimeBySelf(bool on)
+void CCArmatureDisplay::advanceTimeBySelf(bool on)
 {
     if (on)
     {

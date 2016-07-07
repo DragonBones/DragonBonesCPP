@@ -11,7 +11,7 @@ private:
     float _speedY;
 
     dragonBones::Armature* _armature;
-    dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
+    dragonBones::CCArmatureDisplay* _armatureDisplay;
     dragonBones::Armature* _effect;
 
 public:
@@ -49,7 +49,7 @@ private:
     float _speedX;
     float _speedY;
     dragonBones::Armature* _armature;
-    dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
+    dragonBones::CCArmatureDisplay* _armatureDisplay;
     dragonBones::Armature* _weaponR;
     dragonBones::Armature* _weaponL;
     dragonBones::AnimationState* _aimState;

@@ -11,7 +11,7 @@ private:
     float _speedY;
 
     dragonBones::Armature* _armature;
-    dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
+    dragonBones::CCArmatureDisplay* _armatureDisplay;
 
 public:
     KnightBullet(const std::string& armatureName, float radian, float speed, const cocos2d::Vec2& position);
@@ -41,7 +41,7 @@ private:
     float _speedY;
 
     dragonBones::Armature* _armature;
-    dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
+    dragonBones::CCArmatureDisplay* _armatureDisplay;
     dragonBones::Armature* _armArmature;
 
 public:

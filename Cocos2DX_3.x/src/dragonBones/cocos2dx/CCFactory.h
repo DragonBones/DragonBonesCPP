@@ -3,7 +3,7 @@
 
 #include "dragonBones/DragonBonesHeaders.h"
 #include "cocos2d.h"
-#include "CCArmatureDisplayContainer.h"
+#include "CCArmatureDisplay.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -24,7 +24,7 @@ protected:
 public:
     virtual DragonBonesData* loadDragonBonesData(const std::string& filePath, const std::string& dragonBonesName = "");
     virtual TextureAtlasData* loadTextureAtlasData(const std::string& filePath, const std::string& dragonBonesName = "", float scale = 0.f);
-    virtual CCArmatureDisplayContainer* buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "") const;
+    virtual CCArmatureDisplay* buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "") const;
 };
 
 DRAGONBONES_NAMESPACE_END

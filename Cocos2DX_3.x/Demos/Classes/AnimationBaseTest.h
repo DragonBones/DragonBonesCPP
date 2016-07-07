@@ -15,7 +15,7 @@ public:
 
 private:
     bool _isTouched;
-    dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
+    dragonBones::CCArmatureDisplay* _armatureDisplay;
     dragonBones::CCFactory _factory;
 
     bool _touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event);

@@ -39,7 +39,7 @@ public: // private friend class
     /** @private */
     std::vector<float> _ffdVertices;
     /** @private */
-    std::vector<DisplayData*> _replaceDisplayDataSet;
+    std::vector<DisplayData*> _replacedDisplayDataSet;
 
 protected:
     bool _displayDirty;

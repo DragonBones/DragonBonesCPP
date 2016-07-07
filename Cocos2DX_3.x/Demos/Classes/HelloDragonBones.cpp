@@ -89,7 +89,7 @@ void HelloDragonBones::_changeArmature()
 
     // b. Build Armature. (buildArmature will advanceTime animation by WorldClock)
     /*_armature = _factory.buildArmature(armatureName);
-    _armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplayContainer*>(_armature->getDisplay());
+    _armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_armature->getDisplay());
     dragonBones::WorldClock::clock.add(_armature);
     cocos2d::Director::getInstance()->getScheduler()->schedule(
         [&](float passedTime)

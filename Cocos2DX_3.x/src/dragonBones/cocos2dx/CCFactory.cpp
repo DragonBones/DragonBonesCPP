@@ -1,6 +1,6 @@
 #include "CCFactory.h"
 #include "CCTextureData.h"
-#include "CCArmatureDisplayContainer.h"
+#include "CCArmatureDisplay.h"
 #include "CCSlot.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -30,17 +30,17 @@ TextureAtlasData * CCFactory::_generateTextureAtlasData(TextureAtlasData* textur
 Armature * CCFactory::_generateArmature(const BuildArmaturePackage & dataPackage) const
 {
     const auto armature = BaseObject::borrowObject<Armature>();
-    const auto armatureDisplayContainer = CCArmatureDisplayContainer::create();
+    const auto armatureDisplay = CCArmatureDisplay::create();
 
     armature->_armatureData = dataPackage.armature;
     armature->_skinData = dataPackage.skin;
     armature->_animation = BaseObject::borrowObject<Animation>();
-    armature->_display = armatureDisplayContainer;
+    armature->_display = armatureDisplay;
 
-    armatureDisplayContainer->retain();
-    armatureDisplayContainer->setCascadeOpacityEnabled(true);
-    armatureDisplayContainer->setCascadeColorEnabled(true);
-    armatureDisplayContainer->_armature = armature;
+    armatureDisplay->retain();
+    armatureDisplay->setCascadeOpacityEnabled(true);
+    armatureDisplay->setCascadeColorEnabled(true);
+    armatureDisplay->_armature = armature;
     armature->_animation->_armature = armature;
 
     armature->getAnimation().setAnimations(dataPackage.armature->animations);
@@ -198,10 +198,10 @@ TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, c
     return textureAtlasData;
 }
 
-CCArmatureDisplayContainer * CCFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName) const
+CCArmatureDisplay * CCFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName) const
 {
     const auto armature = this->buildArmature(armatureName, dragonBonesName, skinName);
-    const auto armatureDisplay = armature ? static_cast<CCArmatureDisplayContainer*>(armature->_display) : nullptr;
+    const auto armatureDisplay = armature ? static_cast<CCArmatureDisplay*>(armature->_display) : nullptr;
     if (armatureDisplay)
     {
         armatureDisplay->advanceTimeBySelf(true);

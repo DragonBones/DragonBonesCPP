@@ -18,7 +18,7 @@ private:
     bool _removingArmature;
     dragonBones::DragonBonesData* _dragonBonesData;
     dragonBones::Armature* _armature;
-    dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
+    dragonBones::CCArmatureDisplay* _armatureDisplay;
     dragonBones::CCFactory _factory;
     std::vector<dragonBones::Armature*> _armatures;
 

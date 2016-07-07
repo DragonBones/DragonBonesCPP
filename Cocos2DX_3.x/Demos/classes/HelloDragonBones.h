@@ -23,7 +23,7 @@ private:
     unsigned _animationIndex;
     dragonBones::DragonBonesData* _dragonBonesData;
     dragonBones::Armature* _armature;
-    dragonBones::CCArmatureDisplayContainer* _armatureDisplay;
+    dragonBones::CCArmatureDisplay* _armatureDisplay;
     dragonBones::CCFactory _factory;
 
     void _changeArmature();

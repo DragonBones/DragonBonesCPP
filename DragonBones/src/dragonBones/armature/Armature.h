@@ -5,7 +5,7 @@
 #include "../model/ArmatureData.h"
 #include "../animation/IAnimateble.h"
 #include "../events/EventObject.h"
-#include "IArmatureDisplayContainer.h"
+#include "IArmatureDisplay.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -37,9 +37,9 @@ public: // private
     /** @private */
     Animation* _animation;
     /** @private */
-    IArmatureDisplayContainer* _display;
+    IArmatureDisplay* _display;
     /** @private */
-    void* _replaceTexture;
+    void* _replacedTexture;
     /** @private */
     Slot* _parent;
     /** @private */
@@ -92,7 +92,7 @@ public:
     Bone* getBoneByDisplay(void* display) const;
     void addBone(Bone* value, const std::string& parentName = "");
     void removeBone(Bone* value);
-    void setReplaceTexture(void* texture);
+    void replaceTexture(void* texture);
 
     inline const std::vector<Bone*>& getBones() const
     {
@@ -115,7 +115,7 @@ public:
         return *_armatureData;
     }
 
-    inline IArmatureDisplayContainer* getDisplay() const
+    inline IArmatureDisplay* getDisplay() const
     {
         return _display;
     }

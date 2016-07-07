@@ -9,11 +9,11 @@ DRAGONBONES_NAMESPACE_BEGIN
 class Armature;
 class Animation;
 
-class IArmatureDisplayContainer : public IEventDispatcher
+class IArmatureDisplay : public IEventDispatcher
 {
 protected:
-    IArmatureDisplayContainer() {};
-    virtual ~IArmatureDisplayContainer() {};
+    IArmatureDisplay() {};
+    virtual ~IArmatureDisplay() {};
 
 public:
     virtual void advanceTimeBySelf(bool on) = 0;

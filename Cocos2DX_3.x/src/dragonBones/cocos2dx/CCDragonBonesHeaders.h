@@ -2,7 +2,7 @@
 #define DRAGONBONES_CC_HEADERS_H
 
 #include "CCTextureData.h"
-#include "CCArmatureDisplayContainer.h"
+#include "CCArmatureDisplay.h"
 #include "CCSlot.h"
 #include "CCFactory.h"
 

@@ -30,7 +30,7 @@
 #include "factories/BaseFactory.h"
 
 // armature
-#include "armature/IArmatureDisplayContainer.h"
+#include "armature/IArmatureDisplay.h"
 #include "armature/Armature.h"
 #include "armature/TransformObject.h"
 #include "armature/Bone.h"

@@ -6,11 +6,11 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class CCArmatureDisplayContainer : public IArmatureDisplayContainer, public cocos2d::Node
+class CCArmatureDisplay : public IArmatureDisplay, public cocos2d::Node
 {
 public:
     /** @private */
-    static CCArmatureDisplayContainer* create();
+    static CCArmatureDisplay* create();
 
 public:
     /** @private */
@@ -20,11 +20,11 @@ protected:
     cocos2d::EventDispatcher* _dispatcher;
 
 protected:
-    CCArmatureDisplayContainer();
-    virtual ~CCArmatureDisplayContainer();
+    CCArmatureDisplay();
+    virtual ~CCArmatureDisplay();
 
 private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(CCArmatureDisplayContainer);
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(CCArmatureDisplay);
 
 public:
     /** @private */

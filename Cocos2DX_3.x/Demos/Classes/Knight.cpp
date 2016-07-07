@@ -207,12 +207,12 @@ Hero::Hero() :
     _weaponsLevel.resize(4, 0);
 
     _armature = KnightGame::instance->factory.buildArmature("knight");
-    _armatureDisplay = (dragonBones::CCArmatureDisplayContainer*)_armature->getDisplay();
+    _armatureDisplay = (dragonBones::CCArmatureDisplay*)_armature->getDisplay();
     _armatureDisplay->setPosition(480.f, KnightGame::GROUND);
     _armatureDisplay->setScale(1.f);
 
     _armArmature = _armature->getSlot("armOutside")->getChildArmature();
-    const auto armArmatureDisplay = (dragonBones::CCArmatureDisplayContainer*)_armArmature->getDisplay();
+    const auto armArmatureDisplay = (dragonBones::CCArmatureDisplay*)_armArmature->getDisplay();
     armArmatureDisplay->getEventDispatcher()->setEnabled(true);
     armArmatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::COMPLETE, std::bind(&Hero::_armEventHandler, this, std::placeholders::_1));
     armArmatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FRAME_EVENT, std::bind(&Hero::_armEventHandler, this, std::placeholders::_1));
@@ -338,7 +338,7 @@ void Hero::_armEventHandler(cocos2d::EventCustom* event)
         }
         else if (eventObject->name == "fire")
         {
-            const auto display = (dragonBones::CCArmatureDisplayContainer*)(eventObject->armature->getDisplay());
+            const auto display = (dragonBones::CCArmatureDisplay*)(eventObject->armature->getDisplay());
             const auto firePointBone = eventObject->armature->getBone("bow");
             const auto transform = display->getNodeToWorldTransform();
             cocos2d::Vec3 localPoint(firePointBone->global.x, -firePointBone->global.y, 0.f);
@@ -445,7 +445,7 @@ KnightBullet::KnightBullet(const std::string & armatureName, float radian, float
     _speedY = -std::sin(radian) * speed;
 
     _armature = KnightGame::instance->factory.buildArmature(armatureName);
-    _armatureDisplay = (dragonBones::CCArmatureDisplayContainer*)_armature->getDisplay();
+    _armatureDisplay = (dragonBones::CCArmatureDisplay*)_armature->getDisplay();
     _armatureDisplay->setPosition(position);
     _armatureDisplay->setRotation(radian * dragonBones::RADIAN_TO_ANGLE);
     _armature->getAnimation().play("idle");
