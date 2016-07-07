@@ -41,7 +41,7 @@ void Armature::_onClear()
         _display = nullptr;
     }
 
-    _replaceTexture = nullptr;
+    _replacedTexture = nullptr;
     _parent = nullptr;
     _action = nullptr;
 
@@ -445,9 +445,9 @@ void Armature::removeBone(Bone* value)
     }
 }
 
-void Armature::setReplaceTexture(void* texture)
+void Armature::replaceTexture(void* texture)
 {
-    _replaceTexture = texture;
+    _replacedTexture = texture;
     for (auto const slot : _slots) 
     {
         slot->invalidUpdate();

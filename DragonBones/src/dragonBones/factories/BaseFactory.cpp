@@ -156,7 +156,7 @@ void BaseFactory::_buildSlots(const BuildArmaturePackage& dataPackage, Armature&
         slot->_setDisplayIndex(slotData->displayIndex);
         slot->_setBlendMode(slotData->blendMode);
         slot->_setColor(*slotData->color);
-        slot->_replaceDisplayDataSet.resize(slot->_displayDataSet->displays.size(), nullptr);
+        slot->_replacedDisplayDataSet.resize(slot->_displayDataSet->displays.size(), nullptr);
 
         armature.addSlot(slot, slotData->parent->name);
     }
@@ -189,12 +189,12 @@ void BaseFactory::_replaceSlotDisplay(const BuildArmaturePackage& dataPackage, D
         }
         else
         {
-            if (slot._replaceDisplayDataSet.size() <= (unsigned)displayIndex)
+            if (slot._replacedDisplayDataSet.size() <= (unsigned)displayIndex)
             {
-                slot._replaceDisplayDataSet.resize(displayIndex + 1, nullptr);
+                slot._replacedDisplayDataSet.resize(displayIndex + 1, nullptr);
             }
 
-            slot._replaceDisplayDataSet[displayIndex] = const_cast<DisplayData*>(&displayData);
+            slot._replacedDisplayDataSet[displayIndex] = const_cast<DisplayData*>(&displayData);
 
             if (displayData.meshData)
             {
