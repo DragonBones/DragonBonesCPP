@@ -1,20 +1,13 @@
-DragonBones C++ Runtime
-=========================
-* [DragonBones source code][10]
+# DragonBones C++ Runtime
+* [DragonBones common library](./DragonBones/)
+* Highly suggest use [DragonBones Pro](http://dragonbones.github.io/) to create aniamtion.
 
-# Supported engines
-* [Cocos2d-x][2] / [DragonBones Cocos2d-x library][11]
+## Supported engines
+* [Cocos2d-x](http://cocos2d-x.org/) / [DragonBones Cocos2d-x library](./Cocos2DX_3.x/)
 
-# How to use
-1. Make sure you have installed some C++ IDE.
-2. Create a C++ project and include the [DragonBones source code][10].
-3. Import engine source code such as [Cocos2d-x source code][111] and [DragonBones Cocos2d-x source code][11].
-4. Build project and have fun.
+## To learn more about
+* [DragonBones WebSite](http://dragonbones.github.io/)
+* [DragonBones Pro WebSite](http://www.egret.com/products/dragonbones.html/)
+* [Demos](http://dragonbones.github.io/demo.html)
 
-Copyright 2012-2016 The DragonBones Team
-
-[1]: http://dragonbones.github.com/
-[2]: http://cocos2d-x.org
-[10]: ./DragonBones/
-[11]: ./Cocos2DX_3.x/
-[111]: https://github.com/cocos2d/cocos2d-x/
+Copyright 2012-2016 The DragonBones Team.
