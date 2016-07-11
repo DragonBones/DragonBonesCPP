@@ -866,7 +866,7 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
         this->_isParentCooriinate = version == DATA_VERSION_2_3 || version == DATA_VERSION_3_0;
         this->_armatureScale = scale;
 
-        if (version == DATA_VERSION || this->_isParentCooriinate)
+        if (version == DATA_VERSION || version == DATA_VERSION_4_0 || this->_isParentCooriinate)
         {
             const auto data = BaseObject::borrowObject<DragonBonesData>();
             data->name = _getString(document, NAME, "");
