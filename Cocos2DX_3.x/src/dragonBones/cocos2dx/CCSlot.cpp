@@ -274,10 +274,10 @@ void CCSlot::_updateFrame()
                         pivot.y += currentTextureData->frame->y;
                     }
 
-                    if (rawDisplayData && currentDisplayData != rawDisplayData)
+                    if (rawDisplayData && rawDisplayData != currentDisplayData)
                     {
-                        pivot.x += currentDisplayData->transform.x - rawDisplayData->transform.x;
-                        pivot.y += currentDisplayData->transform.y - rawDisplayData->transform.y;
+                        pivot.x += rawDisplayData->transform.x - currentDisplayData->transform.x;
+                        pivot.y += rawDisplayData->transform.y - currentDisplayData->transform.y;
                     }
 
                     pivot.x = pivot.x / currentTextureData->region.width;
