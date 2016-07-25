@@ -106,8 +106,12 @@ public:
 
     inline const std::string& getName() const
     {
-        static const auto DEFAULT_NAME = "";
-        return _armatureData? _armatureData->name: DEFAULT_NAME;
+        if(_armatureData){
+            return _armatureData->name;
+        }else{
+            static const std::string DEFAULT_NAME = "";
+            return DEFAULT_NAME;
+        }
     }
 
     inline const ArmatureData& getArmatureData() const

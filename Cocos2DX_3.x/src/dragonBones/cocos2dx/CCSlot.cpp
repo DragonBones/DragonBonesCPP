@@ -415,7 +415,9 @@ void CCSlot::_updateMesh()
     boundsRect.size.width -= boundsRect.origin.x;
     boundsRect.size.height -= boundsRect.origin.y;
     
-    meshDisplay->getPolygonInfo().rect = boundsRect; // copy
+    cocos2d::Rect* rect = (cocos2d::Rect*)&meshDisplay->getPolygonInfo().rect;
+    rect->origin = boundsRect.origin; // copy
+    rect->size = boundsRect.size; // copy
     meshDisplay->setContentSize(boundsRect.size);
 }
 

@@ -105,39 +105,7 @@ bool DBCCSprite::_checkVisibility(const cocos2d::Mat4& transform, const cocos2d:
     float hSizeX = size.width / 2;
     float hSizeY = size.height / 2;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     cocos2d::Vec3 v3p(hSizeX + rect.origin.x, hSizeY + rect.origin.y, 0);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     transform.transformPoint(&v3p);
     cocos2d::Vec2 v2p = cocos2d::Camera::getVisitingCamera()->projectGL(v3p);
@@ -159,18 +127,6 @@ void DBCCSprite::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transfor
 {
 #if CC_USE_CULLING
     const auto& rect = this->_polyInfo.rect;
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Don't do calculate the culling if the transform was not updated
     auto visitingCamera = cocos2d::Camera::getVisitingCamera();
