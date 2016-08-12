@@ -447,8 +447,13 @@ bool Animation::getIsCompleted() const
 
 const std::string& Animation::getLastAnimationName() const
 {
-    static const auto DEFAULT_NAME = "";
-    return _lastAnimationState ? _lastAnimationState->getName() : DEFAULT_NAME;
+    if (_lastAnimationState)
+    {
+        return _lastAnimationState->getName();
+    }
+
+    static const std::string DEFAULT_NAME = "";
+    return DEFAULT_NAME;
 }
 
 void Animation::setAnimations(const std::map<std::string, AnimationData*>& value)
