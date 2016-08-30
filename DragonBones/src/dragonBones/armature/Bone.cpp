@@ -343,35 +343,35 @@ void Bone::_update(int cacheFrameIndex)
         if (_transformDirty == BoneTransformDirty::All)
         {
             _transformDirty = BoneTransformDirty::Self;
+
+            if (this->globalTransformMatrix == &this->_globalTransformMatrix)
+            {
+                this->global = this->origin; // copy
+                this->global.add(this->offset).add(_animationPose);
+
+                _updateGlobalTransformMatrix();
+
+                if (_ik && _ikChainIndex == _ikChain  && ikWeight > 0.f)
+                {
+                    if (this->inheritTranslation && _ikChain > 0 && this->_parent)
+                    {
+                        _computeIKB();
+                    }
+                    else
+                    {
+                        _computeIKA();
+                    }
+                }
+
+                if (cacheFrameIndex >= 0 && !(*_cacheFrames)[cacheFrameIndex])
+                {
+                    this->globalTransformMatrix = BoneTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, this->_globalTransformMatrix);
+                }
+            }
         }
         else
         {
             _transformDirty = BoneTransformDirty::None;
-        }
-
-        if (this->globalTransformMatrix == &this->_globalTransformMatrix)
-        {
-            this->global = this->origin; // copy
-            this->global.add(this->offset).add(_animationPose);
-
-            _updateGlobalTransformMatrix();
-
-            if (_ik && _ikChainIndex == _ikChain  && ikWeight > 0.f)
-            {
-                if (this->inheritTranslation && _ikChain > 0 && this->_parent)
-                {
-                    _computeIKB();
-                }
-                else
-                {
-                    _computeIKA();
-                }
-            }
-
-            if (cacheFrameIndex >= 0 && !(*_cacheFrames)[cacheFrameIndex])
-            {
-                this->globalTransformMatrix = BoneTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, this->_globalTransformMatrix);
-            }
         }
     }
 }

@@ -101,7 +101,7 @@ public:
     bool isCompleted() const;
     float getCurrentTime() const;
     void setCurrentTime(float value);
-    unsigned AnimationState::getCurrentPlayTimes() const;
+    unsigned getCurrentPlayTimes() const;
 
     bool containsBoneMask(const std::string& name)
     {
