@@ -90,7 +90,7 @@ void AnimationBaseTest::_touchEndedHandler(const cocos2d::Touch* touch, cocos2d:
 
 void AnimationBaseTest::_touchMovedHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
 {
-    if (_isTouched && _armatureDisplay->getAnimation().getState("idle") && !_armatureDisplay->getAnimation().getState("idle")->getIsPlaying())
+    if (_isTouched && _armatureDisplay->getAnimation().getState("idle") && !_armatureDisplay->getAnimation().getState("idle")->isPlaying())
     {
         const auto progress = std::min(std::max((touch->getLocation().x - _armatureDisplay->getPosition().x + 300.f) / 600.f, 0.f), 1.f);
 

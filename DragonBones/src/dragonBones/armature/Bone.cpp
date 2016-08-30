@@ -193,10 +193,15 @@ void Bone::_setArmature(Armature* value)
         return;
     }
 
+    std::vector<Slot*> oldSlots;
+    std::vector<Bone*> oldBones;
+
     _ik = nullptr;
 
     if (this->_armature)
     {
+        oldSlots = getSlots();
+        oldBones = getBones();
         this->_armature->_removeBoneFromBoneList(this);
     }
 
@@ -205,6 +210,26 @@ void Bone::_setArmature(Armature* value)
     if (this->_armature)
     {
         this->_armature->_addBoneToBoneList(this);
+    }
+
+    if (!oldSlots.empty()) {
+        for (const auto slot : oldSlots) 
+        {
+            if (slot->getParent() == this) 
+            {
+                slot->_setArmature(this->_armature);
+            }
+        }
+    }
+
+    if (!oldBones.empty()) {
+        for (const auto bone : oldBones)
+        {
+            if (bone->getParent() == this)
+            {
+                bone->_setArmature(this->_armature);
+            }
+        }
     }
 }
 
