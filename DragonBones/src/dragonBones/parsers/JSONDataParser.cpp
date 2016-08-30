@@ -10,6 +10,10 @@ ArmatureData * JSONDataParser::_parseArmature(const rapidjson::Value & rawData)
     const auto armature = BaseObject::borrowObject<ArmatureData>();
     armature->name = _getString(rawData, NAME, "");
     armature->frameRate = _getNumber(rawData, FRAME_RATE, this->_data->frameRate);
+    if (armature->frameRate == 0)
+    {
+        armature->frameRate = this->_data->frameRate;
+    }
 
     if (rawData.HasMember(TYPE) && rawData[TYPE].IsString())
     {
@@ -22,6 +26,15 @@ ArmatureData * JSONDataParser::_parseArmature(const rapidjson::Value & rawData)
 
     this->_armature = armature;
     this->_rawBones.clear();
+
+    if (rawData.HasMember(AABB))
+    {
+        const auto& aabbObject = rawData[AABB];
+        armature->aabb.x = _getNumber(aabbObject, X, 0.f);
+        armature->aabb.y = _getNumber(aabbObject, Y, 0.f);
+        armature->aabb.width = _getNumber(aabbObject, WIDTH, 0.f);
+        armature->aabb.height = _getNumber(aabbObject, HEIGHT, 0.f);
+    }
 
     if (rawData.HasMember(BONE))
     {
@@ -43,9 +56,10 @@ ArmatureData * JSONDataParser::_parseArmature(const rapidjson::Value & rawData)
 
     if (rawData.HasMember(SLOT))
     {
+        auto zOrder = 0;
         for (const auto& slotObject : rawData[SLOT].GetArray())
         {
-            armature->addSlot(_parseSlot(slotObject));
+            armature->addSlot(_parseSlot(slotObject, zOrder++));
         }
     }
 
@@ -65,14 +79,18 @@ ArmatureData * JSONDataParser::_parseArmature(const rapidjson::Value & rawData)
         }
     }
 
-    this->_armature = nullptr;
-    this->_rawBones.clear();
+    if (rawData.HasMember(ACTIONS) || rawData.HasMember(DEFAULT_ACTIONS))
+    {
+        _parseActionData(rawData, armature->actions, nullptr, nullptr);
+    }
 
-
-    if (this->_isParentCooriinate && _getBoolean(rawData, IS_GLOBAL, true)) 
+    if (this->_isOldData && _getBoolean(rawData, IS_GLOBAL, true))
     {
         this->_globalToLocal(armature);
     }
+
+    this->_armature = nullptr;
+    this->_rawBones.clear();
 
     return armature;
 }
@@ -91,9 +109,8 @@ BoneData * JSONDataParser::_parseBone(const rapidjson::Value & rawData)
         _parseTransform(rawData[TRANSFORM], bone->transform);
     }
 
-    if (this->_isParentCooriinate) 
+    if (this->_isOldData) 
     {
-        bone->inheritRotation = true;
         bone->inheritScale = false;
     }
 
@@ -125,13 +142,13 @@ void JSONDataParser::_parseIK(const rapidjson::Value & rawData)
     }
 }
 
-SlotData * JSONDataParser::_parseSlot(const rapidjson::Value & rawData)
+SlotData * JSONDataParser::_parseSlot(const rapidjson::Value& rawData, int zOrder)
 {
     const auto slot = BaseObject::borrowObject<SlotData>();
     slot->name = _getString(rawData, NAME, "");
     slot->parent = this->_armature->getBone(_getString(rawData, PARENT, ""));
     slot->displayIndex = _getNumber(rawData, DISPLAY_INDEX, (int)0);
-    slot->zOrder = _getNumber(rawData, Z_ORDER, (unsigned)this->_armature->getSortedSlots().size());
+    slot->zOrder = _getNumber(rawData, Z_ORDER, zOrder);
 
     if (rawData.HasMember(COLOR))
     {
@@ -152,7 +169,12 @@ SlotData * JSONDataParser::_parseSlot(const rapidjson::Value & rawData)
         slot->blendMode = (BlendMode)_getNumber(rawData, BLEND_MODE, (int)BlendMode::Normal);
     }
 
-    if (this->_isParentCooriinate) 
+    if (rawData.HasMember(ACTIONS) || rawData.HasMember(DEFAULT_ACTIONS))
+    {
+        _parseActionData(rawData, slot->actions, nullptr, nullptr);
+    }
+
+    if (this->_isOldData) 
     {
         if (rawData.HasMember(COLOR_TRANSFORM)) 
         {
@@ -180,12 +202,12 @@ SkinData * JSONDataParser::_parseSkin(const rapidjson::Value & rawData)
     if (rawData.HasMember(SLOT))
     {
         this->_skin = skin;
-
+        auto zOrder = 0;
         for (const auto& slotObject : rawData[SLOT].GetArray())
         {
-            if (this->_isParentCooriinate) 
+            if (this->_isOldData) 
             {
-                this->_armature->addSlot(_parseSlot(slotObject));
+                this->_armature->addSlot(_parseSlot(slotObject, zOrder++));
             }
 
             skin->addSlot(_parseSlotDisplaySet(slotObject));
@@ -242,7 +264,7 @@ DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
         display->pivot.x = _getNumber(pivotObject, X, 0.f);
         display->pivot.y = _getNumber(pivotObject, Y, 0.f);
     }
-    else if (this->_isParentCooriinate)
+    else if (this->_isOldData)
     {
         const auto& transformObject = rawData[TRANSFORM];
         display->isRelativePivot = false;
@@ -269,7 +291,7 @@ DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
             break;
 
         case DisplayType::Mesh:
-            display->meshData = _parseMesh(rawData);
+            display->mesh = _parseMesh(rawData);
             break;
     }
 
@@ -443,7 +465,7 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
         }
     }
 
-    if (this->_isParentCooriinate) 
+    if (this->_isOldData) 
     {
         this->_isAutoTween = _getBoolean(rawData, AUTO_TWEEN, true);
         this->_animationTweenEasing = _getNumber(rawData, TWEEN_EASING, 0.f) || 0.f;
@@ -505,7 +527,7 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
             slotTimeline->frames.push_back(slotFrame);
             animation->addSlotTimeline(slotTimeline);
 
-            if (this->_isParentCooriinate) 
+            if (this->_isOldData) 
             {
                 slotFrame->displayIndex = -1;
             }
@@ -529,23 +551,47 @@ BoneTimelineData * JSONDataParser::_parseBoneTimeline(const rapidjson::Value& ra
 
     for (const auto frame : timeline->frames)
     {
-        const auto boneFrame = static_cast<BoneFrameData*>(frame);
         if (!prevFrame)
         {
-            originTransform = boneFrame->transform; // copy
-            boneFrame->transform.identity();
+            originTransform = frame->transform; // copy
+            frame->transform.identity();
+
+            if (originTransform.scaleX == 0.f) 
+            { 
+                originTransform.scaleX = 0.001f;
+                //frame->transform.scaleX = 0.f;
+            }
+
+            if (originTransform.scaleY == 0.f) 
+            {
+                originTransform.scaleY = 0.001f;
+                //frame->transform.scaleY = 0.f;
+            }
         }
         else if (prevFrame != frame)
         {
-            boneFrame->transform.minus(originTransform);
+            frame->transform.minus(originTransform);
         }
 
-        prevFrame = boneFrame;
+        prevFrame = frame;
     }
 
     if (timeline->scale != 1.f || timeline->offset != 0.f)
     {
         this->_animation->hasAsynchronyTimeline = true;
+    }
+
+    if (
+        this->_isOldData &&
+        (rawData.HasMember(PIVOT_X) || rawData.HasMember(PIVOT_Y))
+    ) 
+    {
+        this->_timelinePivot.x = _getNumber(rawData, PIVOT_X, 0.f);
+        this->_timelinePivot.y = _getNumber(rawData, PIVOT_Y, 0.f);
+    }
+    else 
+    {
+        _timelinePivot.clear();
     }
 
     return timeline;
@@ -576,10 +622,10 @@ FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value& rawD
     for (std::size_t i = 0, l = timeline->slot->displays.size(); i < l; ++i)
     {
         const auto displayData = timeline->slot->displays[i];
-        if (displayData->meshData && displayData->name == meshName)
+        if (displayData->mesh && displayData->name == meshName)
         {
             timeline->displayIndex = i;
-            this->_mesh = displayData->meshData;
+            this->_mesh = displayData->mesh;
             break;
         }
     }
@@ -597,7 +643,7 @@ AnimationFrameData * JSONDataParser::_parseAnimationFrame(const rapidjson::Value
 
     _parseFrame(rawData, *frame, frameStart, frameCount);
 
-    if (rawData.HasMember(ACTION))
+    if (rawData.HasMember(ACTION) || rawData.HasMember(ACTIONS))
     {
         _parseActionData(rawData, frame->actions, nullptr, nullptr);
     }
@@ -621,22 +667,38 @@ BoneFrameData * JSONDataParser::_parseBoneFrame(const rapidjson::Value& rawData,
 
     if (rawData.HasMember(TRANSFORM))
     {
-        _parseTransform(rawData[TRANSFORM], frame->transform);
+        const auto& transformObject = rawData[TRANSFORM];
+        _parseTransform(transformObject, frame->transform);
+
+        if (this->_isOldData) 
+        {
+            this->_helpPoint.x = this->_timelinePivot.x + _getNumber(transformObject, PIVOT_X, 0.f);
+            this->_helpPoint.y = this->_timelinePivot.y + _getNumber(transformObject, PIVOT_Y, 0.f);
+            frame->transform.toMatrix(this->_helpMatrix);
+            this->_helpMatrix.transformPoint(this->_helpPoint.x, this->_helpPoint.y, this->_helpPoint, true);
+            frame->transform.x += this->_helpPoint.x;
+            frame->transform.y += this->_helpPoint.y;
+        }
     }
 
     const auto bone = static_cast<BoneTimelineData*>(this->_timeline)->bone;
+    std::vector<ActionData*> actions;
+    std::vector<EventData*> events;
+
+    if (rawData.HasMember(ACTION) || rawData.HasMember(ACTIONS))
+    {
+        const auto slot = this->_armature->getSlot(bone->name);
+        _parseActionData(rawData, actions, bone, slot);
+    }
 
     if ((rawData.HasMember(EVENT) || rawData.HasMember(SOUND)))
     {
-        _parseEventData(rawData, frame->events, bone, nullptr);
-        this->_animation->hasBoneTimelineEvent = true;
+        _parseEventData(rawData, events, bone, nullptr);
     }
 
-    if (rawData.HasMember(ACTION))
+    if (!actions.empty() || !events.empty())
     {
-        const auto slot = this->_armature->getSlot(bone->name);
-        _parseActionData(rawData, frame->actions, bone, slot);
-        this->_animation->hasBoneTimelineEvent = true;
+        this->_mergeFrameToAnimationTimeline(frame->position, actions, events);
     }
 
     return frame;
@@ -649,27 +711,31 @@ SlotFrameData * JSONDataParser::_parseSlotFrame(const rapidjson::Value & rawData
 
     _parseTweenFrame<SlotFrameData>(rawData, *frame, frameStart, frameCount);
 
-    if (rawData.HasMember(COLOR))
+    if (rawData.HasMember(COLOR) || rawData.HasMember(COLOR_TRANSFORM))
     {
         frame->color = SlotFrameData::generateColor();
-        _parseColorTransform(rawData[COLOR], *frame->color);
+        _parseColorTransform(rawData.HasMember(COLOR) ? rawData[COLOR] : rawData[COLOR_TRANSFORM], *frame->color);
     }
     else
     {
         frame->color = &SlotFrameData::DEFAULT_COLOR;
     }
 
-    if (this->_isParentCooriinate)
+    if (this->_isOldData)
     {
         if (_getBoolean(rawData, HIDE, false)) 
         {
             frame->displayIndex = -1;
         }
     }
-    else if (rawData.HasMember(ACTION))
+    else if (rawData.HasMember(ACTION) || rawData.HasMember(ACTIONS))
     {
         const auto slot = static_cast<SlotTimelineData*>(this->_timeline)->slot;
-        _parseActionData(rawData, frame->actions, slot->parent, slot);
+        std::vector<ActionData*> actions;
+        std::vector<EventData*> events;
+        _parseActionData(rawData, actions, slot->parent, slot);
+
+        this->_mergeFrameToAnimationTimeline(frame->position, actions, events);
     }
 
     return frame;
@@ -682,21 +748,21 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & raw
 
     _parseTweenFrame<ExtensionFrameData>(rawData, *frame, frameStart, frameCount);
 
-    const auto& rawVertices = rawData[VERTICES].GetArray();
+    const auto rawVertices = rawData.HasMember(VERTICES) ? &rawData[VERTICES].GetArray() : nullptr;
     const auto offset = _getNumber(rawData, OFFSET, (unsigned)0);
     auto x = 0.f;
     auto y = 0.f;
     for (std::size_t i = 0, l = this->_mesh->vertices.size(); i < l; i += 2)
     {
-        if (i < offset || i - offset >= rawVertices.Size())
+        if (!rawVertices || i < offset || i - offset >= rawVertices->Size())
         {
             x = 0.f;
             y = 0.f;
         }
         else
         {
-            x = rawVertices[i - offset].GetFloat() * this->_armatureScale;
-            y = rawVertices[i + 1 - offset].GetFloat() * this->_armatureScale;
+            x = (*rawVertices)[i - offset].GetFloat() * this->_armatureScale;
+            y = (*rawVertices)[i + 1 - offset].GetFloat() * this->_armatureScale;
         }
 
         if (this->_mesh->skinned)
@@ -725,7 +791,7 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & raw
 
 void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData * bone, SlotData * slot) const
 {
-    const auto& actionsObject = rawData[ACTION];
+    const auto& actionsObject = rawData.HasMember(ACTION) ? rawData[ACTION] : (rawData.HasMember(ACTIONS) ? rawData[ACTIONS] : rawData[DEFAULT_ACTIONS]);
 
     if (actionsObject.IsString())
     {
@@ -746,17 +812,29 @@ void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vect
     }
     else if (actionsObject.IsArray())
     {
+        const char* GOTO_AND_PLAY = "gotoAndPlay";
+
         for (const auto& actionObject : actionsObject.GetArray())
         {
+            const auto isArray = actionObject.IsArray();
             const auto actionData = BaseObject::borrowObject<ActionData>();
-            const auto& actionType = actionObject[0];
-            if (actionType.IsString())
+            const auto animationName = isArray ? _getParameter(actionObject, 1, "") : _getString(actionObject, GOTO_AND_PLAY, "");
+
+            if (isArray) 
             {
-                actionData->type = _getActionType(actionType.GetString());
+                const auto& actionType = actionObject[0];
+                if (actionType.IsString())
+                {
+                    actionData->type = _getActionType(actionType.GetString());
+                }
+                else 
+                {
+                    actionData->type = (ActionType)_getParameter(actionObject, 0, (int)ActionType::FadeIn);
+                }
             }
-            else
+            else 
             {
-                actionData->type = (ActionType)_getParameter(actionObject, 0, (int)ActionType::FadeIn);
+                actionData->type = ActionType::GotoAndPlay;
             }
 
             auto& ints = std::get<0>(actionData->data);
@@ -766,34 +844,34 @@ void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vect
             switch (actionData->type)
             {
                 case ActionType::Play:
-                    strings.push_back(_getParameter(actionObject, 1, ""));
-                    ints.push_back(_getParameter(actionObject, 2, (int)-1));
+                    strings.push_back(animationName);
+                    ints.push_back(isArray ? _getParameter(actionObject, 2, (int)-1) : -1);
                     break;
 
                 case ActionType::Stop:
-                    strings.push_back(_getParameter(actionObject, 1, ""));
+                    strings.push_back(animationName);
                     break;
 
                 case ActionType::GotoAndPlay:
-                    strings.push_back(_getParameter(actionObject, 1, ""));
-                    floats.push_back(_getParameter(actionObject, 2, 0.f));
-                    ints.push_back(_getParameter(actionObject, 3, (int)-1));
+                    strings.push_back(animationName);
+                    floats.push_back(isArray ? _getParameter(actionObject, 2, 0.f) : 0.f);
+                    ints.push_back(isArray ? _getParameter(actionObject, 3, (int)-1) : -1);
                     break;
 
                 case ActionType::GotoAndStop:
-                    strings.push_back(_getParameter(actionObject, 1, ""));
-                    floats.push_back(_getParameter(actionObject, 2, 0.f));
+                    strings.push_back(animationName);
+                    floats.push_back(isArray ? _getParameter(actionObject, 2, 0.f) : 0.f);
                     break;
 
                 case ActionType::FadeIn:
-                    strings.push_back(_getParameter(actionObject, 1, ""));
-                    floats.push_back(_getParameter(actionObject, 2, -1.f));
-                    ints.push_back(_getParameter(actionObject, 3, (int)-1));
+                    strings.push_back(animationName);
+                    floats.push_back(isArray ? _getParameter(actionObject, 2, -1.f) : -1.f);
+                    ints.push_back(isArray ? _getParameter(actionObject, 3, (int)-1) : -1);
                     break;
 
                 case ActionType::FadeOut:
-                    strings.push_back(_getParameter(actionObject, 1, ""));
-                    floats.push_back(_getParameter(actionObject, 2, 0.f));
+                    strings.push_back(animationName);
+                    floats.push_back(isArray ? _getParameter(actionObject, 2, 0.f) : 0.f);
                     break;
             }
 
@@ -804,7 +882,7 @@ void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vect
     }
 }
 
-void JSONDataParser::_parseEventData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData * bone, SlotData * slot) const
+void JSONDataParser::_parseEventData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const
 {
     if (rawData.HasMember(SOUND))
     {
@@ -863,14 +941,27 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
         document.Parse(rawData);
 
         std::string version = _getString(document, VERSION, "");
-        this->_isParentCooriinate = version == DATA_VERSION_2_3 || version == DATA_VERSION_3_0;
+        this->_isOldData = version == DATA_VERSION_2_3 || version == DATA_VERSION_3_0;
+        if (this->_isOldData)
+        {
+            this->_isGlobalTransform = _getBoolean(document, IS_GLOBAL, true);
+        }
+        else
+        {
+            this->_isGlobalTransform = false;
+        }
+
         this->_armatureScale = scale;
 
-        if (version == DATA_VERSION || version == DATA_VERSION_4_0 || this->_isParentCooriinate)
+        if (version == DATA_VERSION || version == DATA_VERSION_4_0 || this->_isOldData)
         {
             const auto data = BaseObject::borrowObject<DragonBonesData>();
             data->name = _getString(document, NAME, "");
             data->frameRate = _getNumber(document, FRAME_RATE, (unsigned)24);
+            if (data->frameRate == 0)
+            {
+                data->frameRate = 24;
+            }
 
             if (document.HasMember(ARMATURE))
             {
@@ -906,9 +997,9 @@ void JSONDataParser::parseTextureAtlasData(const char* rawData, TextureAtlasData
         rapidjson::Document document;
         document.Parse(rawData);
 
-        textureAtlasData.format = _getTextureFormat(_getString(document, FORMAT, ""));
         textureAtlasData.name = _getString(document, NAME, "");
         textureAtlasData.imagePath = _getString(document, IMAGE_PATH, "");
+        textureAtlasData.format = _getTextureFormat(_getString(document, FORMAT, ""));
 
         if (scale > 0.f)
         {

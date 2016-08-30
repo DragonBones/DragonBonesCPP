@@ -166,22 +166,23 @@ void Bone::_computeIKB()
     }
 
     ikRadianA = (ikRadianA - parentGlobal.skewY) * ikWeight;
+
     parentGlobal.skewX += ikRadianA;
     parentGlobal.skewY += ikRadianA;
+    parentGlobal.toMatrix(*this->_parent->globalTransformMatrix);
+
     this->global.x = parentGlobal.x + std::cos(parentGlobal.skewY) * lP;
     this->global.y = parentGlobal.y + std::sin(parentGlobal.skewY) * lP;
-    parentGlobal.toMatrix(*this->_parent->globalTransformMatrix);
 
     const auto ikRadianB =
         (
-            std::atan2(ikGlobal.y - this->global.y, ikGlobal.x - this->global.x) + 
-            this->offset.skewY -
-            this->global.skewY * 2.f +
-            std::atan2(y, x)
+            std::atan2(ikGlobal.y - this->global.y, ikGlobal.x - this->global.x) + this->offset.skewY -
+            this->global.skewY * 2.f + std::atan2(y, x)
         ) * ikWeight;
 
     this->global.skewX += ikRadianB;
     this->global.skewY += ikRadianB;
+
     this->global.toMatrix(*this->globalTransformMatrix);
 }
 
@@ -298,7 +299,7 @@ void Bone::_update(int cacheFrameIndex)
         }
         else
         {
-            _transformDirty = BoneTransformDirty::Self;
+            _transformDirty = BoneTransformDirty::All;
             this->globalTransformMatrix = &this->_globalTransformMatrix;
         }
     }
@@ -342,7 +343,7 @@ void Bone::_update(int cacheFrameIndex)
                 }
             }
 
-            if (cacheFrameIndex >= 0)
+            if (cacheFrameIndex >= 0 && !(*_cacheFrames)[cacheFrameIndex])
             {
                 this->globalTransformMatrix = BoneTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, this->_globalTransformMatrix);
             }
@@ -387,6 +388,36 @@ void Bone::setVisible(bool value)
             slot->_updateVisible();
         }
     }
+}
+
+const std::vector<Bone*>& Bone::getBones() const
+{
+    _bones.clear();
+
+    for (const auto bone : _armature->getBones())
+    {
+        if (bone->getParent() == this)
+        {
+            _bones.push_back(bone);
+        }
+    }
+
+    return _bones;
+}
+
+const std::vector<Slot*>& Bone::getSlots() const
+{
+    _slots.clear();
+
+    for (const auto slot : _armature->getSlots())
+    {
+        if (slot->getParent() == this)
+        {
+            _slots.push_back(slot);
+        }
+    }
+
+    return _slots;
 }
 
 DRAGONBONES_NAMESPACE_END

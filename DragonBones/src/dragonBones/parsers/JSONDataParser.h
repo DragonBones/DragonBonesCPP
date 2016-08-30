@@ -125,7 +125,7 @@ protected:
     virtual ArmatureData* _parseArmature(const rapidjson::Value& rawData);
     virtual BoneData* _parseBone(const rapidjson::Value& rawData);
     virtual void _parseIK(const rapidjson::Value& rawData);
-    virtual SlotData* _parseSlot(const rapidjson::Value& rawData);
+    virtual SlotData* _parseSlot(const rapidjson::Value& rawData, int zOrder);
     virtual SkinData* _parseSkin(const rapidjson::Value& rawData);
     virtual SlotDisplayDataSet* _parseSlotDisplaySet(const rapidjson::Value& rawData);
     virtual DisplayData* _parseDisplay(const rapidjson::Value& rawData);
@@ -146,27 +146,40 @@ protected:
     {
         _parseFrame(rawData, frame, frameStart, frameCount);
 
-        if (rawData.HasMember(TWEEN_EASING))
+        if (frame.duration > 0)
         {
-            frame.tweenEasing = _getNumber(rawData, TWEEN_EASING, NO_TWEEN);
-        }
-        else if (this->_isParentCooriinate)
-        {
-            frame.tweenEasing = this->_isAutoTween ? this->_animationTweenEasing : NO_TWEEN;
-        }
-
-        if (rawData.HasMember(CURVE))
-        {
-            const auto rawCurve = rawData[CURVE].GetArray();
-
-            std::vector<float> curve;
-            curve.reserve(rawCurve.Size());
-            for (const auto& curveValue : rawCurve)
+            if (rawData.HasMember(TWEEN_EASING))
             {
-                curve.push_back(curveValue.GetFloat());
+                frame.tweenEasing = _getNumber(rawData, TWEEN_EASING, NO_TWEEN);
             }
+            else if (this->_isOldData)
+            {
+                frame.tweenEasing = this->_isAutoTween ? this->_animationTweenEasing : NO_TWEEN;
+            }
+            
+            /*if (this->_isOldData && this->_animation.scale == 1.f && (static_cast<TimelineData*>(this->_timeline))->scale == 1.f && frame.duration * this->_armature->frameRate < 2.f) 
+            {
+                frame.tweenEasing = NO_TWEEN;
+            }*/
 
-            TweenFrameData<T>::samplingCurve(curve, frameCount, frame.curve);
+            if (rawData.HasMember(CURVE))
+            {
+                const auto rawCurve = rawData[CURVE].GetArray();
+
+                std::vector<float> curve;
+                curve.reserve(rawCurve.Size());
+                for (const auto& curveValue : rawCurve)
+                {
+                    curve.push_back(curveValue.GetFloat());
+                }
+
+                TweenFrameData<T>::samplingCurve(curve, frameCount, frame.curve);
+            }
+        }
+        else
+        {
+            frame.tweenEasing = NO_TWEEN;
+            frame.curve.clear();
         }
     }
 
@@ -223,7 +236,7 @@ protected:
                                 prevFrame->next = frame;
                                 frame->prev = prevFrame;
 
-                                if (this->_isParentCooriinate) 
+                                if (this->_isOldData) 
                                 {
                                     const auto tweenFrame = dynamic_cast<TweenFrameData<T>*>(frame);
                                     if (tweenFrame && frameObject.HasMember(DISPLAY_INDEX) && frameObject[DISPLAY_INDEX].GetInt() == -1)
@@ -245,11 +258,11 @@ protected:
                     prevFrame->next = frame;
                     frame->prev = prevFrame;
 
-                    if (this->_isParentCooriinate) 
+                    if (this->_isOldData) 
                     {
                         const auto& frameObject = rawFrames[0];
                         const auto tweenFrame = dynamic_cast<TweenFrameData<T>*>(prevFrame);
-                        if (tweenFrame  && frameObject.HasMember(DISPLAY_INDEX) && frameObject[DISPLAY_INDEX].GetInt() == -1)
+                        if (tweenFrame && frameObject.HasMember(DISPLAY_INDEX) && frameObject[DISPLAY_INDEX].GetInt() == -1)
                         {
                             tweenFrame->tweenEasing = NO_TWEEN;
                         }

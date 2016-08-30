@@ -34,8 +34,6 @@ void CCArmatureDisplay::_onClear()
 
     this->setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
 
-    _armature = nullptr;
-
     if (_dispatcher)
     {
         _dispatcher->release();
@@ -43,12 +41,24 @@ void CCArmatureDisplay::_onClear()
         _dispatcher = nullptr;
     }
 
+    _armature = nullptr;
+
     this->release();
 }
 
 void CCArmatureDisplay::_dispatchEvent(EventObject* value)
 {
     _dispatcher->dispatchCustomEvent(value->type, value);
+}
+
+void CCArmatureDisplay::dispose()
+{
+    if (_armature) 
+    {
+        advanceTimeBySelf(false);
+        _armature->dispose();
+        _armature = nullptr;
+    }
 }
 
 void CCArmatureDisplay::update(float passedTime)

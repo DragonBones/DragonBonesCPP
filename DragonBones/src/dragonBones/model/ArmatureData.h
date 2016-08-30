@@ -77,6 +77,8 @@ public:
     BoneData* parent;
     /** @private */
     ColorTransform* color;
+    /** @private */
+    std::vector<ActionData*> actions;
 
     /** @private */
     SlotData();
@@ -133,9 +135,9 @@ public:
     bool isRelativePivot;
     DisplayType type;
     std::string name;
-    TextureData* textureData;
-    ArmatureData* armatureData;
-    MeshData* meshData;
+    TextureData* texture;
+    ArmatureData* armature;
+    MeshData* mesh;
     Point pivot;
     Transform transform;
 
@@ -212,18 +214,15 @@ public:
     unsigned frameRate;
     /** @private */
     unsigned cacheFrameRate;
-
     ArmatureType type;
-
     std::string name;
-
+    Rectangle aabb;
     std::map<std::string, BoneData*> bones;
-
     std::map<std::string, SlotData*> slots;
-
     std::map<std::string, SkinData*> skins;
-
     std::map<std::string, AnimationData*> animations;
+    /** @private */
+    std::vector<ActionData*> actions;
 
 private:
     bool _boneDirty;
