@@ -165,8 +165,6 @@ public:
 
     virtual void update(float time)
     {
-        const auto prevTime = _currentTime;
-
         if (!_isCompleted && _setCurrentTime(time))
         {
             const unsigned currentFrameIndex = _keyFrameCount > 1 ? unsigned(_currentTime * _frameRate) : 0;

@@ -226,7 +226,7 @@ void Armature::advanceTime(float passedTime)
 {
     if (!_animation) 
     {
-        DRAGONBONES_ASSERT("The armature has been disposed.");
+        DRAGONBONES_ASSERT(true, "The armature has been disposed.");
     }
 
     const auto scaledPassedTime = passedTime * _animation->timeScale;

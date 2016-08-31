@@ -302,9 +302,9 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
 {
     const auto mesh = BaseObject::borrowObject<MeshData>();
 
-    const auto rawVertices = rawData[VERTICES].GetArray();
-    const auto rawUVs = rawData[UVS].GetArray();
-    const auto rawTriangles = rawData[TRIANGLES].GetArray();
+    const auto& rawVertices = rawData[VERTICES].GetArray();
+    const auto& rawUVs = rawData[UVS].GetArray();
+    const auto& rawTriangles = rawData[TRIANGLES].GetArray();
 
     const auto numVertices = (unsigned)(rawVertices.Size() / 2);
     const auto numTriangles = (unsigned)(rawTriangles.Size() / 3);
@@ -363,7 +363,7 @@ MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
 
         if (mesh->skinned)
         {
-            const auto rawWeights = rawData[WEIGHTS].GetArray();
+            const auto& rawWeights = rawData[WEIGHTS].GetArray();
             const auto numBones = rawWeights[iW].GetUint();
             auto& indices = mesh->boneIndices[vertexIndex];
             auto& weights = mesh->weights[vertexIndex];
@@ -473,7 +473,7 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
 
         if (rawData.HasMember(TIMELINE)) 
         {
-            const auto timelines = rawData[TIMELINE].GetArray();
+            const auto& timelines = rawData[TIMELINE].GetArray();
             for (const auto& timeline : timelines) 
             {
                 animation->addBoneTimeline(_parseBoneTimeline(timeline));
@@ -748,21 +748,30 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & raw
 
     _parseTweenFrame<ExtensionFrameData>(rawData, *frame, frameStart, frameCount);
 
-    const auto rawVertices = rawData.HasMember(VERTICES) ? &rawData[VERTICES].GetArray() : nullptr;
+    const auto hasVertices = rawData.HasMember(VERTICES);
     const auto offset = _getNumber(rawData, OFFSET, (unsigned)0);
     auto x = 0.f;
     auto y = 0.f;
     for (std::size_t i = 0, l = this->_mesh->vertices.size(); i < l; i += 2)
     {
-        if (!rawVertices || i < offset || i - offset >= rawVertices->Size())
+        if (hasVertices) 
         {
-            x = 0.f;
-            y = 0.f;
+            const auto rawVertices = rawData[VERTICES].GetArray();
+            if (i < offset || i - offset >= rawVertices.Size())
+            {
+                x = 0.f;
+                y = 0.f;
+            }
+            else
+            {
+                x = rawVertices[i - offset].GetFloat() * this->_armatureScale;
+                y = rawVertices[i + 1 - offset].GetFloat() * this->_armatureScale;
+            }
         }
         else
         {
-            x = (*rawVertices)[i - offset].GetFloat() * this->_armatureScale;
-            y = (*rawVertices)[i + 1 - offset].GetFloat() * this->_armatureScale;
+            x = 0.f;
+            y = 0.f;
         }
 
         if (this->_mesh->skinned)
