@@ -8,10 +8,10 @@
 #include "../textures/TextureData.h"
 #include "AnimationData.h"
 
+DRAGONBONES_NAMESPACE_BEGIN
+
 class DragonBonesData;
 class ArmatureData;
-
-DRAGONBONES_NAMESPACE_BEGIN
 
 class BoneData : public BaseObject 
 {
