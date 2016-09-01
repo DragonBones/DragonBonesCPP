@@ -129,7 +129,7 @@ public:
 public:
     inline void invalidUpdate() 
     {
-        _originDirty = true;
+        _displayDirty = true;
     }
 
     inline void* getRawDisplay() const

@@ -212,7 +212,7 @@ void Slot::_updateMeshData(bool isTimelineUpdate)
 {
     const auto prevMeshData = _meshData;
     auto rawMeshData = (MeshData*)nullptr;
-    if (_meshDisplay && _displayIndex >= 0)
+    if (_display && _display == _meshDisplay && _displayIndex >= 0)
     {
         rawMeshData = (_displayDataSet && _displayIndex < _displayDataSet->displays.size()) ? _displayDataSet->displays[_displayIndex]->mesh : nullptr;
         const auto replaceDisplayData = (_displayIndex < _replacedDisplayDataSet.size()) ? _replacedDisplayDataSet[_displayIndex] : nullptr;

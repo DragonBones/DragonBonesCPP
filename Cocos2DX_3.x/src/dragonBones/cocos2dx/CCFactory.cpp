@@ -63,6 +63,7 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
 
     slot->name = slotData->name;
     slot->_rawDisplay = rawDisplay;
+    slot->_meshDisplay = slot->_rawDisplay;
 
     displayList.reserve(slotDisplayDataSet.displays.size());
     rawDisplay->retain();
@@ -88,7 +89,6 @@ Slot * CCFactory::_generateSlot(const BuildArmaturePackage& dataPackage, const S
                     displayData->texture = this->_getTextureData(dataPackage.dataName, displayData->name);
                 }
 
-                slot->_meshDisplay = slot->_rawDisplay;
                 displayList.push_back(std::make_pair(slot->_meshDisplay, DisplayType::Mesh));
                 break;
 

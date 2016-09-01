@@ -8,6 +8,7 @@
 #include "../textures/TextureData.h"
 #include "AnimationData.h"
 
+class DragonBonesData;
 class ArmatureData;
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -54,7 +55,7 @@ protected:
     virtual void _onClear() override;
 };
 
-class SlotData final : public BaseObject
+class SlotData : public BaseObject
 {
     BIND_CLASS_TYPE(SlotData);
 
@@ -203,7 +204,7 @@ public:
     }
 };
 
-class ArmatureData final : public BaseObject
+class ArmatureData : public BaseObject
 {
     BIND_CLASS_TYPE(ArmatureData);
 
@@ -217,6 +218,7 @@ public:
     ArmatureType type;
     std::string name;
     Rectangle aabb;
+    DragonBonesData* parent;
     std::map<std::string, BoneData*> bones;
     std::map<std::string, SlotData*> slots;
     std::map<std::string, SkinData*> skins;

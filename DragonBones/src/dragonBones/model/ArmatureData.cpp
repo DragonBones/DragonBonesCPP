@@ -219,8 +219,7 @@ void ArmatureData::_onClear()
     cacheFrameRate = 0;
     type = ArmatureType::Armature;
     name.clear();
-    //parent
-    //userData
+    parent = nullptr;
     aabb.clear();
 
     bones.clear();

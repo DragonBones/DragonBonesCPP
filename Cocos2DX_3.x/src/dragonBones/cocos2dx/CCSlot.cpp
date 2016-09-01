@@ -177,6 +177,17 @@ void CCSlot::_updateFrame()
                 auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()]; // does cocos2dx release it?
                 cocos2d::Rect boundsRect(999999.f, 999999.f, -999999.f, -999999.f);
 
+                if (this->_meshData != rawDisplayData->mesh && rawDisplayData && rawDisplayData != currentDisplayData)
+                {
+                    this->_pivotX = rawDisplayData->transform.x - currentDisplayData->transform.x;
+                    this->_pivotY = rawDisplayData->transform.y - currentDisplayData->transform.y;
+                }
+                else
+                {
+                    this->_pivotX = 0.f;
+                    this->_pivotY = 0.f;
+                }
+
                 for (std::size_t i = 0, l = this->_meshData->uvs.size(); i < l; i += 2)
                 {
                     const auto iH = (unsigned)(i / 2);
@@ -217,9 +228,6 @@ void CCSlot::_updateFrame()
                 {
                     vertexIndices[i] = this->_meshData->vertexIndices[i];
                 }
-
-                this->_pivotX = 0.f;
-                this->_pivotY = 0.f;
 
                 // In cocos2dx render meshDisplay and frameDisplay are the same display
                 if (currentTextureData->texture)
@@ -304,14 +312,13 @@ void CCSlot::_updateFrame()
     frameDisplay->setTexture(nullptr);
     frameDisplay->setTextureRect(cocos2d::Rect::ZERO);
     frameDisplay->setVisible(false);
-    //frameDisplay->setPosition(this->origin.x, this->origin.y);
+    frameDisplay->setPosition(this->origin.x, this->origin.y);
 }
 
 void CCSlot::_updateMesh() 
 {
     const auto meshDisplay = static_cast<DBCCSprite*>(this->_meshDisplay);
     const auto hasFFD = !this->_ffdVertices.empty();
-
     const auto displayVertices = meshDisplay->getPolygonInfoModify().triangles.verts;
     cocos2d::Rect boundsRect(999999.f, 999999.f, -999999.f, -999999.f);
 
@@ -427,18 +434,15 @@ void CCSlot::_updateMesh()
 
 void CCSlot::_updateTransform()
 {
-    if (_renderDisplay)
-    {
-        static cocos2d::Mat4 transform;
-        transform.m[0] = this->globalTransformMatrix->a;
-        transform.m[1] = -this->globalTransformMatrix->b;
-        transform.m[4] = -this->globalTransformMatrix->c;
-        transform.m[5] = this->globalTransformMatrix->d;
-        transform.m[12] = this->globalTransformMatrix->tx - (this->globalTransformMatrix->a * this->_pivotX + this->globalTransformMatrix->c * this->_pivotY);
-        transform.m[13] = -(this->globalTransformMatrix->ty - (this->globalTransformMatrix->b * this->_pivotX + this->globalTransformMatrix->d * this->_pivotY));
+    static cocos2d::Mat4 transform;
+    transform.m[0] = this->globalTransformMatrix->a;
+    transform.m[1] = -this->globalTransformMatrix->b;
+    transform.m[4] = -this->globalTransformMatrix->c;
+    transform.m[5] = this->globalTransformMatrix->d;
+    transform.m[12] = this->globalTransformMatrix->tx - (this->globalTransformMatrix->a * this->_pivotX + this->globalTransformMatrix->c * this->_pivotY);
+    transform.m[13] = -(this->globalTransformMatrix->ty - (this->globalTransformMatrix->b * this->_pivotX + this->globalTransformMatrix->d * this->_pivotY));
 
-        _renderDisplay->setNodeToParentTransform(transform);
-    }
+    _renderDisplay->setNodeToParentTransform(transform);
 }
 
 DRAGONBONES_NAMESPACE_END

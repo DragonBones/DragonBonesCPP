@@ -260,14 +260,10 @@ AnimationState* Animation::play(const std::string& animationName, int playTimes)
             animationState = fadeIn(_armature->getArmatureData().getDefaultAnimation()->name, 0.f, playTimes, 0, "", AnimationFadeOutMode::All);
         }
     }
-    else if (!_isPlaying)
+    else if (!_isPlaying || !_lastAnimationState->isPlaying())
     {
         _isPlaying = true;
-
-        if (_lastAnimationState) 
-        {
-            _lastAnimationState->play();
-        }
+        _lastAnimationState->play();
     }
     else
     {
@@ -291,8 +287,8 @@ AnimationState* Animation::fadeIn(
         DRAGONBONES_ASSERT(
             true,
             "Non-existent animation." +
-            " DragonBones: " + this._armature.armatureData.parent.name + 
-            " Armature: " + this._armature.name +
+            " DragonBones: " + this->_armature->getArmatureData().parent->name +
+            " Armature: " + this->_armature->name +
             " Animation: " + animationName
         );
         return nullptr;
