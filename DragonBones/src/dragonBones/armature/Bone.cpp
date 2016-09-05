@@ -233,7 +233,7 @@ void Bone::_setArmature(Armature* value)
     }
 }
 
-void Bone::_setIK(Bone* value, unsigned chain, unsigned chainIndex)
+void Bone::_setIK(Bone* value, unsigned chain, int chainIndex)
 {
     if (value)
     {

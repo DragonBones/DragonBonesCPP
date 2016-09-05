@@ -29,7 +29,7 @@ public:
     /** @private */
     unsigned chain;
     /** @private */
-    unsigned chainIndex;
+    int chainIndex;
     /** @private */
     float weight;
     /** @private */

@@ -285,7 +285,7 @@ AnimationState* Animation::fadeIn(
     {
         _time = 0.f;
         DRAGONBONES_ASSERT(
-            true,
+            false,
             "Non-existent animation." +
             " DragonBones: " + this->_armature->getArmatureData().parent->name +
             " Armature: " + this->_armature->name +

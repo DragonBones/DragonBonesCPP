@@ -163,8 +163,6 @@ void Slot::_updateDisplay()
                 
                 const auto slotData = this->_armature->getArmatureData().getSlot(this->name);
                 const auto& actions = !slotData->actions.empty() ? slotData->actions : _childArmature->getArmatureData().actions;
-                _childArmature->getAnimation().play();
-
                 if (!actions.empty())
                 {
                     for (const auto action : actions) 
