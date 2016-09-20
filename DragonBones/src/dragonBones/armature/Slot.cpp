@@ -373,7 +373,7 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
             _displayList.resize(value.size());
         }
 
-        for (std::size_t i = 0, l = _displayList.size(); i < l; ++i)
+        for (std::size_t i = 0, l = value.size(); i < l; ++i)
         {
             const auto& eachPair = value[i];
             if (
@@ -461,7 +461,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
     for (const auto& pair : backupDisplayList)
     {
         if (
-            pair.first != _rawDisplay && pair.first != _meshDisplay &&
+            pair.first && pair.first != _rawDisplay && pair.first != _meshDisplay &&
             std::find(_displayList.cbegin(), _displayList.cend(), pair) == _displayList.cend() &&
             std::find(disposeDisplayList.cbegin(), disposeDisplayList.cend(), pair) == disposeDisplayList.cend()
         )

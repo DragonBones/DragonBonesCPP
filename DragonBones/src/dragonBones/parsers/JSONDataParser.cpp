@@ -5,11 +5,13 @@ DRAGONBONES_NAMESPACE_BEGIN
 JSONDataParser::JSONDataParser() {}
 JSONDataParser::~JSONDataParser() {}
 
-ArmatureData * JSONDataParser::_parseArmature(const dragonBones_rapidjson::Value & rawData)
+ArmatureData * JSONDataParser::_parseArmature(const dragonBones_rapidjson::Value & rawData, float scale)
 {
     const auto armature = BaseObject::borrowObject<ArmatureData>();
     armature->name = _getString(rawData, NAME, "");
     armature->frameRate = _getNumber(rawData, FRAME_RATE, this->_data->frameRate);
+    armature->scale = scale;
+
     if (armature->frameRate == 0)
     {
         armature->frameRate = this->_data->frameRate;
@@ -102,7 +104,7 @@ BoneData * JSONDataParser::_parseBone(const dragonBones_rapidjson::Value & rawDa
     bone->inheritTranslation = _getBoolean(rawData, INHERIT_TRANSLATION, true);
     bone->inheritRotation = _getBoolean(rawData, INHERIT_ROTATION, true);
     bone->inheritScale = _getBoolean(rawData, INHERIT_SCALE, true);
-    bone->length = _getNumber(rawData, LENGTH, 0.f) * _armatureScale;
+    bone->length = _getNumber(rawData, LENGTH, 0.f) * this->_armature->scale;
 
     if (rawData.HasMember(TRANSFORM))
     {
@@ -268,8 +270,8 @@ DisplayData * JSONDataParser::_parseDisplay(const dragonBones_rapidjson::Value &
     {
         const auto& transformObject = rawData[TRANSFORM];
         display->isRelativePivot = false;
-        display->pivot.x = _getNumber(transformObject, PIVOT_X, 0.f) * this->_armatureScale;
-        display->pivot.y = _getNumber(transformObject, PIVOT_Y, 0.f) * this->_armatureScale;
+        display->pivot.x = _getNumber(transformObject, PIVOT_X, 0.f) * this->_armature->scale;
+        display->pivot.y = _getNumber(transformObject, PIVOT_Y, 0.f) * this->_armature->scale;
     }
     else
     {
@@ -356,8 +358,8 @@ MeshData * JSONDataParser::_parseMesh(const dragonBones_rapidjson::Value & rawDa
         const auto iN = i + 1;
         const auto vertexIndex = i / 2;
 
-        auto x = mesh->vertices[i] = rawVertices[i].GetFloat() * this->_armatureScale;
-        auto y = mesh->vertices[iN] = rawVertices[iN].GetFloat() * this->_armatureScale;
+        auto x = mesh->vertices[i] = rawVertices[i].GetFloat() * this->_armature->scale;
+        auto y = mesh->vertices[iN] = rawVertices[iN].GetFloat() * this->_armature->scale;
         mesh->uvs[i] = rawUVs[i].GetFloat();
         mesh->uvs[iN] = rawUVs[iN].GetFloat();
 
@@ -764,8 +766,8 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const dragonBones_rapidjson:
             }
             else
             {
-                x = rawVertices[i - offset].GetFloat() * this->_armatureScale;
-                y = rawVertices[i + 1 - offset].GetFloat() * this->_armatureScale;
+                x = rawVertices[i - offset].GetFloat() * this->_armature->scale;
+                y = rawVertices[i + 1 - offset].GetFloat() * this->_armature->scale;
             }
         }
         else
@@ -922,8 +924,8 @@ void JSONDataParser::_parseEventData(const dragonBones_rapidjson::Value& rawData
 
 void JSONDataParser::_parseTransform(const dragonBones_rapidjson::Value& rawData, Transform& transform) const
 {
-    transform.x = _getNumber(rawData, X, 0.f) * this->_armatureScale;
-    transform.y = _getNumber(rawData, Y, 0.f) * this->_armatureScale;
+    transform.x = _getNumber(rawData, X, 0.f) * this->_armature->scale;
+    transform.y = _getNumber(rawData, Y, 0.f) * this->_armature->scale;
     transform.skewX = _getNumber(rawData, SKEW_X, 0.f) * ANGLE_TO_RADIAN;
     transform.skewY = _getNumber(rawData, SKEW_Y, 0.f) * ANGLE_TO_RADIAN;
     transform.scaleX = _getNumber(rawData, SCALE_X, 1.f);
@@ -960,8 +962,6 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
             this->_isGlobalTransform = false;
         }
 
-        this->_armatureScale = scale;
-
         if (version == DATA_VERSION || version == DATA_VERSION_4_0 || this->_isOldData)
         {
             const auto data = BaseObject::borrowObject<DragonBonesData>();
@@ -978,7 +978,7 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
 
                 for (const auto& armatureObject : document[ARMATURE].GetArray())
                 {
-                    data->addArmature(_parseArmature(armatureObject));
+                    data->addArmature(_parseArmature(armatureObject, scale));
                 }
 
                 this->_data = nullptr;

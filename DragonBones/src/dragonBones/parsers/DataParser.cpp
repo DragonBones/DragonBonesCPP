@@ -294,7 +294,6 @@ DataParser::DataParser() :
     _animationTweenEasing(0.f),
     _timelinePivot(),
 
-    _armatureScale(1.f),
     _helpPoint(),
     _helpTransformA(),
     _helpTransformB(),

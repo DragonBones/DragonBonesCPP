@@ -213,8 +213,6 @@ private:
 
 public:
     unsigned frameRate;
-    /** @private */
-    unsigned cacheFrameRate;
     ArmatureType type;
     std::string name;
     Rectangle aabb;
@@ -225,6 +223,11 @@ public:
     std::map<std::string, AnimationData*> animations;
     /** @private */
     std::vector<ActionData*> actions;
+
+    /** @private */
+    unsigned cacheFrameRate;
+    /** @private */
+    float scale;
 
 private:
     bool _boneDirty;

@@ -124,7 +124,7 @@ private:
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(JSONDataParser);
 
 protected:
-    virtual ArmatureData* _parseArmature(const dragonBones_rapidjson::Value& rawData);
+    virtual ArmatureData* _parseArmature(const dragonBones_rapidjson::Value& rawData, float scale);
     virtual BoneData* _parseBone(const dragonBones_rapidjson::Value& rawData);
     virtual void _parseIK(const dragonBones_rapidjson::Value& rawData);
     virtual SlotData* _parseSlot(const dragonBones_rapidjson::Value& rawData, int zOrder);

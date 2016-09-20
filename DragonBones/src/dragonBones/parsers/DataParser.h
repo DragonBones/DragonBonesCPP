@@ -136,7 +136,6 @@ protected:
     mutable float _animationTweenEasing;
     mutable Point _timelinePivot;
 
-    mutable float _armatureScale;
     mutable Point _helpPoint;
     mutable Transform _helpTransformA;
     mutable Transform _helpTransformB;

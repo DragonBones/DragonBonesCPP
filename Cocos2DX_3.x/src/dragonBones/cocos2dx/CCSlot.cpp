@@ -263,6 +263,7 @@ void CCSlot::_updateFrame()
                 this->_pivotX = currentDisplayData->pivot.x;
                 this->_pivotY = currentDisplayData->pivot.y;
 
+                const auto scale = this->_armature->getArmatureData().scale;
                 const auto& rectData = currentTextureData->frame ? *currentTextureData->frame : currentTextureData->region;
                 auto width = rectData.width;
                 auto height = rectData.height;
@@ -274,8 +275,8 @@ void CCSlot::_updateFrame()
 
                 if (currentDisplayData->isRelativePivot)
                 {
-                    this->_pivotX *= width;
-                    this->_pivotY *= height;
+                    this->_pivotX *= width * scale;
+                    this->_pivotY *= height * scale;
                 }
 
                 if (currentTextureData->frame)
@@ -290,7 +291,7 @@ void CCSlot::_updateFrame()
                     this->_pivotY += rawDisplayData->transform.y - currentDisplayData->transform.y;
                 }
 
-                this->_pivotY -= currentTextureData->region.height;
+                this->_pivotY -= currentTextureData->region.height * scale;
 
                 frameDisplay->setSpriteFrame(currentTextureData->texture); // polygonInfo will be override
 
