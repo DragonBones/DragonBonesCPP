@@ -1,6 +1,8 @@
 #ifndef DRAGONBONES_JSON_DATA_PARSER_H
 #define DRAGONBONES_JSON_DATA_PARSER_H
 
+#define RAPIDJSON_NAMESPACE dragonBones_rapidjson
+
 #include "DataParser.h"
 #include "rapidjson/document.h"
 
@@ -9,7 +11,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 class JSONDataParser : public DataParser
 {
 protected:
-    inline static bool _getBoolean(const rapidjson::Value& rawData, const char*& key, bool defaultValue)
+    inline static bool _getBoolean(const dragonBones_rapidjson::Value& rawData, const char*& key, bool defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -44,7 +46,7 @@ protected:
         return defaultValue;
     }
 
-    inline static unsigned _getNumber(const rapidjson::Value& rawData, const char*& key, unsigned defaultValue)
+    inline static unsigned _getNumber(const dragonBones_rapidjson::Value& rawData, const char*& key, unsigned defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -54,7 +56,7 @@ protected:
         return defaultValue;
     }
 
-    inline static int _getNumber(const rapidjson::Value& rawData, const char*& key, int defaultValue)
+    inline static int _getNumber(const dragonBones_rapidjson::Value& rawData, const char*& key, int defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -64,7 +66,7 @@ protected:
         return defaultValue;
     }
 
-    inline static float _getNumber(const rapidjson::Value& rawData, const char*& key, float defaultValue)
+    inline static float _getNumber(const dragonBones_rapidjson::Value& rawData, const char*& key, float defaultValue)
     {
         if (rawData.HasMember(key) && rawData[key].IsNumber())
         {
@@ -74,7 +76,7 @@ protected:
         return defaultValue;
     }
 
-    inline static std::string _getString(const rapidjson::Value& rawData, const char*& key, const std::string& defaultValue)
+    inline static std::string _getString(const dragonBones_rapidjson::Value& rawData, const char*& key, const std::string& defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -84,7 +86,7 @@ protected:
         return defaultValue;
     }
 
-    inline static int _getParameter(const rapidjson::Value& rawData, std::size_t index, int defaultValue)
+    inline static int _getParameter(const dragonBones_rapidjson::Value& rawData, std::size_t index, int defaultValue)
     {
         if (rawData.Size() > index)
         {
@@ -94,7 +96,7 @@ protected:
         return defaultValue;
     }
 
-    inline static float _getParameter(const rapidjson::Value& rawData, std::size_t index, float defaultValue)
+    inline static float _getParameter(const dragonBones_rapidjson::Value& rawData, std::size_t index, float defaultValue)
     {
         if (rawData.Size() > index)
         {
@@ -104,7 +106,7 @@ protected:
         return defaultValue;
     }
 
-    inline static std::string _getParameter(const rapidjson::Value& rawData, std::size_t index, const std::string& defaultValue)
+    inline static std::string _getParameter(const dragonBones_rapidjson::Value& rawData, std::size_t index, const std::string& defaultValue)
     {
         if (rawData.Size() > index)
         {
@@ -122,27 +124,27 @@ private:
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(JSONDataParser);
 
 protected:
-    virtual ArmatureData* _parseArmature(const rapidjson::Value& rawData);
-    virtual BoneData* _parseBone(const rapidjson::Value& rawData);
-    virtual void _parseIK(const rapidjson::Value& rawData);
-    virtual SlotData* _parseSlot(const rapidjson::Value& rawData, int zOrder);
-    virtual SkinData* _parseSkin(const rapidjson::Value& rawData);
-    virtual SlotDisplayDataSet* _parseSlotDisplaySet(const rapidjson::Value& rawData);
-    virtual DisplayData* _parseDisplay(const rapidjson::Value& rawData);
-    virtual MeshData* _parseMesh(const rapidjson::Value& rawData);
-    virtual AnimationData* _parseAnimation(const rapidjson::Value& rawData) const;
-    virtual BoneTimelineData* _parseBoneTimeline(const rapidjson::Value& rawData) const;
-    virtual SlotTimelineData* _parseSlotTimeline(const rapidjson::Value& rawData) const;
-    virtual FFDTimelineData* _parseFFDTimeline(const rapidjson::Value& rawData) const;
-    virtual AnimationFrameData* _parseAnimationFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
-    virtual BoneFrameData* _parseBoneFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
-    virtual SlotFrameData* _parseSlotFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
-    virtual ExtensionFrameData* _parseFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
-    virtual void _parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData* bone, SlotData* slot) const;
-    virtual void _parseEventData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const;
+    virtual ArmatureData* _parseArmature(const dragonBones_rapidjson::Value& rawData);
+    virtual BoneData* _parseBone(const dragonBones_rapidjson::Value& rawData);
+    virtual void _parseIK(const dragonBones_rapidjson::Value& rawData);
+    virtual SlotData* _parseSlot(const dragonBones_rapidjson::Value& rawData, int zOrder);
+    virtual SkinData* _parseSkin(const dragonBones_rapidjson::Value& rawData);
+    virtual SlotDisplayDataSet* _parseSlotDisplaySet(const dragonBones_rapidjson::Value& rawData);
+    virtual DisplayData* _parseDisplay(const dragonBones_rapidjson::Value& rawData);
+    virtual MeshData* _parseMesh(const dragonBones_rapidjson::Value& rawData);
+    virtual AnimationData* _parseAnimation(const dragonBones_rapidjson::Value& rawData) const;
+    virtual BoneTimelineData* _parseBoneTimeline(const dragonBones_rapidjson::Value& rawData) const;
+    virtual SlotTimelineData* _parseSlotTimeline(const dragonBones_rapidjson::Value& rawData) const;
+    virtual FFDTimelineData* _parseFFDTimeline(const dragonBones_rapidjson::Value& rawData) const;
+    virtual AnimationFrameData* _parseAnimationFrame(const dragonBones_rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
+    virtual BoneFrameData* _parseBoneFrame(const dragonBones_rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
+    virtual SlotFrameData* _parseSlotFrame(const dragonBones_rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
+    virtual ExtensionFrameData* _parseFFDFrame(const dragonBones_rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
+    virtual void _parseActionData(const dragonBones_rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData* bone, SlotData* slot) const;
+    virtual void _parseEventData(const dragonBones_rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const;
 
     template<class T>
-    void _parseTweenFrame(const rapidjson::Value& rawData, TweenFrameData<T>& frame, unsigned frameStart, unsigned frameCount) const
+    void _parseTweenFrame(const dragonBones_rapidjson::Value& rawData, TweenFrameData<T>& frame, unsigned frameStart, unsigned frameCount) const
     {
         _parseFrame(rawData, frame, frameStart, frameCount);
 
@@ -184,7 +186,7 @@ protected:
     }
 
     template<class T>
-    void _parseFrame(const rapidjson::Value& rawData, FrameData<T>& frame, unsigned frameStart, unsigned frameCount) const
+    void _parseFrame(const dragonBones_rapidjson::Value& rawData, FrameData<T>& frame, unsigned frameStart, unsigned frameCount) const
     {
         frame.position = (float)frameStart / this->_armature->frameRate;
         frame.duration = (float)frameCount / this->_armature->frameRate;
@@ -192,9 +194,9 @@ protected:
 
     template<class T>
     void _parseTimeline(
-        const rapidjson::Value& rawData,
+        const dragonBones_rapidjson::Value& rawData,
         TimelineData<T>& timeline,
-        const std::function<T*(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)>& frameParser) const
+        const std::function<T*(const dragonBones_rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)>& frameParser) const
     {
         timeline.scale = _getNumber(rawData, SCALE, 1.f);
         timeline.offset = _getNumber(rawData, OFFSET, 0.f);
@@ -274,8 +276,8 @@ protected:
         _timeline = nullptr;
     }
 
-    virtual void _parseTransform(const rapidjson::Value& rawData, Transform& transform) const;
-    virtual void _parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color) const;
+    virtual void _parseTransform(const dragonBones_rapidjson::Value& rawData, Transform& transform) const;
+    virtual void _parseColorTransform(const dragonBones_rapidjson::Value& rawData, ColorTransform& color) const;
 
 public:
     virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.f) override;
