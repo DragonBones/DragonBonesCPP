@@ -331,8 +331,8 @@ MeshData * JSONDataParser::_parseMesh(const dragonBones_rapidjson::Value & rawDa
             mesh->slotPose.b = rawSlotPose[1].GetFloat();
             mesh->slotPose.c = rawSlotPose[2].GetFloat();
             mesh->slotPose.d = rawSlotPose[3].GetFloat();
-            mesh->slotPose.tx = rawSlotPose[4].GetFloat();
-            mesh->slotPose.ty = rawSlotPose[5].GetFloat();
+            mesh->slotPose.tx = rawSlotPose[4].GetFloat() * this->_armature->scale;
+            mesh->slotPose.ty = rawSlotPose[5].GetFloat() * this->_armature->scale;
         }
 
         if (rawData.HasMember(BONE_POSE))
@@ -346,8 +346,8 @@ MeshData * JSONDataParser::_parseMesh(const dragonBones_rapidjson::Value & rawDa
                 boneMatrix.b = rawBonePose[i + 2].GetFloat();
                 boneMatrix.c = rawBonePose[i + 3].GetFloat();
                 boneMatrix.d = rawBonePose[i + 4].GetFloat();
-                boneMatrix.tx = rawBonePose[i + 5].GetFloat();
-                boneMatrix.ty = rawBonePose[i + 6].GetFloat();
+                boneMatrix.tx = rawBonePose[i + 5].GetFloat() * this->_armature->scale;
+                boneMatrix.ty = rawBonePose[i + 6].GetFloat() * this->_armature->scale;
                 boneMatrix.invert();
             }
         }

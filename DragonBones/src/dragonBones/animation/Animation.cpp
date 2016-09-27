@@ -333,6 +333,7 @@ AnimationState* Animation::fadeIn(
     _animationStates.push_back(_lastAnimationState);
     _animationStateDirty = true;
     _time = 0.f;
+    _armature->_cacheFrameIndex = -1;
 
     if (_animationStates.size() > 1)
     {
@@ -355,7 +356,7 @@ AnimationState* Animation::fadeIn(
         }
     }
     
-    if (fadeInTime == 0.f)
+    if (fadeInTime <= 0.f)
     {
         _armature->advanceTime(0.f);
     }

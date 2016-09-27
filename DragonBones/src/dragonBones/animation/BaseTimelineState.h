@@ -44,7 +44,7 @@ protected:
     virtual void _onClear() override
     {
         _isCompleted = false;
-        _currentPlayTimes = -1;
+        _currentPlayTimes = 0;
         _currentTime = -1.f;
         _timeline = nullptr;
 
@@ -128,8 +128,6 @@ protected:
             //_currentPlayTimes = _animationState->_timeline->_currentPlayTimes;
         }
 
-        _currentPlayTimes = currentPlayTimes;
-
         if (_currentTime == value)
         {
             return false;
@@ -137,6 +135,7 @@ protected:
 
         _isReverse = _currentTime > value && _currentPlayTimes == currentPlayTimes;
         _currentTime = value;
+        _currentPlayTimes = currentPlayTimes;
 
         return true;
     }
@@ -343,7 +342,7 @@ protected:
                 const auto tweenDuration = next.tweens[i] - current.tweens[i];
                 result.tweens[i] = tweenDuration;
 
-                if (tweenDuration != 0.f)
+                if (tweenDuration > 0.f)
                 {
                     tweenType = TweenType::Always;
                 }

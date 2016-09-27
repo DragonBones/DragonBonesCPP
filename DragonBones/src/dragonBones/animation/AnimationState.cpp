@@ -179,7 +179,7 @@ void AnimationState::_fadeIn(
     _animationData = clip;
     _name = animationName;
 
-    this->actionEnabled = AnimationState::stateActionEnabled;
+    actionEnabled = AnimationState::stateActionEnabled;
     this->playTimes = playTimes;
     this->timeScale = timeScale;
     fadeTotalTime = fadeInTime;
@@ -188,7 +188,7 @@ void AnimationState::_fadeIn(
     _duration = duration;
     _time = time;
     _isPausePlayhead = pausePlayhead;
-    if (fadeTotalTime == 0.f)
+    if (fadeTotalTime <= 0.f)
     {
         _fadeProgress = 0.999999f;
     }
@@ -392,14 +392,14 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
                 {
                     _armature->_animation->_animationStateDirty = false;
 
-                    for (const auto boneTimeline : _boneTimelines)
+                    for (const auto boneTimelineState : _boneTimelines)
                     {
-                        boneTimeline->bone->_cacheFrames = &(boneTimeline->_timeline->cachedFrames);
+                        boneTimelineState->bone->_cacheFrames = &(boneTimelineState->_timeline->cachedFrames);
                     }
 
-                    for (const auto slotTimeline : _slotTimelines)
+                    for (const auto slotTimelineState : _slotTimelines)
                     {
-                        slotTimeline->slot->_cacheFrames = &(slotTimeline->_timeline->cachedFrames);
+                        slotTimelineState->slot->_cacheFrames = &(slotTimelineState->_timeline->cachedFrames);
                     }
                 }
 
@@ -476,7 +476,7 @@ void AnimationState::fadeOut(float fadeOutTime, bool pausePlayhead)
     {
         _isFadeOut = true;
 
-        if (fadeOutTime == 0.f || _fadeProgress <= 0.f)
+        if (fadeOutTime <= 0.f || _fadeProgress <= 0.f)
         {
             _fadeProgress = 0.000001f;
         }
