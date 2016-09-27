@@ -456,7 +456,7 @@ void DataParser::_mergeFrameToAnimationTimeline(float framePosition, const std::
         insertedFrame->position = frameStart / _armature->frameRate;
         frames[frameStart] = insertedFrame;
 
-        for (rsize_t i = frameStart + 1, l = frames.size(); i < l; ++i) 
+        for (size_t i = frameStart + 1, l = frames.size(); i < l; ++i) 
         {
             if (replacedFrame && frames[i] == replacedFrame) 
             {
