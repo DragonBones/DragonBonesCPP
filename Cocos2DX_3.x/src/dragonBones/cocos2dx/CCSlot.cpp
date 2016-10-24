@@ -157,12 +157,6 @@ void CCSlot::_updateFrame()
                 cocos2d::Vec2 offset(0.f, 0.f);
                 cocos2d::Size originSize(currentTextureData->region.width, currentTextureData->region.height);
 
-                /*if (currentTextureData->frame) 
-                {
-                    offset.setPoint(-currentTextureData->frame->x, -currentTextureData->frame->y);
-                    originSize.setSize(currentTextureData->frame->width, currentTextureData->frame->height);
-                }*/
-
                 currentTextureData->texture = cocos2d::SpriteFrame::createWithTexture(textureAtlasTexture, rect, currentTextureData->rotated, offset, originSize); // TODO multiply textureAtlas
                 currentTextureData->texture->retain();
             }
@@ -249,23 +243,25 @@ void CCSlot::_updateFrame()
                 polygonInfo.rect = boundsRect; // Copy
                 frameDisplay->setPolygonInfo(polygonInfo);
                 frameDisplay->setContentSize(boundsRect.size);
+                frameDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
 
                 if (this->_meshData->skinned)
                 {
-                    frameDisplay->setScale(1.f, 1.f);
+                    frameDisplay->setPosition(0.f, 0.f);
+                    frameDisplay->setRotation(0.f);
                     frameDisplay->setRotationSkewX(0.f);
                     frameDisplay->setRotationSkewY(0.f);
-                    frameDisplay->setPosition(0.f, 0.f);
+                    frameDisplay->setScale(1.f, 1.f);
                 }
             }
             else
             {
+                const auto scale = this->_armature->getArmatureData().scale;
                 this->_pivotX = currentDisplayData->pivot.x;
                 this->_pivotY = currentDisplayData->pivot.y;
 
                 if (currentDisplayData->isRelativePivot)
                 {
-                    const auto scale = this->_armature->getArmatureData().scale;
                     const auto& rectData = currentTextureData->frame ? *currentTextureData->frame : currentTextureData->region;
                     auto width = rectData.width * scale;
                     auto height = rectData.height * scale;
@@ -281,8 +277,8 @@ void CCSlot::_updateFrame()
 
                 if (currentTextureData->frame)
                 {
-                    this->_pivotX += currentTextureData->frame->x;
-                    this->_pivotY += currentTextureData->frame->y;
+                    this->_pivotX += currentTextureData->frame->x * scale;
+                    this->_pivotY += currentTextureData->frame->y * scale;
                 }
 
                 if (rawDisplayData && rawDisplayData != currentDisplayData)
@@ -427,10 +423,10 @@ void CCSlot::_updateMesh()
     cocos2d::Rect* rect = (cocos2d::Rect*)&meshDisplay->getPolygonInfo().rect;
     rect->origin = boundsRect.origin; // copy
     rect->size = boundsRect.size; // copy
-    meshDisplay->setContentSize(boundsRect.size);
 
-    // Update mesh will lost transform info!?
-    _updateTransform();
+    const auto& transform = meshDisplay->getNodeToParentTransform();
+    meshDisplay->setContentSize(boundsRect.size);
+    _renderDisplay->setNodeToParentTransform(transform);
 }
 
 void CCSlot::_updateTransform()

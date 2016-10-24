@@ -157,7 +157,6 @@ void BaseFactory::_buildSlots(const BuildArmaturePackage& dataPackage, Armature&
         slot->_setDisplayIndex(slotData->displayIndex);
         slot->_setBlendMode(slotData->blendMode);
         slot->_setColor(*slotData->color);
-        slot->_replacedDisplayDataSet.resize(slot->_displayDataSet->displays.size(), nullptr);
 
         armature.addSlot(slot, slotData->parent->name);
     }
@@ -306,7 +305,7 @@ void BaseFactory::removeTextureAtlasData(const std::string& dragonBonesName, boo
     {
         if (disposeData)
         {
-            for (auto textureAtlasData : iterator->second)
+            for (const auto textureAtlasData : iterator->second)
             {
                 textureAtlasData->returnToPool();
             }

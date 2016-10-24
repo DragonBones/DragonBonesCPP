@@ -121,10 +121,10 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
 {
     if (!dragonBonesName.empty())
     {
-        const auto existData = getDragonBonesData(dragonBonesName);
-        if (existData)
+        const auto existedData = this->getDragonBonesData(dragonBonesName);
+        if (existedData)
         {
-            return existData;
+            return existedData;
         }
     }
 
@@ -136,7 +136,7 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
     }
 
     const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor();
-    return parseDragonBonesData(data.c_str(), dragonBonesName, 1.f / scale);
+    return this->parseDragonBonesData(data.c_str(), dragonBonesName, 1.f / scale);
 }
 
 TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, const std::string& dragonBonesName, float scale)
@@ -148,7 +148,7 @@ TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, c
         return nullptr;
     }
 
-    const auto textureAtlasData = static_cast<CCTextureAtlasData*>(parseTextureAtlasData(data.c_str(), nullptr, dragonBonesName, scale));
+    const auto textureAtlasData = static_cast<CCTextureAtlasData*>(this->parseTextureAtlasData(data.c_str(), nullptr, dragonBonesName, scale));
 
     const auto pos = filePath.find_last_of("/");
     if (std::string::npos != pos)

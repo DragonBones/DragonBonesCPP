@@ -5,7 +5,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 JSONDataParser::JSONDataParser() {}
 JSONDataParser::~JSONDataParser() {}
 
-ArmatureData * JSONDataParser::_parseArmature(const dragonBones_rapidjson::Value & rawData, float scale)
+ArmatureData * JSONDataParser::_parseArmature(const rapidjson::Value & rawData, float scale)
 {
     const auto armature = BaseObject::borrowObject<ArmatureData>();
     armature->name = _getString(rawData, NAME, "");
@@ -40,44 +40,49 @@ ArmatureData * JSONDataParser::_parseArmature(const dragonBones_rapidjson::Value
 
     if (rawData.HasMember(BONE))
     {
-        for (const auto& boneObject : rawData[BONE].GetArray())
+        const auto& bones = rawData[BONE];
+        for (size_t i = 0, l = bones.Size(); i < l; ++i)
         {
-            const auto bone = _parseBone(boneObject);
-            armature->addBone(bone, _getString(boneObject, PARENT, ""));
+            const auto bone = _parseBone(bones[i]);
+            armature->addBone(bone, _getString(bones[i], PARENT, ""));
             this->_rawBones.push_back(bone);
         }
     }
 
     if (rawData.HasMember(IK))
     {
-        for (const auto& ikObject : rawData[IK].GetArray())
+        const auto& iks = rawData[IK];
+        for (size_t i = 0, l = iks.Size(); i < l; ++i)
         {
-            _parseIK(ikObject);
+            _parseIK(iks[i]);
         }
     }
 
     if (rawData.HasMember(SLOT))
     {
-        auto zOrder = 0;
-        for (const auto& slotObject : rawData[SLOT].GetArray())
+        int zOrder = 0;
+        const auto& slots = rawData[SLOT];
+        for (size_t i = 0, l = slots.Size(); i < l; ++i)
         {
-            armature->addSlot(_parseSlot(slotObject, zOrder++));
+            armature->addSlot(_parseSlot(slots[i], zOrder++));
         }
     }
 
     if (rawData.HasMember(SKIN))
     {
-        for (const auto& skinObject : rawData[SKIN].GetArray())
+        const auto& skins = rawData[SKIN];
+        for (size_t i = 0, l = skins.Size(); i < l; ++i)
         {
-            armature->addSkin(_parseSkin(skinObject));
+            armature->addSkin(_parseSkin(skins[i]));
         }
     }
 
     if (rawData.HasMember(ANIMATION))
     {
-        for (const auto& animationObject : rawData[ANIMATION].GetArray())
+        const auto& animations = rawData[ANIMATION];
+        for (size_t i = 0, l = animations.Size(); i < l; ++i)
         {
-            armature->addAnimation(_parseAnimation(animationObject));
+            armature->addAnimation(_parseAnimation(animations[i]));
         }
     }
 
@@ -97,7 +102,7 @@ ArmatureData * JSONDataParser::_parseArmature(const dragonBones_rapidjson::Value
     return armature;
 }
 
-BoneData * JSONDataParser::_parseBone(const dragonBones_rapidjson::Value & rawData)
+BoneData * JSONDataParser::_parseBone(const rapidjson::Value & rawData)
 {
     const auto bone = BaseObject::borrowObject<BoneData>();
     bone->name = _getString(rawData, NAME, "");
@@ -119,7 +124,7 @@ BoneData * JSONDataParser::_parseBone(const dragonBones_rapidjson::Value & rawDa
     return bone;
 }
 
-void JSONDataParser::_parseIK(const dragonBones_rapidjson::Value & rawData)
+void JSONDataParser::_parseIK(const rapidjson::Value & rawData)
 {
     const auto bone = this->_armature->getBone(_getString(rawData, rawData.HasMember(BONE) ? BONE : NAME, ""));
     if (bone)
@@ -144,7 +149,7 @@ void JSONDataParser::_parseIK(const dragonBones_rapidjson::Value & rawData)
     }
 }
 
-SlotData * JSONDataParser::_parseSlot(const dragonBones_rapidjson::Value& rawData, int zOrder)
+SlotData * JSONDataParser::_parseSlot(const rapidjson::Value& rawData, int zOrder)
 {
     const auto slot = BaseObject::borrowObject<SlotData>();
     slot->name = _getString(rawData, NAME, "");
@@ -192,7 +197,7 @@ SlotData * JSONDataParser::_parseSlot(const dragonBones_rapidjson::Value& rawDat
     return slot;
 }
 
-SkinData * JSONDataParser::_parseSkin(const dragonBones_rapidjson::Value & rawData)
+SkinData * JSONDataParser::_parseSkin(const rapidjson::Value & rawData)
 {
     const auto skin = BaseObject::borrowObject<SkinData>();
     skin->name = _getString(rawData, NAME, "__default");
@@ -204,15 +209,17 @@ SkinData * JSONDataParser::_parseSkin(const dragonBones_rapidjson::Value & rawDa
     if (rawData.HasMember(SLOT))
     {
         this->_skin = skin;
-        auto zOrder = 0;
-        for (const auto& slotObject : rawData[SLOT].GetArray())
+
+        int zOrder = 0;
+        const auto& slots = rawData[SLOT];
+        for (size_t i = 0, l = slots.Size(); i < l; ++i)
         {
             if (this->_isOldData) 
             {
-                this->_armature->addSlot(_parseSlot(slotObject, zOrder++));
+                this->_armature->addSlot(_parseSlot(slots[i], zOrder++));
             }
 
-            skin->addSlot(_parseSlotDisplaySet(slotObject));
+            skin->addSlot(_parseSlotDisplaySet(slots[i]));
         }
 
         this->_skin = nullptr;
@@ -221,22 +228,21 @@ SkinData * JSONDataParser::_parseSkin(const dragonBones_rapidjson::Value & rawDa
     return skin;
 }
 
-SlotDisplayDataSet * JSONDataParser::_parseSlotDisplaySet(const dragonBones_rapidjson::Value & rawData)
+SlotDisplayDataSet * JSONDataParser::_parseSlotDisplaySet(const rapidjson::Value & rawData)
 {
     const auto slotDisplayDataSet = BaseObject::borrowObject<SlotDisplayDataSet>();
     slotDisplayDataSet->slot = this->_armature->getSlot(_getString(rawData, NAME, ""));
 
     if (rawData.HasMember(DISPLAY))
     {
-        const auto& displayObjectSet = rawData[DISPLAY].GetArray();
-        auto& displayDataSet = slotDisplayDataSet->displays;
-        displayDataSet.reserve(displayObjectSet.Size());
-
         this->_slotDisplayDataSet = slotDisplayDataSet;
 
-        for (const auto& displayObject : displayObjectSet)
+        const auto& displayObjects = rawData[DISPLAY];
+        auto& displayDataSet = slotDisplayDataSet->displays;
+        displayDataSet.reserve(displayObjects.Size());
+        for (size_t i = 0, l = displayObjects.Size(); i < l; ++i)
         {
-            displayDataSet.push_back(_parseDisplay(displayObject));
+            displayDataSet.push_back(_parseDisplay(displayObjects[i]));
         }
 
         this->_slotDisplayDataSet = nullptr;
@@ -245,7 +251,7 @@ SlotDisplayDataSet * JSONDataParser::_parseSlotDisplaySet(const dragonBones_rapi
     return slotDisplayDataSet;
 }
 
-DisplayData * JSONDataParser::_parseDisplay(const dragonBones_rapidjson::Value & rawData)
+DisplayData * JSONDataParser::_parseDisplay(const rapidjson::Value & rawData)
 {
     const auto display = BaseObject::borrowObject<DisplayData>();
     display->name = _getString(rawData, NAME, "");
@@ -300,20 +306,20 @@ DisplayData * JSONDataParser::_parseDisplay(const dragonBones_rapidjson::Value &
     return display;
 }
 
-MeshData * JSONDataParser::_parseMesh(const dragonBones_rapidjson::Value & rawData)
+MeshData * JSONDataParser::_parseMesh(const rapidjson::Value & rawData)
 {
     const auto mesh = BaseObject::borrowObject<MeshData>();
 
-    const auto& rawVertices = rawData[VERTICES].GetArray();
-    const auto& rawUVs = rawData[UVS].GetArray();
-    const auto& rawTriangles = rawData[TRIANGLES].GetArray();
+    const auto& rawVertices = rawData[VERTICES];
+    const auto& rawUVs = rawData[UVS];
+    const auto& rawTriangles = rawData[TRIANGLES];
 
     const auto numVertices = (unsigned)(rawVertices.Size() / 2);
     const auto numTriangles = (unsigned)(rawTriangles.Size() / 3);
 
     std::vector<Matrix> inverseBindPose(this->_armature->getSortedBones().size(), Matrix());
 
-    mesh->skinned = rawData.HasMember(WEIGHTS) && !rawData[WEIGHTS].GetArray().Empty();
+    mesh->skinned = rawData.HasMember(WEIGHTS) && !rawData[WEIGHTS].Empty();
     mesh->uvs.resize(numVertices * 2);
     mesh->vertices.resize(numVertices * 2);
     mesh->vertexIndices.resize(numTriangles * 3);
@@ -326,28 +332,28 @@ MeshData * JSONDataParser::_parseMesh(const dragonBones_rapidjson::Value & rawDa
 
         if (rawData.HasMember(SLOT_POSE))
         {
-            const auto& rawSlotPose = rawData[SLOT_POSE].GetArray();
-            mesh->slotPose.a = rawSlotPose[0].GetFloat();
-            mesh->slotPose.b = rawSlotPose[1].GetFloat();
-            mesh->slotPose.c = rawSlotPose[2].GetFloat();
-            mesh->slotPose.d = rawSlotPose[3].GetFloat();
-            mesh->slotPose.tx = rawSlotPose[4].GetFloat() * this->_armature->scale;
-            mesh->slotPose.ty = rawSlotPose[5].GetFloat() * this->_armature->scale;
+            const auto& rawSlotPose = rawData[SLOT_POSE];
+            mesh->slotPose.a = rawSlotPose[0].GetDouble();
+            mesh->slotPose.b = rawSlotPose[1].GetDouble();
+            mesh->slotPose.c = rawSlotPose[2].GetDouble();
+            mesh->slotPose.d = rawSlotPose[3].GetDouble();
+            mesh->slotPose.tx = rawSlotPose[4].GetDouble() * this->_armature->scale;
+            mesh->slotPose.ty = rawSlotPose[5].GetDouble() * this->_armature->scale;
         }
 
         if (rawData.HasMember(BONE_POSE))
         {
-            const auto& rawBonePose = rawData[BONE_POSE].GetArray();
+            const auto& rawBonePose = rawData[BONE_POSE];
             for (std::size_t i = 0, l = rawBonePose.Size(); i < l; i += 7)
             {
                 const auto rawBoneIndex = rawBonePose[i].GetUint();
                 auto& boneMatrix = inverseBindPose[rawBoneIndex];
-                boneMatrix.a = rawBonePose[i + 1].GetFloat();
-                boneMatrix.b = rawBonePose[i + 2].GetFloat();
-                boneMatrix.c = rawBonePose[i + 3].GetFloat();
-                boneMatrix.d = rawBonePose[i + 4].GetFloat();
-                boneMatrix.tx = rawBonePose[i + 5].GetFloat() * this->_armature->scale;
-                boneMatrix.ty = rawBonePose[i + 6].GetFloat() * this->_armature->scale;
+                boneMatrix.a = rawBonePose[i + 1].GetDouble();
+                boneMatrix.b = rawBonePose[i + 2].GetDouble();
+                boneMatrix.c = rawBonePose[i + 3].GetDouble();
+                boneMatrix.d = rawBonePose[i + 4].GetDouble();
+                boneMatrix.tx = rawBonePose[i + 5].GetDouble() * this->_armature->scale;
+                boneMatrix.ty = rawBonePose[i + 6].GetDouble() * this->_armature->scale;
                 boneMatrix.invert();
             }
         }
@@ -358,14 +364,14 @@ MeshData * JSONDataParser::_parseMesh(const dragonBones_rapidjson::Value & rawDa
         const auto iN = i + 1;
         const auto vertexIndex = i / 2;
 
-        auto x = mesh->vertices[i] = rawVertices[i].GetFloat() * this->_armature->scale;
-        auto y = mesh->vertices[iN] = rawVertices[iN].GetFloat() * this->_armature->scale;
-        mesh->uvs[i] = rawUVs[i].GetFloat();
-        mesh->uvs[iN] = rawUVs[iN].GetFloat();
+        auto x = mesh->vertices[i] = rawVertices[i].GetDouble() * this->_armature->scale;
+        auto y = mesh->vertices[iN] = rawVertices[iN].GetDouble() * this->_armature->scale;
+        mesh->uvs[i] = rawUVs[i].GetDouble();
+        mesh->uvs[iN] = rawUVs[iN].GetDouble();
 
         if (mesh->skinned)
         {
-            const auto& rawWeights = rawData[WEIGHTS].GetArray();
+            const auto& rawWeights = rawData[WEIGHTS];
             const auto numBones = rawWeights[iW].GetUint();
             auto& indices = mesh->boneIndices[vertexIndex];
             auto& weights = mesh->weights[vertexIndex];
@@ -396,7 +402,7 @@ MeshData * JSONDataParser::_parseMesh(const dragonBones_rapidjson::Value & rawDa
                 mesh->inverseBindPose[boneIndex].transformPoint(x, y, _helpPoint);
 
                 indices.push_back(boneIndex);
-                weights.push_back(rawWeights[iI + 1].GetFloat());
+                weights.push_back(rawWeights[iI + 1].GetDouble());
                 boneVertices.push_back(_helpPoint.x);
                 boneVertices.push_back(_helpPoint.y);
             }
@@ -413,7 +419,7 @@ MeshData * JSONDataParser::_parseMesh(const dragonBones_rapidjson::Value & rawDa
     return mesh;
 }
 
-AnimationData * JSONDataParser::_parseAnimation(const dragonBones_rapidjson::Value & rawData) const
+AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData) const
 {
     const auto animation = BaseObject::borrowObject<AnimationData>();
     animation->name = _getString(rawData, NAME, "__default");
@@ -445,25 +451,28 @@ AnimationData * JSONDataParser::_parseAnimation(const dragonBones_rapidjson::Val
 
     if (rawData.HasMember(BONE))
     {
-        for (const auto& boneTimelineObject : rawData[BONE].GetArray())
+        const auto& boneTimelineObjects = rawData[BONE];
+        for (size_t i = 0, l = boneTimelineObjects.Size(); i < l; ++i)
         {
-            animation->addBoneTimeline(_parseBoneTimeline(boneTimelineObject));
+            animation->addBoneTimeline(_parseBoneTimeline(boneTimelineObjects[i]));
         }
     }
 
     if (rawData.HasMember(SLOT))
     {
-        for (const auto& slotTimelineObject : rawData[SLOT].GetArray())
+        const auto& slotTimelineObjects = rawData[SLOT];
+        for (size_t i = 0, l = slotTimelineObjects.Size(); i < l; ++i)
         {
-            animation->addSlotTimeline(_parseSlotTimeline(slotTimelineObject));
+            animation->addSlotTimeline(_parseSlotTimeline(slotTimelineObjects[i]));
         }
     }
 
     if (rawData.HasMember(FFD))
     {
-        for (const auto& ffdTimelineObject : rawData[FFD].GetArray())
+        const auto& ffdTimelineObjects = rawData[FFD];
+        for (size_t i = 0, l = ffdTimelineObjects.Size(); i < l; ++i)
         {
-            animation->addFFDTimeline(_parseFFDTimeline(ffdTimelineObject));
+            animation->addFFDTimeline(_parseFFDTimeline(ffdTimelineObjects[i]));
         }
     }
 
@@ -475,15 +484,12 @@ AnimationData * JSONDataParser::_parseAnimation(const dragonBones_rapidjson::Val
 
         if (rawData.HasMember(TIMELINE)) 
         {
-            const auto& timelines = rawData[TIMELINE].GetArray();
-            for (const auto& timeline : timelines) 
+            const auto& timelineObjects = rawData[TIMELINE];
+            for (size_t i = 0, l = timelineObjects.Size(); i < l; ++i)
             {
-                animation->addBoneTimeline(_parseBoneTimeline(timeline));
-            }
-
-            for (const auto& timeline : timelines)
-            {
-                animation->addSlotTimeline(_parseSlotTimeline(timeline));
+                const auto& timelineObject = timelineObjects[i];
+                animation->addBoneTimeline(_parseBoneTimeline(timelineObject));
+                animation->addSlotTimeline(_parseSlotTimeline(timelineObject));
             }
         }
     }
@@ -541,7 +547,7 @@ AnimationData * JSONDataParser::_parseAnimation(const dragonBones_rapidjson::Val
     return animation;
 }
 
-BoneTimelineData * JSONDataParser::_parseBoneTimeline(const dragonBones_rapidjson::Value& rawData) const
+BoneTimelineData * JSONDataParser::_parseBoneTimeline(const rapidjson::Value& rawData) const
 {
     const auto timeline = BaseObject::borrowObject<BoneTimelineData>();
     timeline->bone = this->_armature->getBone(_getString(rawData, NAME, ""));
@@ -599,7 +605,7 @@ BoneTimelineData * JSONDataParser::_parseBoneTimeline(const dragonBones_rapidjso
     return timeline;
 }
 
-SlotTimelineData * JSONDataParser::_parseSlotTimeline(const dragonBones_rapidjson::Value& rawData) const
+SlotTimelineData * JSONDataParser::_parseSlotTimeline(const rapidjson::Value& rawData) const
 {
     const auto timeline = BaseObject::borrowObject<SlotTimelineData>();
     timeline->slot = this->_armature->getSlot(_getString(rawData, NAME, ""));
@@ -614,7 +620,7 @@ SlotTimelineData * JSONDataParser::_parseSlotTimeline(const dragonBones_rapidjso
     return timeline;
 }
 
-FFDTimelineData * JSONDataParser::_parseFFDTimeline(const dragonBones_rapidjson::Value& rawData) const
+FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value& rawData) const
 {
     const auto timeline = BaseObject::borrowObject<FFDTimelineData>();
     timeline->skin = this->_armature->getSkin(_getString(rawData, SKIN, ""));
@@ -639,7 +645,7 @@ FFDTimelineData * JSONDataParser::_parseFFDTimeline(const dragonBones_rapidjson:
     return timeline;
 }
 
-AnimationFrameData * JSONDataParser::_parseAnimationFrame(const dragonBones_rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const
+AnimationFrameData * JSONDataParser::_parseAnimationFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const
 {
     const auto frame = BaseObject::borrowObject<AnimationFrameData>();
 
@@ -658,7 +664,7 @@ AnimationFrameData * JSONDataParser::_parseAnimationFrame(const dragonBones_rapi
     return frame;
 }
 
-BoneFrameData * JSONDataParser::_parseBoneFrame(const dragonBones_rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const
+BoneFrameData * JSONDataParser::_parseBoneFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const
 {
     const auto frame = BaseObject::borrowObject<BoneFrameData>();
     frame->parent = this->_armature->getBone(_getString(rawData, PARENT, ""));
@@ -706,7 +712,7 @@ BoneFrameData * JSONDataParser::_parseBoneFrame(const dragonBones_rapidjson::Val
     return frame;
 }
 
-SlotFrameData * JSONDataParser::_parseSlotFrame(const dragonBones_rapidjson::Value & rawData, unsigned frameStart, unsigned frameCount) const
+SlotFrameData * JSONDataParser::_parseSlotFrame(const rapidjson::Value & rawData, unsigned frameStart, unsigned frameCount) const
 {
     const auto frame = BaseObject::borrowObject<SlotFrameData>();
     frame->displayIndex = _getNumber(rawData, DISPLAY_INDEX, (int)0);
@@ -743,7 +749,7 @@ SlotFrameData * JSONDataParser::_parseSlotFrame(const dragonBones_rapidjson::Val
     return frame;
 }
 
-ExtensionFrameData * JSONDataParser::_parseFFDFrame(const dragonBones_rapidjson::Value & rawData, unsigned frameStart, unsigned frameCount) const
+ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & rawData, unsigned frameStart, unsigned frameCount) const
 {
     const auto frame  = BaseObject::borrowObject<ExtensionFrameData>();
     frame->type = (ExtensionType)_getNumber(rawData, TYPE, (int)ExtensionType::FFD);
@@ -758,7 +764,7 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const dragonBones_rapidjson:
     {
         if (hasVertices) 
         {
-            const auto rawVertices = rawData[VERTICES].GetArray();
+            const auto& rawVertices = rawData[VERTICES];
             if (i < offset || i - offset >= rawVertices.Size())
             {
                 x = 0.f;
@@ -766,8 +772,8 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const dragonBones_rapidjson:
             }
             else
             {
-                x = rawVertices[i - offset].GetFloat() * this->_armature->scale;
-                y = rawVertices[i + 1 - offset].GetFloat() * this->_armature->scale;
+                x = rawVertices[i - offset].GetDouble() * this->_armature->scale;
+                y = rawVertices[i + 1 - offset].GetDouble() * this->_armature->scale;
             }
         }
         else
@@ -800,7 +806,7 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const dragonBones_rapidjson:
     return frame;
 }
 
-void JSONDataParser::_parseActionData(const dragonBones_rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData * bone, SlotData * slot) const
+void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData * bone, SlotData * slot) const
 {
     const auto& actionsObject = rawData.HasMember(ACTION) ? rawData[ACTION] : (rawData.HasMember(ACTIONS) ? rawData[ACTIONS] : rawData[DEFAULT_ACTIONS]);
 
@@ -824,9 +830,9 @@ void JSONDataParser::_parseActionData(const dragonBones_rapidjson::Value& rawDat
     else if (actionsObject.IsArray())
     {
         const char* GOTO_AND_PLAY = "gotoAndPlay";
-
-        for (const auto& actionObject : actionsObject.GetArray())
+        for (size_t i = 0, l = actionsObject.Size(); i < l; ++i)
         {
+            const auto& actionObject = actionsObject[i];
             const auto isArray = actionObject.IsArray();
             const auto actionData = BaseObject::borrowObject<ActionData>();
             const auto animationName = isArray ? _getParameter(actionObject, 1, "") : _getString(actionObject, GOTO_AND_PLAY, "");
@@ -893,7 +899,7 @@ void JSONDataParser::_parseActionData(const dragonBones_rapidjson::Value& rawDat
     }
 }
 
-void JSONDataParser::_parseEventData(const dragonBones_rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const
+void JSONDataParser::_parseEventData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const
 {
     if (rawData.HasMember(SOUND))
     {
@@ -922,7 +928,7 @@ void JSONDataParser::_parseEventData(const dragonBones_rapidjson::Value& rawData
     }
 }
 
-void JSONDataParser::_parseTransform(const dragonBones_rapidjson::Value& rawData, Transform& transform) const
+void JSONDataParser::_parseTransform(const rapidjson::Value& rawData, Transform& transform) const
 {
     transform.x = _getNumber(rawData, X, 0.f) * this->_armature->scale;
     transform.y = _getNumber(rawData, Y, 0.f) * this->_armature->scale;
@@ -932,7 +938,7 @@ void JSONDataParser::_parseTransform(const dragonBones_rapidjson::Value& rawData
     transform.scaleY = _getNumber(rawData, SCALE_Y, 1.f);
 }
 
-void JSONDataParser::_parseColorTransform(const dragonBones_rapidjson::Value& rawData, ColorTransform& color) const
+void JSONDataParser::_parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color) const
 {
     color.alphaMultiplier = _getNumber(rawData, ALPHA_MULTIPLIER, (int)100) * 0.01f;
     color.redMultiplier = _getNumber(rawData, RED_MULTIPLIER, (int)100) * 0.01f;
@@ -948,7 +954,7 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
 {
     if (rawData)
     {
-        dragonBones_rapidjson::Document document;
+        rapidjson::Document document;
         document.Parse(rawData);
 
         std::string version = _getString(document, VERSION, "");
@@ -975,10 +981,10 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
             if (document.HasMember(ARMATURE))
             {
                 this->_data = data;
-
-                for (const auto& armatureObject : document[ARMATURE].GetArray())
+                const auto& armatureObjects = document[ARMATURE];
+                for (size_t i = 0, l = armatureObjects.Size(); i < l; ++i)
                 {
-                    data->addArmature(_parseArmature(armatureObject, scale));
+                    data->addArmature(_parseArmature(armatureObjects[i], scale));
                 }
 
                 this->_data = nullptr;
@@ -1003,7 +1009,7 @@ void JSONDataParser::parseTextureAtlasData(const char* rawData, TextureAtlasData
 {
     if (rawData)
     {
-        dragonBones_rapidjson::Document document;
+        rapidjson::Document document;
         document.Parse(rawData);
 
         textureAtlasData.name = _getString(document, NAME, "");
@@ -1023,8 +1029,10 @@ void JSONDataParser::parseTextureAtlasData(const char* rawData, TextureAtlasData
 
         if (document.HasMember(SUB_TEXTURE))
         {
-            for (const auto& textureObject : document[SUB_TEXTURE].GetArray())
+            const auto& textureObjects = document[SUB_TEXTURE];
+            for (size_t i = 0, l = textureObjects.Size(); i < l; ++i)
             {
+                const auto& textureObject = textureObjects[i];
                 const auto textureData = textureAtlasData.generateTexture();
                 textureData->name = _getString(textureObject, NAME, "");
                 textureData->rotated = _getBoolean(textureObject, ROTATED, false);
