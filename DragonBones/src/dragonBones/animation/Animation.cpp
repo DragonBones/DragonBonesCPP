@@ -7,7 +7,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 bool Animation::_sortAnimationState(AnimationState* a, AnimationState* b)
 {
-    return a->getLayer() < b->getLayer();
+    return a->getLayer() > b->getLayer();
 }
 
 Animation::Animation() 

@@ -220,12 +220,11 @@ void ArmatureData::_onClear()
     name.clear();
     parent = nullptr;
     aabb.clear();
-
+    actions.clear();
     bones.clear();
     slots.clear();
     skins.clear();
     animations.clear();
-    actions.clear();
 
     cacheFrameRate = 0;
     scale = 1.f;

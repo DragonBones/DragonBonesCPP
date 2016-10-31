@@ -242,8 +242,8 @@ void CCSlot::_updateFrame()
                 triangles.indexCount = (unsigned)(this->_meshData->vertexIndices.size());
                 polygonInfo.rect = boundsRect; // Copy
                 frameDisplay->setPolygonInfo(polygonInfo);
+                frameDisplay->setColor(frameDisplay->getColor()); // Backup
                 frameDisplay->setContentSize(boundsRect.size);
-                frameDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
 
                 if (this->_meshData->skinned)
                 {

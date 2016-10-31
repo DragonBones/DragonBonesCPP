@@ -204,7 +204,7 @@ protected:
 
         if (rawData.HasMember(FRAME))
         {
-            const auto& rawFrames = rawData[FRAME].GetArray();
+            const auto& rawFrames = rawData[FRAME];
             if (!rawFrames.Empty())
             {
                 if (rawFrames.Size() == 1)
