@@ -28,14 +28,16 @@ private:
 
 public:
     /** @private */
-    void _onClear() override;
+    virtual void _onClear() override;
     /** @private */
-    void _dispatchEvent(EventObject* value) override;
+    virtual void _dispatchEvent(EventObject* value) override;
     /** @private */
-    void update(float passedTime) override;
+    virtual void dispose() override;
+    /** @private */
+    virtual void update(float passedTime) override;
 
 public:
-    void advanceTimeBySelf(bool on) override;
+    virtual void advanceTimeBySelf(bool on) override;
 
     inline bool hasEvent(const std::string& type) const override
     {

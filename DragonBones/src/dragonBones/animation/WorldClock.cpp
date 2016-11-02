@@ -15,6 +15,69 @@ WorldClock::~WorldClock()
     clear();
 }
 
+void WorldClock::advanceTime(float passedTime)
+{
+    if (passedTime < 0 || passedTime != passedTime)
+    {
+        passedTime = 0;
+    }
+
+    passedTime *= timeScale;
+
+    if (passedTime < 0)
+    {
+        time -= passedTime;
+    }
+    else
+    {
+        time += passedTime;
+    }
+
+    if (passedTime)
+    {
+        std::size_t i = 0, r = 0, l = _animatebles.size();
+
+        for (; i < l; ++i)
+        {
+            const auto animateble = _animatebles[i];
+            if (animateble)
+            {
+                if (r > 0)
+                {
+                    _animatebles[i - r] = animateble;
+                    _animatebles[i] = nullptr;
+                }
+
+                animateble->advanceTime(passedTime);
+            }
+            else
+            {
+                r++;
+            }
+        }
+
+        if (r > 0)
+        {
+            l = _animatebles.size();
+
+            for (; i < l; ++i)
+            {
+                const auto animateble = _animatebles[i];
+                if (animateble)
+                {
+                    _animatebles[i - r] = animateble;
+                }
+                else
+                {
+                    r++;
+                }
+            }
+
+            _animatebles.resize(l - r);
+        }
+    }
+}
+
 bool WorldClock::contains(const IAnimateble* value) const
 {
     return std::find(_animatebles.cbegin(), _animatebles.cend(), value) != _animatebles.cend();
@@ -42,68 +105,6 @@ void WorldClock::clear()
     for (auto animateble : _animatebles)
     {
         animateble = nullptr;
-    }
-}
-
-void WorldClock::advanceTime(float passedTime)
-{
-    if (passedTime < 0 || passedTime != passedTime)
-    {
-        passedTime = 0;
-    }
-
-    passedTime *= timeScale;
-
-    if (passedTime < 0)
-    {
-        time -= passedTime;
-    }
-    else
-    {
-        time += passedTime;
-    }
-
-    if (passedTime && !_animatebles.empty())
-    {
-        std::size_t i = 0, r = 0, l = _animatebles.size();
-
-        for (; i < l; ++i)
-        {
-            const auto animateble = _animatebles[i];
-            if (animateble)
-            {
-                animateble->advanceTime(passedTime);
-
-                if (r > 0)
-                {
-                    _animatebles[i - r] = animateble;
-                }
-            }
-            else
-            {
-                r++;
-            }
-        }
-
-        if (r > 0)
-        {
-            l = _animatebles.size();
-
-            for (; i < l; ++i)
-            {
-                const auto animateble = _animatebles[i];
-                if (animateble)
-                {
-                    _animatebles[i - r] = animateble;
-                }
-                else
-                {
-                    r++;
-                }
-            }
-
-            _animatebles.resize(l - r);
-        }
     }
 }
 
