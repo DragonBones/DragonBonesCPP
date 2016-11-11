@@ -78,7 +78,13 @@ protected:
     {
         if (rawData.HasMember(key))
         {
-            return rawData[key].GetString();
+            if (rawData[key].IsString())
+            {
+                return rawData[key].GetString();
+            }
+
+            //
+            return dragonBones::to_string(rawData[key].GetDouble());
         }
 
         return defaultValue;
