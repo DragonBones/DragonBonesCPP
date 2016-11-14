@@ -59,6 +59,8 @@ void CCArmatureDisplay::dispose()
         _armature->dispose();
         _armature = nullptr;
     }
+    
+    release()
 }
 
 void CCArmatureDisplay::update(float passedTime)
