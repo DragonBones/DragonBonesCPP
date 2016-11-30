@@ -6,7 +6,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class CCArmatureDisplay : public IArmatureDisplay, public cocos2d::Node
+class CCArmatureDisplay : public cocos2d::Node, public virtual IArmatureDisplay
 {
 public:
     /** @private */
@@ -36,6 +36,9 @@ public:
 
 public:
     void advanceTimeBySelf(bool on) override;
+    
+    void addEvent(const std::string& type, const std::function<void(EventObject*)>& callback);
+    void removeEvent(const std::string& type);
 
     inline bool hasEvent(const std::string& type) const override
     {
