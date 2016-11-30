@@ -42,6 +42,16 @@ void CCArmatureDisplay::_dispatchEvent(EventObject* value)
     _dispatcher->dispatchCustomEvent(value->type, value);
 }
 
+void CCArmatureDisplay::dispose()
+{
+    if (_armature) 
+    {
+        advanceTimeBySelf(false);
+        _armature->dispose();
+        _armature = nullptr;
+    }
+}
+
 void CCArmatureDisplay::update(float passedTime)
 {
     _armature->advanceTime(passedTime);
