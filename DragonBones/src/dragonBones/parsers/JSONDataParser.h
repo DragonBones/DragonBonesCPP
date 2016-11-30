@@ -94,7 +94,7 @@ protected:
     {
         if (rawData.Size() > index)
         {
-            return rawData[index].GetInt();
+            return rawData[(int) index].GetInt();
         }
 
         return defaultValue;
@@ -104,7 +104,7 @@ protected:
     {
         if (rawData.Size() > index)
         {
-            return rawData[index].GetDouble();
+            return rawData[(int) index].GetFloat();
         }
 
         return defaultValue;
@@ -114,7 +114,7 @@ protected:
     {
         if (rawData.Size() > index)
         {
-            return rawData[index].GetString();
+            return rawData[(int) index].GetString();
         }
 
         return defaultValue;

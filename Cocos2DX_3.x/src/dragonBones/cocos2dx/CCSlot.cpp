@@ -43,7 +43,7 @@ void CCSlot::_onUpdateDisplay()
     {
         if (this->_childArmature)
         {
-            _renderDisplay = static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(this->_display)));
+            _renderDisplay = dynamic_cast<cocos2d::Node*>(static_cast<IArmatureDisplay*>(this->_display));
         }
         else
         {
@@ -58,16 +58,14 @@ void CCSlot::_onUpdateDisplay()
 
 void CCSlot::_addDisplay()
 {
-    const auto container = static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(this->_armature->_display));
+    const auto container = dynamic_cast<CCArmatureDisplay*>(this->_armature->_display);
     container->addChild(_renderDisplay);
 }
 
 void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplayContainer)
 {
-    const auto container = static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(this->_armature->_display));
-    const auto prevDisplay = isArmatureDisplayContainer ?
-        static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(value))) : 
-        static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(value)) : value); // WTF
+    const auto container = dynamic_cast<CCArmatureDisplay*>(this->_armature->_display);
+    const auto prevDisplay = isArmatureDisplayContainer ? dynamic_cast<cocos2d::Node*>(static_cast<IArmatureDisplay*>(value)) : static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplay*>(value) : value); // WTF
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
 }
