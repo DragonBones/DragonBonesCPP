@@ -12,6 +12,7 @@ CCFactory::CCFactory()
     if (!EventObject::_soundEventManager) 
     {
         EventObject::_soundEventManager = CCArmatureDisplay::create();
+        EventObject::_soundEventManager->retain();
     }
 }
 CCFactory::~CCFactory() 
