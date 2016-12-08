@@ -293,6 +293,8 @@ void CCSlot::_updateFrame()
                 {
                     frameDisplay->setTexture(texture); // Relpace texture // polygonInfo will be override
                 }
+
+                this->_blendModeDirty = true; // Relpace texture // blendMode will be override
             }
 
             this->_updateVisible();

@@ -11,8 +11,10 @@ CCFactory::CCFactory()
 {
     if (!EventObject::_soundEventManager) 
     {
-        EventObject::_soundEventManager = CCArmatureDisplay::create();
-        EventObject::_soundEventManager->retain();
+        const auto display = CCArmatureDisplay::create();
+        display->retain();
+
+        EventObject::_soundEventManager = display;
     }
 }
 CCFactory::~CCFactory() 
@@ -256,7 +258,7 @@ cocos2d::Sprite* CCFactory::getTextureDisplay(const std::string& textureName, co
 
 CCArmatureDisplay* CCFactory::getSoundEventManater() const
 {
-    return static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(EventObject::_soundEventManager));
+    return dynamic_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(EventObject::_soundEventManager));
 }
 
 DRAGONBONES_NAMESPACE_END
