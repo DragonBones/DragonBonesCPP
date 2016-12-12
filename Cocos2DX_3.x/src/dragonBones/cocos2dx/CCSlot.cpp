@@ -238,10 +238,10 @@ void CCSlot::_updateFrame()
                 triangles.indices = vertexIndices;
                 triangles.vertCount = (unsigned)(this->_meshData->uvs.size() / 2);
                 triangles.indexCount = (unsigned)(this->_meshData->vertexIndices.size());
-                polygonInfo.rect = boundsRect; // Copy
+                polygonInfo.setRect(boundsRect); // Copy
+                frameDisplay->setContentSize(boundsRect.size);
                 frameDisplay->setPolygonInfo(polygonInfo);
                 frameDisplay->setColor(frameDisplay->getColor()); // Backup
-                frameDisplay->setContentSize(boundsRect.size);
 
                 if (this->_meshData->skinned)
                 {
@@ -419,13 +419,15 @@ void CCSlot::_updateMesh()
 
     boundsRect.size.width -= boundsRect.origin.x;
     boundsRect.size.height -= boundsRect.origin.y;
-    
-    cocos2d::Rect* rect = (cocos2d::Rect*)&meshDisplay->getPolygonInfo().rect;
-    rect->origin = boundsRect.origin; // copy
-    rect->size = boundsRect.size; // copy
+
+
+    auto polygonInfo = meshDisplay->getPolygonInfo();
+    polygonInfo.setRect(boundsRect);
 
     const auto& transform = meshDisplay->getNodeToParentTransform();
     meshDisplay->setContentSize(boundsRect.size);
+    meshDisplay->setPolygonInfo(polygonInfo);
+
     _renderDisplay->setNodeToParentTransform(transform);
 }
 
