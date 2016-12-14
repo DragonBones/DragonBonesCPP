@@ -238,7 +238,11 @@ void CCSlot::_updateFrame()
                 triangles.indices = vertexIndices;
                 triangles.vertCount = (unsigned)(this->_meshData->uvs.size() / 2);
                 triangles.indexCount = (unsigned)(this->_meshData->vertexIndices.size());
-                polygonInfo.setRect(boundsRect); // Copy
+#if COCOS2D_VERSION >= 0x00031400
+                polygonInfo.setRect(boundsRect);
+#else
+                polygonInfo.rect = boundsRect; // Copy
+#endif
                 frameDisplay->setContentSize(boundsRect.size);
                 frameDisplay->setPolygonInfo(polygonInfo);
                 frameDisplay->setColor(frameDisplay->getColor()); // Backup
@@ -422,8 +426,11 @@ void CCSlot::_updateMesh()
 
 
     auto polygonInfo = meshDisplay->getPolygonInfo();
+#if COCOS2D_VERSION >= 0x00031400
     polygonInfo.setRect(boundsRect);
-
+#else
+    polygonInfo.rect = boundsRect; // Copy
+#endif
     const auto& transform = meshDisplay->getNodeToParentTransform();
     meshDisplay->setContentSize(boundsRect.size);
     meshDisplay->setPolygonInfo(polygonInfo);
