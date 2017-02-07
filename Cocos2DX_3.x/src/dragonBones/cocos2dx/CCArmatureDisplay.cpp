@@ -23,26 +23,17 @@ CCArmatureDisplay::CCArmatureDisplay() :
     _dispatcher(nullptr)
 {
     _dispatcher = new cocos2d::EventDispatcher();
-    _dispatcher->retain();
     this->setEventDispatcher(_dispatcher);
+    _dispatcher->setEnabled(true);
 }
 CCArmatureDisplay::~CCArmatureDisplay() {}
 
 void CCArmatureDisplay::_onClear()
 {
-    //_dispatcher->removeAllEventListeners();
-
     this->setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
 
-    if (_dispatcher)
-    {
-        _dispatcher->release();
-        delete _dispatcher;
-        _dispatcher = nullptr;
-    }
-
     _armature = nullptr;
-
+    CC_SAFE_RELEASE(_dispatcher);
     this->release();
 }
 
@@ -76,6 +67,19 @@ void CCArmatureDisplay::advanceTimeBySelf(bool on)
     {
         unscheduleUpdate();
     }
+}
+
+void CCArmatureDisplay::addEvent(const std::string& type, const std::function<void(EventObject*)>& callback)
+{
+    auto lambda = [callback](cocos2d::EventCustom* event) -> void {
+        callback(static_cast<EventObject*>(event->getUserData()));
+    };
+    _dispatcher->addCustomEventListener(type, lambda);
+}
+
+void CCArmatureDisplay::removeEvent(const std::string& type)
+{
+    _dispatcher->removeCustomEventListeners(type);
 }
 
 DBCCSprite* DBCCSprite::create()
@@ -136,8 +140,12 @@ bool DBCCSprite::_checkVisibility(const cocos2d::Mat4& transform, const cocos2d:
 void DBCCSprite::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transform, uint32_t flags)
 {
 #if CC_USE_CULLING
+#if COCOS2D_VERSION >= 0x00031400
+    const auto& rect = this->_polyInfo.getRect();
+#else
     const auto& rect = this->_polyInfo.rect;
-
+#endif
+    
     // Don't do calculate the culling if the transform was not updated
     auto visitingCamera = cocos2d::Camera::getVisitingCamera();
     auto defaultCamera = cocos2d::Camera::getDefaultCamera();

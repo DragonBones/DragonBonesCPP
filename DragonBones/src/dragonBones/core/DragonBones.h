@@ -135,7 +135,7 @@ inline int indexOf(const std::vector<T>& vector, const T& value)
     {
         if (vector[i] == value)
         {
-            return i;
+            return (int) i;
         }
     }
     

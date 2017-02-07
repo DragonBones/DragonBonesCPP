@@ -43,7 +43,7 @@ void CCSlot::_onUpdateDisplay()
     {
         if (this->_childArmature)
         {
-            _renderDisplay = static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(this->_display)));
+            _renderDisplay = dynamic_cast<cocos2d::Node*>(static_cast<IArmatureDisplay*>(this->_display));
         }
         else
         {
@@ -58,16 +58,14 @@ void CCSlot::_onUpdateDisplay()
 
 void CCSlot::_addDisplay()
 {
-    const auto container = static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(this->_armature->_display));
+    const auto container = dynamic_cast<CCArmatureDisplay*>(this->_armature->_display);
     container->addChild(_renderDisplay);
 }
 
 void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplayContainer)
 {
-    const auto container = static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(this->_armature->_display));
-    const auto prevDisplay = isArmatureDisplayContainer ?
-        static_cast<cocos2d::Node*>(static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(value))) : 
-        static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplay*>(static_cast<IArmatureDisplay*>(value)) : value); // WTF
+    const auto container = dynamic_cast<CCArmatureDisplay*>(this->_armature->_display);
+    const auto prevDisplay = isArmatureDisplayContainer ? dynamic_cast<cocos2d::Node*>(static_cast<IArmatureDisplay*>(value)) : static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplay*>(value) : value); // WTF
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
 }
@@ -240,10 +238,14 @@ void CCSlot::_updateFrame()
                 triangles.indices = vertexIndices;
                 triangles.vertCount = (unsigned)(this->_meshData->uvs.size() / 2);
                 triangles.indexCount = (unsigned)(this->_meshData->vertexIndices.size());
+#if COCOS2D_VERSION >= 0x00031400
+                polygonInfo.setRect(boundsRect);
+#else
                 polygonInfo.rect = boundsRect; // Copy
+#endif
+                frameDisplay->setContentSize(boundsRect.size);
                 frameDisplay->setPolygonInfo(polygonInfo);
                 frameDisplay->setColor(frameDisplay->getColor()); // Backup
-                frameDisplay->setContentSize(boundsRect.size);
 
                 if (this->_meshData->skinned)
                 {
@@ -295,6 +297,8 @@ void CCSlot::_updateFrame()
                 {
                     frameDisplay->setTexture(texture); // Relpace texture // polygonInfo will be override
                 }
+
+                this->_blendModeDirty = true; // Relpace texture // blendMode will be override
             }
 
             this->_updateVisible();
@@ -419,13 +423,18 @@ void CCSlot::_updateMesh()
 
     boundsRect.size.width -= boundsRect.origin.x;
     boundsRect.size.height -= boundsRect.origin.y;
-    
-    cocos2d::Rect* rect = (cocos2d::Rect*)&meshDisplay->getPolygonInfo().rect;
-    rect->origin = boundsRect.origin; // copy
-    rect->size = boundsRect.size; // copy
 
+
+    auto polygonInfo = meshDisplay->getPolygonInfo();
+#if COCOS2D_VERSION >= 0x00031400
+    polygonInfo.setRect(boundsRect);
+#else
+    polygonInfo.rect = boundsRect; // Copy
+#endif
     const auto& transform = meshDisplay->getNodeToParentTransform();
     meshDisplay->setContentSize(boundsRect.size);
+    meshDisplay->setPolygonInfo(polygonInfo);
+
     _renderDisplay->setNodeToParentTransform(transform);
 }
 

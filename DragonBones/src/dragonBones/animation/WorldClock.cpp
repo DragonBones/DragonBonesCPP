@@ -102,7 +102,7 @@ void WorldClock::remove(IAnimateble* value)
 
 void WorldClock::clear()
 {
-    for (auto animateble : _animatebles)
+    for (auto& animateble : _animatebles)
     {
         animateble = nullptr;
     }
