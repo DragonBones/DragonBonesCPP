@@ -28,19 +28,30 @@ bool HelloDragonBones::init()
     _armatureDisplay = nullptr;
 
     // Load DragonBones Data.
-    _dragonBonesData = _factory.loadDragonBonesData("DragonBoy/DragonBoy.json");
-    _factory.loadTextureAtlasData("DragonBoy/DragonBoy_texture_1.json");
+    _dragonBonesData = _factory.loadDragonBonesData("FadeInCrash/16_ske.json");
+    _factory.loadTextureAtlasData("FadeInCrash/16_tex.json");
 
     if (_dragonBonesData)
     {
-        _changeArmature();
-        _changeAnimation();
+        _armatureDisplay = _factory.buildArmatureDisplay("armatureName");
+        _armature = _armatureDisplay->getArmature();
+        
+        const auto center = cocos2d::Director::getInstance()->getVisibleSize();
+        _armatureDisplay->setPosition(center.width * 0.5f, center.height * 0.5f);
+        _armatureDisplay->setScale(_armatureScale);
+        this->addChild(_armatureDisplay);
+        
+        _armature->getAnimation().fadeIn("Z公主-定帧", 0, 1, 0, "gongzhu", dragonBones::AnimationFadeOutMode::SameGroup);
+        _armature->getAnimation().fadeIn("Z男孩-定帧", 0, 1, 0, "nanhai", dragonBones::AnimationFadeOutMode::SameGroup);
+        _armatureDisplay->addEvent(dragonBones::EventObject::COMPLETE, std::bind(&HelloDragonBones::_frameEventHandler, this, std::placeholders::_1));
+//        _changeArmature();
+//        _changeAnimation();
 
-        const auto listener = cocos2d::EventListenerTouchOneByOne::create();
-        listener->onTouchBegan = CC_CALLBACK_2(HelloDragonBones::_touchBeganHandler, this);
-        listener->onTouchEnded = CC_CALLBACK_2(HelloDragonBones::_touchEndedHandler, this);
-        listener->onTouchMoved = CC_CALLBACK_2(HelloDragonBones::_touchMovedHandler, this);
-        this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+//        const auto listener = cocos2d::EventListenerTouchOneByOne::create();
+//        listener->onTouchBegan = CC_CALLBACK_2(HelloDragonBones::_touchBeganHandler, this);
+//        listener->onTouchEnded = CC_CALLBACK_2(HelloDragonBones::_touchEndedHandler, this);
+//        listener->onTouchMoved = CC_CALLBACK_2(HelloDragonBones::_touchMovedHandler, this);
+//        this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
     }
     else
     {
@@ -54,6 +65,22 @@ bool HelloDragonBones::init()
     this->addChild(text);
 
     return true;
+}
+
+void HelloDragonBones::_frameEventHandler(dragonBones::EventObject* event)
+{
+    auto eventType = event->type;
+    auto animName = event->animationState->getName();
+    
+    if (strcmp(eventType.c_str(), dragonBones::EventObject::COMPLETE) == 0) {
+        
+        if (strcmp("Z公主-定帧", animName.c_str()) == 0) {
+            _armature->getAnimation().fadeIn("动画-公主-定帧", 0, 1, 0, "gongzhu", dragonBones::AnimationFadeOutMode::SameGroup);
+        } else if (strcmp("Z男孩-定帧", animName.c_str()) == 0) {
+            
+            _armature->getAnimation().fadeIn("动画-男孩-定帧", 0, 1, 0, "nanhai", dragonBones::AnimationFadeOutMode::SameGroup);
+        }
+    }
 }
 
 void HelloDragonBones::_changeArmature()
