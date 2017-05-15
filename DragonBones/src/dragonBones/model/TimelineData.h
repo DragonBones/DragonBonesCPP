@@ -124,5 +124,20 @@ protected:
     void _onClear() override;
 };
 
+/**
+* @private
+*/
+class ZOrderTimelineData final : public TimelineData<ZOrderFrameData>
+{
+    BIND_CLASS_TYPE(ZOrderTimelineData);
+
+public:
+    ZOrderTimelineData();
+    ~ZOrderTimelineData();
+
+private:
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(ZOrderTimelineData);
+};
+
 DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_TIMELINE_DATA_H

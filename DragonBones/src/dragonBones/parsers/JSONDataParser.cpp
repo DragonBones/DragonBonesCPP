@@ -476,6 +476,11 @@ AnimationData * JSONDataParser::_parseAnimation(const rapidjson::Value & rawData
         }
     }
 
+    if (rawData.HasMember(ZORDER))
+    {
+        animation->addZOrderTimeline(_parseZOrderTimeline(rawData[ZORDER]));
+    }
+
     if (this->_isOldData) 
     {
         this->_isAutoTween = _getBoolean(rawData, AUTO_TWEEN, true);
@@ -645,6 +650,15 @@ FFDTimelineData * JSONDataParser::_parseFFDTimeline(const rapidjson::Value& rawD
     return timeline;
 }
 
+ZOrderTimelineData * JSONDataParser::_parseZOrderTimeline(const rapidjson::Value& rawData) const
+{
+    const auto timeline = BaseObject::borrowObject<ZOrderTimelineData>();
+
+    _parseTimeline<ZOrderFrameData>(rawData, *timeline, std::bind(&JSONDataParser::_parseZOrderFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
+    return timeline;
+}
+
 AnimationFrameData * JSONDataParser::_parseAnimationFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const
 {
     const auto frame = BaseObject::borrowObject<AnimationFrameData>();
@@ -659,6 +673,11 @@ AnimationFrameData * JSONDataParser::_parseAnimationFrame(const rapidjson::Value
     if (rawData.HasMember(EVENT) || rawData.HasMember(SOUND))
     {
         _parseEventData(rawData, frame->events, nullptr, nullptr);
+    }
+
+    if (rawData.HasMember(EVENTS))
+    {
+        _parseEventsData(rawData, frame->events, nullptr, nullptr);
     }
 
     return frame;
@@ -806,6 +825,51 @@ ExtensionFrameData * JSONDataParser::_parseFFDFrame(const rapidjson::Value & raw
     return frame;
 }
 
+ZOrderFrameData * JSONDataParser::_parseZOrderFrame(const rapidjson::Value & rawData, unsigned frameStart, unsigned frameCount) const
+{
+    const auto frame = BaseObject::borrowObject<ZOrderFrameData>();
+    _parseTweenFrame<ZOrderFrameData>(rawData, *frame, frameStart, frameCount);
+
+    if (rawData.HasMember(ZORDER))
+    {
+        const auto& rawZOrder = rawData[ZORDER];
+        size_t slotCount = this->_armature->getSortedSlots().size();
+        std::vector<int> unchanged;
+        unchanged.resize(slotCount - rawZOrder.Size() / 2);
+
+        frame->zOrder.resize(slotCount);
+        for (size_t i = 0; i < slotCount; ++i) {
+            frame->zOrder[i] = -1;
+        }
+
+        int originalIndex = 0;
+        int unchangedIndex = 0;
+        for (size_t i = 0, l = rawZOrder.Size(); i < l; i += 2) {
+            int slotIndex = _getParameter(rawZOrder, i, 0);
+            int offset = _getParameter(rawZOrder, i+1, 0);
+
+            while (originalIndex != slotIndex) {
+                unchanged[unchangedIndex++] = originalIndex++;
+            }
+
+            frame->zOrder[originalIndex + offset] = originalIndex++;
+        }
+
+        while (originalIndex < slotCount) {
+            unchanged[unchangedIndex++] = originalIndex++;
+        }
+
+        int i = slotCount;
+        while (i--) {
+            if (frame->zOrder[i] == -1) {
+                frame->zOrder[i] = unchanged[--unchangedIndex];
+            }
+        }
+    }
+
+    return frame;
+}
+
 void JSONDataParser::_parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData * bone, SlotData * slot) const
 {
     const auto& actionsObject = rawData.HasMember(ACTION) ? rawData[ACTION] : (rawData.HasMember(ACTIONS) ? rawData[ACTIONS] : rawData[DEFAULT_ACTIONS]);
@@ -928,6 +992,59 @@ void JSONDataParser::_parseEventData(const rapidjson::Value& rawData, std::vecto
     }
 }
 
+void JSONDataParser::_parseEventsData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const
+{
+    if (rawData.HasMember(EVENTS))
+    {
+        const auto& eventObjects = rawData[EVENTS];
+        for (size_t i = 0, l = eventObjects.Size(); i < l; ++i)
+        {
+            const auto& eventObject = eventObjects[i];
+            const auto eventData = BaseObject::borrowObject<EventData>();
+            eventData->type = EventType::Frame;
+            eventData->name = eventObject[NAME].GetString();
+            eventData->bone = this->_armature->getBone(_getString(rawData, BONE, ""));
+            eventData->slot = this->_armature->getSlot(_getString(rawData, SLOT, ""));
+
+            if (eventObject.HasMember(INTS))
+            {
+                if (!eventData->data) {
+                    eventData->data = BaseObject::borrowObject<CustomData>();
+                }
+                const auto& valueObjects = eventObject[INTS];
+                for (size_t j = 0, n = valueObjects.Size(); j < n; ++j)
+                {
+                    eventData->data->ints.push_back(_getParameter(valueObjects,j,0));
+                }
+            }
+            if (eventObject.HasMember(FLOATS))
+            {
+                if (!eventData->data) {
+                    eventData->data = BaseObject::borrowObject<CustomData>();
+                }
+                const auto& valueObjects = eventObject[FLOATS];
+                for (size_t j = 0, n = valueObjects.Size(); j < n; ++j)
+                {
+                    eventData->data->floats.push_back(_getParameter(valueObjects,j,0.0f));
+                }
+            }
+            if (eventObject.HasMember(STRINGS))
+            {
+                if (!eventData->data) {
+                    eventData->data = BaseObject::borrowObject<CustomData>();
+                }
+                const auto& valueObjects = eventObject[STRINGS];
+                for (size_t j = 0, n = valueObjects.Size(); j < n; ++j)
+                {
+                    eventData->data->strings.push_back(_getParameter(valueObjects,j,""));
+                }
+            }
+
+            events.push_back(eventData);
+        }
+    }
+}
+
 void JSONDataParser::_parseTransform(const rapidjson::Value& rawData, Transform& transform) const
 {
     transform.x = _getNumber(rawData, X, 0.f) * this->_armature->scale;
@@ -968,7 +1085,7 @@ DragonBonesData * JSONDataParser::parseDragonBonesData(const char* rawData, floa
             this->_isGlobalTransform = false;
         }
 
-        if (version == DATA_VERSION || version == DATA_VERSION_4_0 || this->_isOldData)
+        if (version == DATA_VERSION || version == DATA_VERSION_4_0 || version == DATA_VERSION_4_5 || this->_isOldData)
         {
             const auto data = BaseObject::borrowObject<DragonBonesData>();
             data->name = _getString(document, NAME, "");

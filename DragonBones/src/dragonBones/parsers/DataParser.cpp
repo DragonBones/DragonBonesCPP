@@ -6,7 +6,8 @@ DRAGONBONES_NAMESPACE_BEGIN
 const char* DataParser::DATA_VERSION_2_3 = "2.3";
 const char* DataParser::DATA_VERSION_3_0 = "3.0";
 const char* DataParser::DATA_VERSION_4_0 = "4.0";
-const char* DataParser::DATA_VERSION = "4.5";
+const char* DataParser::DATA_VERSION_4_5 = "4.5";
+const char* DataParser::DATA_VERSION = "5.0";
 
 const char* DataParser::TEXTURE_ATLAS = "TextureAtlas";
 const char* DataParser::SUB_TEXTURE = "SubTexture";
@@ -29,6 +30,7 @@ const char* DataParser::SKIN = "skin";
 const char* DataParser::DISPLAY = "display";
 const char* DataParser::ANIMATION = "animation";
 const char* DataParser::FFD = "ffd";
+const char* DataParser::ZORDER = "zOrder";
 const char* DataParser::FRAME = "frame";
 
 const char* DataParser::PIVOT = "pivot";
@@ -67,6 +69,10 @@ const char* DataParser::TWEEN_ROTATE = "tweenRotate";
 const char* DataParser::TWEEN_SCALE = "tweenScale";
 const char* DataParser::CURVE = "curve";
 const char* DataParser::EVENT = "event";
+const char* DataParser::EVENTS = "events";
+const char* DataParser::INTS = "ints";
+const char* DataParser::FLOATS = "floats";
+const char* DataParser::STRINGS = "strings";
 const char* DataParser::SOUND = "sound";
 const char* DataParser::ACTION = "action";
 const char* DataParser::ACTIONS = "actions";

@@ -3,7 +3,8 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-AnimationData::AnimationData() 
+AnimationData::AnimationData() :
+    zOrderTimeline(nullptr)
 {
     _onClear();
 }
@@ -35,6 +36,10 @@ void AnimationData::_onClear()
                 pair.second->returnToPool();
             }
         }
+    }
+    if(zOrderTimeline){
+        zOrderTimeline->returnToPool();
+        zOrderTimeline=nullptr;
     }
 
     hasAsynchronyTimeline = false;
@@ -117,6 +122,18 @@ void AnimationData::addFFDTimeline(FFDTimelineData* value)
         {
             DRAGONBONES_ASSERT(false, "Argument error.");
         }
+    }
+    else
+    {
+        DRAGONBONES_ASSERT(false, "Argument error.");
+    }
+}
+
+void AnimationData::addZOrderTimeline(ZOrderTimelineData* value)
+{
+    if (value )
+    {
+        zOrderTimeline = value;
     }
     else
     {

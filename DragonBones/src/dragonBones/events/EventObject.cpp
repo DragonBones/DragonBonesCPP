@@ -30,7 +30,7 @@ void EventObject::_onClear()
 {
     type.clear();
     name.clear();
-    //data = null;
+    data = nullptr;
     userData = nullptr;
     armature = nullptr;
     bone = nullptr;

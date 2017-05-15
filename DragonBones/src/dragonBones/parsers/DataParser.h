@@ -16,6 +16,7 @@ protected:
     static const char* DATA_VERSION_2_3;
     static const char* DATA_VERSION_3_0;
     static const char* DATA_VERSION_4_0;
+    static const char* DATA_VERSION_4_5;
     static const char* DATA_VERSION;
     static const char* TEXTURE_ATLAS;
     static const char* SUB_TEXTURE;
@@ -38,6 +39,7 @@ protected:
     static const char* DISPLAY;
     static const char* ANIMATION;
     static const char* FFD;
+    static const char* ZORDER;
     static const char* FRAME;
 
     static const char* PIVOT;
@@ -76,6 +78,10 @@ protected:
     static const char* TWEEN_SCALE;
     static const char* CURVE;
     static const char* EVENT;
+    static const char* EVENTS;
+    static const char* INTS;
+    static const char* FLOATS;
+    static const char* STRINGS;
     static const char* SOUND;
     static const char* ACTION;
     static const char* ACTIONS;

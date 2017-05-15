@@ -10,7 +10,8 @@ DRAGONBONES_NAMESPACE_BEGIN
 bool AnimationState::stateActionEnabled = true;
 
 AnimationState::AnimationState() :
-    _timeline(nullptr)
+    _timeline(nullptr),
+    _zOrderTimeline(nullptr)
 {
     _onClear();
 }
@@ -58,7 +59,13 @@ void AnimationState::_onClear()
         _timeline->returnToPool();
         _timeline = nullptr;
     }
-    
+
+    if (_zOrderTimeline)
+    {
+        _zOrderTimeline->returnToPool();
+    }
+    _zOrderTimeline = nullptr;
+
     _isPlaying = true;
     _isPausePlayhead = false;
     _isFadeOut = false;
@@ -283,6 +290,19 @@ void AnimationState::_updateTimelineStates()
         timelineState->returnToPool();
     }
 
+    if (_zOrderTimeline)
+    {
+        _zOrderTimeline->returnToPool();
+        _zOrderTimeline = nullptr;
+    }
+
+    const auto zOrderTimelineData = _animationData->getZOrderTimeline();
+    if(zOrderTimelineData)
+    {
+        _zOrderTimeline = BaseObject::borrowObject<ZOrderTimelineState>();
+        _zOrderTimeline->fadeIn(_armature, this, zOrderTimelineData, time);
+    }
+
     _updateFFDTimelineStates();
 }
 
@@ -437,6 +457,10 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
             {
                 ffdTimelineState->update(time);
             }
+
+            if(_zOrderTimeline){
+                _zOrderTimeline->update(time);
+            }
         }
     }
 
@@ -489,6 +513,10 @@ void AnimationState::fadeOut(float fadeOutTime, bool pausePlayhead)
         for (const auto slotTimelineState : _slotTimelines)
         {
             slotTimelineState->fadeOut();
+        }
+
+        if(_zOrderTimeline){
+            _zOrderTimeline->fadeOut();
         }
     }
 
@@ -608,6 +636,10 @@ void AnimationState::setCurrentTime(float value)
     for (const auto ffdTimelineState : _ffdTimelines)
     {
         ffdTimelineState->_isCompleted = false;
+    }
+
+    if(_zOrderTimeline){
+        _zOrderTimeline->_isCompleted = false;
     }
 }
 

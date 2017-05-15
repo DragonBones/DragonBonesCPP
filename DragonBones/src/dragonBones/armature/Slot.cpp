@@ -285,6 +285,12 @@ void Slot::_update(int cacheFrameIndex)
         _updateBlendMode();
     }
 
+    if (_zOrderDirty)
+    {
+        _zOrderDirty = false;
+        _updateZOrder();
+    }
+
     if (_colorDirty)
     {
         _colorDirty = false;
@@ -403,6 +409,19 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
     }
 
     return _displayDirty;
+}
+
+bool Slot::_setZOrder(int value)
+{
+    if (_zOrder == value)
+    {
+        return false;
+    }
+
+    _zOrder = value;
+    _zOrderDirty = true;
+
+    return true;
 }
 
 bool Slot::_setDisplayIndex(int value)
