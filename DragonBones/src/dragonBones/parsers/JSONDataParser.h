@@ -140,12 +140,15 @@ protected:
     virtual BoneTimelineData* _parseBoneTimeline(const rapidjson::Value& rawData) const;
     virtual SlotTimelineData* _parseSlotTimeline(const rapidjson::Value& rawData) const;
     virtual FFDTimelineData* _parseFFDTimeline(const rapidjson::Value& rawData) const;
+    virtual ZOrderTimelineData* _parseZOrderTimeline(const rapidjson::Value& rawData) const;
     virtual AnimationFrameData* _parseAnimationFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual BoneFrameData* _parseBoneFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual SlotFrameData* _parseSlotFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual ExtensionFrameData* _parseFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
+    virtual ZOrderFrameData* _parseZOrderFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount) const;
     virtual void _parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, BoneData* bone, SlotData* slot) const;
     virtual void _parseEventData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const;
+    virtual void _parseEventsData(const rapidjson::Value& rawData, std::vector<EventData*>& events, BoneData* bone, SlotData* slot) const;
 
     template<class T>
     void _parseTweenFrame(const rapidjson::Value& rawData, TweenFrameData<T>& frame, unsigned frameStart, unsigned frameCount) const

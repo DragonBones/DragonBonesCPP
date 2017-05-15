@@ -35,6 +35,7 @@ protected:
     virtual void _updateTransform() override;
 
 public:
+    virtual void _updateZOrder() override;
     virtual void _updateVisible() override;
     virtual void _updateBlendMode() override;
 };

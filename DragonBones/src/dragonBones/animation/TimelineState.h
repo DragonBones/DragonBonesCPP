@@ -129,5 +129,20 @@ public:
     void update(float time) override;
 };
 
+class ZOrderTimelineState final : public TweenTimelineState<ZOrderFrameData, ZOrderTimelineData>
+{
+    BIND_CLASS_TYPE(ZOrderTimelineState);
+
+public:
+    ZOrderTimelineState();
+    ~ZOrderTimelineState();
+
+private:
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(ZOrderTimelineState);
+
+protected:
+    void _onArriveAtFrame(bool isUpdate) override;
+};
+
 DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_TIMELINE_STATE_H

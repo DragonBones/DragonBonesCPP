@@ -118,11 +118,36 @@ void Armature::_sortBones()
         count++;
     }
 }
-
+bool Armature::_onSortSlots(const Slot* a, const Slot* b)
+{
+    return a->_zOrder < b->_zOrder;
+}
 void Armature::_sortSlots()
 {
+    std::sort(_slots.begin(), _slots.end(), _onSortSlots);
 }
+void Armature::_sortZOrder(std::vector<int>& slotIndices)
+{
+    const auto slots = this->_armatureData->getSortedSlots();
+    bool isOriginal = slotIndices.size()<1;
 
+    if (this->_zOrderDirty || !isOriginal) {
+        size_t len = slots.size();
+        for (size_t i = 0; i < len; i++) {
+            std::size_t slotIndex = isOriginal ? i : slotIndices[i];
+            const auto slotData = slots[slotIndex];
+            if (slotData) {
+                const auto slot = this->getSlot(slotData->name);
+                if (slot) {
+                    slot->_setZOrder(i);
+                }
+            }
+        }
+
+        this->_slotsDirty = true;
+        this->_zOrderDirty = !isOriginal;
+    }
+}
 void Armature::_doAction(const ActionData& value)
 {
     const auto& ints = std::get<0>(value.data);

@@ -141,4 +141,12 @@ void FFDTimelineData::_onClear()
     slot = nullptr;
 }
 
+ZOrderTimelineData::ZOrderTimelineData()
+{
+    _onClear();
+}
+ZOrderTimelineData::~ZOrderTimelineData()
+{
+    _onClear();
+}
 DRAGONBONES_NAMESPACE_END

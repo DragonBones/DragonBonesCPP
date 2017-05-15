@@ -22,7 +22,24 @@ void ActionData::_onClear()
     std::get<2>(data).clear();
 }
 
-EventData::EventData()
+CustomData::CustomData()
+{
+    _onClear();
+}
+CustomData::~CustomData()
+{
+    _onClear();
+}
+
+void CustomData::_onClear()
+{
+    ints.clear();
+    floats.clear();
+    strings.clear();
+}
+
+EventData::EventData():
+    data(nullptr)
 {
     _onClear();
 }
@@ -35,7 +52,10 @@ void EventData::_onClear()
 {
     type = EventType::Frame;
     name.clear();
-    //data = nullptr;
+    if (data) {
+        data->returnToPool();
+    }
+    data = nullptr;
     bone = nullptr;
     slot = nullptr;
 }
@@ -123,6 +143,22 @@ void ExtensionFrameData::_onClear()
     type = ExtensionType::FFD;
     tweens.clear();
     keys.clear();
+}
+
+ZOrderFrameData::ZOrderFrameData()
+{
+    _onClear();
+}
+ZOrderFrameData::~ZOrderFrameData()
+{
+    _onClear();
+}
+
+void ZOrderFrameData::_onClear()
+{
+    TweenFrameData::_onClear();
+
+    zOrder.clear();
 }
 
 DRAGONBONES_NAMESPACE_END

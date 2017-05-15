@@ -34,6 +34,40 @@ protected:
 };
 
 /**
+* @private
+*/
+class CustomData  final : public BaseObject
+{
+    BIND_CLASS_TYPE(CustomData);
+
+public:
+    std::vector<int> ints;
+    std::vector<float> floats;
+    std::vector<std::string> strings;
+
+    CustomData();
+    ~CustomData();
+    int getIntValue(int index=0) 
+    {
+        return ints[index];
+    };
+    float getFloatValue(int index = 0)
+    {
+        return floats[index];
+    };
+    std::string getStringValue(int index = 0)
+    {
+        return strings[index];
+    };
+
+private:
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(CustomData);
+
+protected:
+    void _onClear() override;
+};
+
+/**
  * @private
  */
 class EventData final : public BaseObject
@@ -43,7 +77,7 @@ class EventData final : public BaseObject
 public:
     EventType type;
     std::string name;
-    //void* data; //TODO
+    CustomData* data;
     BoneData* bone;
     SlotData* slot;
 
@@ -249,6 +283,26 @@ public:
 
 private:
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(ExtensionFrameData);
+
+protected:
+    void _onClear() override;
+};
+
+/**
+* @private
+*/
+class ZOrderFrameData final : public TweenFrameData<ZOrderFrameData>
+{
+    BIND_CLASS_TYPE(SlotFrameData);
+
+public:
+    std::vector<int> zOrder;
+
+    ZOrderFrameData();
+    ~ZOrderFrameData();
+
+private:
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(ZOrderFrameData);
 
 protected:
     void _onClear() override;
