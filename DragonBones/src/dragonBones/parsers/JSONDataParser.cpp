@@ -852,14 +852,15 @@ ZOrderFrameData * JSONDataParser::_parseZOrderFrame(const rapidjson::Value & raw
                 unchanged[unchangedIndex++] = originalIndex++;
             }
 
-            frame->zOrder[originalIndex + offset] = originalIndex++;
+            frame->zOrder[originalIndex + offset] = originalIndex;
+            originalIndex++;
         }
 
         while (originalIndex < slotCount) {
             unchanged[unchangedIndex++] = originalIndex++;
         }
 
-        int i = slotCount;
+        size_t i = slotCount;
         while (i--) {
             if (frame->zOrder[i] == -1) {
                 frame->zOrder[i] = unchanged[--unchangedIndex];
