@@ -26,6 +26,7 @@ private:
     dragonBones::CCArmatureDisplay* _armatureDisplay;
     dragonBones::CCFactory _factory;
 
+    void _frameEventHandler(dragonBones::EventObject* event);
     void _changeArmature();
     void _changeAnimation();
 
