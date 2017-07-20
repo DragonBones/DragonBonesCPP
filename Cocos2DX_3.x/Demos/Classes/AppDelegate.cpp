@@ -5,6 +5,7 @@
 #include "AnimationBaseTest.h"
 #include "Knight.h"
 #include "CoreElement.h"
+#include "Robo.h"
 
 USING_NS_CC;
 
@@ -51,7 +52,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     //auto scene = PerformanceTest::createScene();
     //auto scene = AnimationBaseTest::createScene();
     //auto scene = KnightGame::createScene();
-    auto scene = CoreElementGame::createScene();
+    //auto scene = CoreElementGame::createScene();
+    auto scene = Robo::createScene();
 
     // run
     director->runWithScene(scene);
