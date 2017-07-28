@@ -1,17 +1,8 @@
 #include "CCSlot.h"
-#include "CCTextureData.h"
+#include "CCTextureAtlasData.h"
 #include "CCArmatureDisplay.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-CCSlot::CCSlot() 
-{
-    _onClear();
-}
-CCSlot::~CCSlot() 
-{
-    _onClear();
-}
 
 void CCSlot::_onClear()
 {
@@ -34,38 +25,33 @@ void CCSlot::_disposeDisplay(void* value)
 
 void CCSlot::_onUpdateDisplay()
 {
-    if (!this->_rawDisplay)
+    if (_display != nullptr)
     {
-        // TODO
-    }
-
-    if (this->_display)
-    {
-        if (this->_childArmature)
+        if (_childArmature != nullptr)
         {
-            _renderDisplay = dynamic_cast<cocos2d::Node*>(static_cast<IArmatureDisplay*>(this->_display));
+            _renderDisplay = dynamic_cast<cocos2d::Node*>(static_cast<IArmatureProxy*>(_display));
         }
         else
         {
-            _renderDisplay = static_cast<cocos2d::Node*>(this->_display);
+            _renderDisplay = static_cast<cocos2d::Node*>(_display);
         }
     }
     else
     {
-        _renderDisplay = static_cast<cocos2d::Node*>(this->_rawDisplay);
+        _renderDisplay = static_cast<cocos2d::Node*>(_rawDisplay);
     }
 }
 
 void CCSlot::_addDisplay()
 {
-    const auto container = dynamic_cast<CCArmatureDisplay*>(this->_armature->_display);
+    const auto container = static_cast<CCArmatureDisplay*>(_armature->getDisplay());
     container->addChild(_renderDisplay);
 }
 
 void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplayContainer)
 {
-    const auto container = dynamic_cast<CCArmatureDisplay*>(this->_armature->_display);
-    const auto prevDisplay = isArmatureDisplayContainer ? dynamic_cast<cocos2d::Node*>(static_cast<IArmatureDisplay*>(value)) : static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplay*>(value) : value); // WTF
+    const auto container = static_cast<CCArmatureDisplay*>(_armature->getDisplay());
+    const auto prevDisplay = isArmatureDisplayContainer ? dynamic_cast<cocos2d::Node*>(static_cast<IArmatureProxy*>(value)) : static_cast<cocos2d::Node*>(value); // static_cast<cocos2d::Node*>(isArmatureDisplayContainer ? static_cast<CCArmatureDisplay*>(value) : value); // WTF
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
 }
@@ -77,12 +63,17 @@ void CCSlot::_removeDisplay()
 
 void CCSlot::_updateZOrder()
 {
-    this->_renderDisplay->setLocalZOrder(this->_zOrder);
+    if (_renderDisplay->getLocalZOrder() == _zOrder) 
+    {
+        return;
+    }
+
+    _renderDisplay->setLocalZOrder(_zOrder);
 }
 
 void CCSlot::_updateVisible()
 {
-    this->_renderDisplay->setVisible(this->_parent->getVisible());
+    _renderDisplay->setVisible(_parent->getVisible());
 }
 
 void CCSlot::_updateBlendMode()
@@ -90,7 +81,7 @@ void CCSlot::_updateBlendMode()
     cocos2d::Sprite* spriteDisplay = dynamic_cast<cocos2d::Sprite*>(_renderDisplay);
     if (spriteDisplay)
     {
-        switch (this->_blendMode)
+        switch (_blendMode)
         {
             case BlendMode::Normal:
                 //spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
@@ -115,11 +106,11 @@ void CCSlot::_updateBlendMode()
                 break;
         }
     }
-    else if (this->_childArmature)
+    else if (_childArmature)
     {
-        for (const auto slot : this->_childArmature->getSlots())
+        for (const auto slot : _childArmature->getSlots())
         {
-            slot->_blendMode = this->_blendMode;
+            slot->_blendMode = _blendMode;
             slot->_updateBlendMode();
         }
     }
@@ -127,82 +118,80 @@ void CCSlot::_updateBlendMode()
 
 void CCSlot::_updateColor()
 {
-    _renderDisplay->setOpacity(this->_colorTransform.alphaMultiplier * 255.f);
-    static cocos2d::Color3B helpColor;
-    helpColor.r = this->_colorTransform.redMultiplier * 255.f;
-    helpColor.g = this->_colorTransform.greenMultiplier * 255.f;
-    helpColor.b = this->_colorTransform.blueMultiplier * 255.f;
-    _renderDisplay->setColor(helpColor);
-}
+    _renderDisplay->setOpacity(_colorTransform.alphaMultiplier * 255.0f);
 
-void CCSlot::_updateFilters() 
-{
+    static cocos2d::Color3B helpColor;
+    helpColor.r = _colorTransform.redMultiplier * 255.0f;
+    helpColor.g = _colorTransform.greenMultiplier * 255.0f;
+    helpColor.b = _colorTransform.blueMultiplier * 255.0f;
+
+    _renderDisplay->setColor(helpColor);
 }
 
 void CCSlot::_updateFrame()
 {
-    const auto frameDisplay = (DBCCSprite*)(this->_rawDisplay);
+    const auto meshData = _display == _meshDisplay ? _meshData : nullptr;
+    auto currentTextureData = static_cast<CCTextureData*>(_textureData);
+    const auto frameDisplay = static_cast<DBCCSprite*>(_renderDisplay); // In cocos2dx render meshDisplay and frameDisplay are the same display
 
-    if (this->_display && this->_displayIndex >= 0)
+    if (_displayIndex >= 0 && _display !=nullptr && currentTextureData != nullptr)
     {
-        const unsigned displayIndex = this->_displayIndex;
-        const auto rawDisplayData = displayIndex < this->_displayDataSet->displays.size() ? this->_displayDataSet->displays[displayIndex] : nullptr;
-        const auto replacedDisplayData = displayIndex < this->_replacedDisplayDataSet.size() ? this->_replacedDisplayDataSet[displayIndex] : nullptr;
-        const auto currentDisplayData = replacedDisplayData ? replacedDisplayData : rawDisplayData;
-        const auto currentTextureData = static_cast<CCTextureData*>(currentDisplayData->texture);
-
-        if (currentTextureData)
+        // Update replaced texture atlas.
+        if (_armature->getReplacedTexture() != nullptr && std::find(_rawDisplayDatas->cbegin(), _rawDisplayDatas->cend(), _displayData) != _rawDisplayDatas->cend())
         {
-            const auto textureAtlasTexture = static_cast<CCTextureAtlasData*>(currentTextureData->parent)->texture;
-            if (!currentTextureData->texture && textureAtlasTexture)
+            auto currentTextureAtlasData = static_cast<CCTextureAtlasData*>(currentTextureData->parent);
+            if (_armature->_replaceTextureAtlasData == nullptr)
             {
-                cocos2d::Rect rect(currentTextureData->region.x, currentTextureData->region.y, currentTextureData->region.width, currentTextureData->region.height);
-                cocos2d::Vec2 offset(0.f, 0.f);
-                cocos2d::Size originSize(currentTextureData->region.width, currentTextureData->region.height);
-
-                currentTextureData->texture = cocos2d::SpriteFrame::createWithTexture(textureAtlasTexture, rect, currentTextureData->rotated, offset, originSize); // TODO multiply textureAtlas
-                currentTextureData->texture->retain();
+                currentTextureAtlasData = BaseObject::borrowObject<CCTextureAtlasData>();
+                currentTextureAtlasData->copyFrom(*currentTextureData->parent);
+                currentTextureAtlasData->setRenderTexture(static_cast<cocos2d::Texture2D*>(_armature->getReplacedTexture()));
+                _armature->_replaceTextureAtlasData = currentTextureAtlasData;
+            }
+            else 
+            {
+                currentTextureAtlasData = static_cast<CCTextureAtlasData*>(_armature->_replaceTextureAtlasData);
             }
 
-            const auto texture = this->_armature->_replacedTexture ? static_cast<cocos2d::Texture2D*>(this->_armature->_replacedTexture) : (currentTextureData->texture ? currentTextureData->texture->getTexture() : nullptr);
+            currentTextureData = static_cast<CCTextureData*>(currentTextureAtlasData->getTexture(currentTextureData->name));
+        }
 
-            if (this->_meshData && this->_display == this->_meshDisplay)
-            {
+        if (currentTextureData->spriteFrame != nullptr) 
+        {
+            const auto scale = _armature->armatureData->scale;
+
+            if (meshData != nullptr) // Mesh.
+            { 
+                const auto intArray = meshData->parent->parent->intArray;
+                const auto floatArray = meshData->parent->parent->floatArray;
+                const unsigned vertexCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+                const unsigned triangleCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
+                const unsigned verticesOffset = intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+                const unsigned uvOffset = verticesOffset + vertexCount * 2;
+
                 const auto& region = currentTextureData->region;
-                const auto& textureAtlasSize = currentTextureData->texture->getTexture()->getContentSizeInPixels();
-                auto displayVertices = new cocos2d::V3F_C4B_T2F[(unsigned)(this->_meshData->uvs.size() / 2)]; // does cocos2dx release it?
-                auto vertexIndices = new unsigned short[this->_meshData->vertexIndices.size()]; // does cocos2dx release it?
-                cocos2d::Rect boundsRect(999999.f, 999999.f, -999999.f, -999999.f);
+                const auto& textureAtlasSize = currentTextureData->spriteFrame->getTexture()->getContentSizeInPixels();
+                auto vertices = new cocos2d::V3F_C4B_T2F[vertexCount]; // does cocos2dx release it?
+                auto vertexIndices = new unsigned short[triangleCount * 3]; // does cocos2dx release it?
+                cocos2d::Rect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
 
-                if (this->_meshData != rawDisplayData->mesh && rawDisplayData && rawDisplayData != currentDisplayData)
+                for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2) 
                 {
-                    this->_pivotX = rawDisplayData->transform.x - currentDisplayData->transform.x;
-                    this->_pivotY = rawDisplayData->transform.y - currentDisplayData->transform.y;
-                }
-                else
-                {
-                    this->_pivotX = 0.f;
-                    this->_pivotY = 0.f;
-                }
-
-                for (std::size_t i = 0, l = this->_meshData->uvs.size(); i < l; i += 2)
-                {
-                    const auto iH = (unsigned)(i / 2);
-                    const auto x = this->_meshData->vertices[i];
-                    const auto y = this->_meshData->vertices[i + 1];
+                    const auto iH = i / 2;
+                    const auto x = floatArray[verticesOffset + i];
+                    const auto y = floatArray[verticesOffset + i + 1];
                     cocos2d::V3F_C4B_T2F vertexData;
-                    vertexData.vertices.set(x, -y, 0.f);
-                    vertexData.texCoords.u = (region.x + this->_meshData->uvs[i] * region.width) / textureAtlasSize.width;
-                    vertexData.texCoords.v = (region.y + this->_meshData->uvs[i + 1] * region.height) / textureAtlasSize.height;
+                    vertexData.vertices.set(x, -y, 0.0f);
+                    vertexData.texCoords.u = (region.x + floatArray[uvOffset + i] * region.width) / textureAtlasSize.width;
+                    vertexData.texCoords.v = (region.y + floatArray[uvOffset + i + 1] * region.height) / textureAtlasSize.height;
                     vertexData.colors = cocos2d::Color4B::WHITE;
-                    displayVertices[iH] = vertexData;
+                    vertices[iH] = vertexData;
 
                     if (boundsRect.origin.x > x)
                     {
                         boundsRect.origin.x = x;
                     }
 
-                    if (boundsRect.size.width < x) 
+                    if (boundsRect.size.width < x)
                     {
                         boundsRect.size.width = x;
                     }
@@ -221,156 +210,98 @@ void CCSlot::_updateFrame()
                 boundsRect.size.width -= boundsRect.origin.x;
                 boundsRect.size.height -= boundsRect.origin.y;
 
-                for (std::size_t i = 0, l = this->_meshData->vertexIndices.size(); i < l; ++i)
+                for (std::size_t i = 0; i < triangleCount * 3; ++i) 
                 {
-                    vertexIndices[i] = this->_meshData->vertexIndices[i];
+                    vertexIndices[i] = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i];
                 }
 
-                // In cocos2dx render meshDisplay and frameDisplay are the same display
-                if (currentTextureData->texture)
-                {
-                    frameDisplay->setSpriteFrame(currentTextureData->texture); // polygonInfo will be override
-                    if (texture != currentTextureData->texture->getTexture())
-                    {
-                        frameDisplay->setTexture(texture); // Relpace texture // polygonInfo will be override
-                    }
-                }
+                frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
 
                 //
                 cocos2d::PolygonInfo polygonInfo;
                 auto& triangles = polygonInfo.triangles;
-                triangles.verts = displayVertices;
+                triangles.verts = vertices;
                 triangles.indices = vertexIndices;
-                triangles.vertCount = (unsigned)(this->_meshData->uvs.size() / 2);
-                triangles.indexCount = (unsigned)(this->_meshData->vertexIndices.size());
+                triangles.vertCount = vertexCount;
+                triangles.indexCount = triangleCount * 3;
+                const auto& transform = frameDisplay->getNodeToParentTransform(); // Backup transform. (Set rect and polygon will override transform).
+
 #if COCOS2D_VERSION >= 0x00031400
                 polygonInfo.setRect(boundsRect);
 #else
                 polygonInfo.rect = boundsRect; // Copy
                 frameDisplay->setContentSize(boundsRect.size);
 #endif
+                frameDisplay->setNodeToParentTransform(transform);
                 frameDisplay->setPolygonInfo(polygonInfo);
-                frameDisplay->setColor(frameDisplay->getColor()); // Backup
-
-                if (this->_meshData->skinned)
-                {
-                    frameDisplay->setPosition(0.f, 0.f);
-                    frameDisplay->setRotation(0.f);
-                    frameDisplay->setRotationSkewX(0.f);
-                    frameDisplay->setRotationSkewY(0.f);
-                    frameDisplay->setScale(1.f, 1.f);
-                }
             }
-            else
+            else // Normal texture.
             {
-                const auto scale = this->_armature->getArmatureData().scale;
-                this->_pivotX = currentDisplayData->pivot.x;
-                this->_pivotY = currentDisplayData->pivot.y;
-
-                if (currentDisplayData->isRelativePivot)
-                {
-                    const auto& rectData = currentTextureData->frame ? *currentTextureData->frame : currentTextureData->region;
-                    auto width = rectData.width * scale;
-                    auto height = rectData.height * scale;
-                    if (!currentTextureData->frame && currentTextureData->rotated)
-                    {
-                        width = rectData.height;
-                        height = rectData.width;
-                    }
-
-                    this->_pivotX *= width;
-                    this->_pivotY *= height;
-                }
-
-                if (currentTextureData->frame)
-                {
-                    this->_pivotX += currentTextureData->frame->x * scale;
-                    this->_pivotY += currentTextureData->frame->y * scale;
-                }
-
-                if (rawDisplayData && rawDisplayData != currentDisplayData)
-                {
-                    this->_pivotX += rawDisplayData->transform.x - currentDisplayData->transform.x;
-                    this->_pivotY += rawDisplayData->transform.y - currentDisplayData->transform.y;
-                }
-
-                this->_pivotY -= currentTextureData->region.height * this->_armature->getArmatureData().scale;
-
-#if COCOS2D_VERSION >= 0x00031400
-                frameDisplay->setRenderMode(DBCCSprite::RenderMode::QUAD);
-#endif
-                frameDisplay->setSpriteFrame(currentTextureData->texture); // polygonInfo will be override
-
-                if (texture != currentTextureData->texture->getTexture())
-                {
-                    frameDisplay->setTexture(texture); // Relpace texture // polygonInfo will be override
-                }
-
-                this->_blendModeDirty = true; // Relpace texture // blendMode will be override
+                _pivotY -= currentTextureData->region.height * scale; // TODO check frame
+                frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
             }
 
-            this->_updateVisible();
-
+            _blendModeDirty = true; // Relpace texture will override blendMode and color.
+            _colorDirty = true;
             return;
         }
     }
 
-    this->_pivotX = 0.f;
-    this->_pivotY = 0.f;
-
     frameDisplay->setTexture(nullptr);
     frameDisplay->setTextureRect(cocos2d::Rect::ZERO);
-    frameDisplay->setVisible(false);
-    frameDisplay->setPosition(this->origin.x, this->origin.y);
+    frameDisplay->setPosition(0.0f, 0.0f);
 }
 
 void CCSlot::_updateMesh() 
 {
-    const auto meshDisplay = static_cast<DBCCSprite*>(this->_meshDisplay);
-    const auto hasFFD = !this->_ffdVertices.empty();
-    const auto displayVertices = meshDisplay->getPolygonInfoModify().triangles.verts;
-    cocos2d::Rect boundsRect(999999.f, 999999.f, -999999.f, -999999.f);
+    const auto hasFFD = !_ffdVertices.empty();
+    const auto meshData = _meshData;
+    const auto weightData = meshData->weight;
+    const auto meshDisplay = static_cast<DBCCSprite*>(_renderDisplay);
+    const auto vertices = meshDisplay->getPolygonInfoModify().triangles.verts;
+    cocos2d::Rect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
 
-    if (this->_meshData->skinned)
+    if (weightData != nullptr)
     {
-        std::size_t iF = 0;
-        for (std::size_t i = 0, l = this->_meshData->vertices.size(); i < l; i += 2)
+        const auto intArray = meshData->parent->parent->intArray;
+        const auto floatArray = meshData->parent->parent->floatArray;
+        const auto vertexCount = (std::size_t)intArray[meshData->offset + (std::size_t)BinaryOffset::MeshVertexCount];
+        const auto weightFloatOffset = (std::size_t)intArray[weightData->offset + (std::size_t)BinaryOffset::WeigthFloatOffset];
+
+        for (
+            std::size_t i = 0, iD = 0, iB = weightData->offset + (std::size_t)BinaryOffset::WeigthBoneIndices + weightData->bones.size(), iV = weightFloatOffset, iF = 0;
+            i < vertexCount;
+            ++i
+        )
         {
-            const auto iH = unsigned(i / 2);
-
-            const auto& boneIndices = this->_meshData->boneIndices[iH];
-            const auto& boneVertices = this->_meshData->boneVertices[iH];
-            const auto& weights = this->_meshData->weights[iH];
-
-            float xG = 0.f, yG = 0.f;
-            for (std::size_t iB = 0, lB = boneIndices.size(); iB < lB; ++iB)
+            const auto boneCount = (std::size_t)intArray[iB++];
+            auto xG = 0.0f, yG = 0.0f;
+            for (std::size_t j = 0; j < boneCount; ++j)
             {
-                const auto bone = this->_meshBones[boneIndices[iB]];
-                const auto matrix = bone->globalTransformMatrix;
-                const auto weight = weights[iB];
-
-                float xL = 0.f, yL = 0.f;
-                if (hasFFD)
+                const auto boneIndex = (std::size_t)intArray[iB++];
+                const auto bone = _meshBones[boneIndex];
+                if (bone != nullptr) 
                 {
-                    xL = boneVertices[iB * 2] + this->_ffdVertices[iF];
-                    yL = boneVertices[iB * 2 + 1] + this->_ffdVertices[iF + 1];
-                }
-                else
-                {
-                    xL = boneVertices[iB * 2];
-                    yL = boneVertices[iB * 2 + 1];
-                }
+                    const auto& matrix = bone->globalTransformMatrix;
+                    const auto weight = floatArray[iV++];
+                    auto xL = floatArray[iV++];
+                    auto yL = floatArray[iV++];
 
-                xG += (matrix->a * xL + matrix->c * yL + matrix->tx) * weight;
-                yG += (matrix->b * xL + matrix->d * yL + matrix->ty) * weight;
+                    if (hasFFD) 
+                    {
+                        xL += _ffdVertices[iF++];
+                        yL += _ffdVertices[iF++];
+                    }
 
-                iF += 2;
+                    xG += (matrix.a * xL + matrix.c * yL + matrix.tx) * weight;
+                    yG += (matrix.b * xL + matrix.d * yL + matrix.ty) * weight;
+                }
             }
 
-            auto& vertices = displayVertices[iH];
-            auto& vertex = vertices.vertices;
+            auto& vertex = vertices[i];
+            auto& vertexPosition = vertex.vertices;
 
-            vertex.set(xG, -yG, 0.f);
+            vertexPosition.set(xG, -yG, 0.0f);
 
             if (boundsRect.origin.x > xG)
             {
@@ -395,17 +326,21 @@ void CCSlot::_updateMesh()
     }
     else if (hasFFD)
     {
-        const auto& vertices = _meshData->vertices;
-        for (std::size_t i = 0, l = this->_meshData->vertices.size(); i < l; i += 2)
+        const auto intArray = meshData->parent->parent->intArray;
+        const auto floatArray = meshData->parent->parent->floatArray;
+        const auto vertexCount = (std::size_t)intArray[meshData->offset + (std::size_t)BinaryOffset::MeshVertexCount];
+        const auto vertexOffset = (std::size_t)intArray[meshData->offset + (std::size_t)BinaryOffset::MeshFloatOffset];
+
+        for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
         {
-            const auto iH = unsigned(i / 2);
-            const auto xG = vertices[i] + _ffdVertices[i];
-            const auto yG = vertices[i + 1] + _ffdVertices[i + 1];
+            const auto iH = i / 2;
+            const auto xG = floatArray[vertexOffset + i] + _ffdVertices[i];
+            const auto yG = floatArray[vertexOffset + i + 1] + _ffdVertices[i + 1];
 
-            auto& vertices = displayVertices[iH];
-            auto& vertex = vertices.vertices;
+            auto& vertex = vertices[iH];
+            auto& vertexPosition = vertex.vertices;
 
-            vertex.set(xG, -yG, 0.f);
+            vertexPosition.set(xG, -yG, 0.0f);
 
             if (boundsRect.origin.x > xG)
             {
@@ -432,29 +367,49 @@ void CCSlot::_updateMesh()
     boundsRect.size.width -= boundsRect.origin.x;
     boundsRect.size.height -= boundsRect.origin.y;
 
-
     auto polygonInfo = meshDisplay->getPolygonInfo();
+    const auto& transform = meshDisplay->getNodeToParentTransform(); // Backup transform. (Set rect and polygon will override transform).
+
 #if COCOS2D_VERSION >= 0x00031400
     polygonInfo.setRect(boundsRect);
 #else
     polygonInfo.rect = boundsRect; // Copy
     meshDisplay->setContentSize(boundsRect.size);
 #endif
-    const auto& transform = meshDisplay->getNodeToParentTransform();
     meshDisplay->setPolygonInfo(polygonInfo);
-
-    _renderDisplay->setNodeToParentTransform(transform);
+    meshDisplay->setNodeToParentTransform(transform);
 }
 
-void CCSlot::_updateTransform()
+void CCSlot::_updateTransform(bool isSkinnedMesh)
 {
-    static cocos2d::Mat4 transform;
-    transform.m[0] = this->globalTransformMatrix->a;
-    transform.m[1] = -this->globalTransformMatrix->b;
-    transform.m[4] = -this->globalTransformMatrix->c;
-    transform.m[5] = this->globalTransformMatrix->d;
-    transform.m[12] = this->globalTransformMatrix->tx - (this->globalTransformMatrix->a * this->_pivotX + this->globalTransformMatrix->c * this->_pivotY);
-    transform.m[13] = -(this->globalTransformMatrix->ty - (this->globalTransformMatrix->b * this->_pivotX + this->globalTransformMatrix->d * this->_pivotY));
+    static cocos2d::Mat4 transform; 
+    if (isSkinnedMesh) // Identity transform.
+    {
+        transform.m[0] = 1.0f;
+        transform.m[1] = 0.0f;
+        transform.m[4] = 0.0f;
+        transform.m[5] = DragonBones::yDown ? 1.0f : -1.0f;
+        transform.m[12] = 0.0f;
+        transform.m[13] = 0.0f;
+    }
+    else if (DragonBones::yDown)
+    {
+        transform.m[0] = globalTransformMatrix.a;
+        transform.m[1] = -globalTransformMatrix.b;
+        transform.m[4] = -globalTransformMatrix.c;
+        transform.m[5] = globalTransformMatrix.d;
+        transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
+        transform.m[13] = -(globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY));
+    }
+    else 
+    {
+        transform.m[0] = globalTransformMatrix.a;
+        transform.m[1] = globalTransformMatrix.b;
+        transform.m[4] = -globalTransformMatrix.c;
+        transform.m[5] = -globalTransformMatrix.d;
+        transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
+        transform.m[13] = (globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY));
+    }
 
     _renderDisplay->setNodeToParentTransform(transform);
 }

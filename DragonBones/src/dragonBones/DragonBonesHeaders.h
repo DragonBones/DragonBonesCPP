@@ -6,35 +6,30 @@
 #include "core/BaseObject.h"
 
 // geom
-#include "geom/ColorTransform.h"
 #include "geom/Matrix.h"
+#include "geom/Transform.h"
+#include "geom/ColorTransform.h"
 #include "geom/Point.h"
 #include "geom/Rectangle.h"
-#include "geom/Transform.h"
-
-// textures
-#include "textures/TextureData.h"
 
 // model
-#include "model/FrameData.h"
+#include "model/TextureAtlasData.h"
+#include "model/UserData.h"
 #include "model/DragonBonesData.h"
 #include "model/ArmatureData.h"
+#include "model/ConstraintData.h"
+#include "model/DisplayData.h"
+#include "model/BoundingBoxData.h"
 #include "model/AnimationData.h"
-#include "model/TimelineData.h"
-
-// parsers
-#include "parsers/DataParser.h"
-#include "parsers/JSONDataParser.h"
-
-// factories
-#include "factories/BaseFactory.h"
+#include "model/AnimationConfig.h"
 
 // armature
-#include "armature/IArmatureDisplay.h"
+#include "armature/IArmatureProxy.h"
 #include "armature/Armature.h"
 #include "armature/TransformObject.h"
 #include "armature/Bone.h"
 #include "armature/Slot.h"
+#include "armature/Constraint.h"
 
 // animation
 #include "animation/IAnimateble.h"
@@ -44,7 +39,17 @@
 #include "animation/BaseTimelineState.h"
 #include "animation/TimelineState.h"
 
-// events
+// event
 #include "events/EventObject.h"
+#include "events/IEventDispatcher.h"
+
+#ifndef EGRET_WASM
+// parser
+#include "parsers/DataParser.h"
+#include "parsers/JSONDataParser.h"
+// factory
+#include "factories/BaseFactory.h"
+#endif //EGRET_WASM
+
 
 #endif // DRAGONBONES_HEADERS_H

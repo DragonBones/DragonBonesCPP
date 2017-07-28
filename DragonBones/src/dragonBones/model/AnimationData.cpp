@@ -3,142 +3,100 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-AnimationData::AnimationData() :
-    zOrderTimeline(nullptr)
-{
-    _onClear();
-}
-AnimationData::~AnimationData() 
-{
-    _onClear();
-}
-
 void AnimationData::_onClear()
 {
-    TimelineData::_onClear();
-
-    for (const auto& pair : boneTimelines)
+    for (auto& pair : boneTimelines)
     {
-        pair.second->returnToPool();
-    }
-
-    for (const auto& pair : slotTimelines)
-    {
-        pair.second->returnToPool();
-    }
-
-    for (const auto& skinPair : ffdTimelines)
-    {
-        for (const auto& slotPair : skinPair.second)
+        for (auto timeline : pair.second)
         {
-            for (const auto& pair : slotPair.second)
-            {
-                pair.second->returnToPool();
-            }
+            timeline->returnToPool();
         }
     }
-    if(zOrderTimeline){
-        zOrderTimeline->returnToPool();
-        zOrderTimeline=nullptr;
+
+    for (auto& pair : slotTimelines)
+    {
+        for (auto timeline : pair.second)
+        {
+            timeline->returnToPool();
+        }
     }
 
-    hasAsynchronyTimeline = false;
+    if (actionTimeline != nullptr)
+    {
+        actionTimeline->returnToPool();
+    }
+
+    if (zOrderTimeline != nullptr)
+    {
+        zOrderTimeline->returnToPool();
+    }
+
+    frameIntOffset = 0;
+    frameFloatOffset = 0;
+    frameOffset = 0;
     frameCount = 0;
     playTimes = 0;
-    position = 0.f;
-    duration = 0.f;
-    fadeInTime = 0.f;
-    cacheTimeToFrameScale = 0.f;
-    name.clear();
-    animation = nullptr;
+    duration = 0.0f;
+    scale = 1.0f;
+    fadeInTime = 0.0f;
+    cacheFrameRate = 0.0f;
+    name = "";
+    cachedFrames.clear();
     boneTimelines.clear();
     slotTimelines.clear();
-    ffdTimelines.clear();
-    cachedFrames.clear();
+    boneCachedFrameIndices.clear();
+    slotCachedFrameIndices.clear();
+    parent = nullptr;
+    actionTimeline = nullptr;
+    zOrderTimeline = nullptr;
 }
 
-void AnimationData::cacheFrames(float value)
+void AnimationData::cacheFrames(unsigned frameRate)
 {
-    if (animation)
+    if (cacheFrameRate > 0.0f) // TODO clear cache.
     {
         return;
     }
 
-    const auto cacheFrameCount = (unsigned)std::max(std::floor((frameCount + 1) * scale * value), 1.f);
+    cacheFrameRate = std::max(std::ceil(frameRate * scale), 1.0f);
+    const auto cacheFrameCount = std::ceil(cacheFrameRate * duration) + 1; // Cache one more frame.
 
-    cacheTimeToFrameScale = cacheFrameCount / (duration + 0.0000001f);
     cachedFrames.resize(cacheFrameCount, false);
 
-    for (const auto& pair : boneTimelines)
+    for (const auto bone : parent->sortedBones)
     {
-        pair.second->cacheFrames(cacheFrameCount);
+        boneCachedFrameIndices[bone->name].resize(cacheFrameCount, -1);
     }
 
-    for (const auto& pair : slotTimelines)
+    for (const auto slot : parent->sortedSlots)
     {
-        pair.second->cacheFrames(cacheFrameCount);
+        slotCachedFrameIndices[slot->name].resize(cacheFrameCount, -1);
     }
 }
 
-void AnimationData::addBoneTimeline(BoneTimelineData* value)
+void AnimationData::addBoneTimeline(BoneData* bone, TimelineData* value)
 {
-    if (value && value->bone && boneTimelines.find(value->bone->name) == boneTimelines.end())
+    auto& timelines = boneTimelines[bone->name];
+    if(std::find(timelines.cbegin(), timelines.cend(), value) == timelines.cend())
     {
-        boneTimelines[value->bone->name] = value;
-    }
-    else
-    {
-        DRAGONBONES_ASSERT(false, "Argument error.");
+        timelines.push_back(value);
     }
 }
 
-void AnimationData::addSlotTimeline(SlotTimelineData* value)
+void AnimationData::addSlotTimeline(SlotData* slot, TimelineData* value)
 {
-    if (value && value->slot && slotTimelines.find(value->slot->name) == slotTimelines.end())
+    auto& timelines = slotTimelines[slot->name];
+    if (std::find(timelines.cbegin(), timelines.cend(), value) == timelines.cend())
     {
-        slotTimelines[value->slot->name] = value;
-    }
-    else
-    {
-        DRAGONBONES_ASSERT(false, "Argument error.");
+        timelines.push_back(value);
     }
 }
 
-void AnimationData::addFFDTimeline(FFDTimelineData* value)
+void TimelineData::_onClear()
 {
-    if (value && value->skin && value->slot)
-    {
-        const auto& skinName = value->skin->name;
-        const auto& slotName = value->slot->slot->name;
-        const auto& displayIndex = to_string(value->displayIndex); // std::to_string
-
-        auto& skin = ffdTimelines[skinName];
-        auto& slot = skin[slotName];
-        if (slot.find(displayIndex) == slot.end())
-        {
-            slot[displayIndex] = value;
-        }
-        else
-        {
-            DRAGONBONES_ASSERT(false, "Argument error.");
-        }
-    }
-    else
-    {
-        DRAGONBONES_ASSERT(false, "Argument error.");
-    }
-}
-
-void AnimationData::addZOrderTimeline(ZOrderTimelineData* value)
-{
-    if (value )
-    {
-        zOrderTimeline = value;
-    }
-    else
-    {
-        DRAGONBONES_ASSERT(false, "Argument error.");
-    }
+    type = TimelineType::BoneAll;
+    offset = 0;
+    frameIndicesOffset = -1;
 }
 
 DRAGONBONES_NAMESPACE_END

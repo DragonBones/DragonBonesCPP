@@ -1,96 +1,192 @@
 #ifndef DRAGONBONES_ANIMATION_DATA_H
 #define DRAGONBONES_ANIMATION_DATA_H
 
-#include "TimelineData.h"
+#include "ArmatureData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-class AnimationData final : public TimelineData<AnimationFrameData>
+/**
+* 动画数据。
+* @version DragonBones 3.0
+* @language zh_CN
+*/
+class AnimationData : public BaseObject
 {
-    BIND_CLASS_TYPE(AnimationData);
+    BIND_CLASS_TYPE_B(AnimationData);
 
 public:
-    /** @private */
-    bool hasAsynchronyTimeline;
+    /**
+    * @private
+    */
+    unsigned frameIntOffset;
+    /**
+    * @private
+    */
+    unsigned frameFloatOffset;
+    /**
+    * @private
+    */
+    unsigned frameOffset;
+    /**
+    * 持续的帧数。 ([1~N])
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     unsigned frameCount;
+    /**
+    * 播放次数。 [0: 无限循环播放, [1~N]: 循环播放 N 次]
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     unsigned playTimes;
-    float position;
+    /**
+    * 持续时间。 (以秒为单位)
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     float duration;
+    /**
+    * @private
+    */
+    float scale;
+    /**
+    * 淡入时间。 (以秒为单位)
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     float fadeInTime;
-    /** @private */
-    float cacheTimeToFrameScale;
+    /**
+    * @private
+    */
+    float cacheFrameRate;
+    /**
+    * 数据名称。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     std::string name;
-    /** @private */
-    AnimationData* animation;
-    /** @private */
-    std::map<std::string, BoneTimelineData*> boneTimelines;
-    /** @private */
-    std::map<std::string, SlotTimelineData*> slotTimelines;
-    /** @private */
-    std::map<std::string, std::map<std::string, std::map<std::string, FFDTimelineData*>>> ffdTimelines; // skin slot displayIndex
-    /** @private */
-    ZOrderTimelineData* zOrderTimeline;
-    /** @private */
+    /**
+    * @private
+    */
     std::vector<bool> cachedFrames;
-
-    /** @private */
-    AnimationData();
-    /** @private */
-    ~AnimationData();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(AnimationData);
+    /**
+    * @private
+    */
+    std::map<std::string, std::vector<TimelineData*>> boneTimelines;
+    /**
+    * @private
+    */
+    std::map<std::string, std::vector<TimelineData*>> slotTimelines;
+    /**
+    * @private
+    */
+    std::map<std::string, std::vector<int>> boneCachedFrameIndices;
+    /**
+    * @private
+    */
+    std::map<std::string, std::vector<int>> slotCachedFrameIndices;
+    /**
+    * @private
+    */
+    ArmatureData* parent;
+    /**
+    * @private
+    */
+    TimelineData* actionTimeline;
+    /**
+    * @private
+    */
+    TimelineData* zOrderTimeline;
+    /**
+    * @private
+    */
+    AnimationData() :
+        actionTimeline(nullptr),
+        zOrderTimeline(nullptr)
+    {
+        _onClear();
+    }
+    ~AnimationData()
+    {
+        _onClear();
+    }
 
 protected:
-    void _onClear() override;
+    virtual void _onClear() override;
 
 public:
-    /** @private */
-    void cacheFrames(float value);
-    /** @private */
-    void addBoneTimeline(BoneTimelineData* value);
-    /** @private */
-    void addSlotTimeline(SlotTimelineData* value);
-    /** @private */
-    void addFFDTimeline(FFDTimelineData* value);
-    /** @private */
-    void addZOrderTimeline(ZOrderTimelineData* value);
-
-    /** @private */
-    inline BoneTimelineData* getBoneTimeline(const std::string& name) const
+    /**
+    * @private
+    */
+    void cacheFrames(unsigned frameRate);
+    /**
+    * @private
+    */
+    void addBoneTimeline(BoneData* bone, TimelineData* value);
+    /**
+    * @private
+    */
+    void addSlotTimeline(SlotData* slot, TimelineData* value);
+    /**
+    * @private
+    */
+    std::vector<TimelineData*>* getBoneTimelines(const std::string& name)
     {
-        return mapFind(boneTimelines, name);
+        return mapFindB(boneTimelines, name);
     }
-
-    /** @private */
-    inline SlotTimelineData* getSlotTimeline(const std::string& name) const
+    /**
+    * @private
+    */
+    inline std::vector<TimelineData*>* getSlotTimeline(const std::string& name)
     {
-        return mapFind(slotTimelines, name);
+        return mapFindB(slotTimelines, name);
     }
-
-    /** @private */
-    inline FFDTimelineData* getFFDTimeline(const std::string& skinName, const std::string& slotName, unsigned displayIndex) const
+    /**
+    * @private
+    */
+    inline std::vector<int>* getBoneCachedFrameIndices(const std::string& name)
     {
-        const auto iteratorSkin = ffdTimelines.find(skinName);
-        if (iteratorSkin != ffdTimelines.end())
-        {
-            const auto& skin = iteratorSkin->second;
-            const auto iteratorSlot = skin.find(slotName);
-            if (iteratorSlot != skin.end())
-            {
-                const auto& slot = iteratorSlot->second;
-                return mapFind(slot, to_string(displayIndex)); // std::to_string
-            }
-        }
-
-        return nullptr;
+        return mapFindB(boneCachedFrameIndices, name);
     }
-
-    /** @private */
-    inline ZOrderTimelineData* getZOrderTimeline() const
+    /**
+    * @private
+    */
+    inline std::vector<int>* getSlotCachedFrameIndices(const std::string& name)
     {
-        return zOrderTimeline;
+        return mapFindB(slotCachedFrameIndices, name);
     }
+    
+public: // For WebAssembly.
+    unsigned getFrameOffset() const { return frameOffset; } // TODO remove
+    void setFrameOffset(unsigned value) { frameOffset = value; }// TODO remove
+
+    TimelineData* getActionTimeline(const std::string& name) const { return actionTimeline; }
+    TimelineData* getZOrderTimeline(const std::string& name) const { return zOrderTimeline; }
+    ArmatureData* getParent() const { return parent; }
+
+    void setActionTimeline(TimelineData* pactionTimeline) { actionTimeline = pactionTimeline; }
+    void setZOrderTimeline(TimelineData* value) { zOrderTimeline = value; }
+    void setParent(ArmatureData* value) { parent = value; }
+};
+/**
+* @private
+*/
+class TimelineData : public BaseObject
+{
+    BIND_CLASS_TYPE_A(TimelineData);
+
+public:
+    TimelineType type;
+	// TODO Check(int->unsigned)
+    unsigned offset;
+    int frameIndicesOffset;
+
+protected:
+    virtual void _onClear() override;
+
+public: // For WebAssembly.
+    int getType() { return (int)type; }
+
+    void setType(int value) { type = (TimelineType)value; }
 };
 
 DRAGONBONES_NAMESPACE_END

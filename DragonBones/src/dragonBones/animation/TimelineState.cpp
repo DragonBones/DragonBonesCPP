@@ -1,602 +1,572 @@
 #include "TimelineState.h"
-#include "AnimationState.h"
+#include "WorldClock.h"
+#include "Animation.h"
+#include "../model/DragonBonesData.h"
+#include "../model/UserData.h"
+#include "../model/ArmatureData.h"
+#include "../model/DisplayData.h"
+#include "../model/AnimationData.h"
+#include "../events/EventObject.h"
+#include "../events/IEventDispatcher.h"
 #include "../armature/Armature.h"
 #include "../armature/Bone.h"
 #include "../armature/Slot.h"
+#include "AnimationState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-AnimationTimelineState::AnimationTimelineState() 
+void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
 {
-    this->_onClear();
-}
-AnimationTimelineState::~AnimationTimelineState() 
-{
-    this->_onClear();
-}
+    const auto eventDispatcher = _armature->getEventDispatcher();
 
-void AnimationTimelineState::_onClear()
-{
-    TimelineState::_onClear();
-
-    _isStarted = false;
-}
-
-void AnimationTimelineState::_onCrossFrame(AnimationFrameData* frame)
-{
-    if (this->_animationState->actionEnabled)
+    if (_animationState->actionEnabled)
     {
-        for (const auto actionData : frame->actions)
+        const auto frameOffset = _animationData->frameOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + frameIndex];
+        const unsigned actionCount = _frameArray[frameOffset + 1];
+        const auto& actions = _armature->armatureData->actions;
+        for (std::size_t i = 0; i < actionCount; ++i)
         {
-            this->_armature->_bufferAction(actionData);
-        }
-    }
-
-    const auto eventDispatcher = this->_armature->_display;
-
-    for (const auto eventData : frame->events)
-    {
-        std::string eventType;
-        switch (eventData->type)
-        {
-        case EventType::Frame:
-            eventType = EventObject::FRAME_EVENT;
-            break;
-
-        case EventType::Sound:
-            eventType = EventObject::SOUND_EVENT;
-            break;
-        }
-
-        if (
-            (eventData->type == EventType::Sound ? 
-                (EventObject::_soundEventManager ? EventObject::_soundEventManager : eventDispatcher) :
-                eventDispatcher
-            )->hasEvent(eventType)
-        )
-        {
-            const auto eventObject = BaseObject::borrowObject<EventObject>();
-            eventObject->animationState = this->_animationState;
-
-            if (eventData->bone)
+            const auto actionIndex = _frameArray[frameOffset + 2 + i];
+            const auto action = actions[actionIndex];
+            //TODO lsc check 000
+            if (action->type == ActionType::Play)
             {
-                eventObject->bone = this->_armature->getBone(eventData->bone->name);
-            }
-
-            if (eventData->slot)
-            {
-                eventObject->slot = this->_armature->getSlot(eventData->slot->name);
-            }
-
-            eventObject->name = eventData->name;
-            eventObject->data = eventData->data;
-
-            this->_armature->_bufferEvent(eventObject, eventType);
-        }
-    }
-}
-
-void AnimationTimelineState::fadeIn(Armature* armature, AnimationState* animationState, AnimationData* timelineData, float time)
-{
-    TimelineState::fadeIn(armature, animationState, timelineData, time);
-
-    this->_currentTime = time;
-}
-
-void AnimationTimelineState::update(float time)
-{
-    const auto prevTime = this->_currentTime;
-    const auto prevPlayTimes = this->_currentPlayTimes;
-
-    if (!this->_isCompleted && this->_setCurrentTime(time))
-    {
-        const auto eventDispatcher = this->_armature->_display;
-
-        if (!_isStarted)
-        {
-            _isStarted = true;
-
-            if (eventDispatcher->hasEvent(EventObject::START)) 
-            {
-                const auto eventObject = BaseObject::borrowObject<EventObject>();
-                eventObject->animationState = this->_animationState;
-                this->_armature->_bufferEvent(eventObject, EventObject::START);
-            }
-        }
-
-        if (this->_keyFrameCount)
-        {
-            const auto currentFrameIndex = this->_keyFrameCount > 1 ? (unsigned)(this->_currentTime * this->_frameRate) : 0;
-            const auto currentFrame = this->_timeline->frames[currentFrameIndex];
-            if (this->_currentFrame != currentFrame) 
-            {
-                if (this->_keyFrameCount > 1) 
+                if (action->slot != nullptr) 
                 {
-                    auto crossedFrame = this->_currentFrame;
-                    this->_currentFrame = currentFrame;
-
-                    if (!crossedFrame) 
+                    const auto slot = _armature->getSlot(action->slot->name);
+                    if (slot != nullptr)
                     {
-                        const auto prevFrameIndex = (unsigned)(prevTime * this->_frameRate);
-                        crossedFrame = this->_timeline->frames[prevFrameIndex];
-
-                        if (this->_isReverse) 
+                        const auto childArmature = slot->getChildArmature();
+                        if (childArmature != nullptr) 
                         {
-                        }
-                        else 
-                        {
-                            if (
-                                prevTime <= crossedFrame->position ||
-                                prevPlayTimes != this->_currentPlayTimes
-                            ) 
-                            {
-                                crossedFrame = crossedFrame->prev;
-                            }
+                            childArmature->getAnimation()->fadeIn(action->name);
                         }
                     }
-
-                    if (this->_isReverse) 
+                }
+                else if (action->bone != nullptr) 
+                {
+                    for (const auto slot : _armature->getSlots())
                     {
-                        while (crossedFrame != currentFrame) 
+                        const auto childArmature = slot->getChildArmature();
+                        if (childArmature != nullptr && slot->getParent()->boneData == action->bone) 
                         {
-                            this->_onCrossFrame(crossedFrame);
-                            crossedFrame = crossedFrame->prev;
-                        }
-                    }
-                    else 
-                    {
-                        while (crossedFrame != currentFrame) 
-                        {
-                            crossedFrame = crossedFrame->next;
-                            this->_onCrossFrame(crossedFrame);
+                            childArmature->getAnimation()->fadeIn(action->name);
                         }
                     }
                 }
                 else 
                 {
-                    this->_currentFrame = currentFrame;
-                    this->_onCrossFrame(this->_currentFrame);
-                }
-            }
-        }
-
-        if (prevPlayTimes != this->_currentPlayTimes)
-        {
-            if (eventDispatcher->hasEvent(EventObject::LOOP_COMPLETE)) 
-            {
-                const auto eventObject = BaseObject::borrowObject<EventObject>();
-                eventObject->animationState = this->_animationState;
-                this->_armature->_bufferEvent(eventObject, EventObject::LOOP_COMPLETE);
-            }
-
-            if (this->_isCompleted && eventDispatcher->hasEvent(EventObject::COMPLETE))
-            {
-                const auto eventObject = BaseObject::borrowObject<EventObject>();
-                eventObject->animationState = this->_animationState;
-                this->_armature->_bufferEvent(eventObject, EventObject::COMPLETE);
-            }
-
-            this->_currentFrame = nullptr;
-        }
-    }
-}
-
-void AnimationTimelineState::setCurrentTime(float value)
-{
-    this->_setCurrentTime(value);
-    this->_currentFrame = nullptr;
-}
-
-BoneTimelineState::BoneTimelineState() 
-{
-    _onClear();
-}
-BoneTimelineState::~BoneTimelineState() 
-{
-    _onClear();
-}
-
-void BoneTimelineState::_onClear()
-{
-    TweenTimelineState::_onClear();
-
-    bone = nullptr;
-
-    _tweenTransform = TweenType::None;
-    _tweenRotate = TweenType::None;
-    _tweenScale = TweenType::None;
-    _boneTransform = nullptr;
-    _originTransform = nullptr;
-    _transform.identity();
-    _currentTransform.identity();
-    _durationTransform.identity();
-}
-
-void BoneTimelineState::_onArriveAtFrame(bool isUpdate)
-{
-    TweenTimelineState::_onArriveAtFrame(isUpdate);
-
-    _currentTransform = this->_currentFrame->transform;
-    _tweenTransform = TweenType::Once;
-    _tweenRotate = TweenType::Once;
-    _tweenScale = TweenType::Once;
-
-    if (this->_keyFrameCount > 1 && (this->_tweenEasing != NO_TWEEN || this->_curve))
-    {
-        const auto& nextFrame = *static_cast<BoneFrameData*>(this->_currentFrame->next);
-        const auto& nextTransform = nextFrame.transform;
-
-        // Transform
-        _durationTransform.x = nextTransform.x - _currentTransform.x;
-        _durationTransform.y = nextTransform.y - _currentTransform.y;
-        if (_durationTransform.x != 0.f || _durationTransform.y != 0.f)
-        {
-            _tweenTransform = TweenType::Always;
-        }
-
-        // Rotate
-        const auto tweenRotate = this->_currentFrame->tweenRotate;
-        if (tweenRotate == tweenRotate) // TODO
-        {
-            if (tweenRotate)
-            {
-                if (tweenRotate > 0 ? nextTransform.skewY >= _currentTransform.skewY : nextTransform.skewY <= _currentTransform.skewY) {
-                    const auto rotate = tweenRotate > 0 ? tweenRotate - 1 : tweenRotate + 1;
-                    _durationTransform.skewX = nextTransform.skewX - _currentTransform.skewX + PI_D * rotate;
-                    _durationTransform.skewY = nextTransform.skewY - _currentTransform.skewY + PI_D * rotate;
-                }
-                else
-                {
-                    _durationTransform.skewX = nextTransform.skewX - _currentTransform.skewX + PI_D * tweenRotate;
-                    _durationTransform.skewY = nextTransform.skewY - _currentTransform.skewY + PI_D * tweenRotate;
+                    _armature->getAnimation()->fadeIn(action->name);
                 }
             }
             else
             {
-                _durationTransform.skewX = Transform::normalizeRadian(nextTransform.skewX - _currentTransform.skewX);
-                _durationTransform.skewY = Transform::normalizeRadian(nextTransform.skewY - _currentTransform.skewY);
-            }
-
-            if (_durationTransform.skewX != 0.f || _durationTransform.skewY != 0.f)
-            {
-                _tweenRotate = TweenType::Always;
-            }
-        }
-        else
-        {
-            _durationTransform.skewX = 0.f;
-            _durationTransform.skewY = 0.f;
-        }
-
-        // Scale
-        if (this->_currentFrame->tweenScale)
-        {
-            _durationTransform.scaleX = nextTransform.scaleX - _currentTransform.scaleX;
-            _durationTransform.scaleY = nextTransform.scaleY - _currentTransform.scaleY;
-            if (_durationTransform.scaleX != 0.f || _durationTransform.scaleY != 0.f)
-            {
-                _tweenScale = TweenType::Always;
-            }
-        }
-        else
-        {
-            _durationTransform.scaleX = 0.f;
-            _durationTransform.scaleY = 0.f;
-        }
-    }
-    else
-    {
-        _durationTransform.x = 0.f;
-        _durationTransform.y = 0.f;
-        _durationTransform.skewX = 0.f;
-        _durationTransform.skewY = 0.f;
-        _durationTransform.scaleX = 0.f;
-        _durationTransform.scaleY = 0.f;
-    }
-}
-
-void BoneTimelineState::_onUpdateFrame(bool isUpdate)
-{
-    if (_tweenTransform != TweenType::None || _tweenRotate != TweenType::None || _tweenScale != TweenType::None)
-    {
-        TweenTimelineState::_onUpdateFrame(isUpdate);
-
-        if (_tweenTransform != TweenType::None)
-        {
-            if (_tweenTransform == TweenType::Once)
-            {
-                _tweenTransform = TweenType::None;
-            }
-
-            if (this->_animationState->additiveBlending) // Additive blending
-            {
-                _transform.x = _currentTransform.x + _durationTransform.x * this->_tweenProgress;
-                _transform.y = _currentTransform.y + _durationTransform.y * this->_tweenProgress;
-            }
-            else // Normal blending
-            {
-                _transform.x = _originTransform->x + _currentTransform.x + _durationTransform.x * this->_tweenProgress;
-                _transform.y = _originTransform->y + _currentTransform.y + _durationTransform.y * this->_tweenProgress;
-            }
-        }
-
-        if (_tweenRotate != TweenType::None)
-        {
-            if (_tweenRotate == TweenType::Once)
-            {
-                _tweenRotate = TweenType::None;
-            }
-
-            if (this->_animationState->additiveBlending) // Additive blending
-            {
-                _transform.skewX = _currentTransform.skewX + _durationTransform.skewX * this->_tweenProgress;
-                _transform.skewY = _currentTransform.skewY + _durationTransform.skewY * this->_tweenProgress;
-            }
-            else // Normal blending
-            {
-                _transform.skewX = _originTransform->skewX + _currentTransform.skewX + _durationTransform.skewX * this->_tweenProgress;
-                _transform.skewY = _originTransform->skewY + _currentTransform.skewY + _durationTransform.skewY * this->_tweenProgress;
-            }
-        }
-
-        if (_tweenScale != TweenType::None)
-        {
-            if (_tweenScale == TweenType::Once)
-            {
-                _tweenScale = TweenType::None;
-            }
-
-            if (this->_animationState->additiveBlending) // Additive blending
-            {
-                _transform.scaleX = _currentTransform.scaleX + _durationTransform.scaleX * this->_tweenProgress;
-                _transform.scaleY = _currentTransform.scaleY + _durationTransform.scaleY * this->_tweenProgress;
-            }
-            else // Normal blending
-            {
-                _transform.scaleX = _originTransform->scaleX * (_currentTransform.scaleX + _durationTransform.scaleX * this->_tweenProgress);
-                _transform.scaleY = _originTransform->scaleY * (_currentTransform.scaleY + _durationTransform.scaleY * this->_tweenProgress);
-            }
-        }
-
-        bone->invalidUpdate();
-    }
-}
-
-void BoneTimelineState::fadeIn(Armature* armature, AnimationState* animationState, BoneTimelineData* timelineData, float time)
-{
-    TimelineState::fadeIn(armature, animationState, timelineData, time);
-
-    _originTransform = &this->_timeline->originTransform;
-    _boneTransform = &bone->_animationPose;
-}
-
-void BoneTimelineState::fadeOut()
-{
-    _transform.skewX = Transform::normalizeRadian(_transform.skewX);
-    _transform.skewY = Transform::normalizeRadian(_transform.skewY);
-}
-
-void BoneTimelineState::update(float time)
-{
-    TweenTimelineState::update(time);
-
-    const auto weight = this->_animationState->_weightResult;
-    if (weight > 0.f)
-    {
-        if (bone->_blendIndex == 0)
-        {
-            _boneTransform->x = _transform.x * weight;
-            _boneTransform->y = _transform.y * weight;
-            _boneTransform->skewX = _transform.skewX * weight;
-            _boneTransform->skewY = _transform.skewY * weight;
-            _boneTransform->scaleX = (_transform.scaleX - 1.f) * weight + 1.f;
-            _boneTransform->scaleY = (_transform.scaleY - 1.f) * weight + 1.f;
-        }
-        else
-        {
-            _boneTransform->x += _transform.x * weight;
-            _boneTransform->y += _transform.y * weight;
-            _boneTransform->skewX += _transform.skewX * weight;
-            _boneTransform->skewY += _transform.skewY * weight;
-            _boneTransform->scaleX += (_transform.scaleX - 1.f) * weight;
-            _boneTransform->scaleY += (_transform.scaleY - 1.f) * weight;
-        }
-
-        bone->_blendIndex++;
-
-        const auto fadeProgress = this->_animationState->_fadeProgress;
-        if (fadeProgress < 1.f)
-        {
-            bone->invalidUpdate();
-        }
-    }
-}
-
-SlotTimelineState::SlotTimelineState() 
-{
-    _onClear();
-}
-SlotTimelineState::~SlotTimelineState() 
-{
-    _onClear();
-}
-
-void SlotTimelineState::_onClear()
-{
-    TweenTimelineState::_onClear();
-
-    slot = nullptr;
-
-    _colorDirty = false;
-    _tweenColor = TweenType::None;
-    _slotColor = nullptr;
-    _color.identity();
-    _durationColor.identity();
-}
-
-void SlotTimelineState::_onArriveAtFrame(bool isUpdate)
-{
-    TweenTimelineState::_onArriveAtFrame(isUpdate);
-
-    if (this->_animationState->_isDisabled(*slot))
-    {
-        this->_tweenEasing = NO_TWEEN;
-        this->_curve = nullptr;
-        _tweenColor = TweenType::None;
-        return;
-    }
-
-    if (slot->_displayDataSet)
-    {
-        const auto displayIndex = this->_currentFrame->displayIndex;
-        if (slot->getDisplayIndex() >= 0 && displayIndex >= 0)
-        {
-            if (slot->_displayDataSet->displays.size() > 1)
-            {
-                slot->_setDisplayIndex(displayIndex);
-            }
-        }
-        else
-        {
-            slot->_setDisplayIndex(displayIndex);
-        }
-
-        slot->_updateMeshData(true);
-    }
-
-    if (this->_currentFrame->displayIndex >= 0)
-    {
-        _tweenColor = TweenType::None;
-
-        const auto& currentColor = *this->_currentFrame->color;
-
-        if (this->_keyFrameCount > 1 && (this->_tweenEasing != NO_TWEEN || this->_curve))
-        {
-            const auto& nextFrame = *static_cast<SlotFrameData*>(this->_currentFrame->next);
-            if (this->_currentFrame->color != nextFrame.color && nextFrame.displayIndex >= 0)
-            {
-                const auto& nextColor = *nextFrame.color;
-                _durationColor.alphaMultiplier = nextColor.alphaMultiplier - currentColor.alphaMultiplier;
-                _durationColor.redMultiplier = nextColor.redMultiplier - currentColor.redMultiplier;
-                _durationColor.greenMultiplier = nextColor.greenMultiplier - currentColor.greenMultiplier;
-                _durationColor.blueMultiplier = nextColor.blueMultiplier - currentColor.blueMultiplier;
-                _durationColor.alphaOffset = nextColor.alphaOffset - currentColor.alphaOffset;
-                _durationColor.redOffset = nextColor.redOffset - currentColor.redOffset;
-                _durationColor.greenOffset = nextColor.greenOffset - currentColor.greenOffset;
-                _durationColor.blueOffset = nextColor.blueOffset - currentColor.blueOffset;
-
-                if (
-                    _durationColor.alphaMultiplier != 0.f ||
-                    _durationColor.redMultiplier != 0.f ||
-                    _durationColor.greenMultiplier != 0.f ||
-                    _durationColor.blueMultiplier != 0.f ||
-                    _durationColor.alphaOffset != 0.f ||
-                    _durationColor.redOffset != 0.f ||
-                    _durationColor.greenOffset != 0.f ||
-                    _durationColor.blueOffset != 0.f
-                    )
+                const auto eventType = action->type == ActionType::Frame ? EventObject::FRAME_EVENT : EventObject::SOUND_EVENT;
+                if (action->type == ActionType::Sound || eventDispatcher->hasEvent(eventType))
                 {
-                    _tweenColor = TweenType::Always;
+                    const auto eventObject = BaseObject::borrowObject<EventObject>();
+                    eventObject->time = _frameArray[frameOffset] * _frameRateR;
+                    eventObject->type = eventType;
+                    eventObject->name = action->name;
+                    eventObject->data = action->data;
+                    eventObject->armature = _armature;
+                    eventObject->animationState = _animationState;
+
+                    if (action->bone != nullptr)
+                    {
+                        eventObject->bone = _armature->getBone(action->bone->name);
+                    }
+
+                    if (action->slot != nullptr)
+                    {
+                        eventObject->slot = _armature->getSlot(action->slot->name);
+                    }
+
+                    _armature->_dragonBones->bufferEvent(eventObject);
+                }
+            }
+        }
+    }
+}
+
+void ActionTimelineState::update(float passedTime)
+{
+    const auto prevState = playState;
+    auto prevPlayTimes = currentPlayTimes;
+    auto prevTime = currentTime;
+
+    if (playState <= 0 && _setCurrentTime(passedTime)) 
+    {
+        const auto eventDispatcher = _armature->getEventDispatcher();
+        if (prevState < 0) 
+        {
+            if (playState != prevState)
+            {
+                if (_animationState->displayControl && _animationState->resetToPose) // Reset zorder to pose.
+                {
+                    _armature->_sortZOrder(nullptr, 0);
+                }
+
+                prevPlayTimes = currentPlayTimes;
+
+                if (eventDispatcher->hasEvent(EventObject::START))
+                {
+                    const auto eventObject = BaseObject::borrowObject<EventObject>();
+                    eventObject->type = EventObject::START;
+                    eventObject->armature = _armature;
+                    eventObject->animationState = _animationState;
+                    _armature->_dragonBones->bufferEvent(eventObject);
+                }
+            }
+            else 
+            {
+                return;
+            }
+        }
+
+        auto isReverse = false;
+        EventObject* loopCompleteEvent = nullptr;
+        EventObject* completeEvent = nullptr;
+        if (currentPlayTimes != prevPlayTimes) 
+        {
+            if (eventDispatcher->hasEvent(EventObject::LOOP_COMPLETE))
+            {
+                loopCompleteEvent = BaseObject::borrowObject<EventObject>();
+                loopCompleteEvent->type = EventObject::LOOP_COMPLETE;
+                loopCompleteEvent->armature = _armature;
+                loopCompleteEvent->animationState = _animationState;
+            }
+
+            if (playState > 0) 
+            {
+                if (eventDispatcher->hasEvent(EventObject::COMPLETE))
+                {
+                    completeEvent = BaseObject::borrowObject<EventObject>();
+                    completeEvent->type = EventObject::COMPLETE;
+                    completeEvent->armature = _armature;
+                    completeEvent->animationState = _animationState;
+                }
+
+                isReverse = prevTime > currentTime;
+            }
+            else 
+            {
+                isReverse = prevTime < currentTime;
+            }
+        }
+        else 
+        {
+            isReverse = prevTime > currentTime;
+        }
+
+        if (_frameCount > 1) 
+        {
+            const auto timelineData = _timelineData;
+            const auto timelineFrameIndex = (unsigned)(currentTime * _frameRate); // uint
+            const auto frameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + timelineFrameIndex];
+            if (_frameIndex != frameIndex) // Arrive at frame.  
+            {
+                _frameIndex = frameIndex;
+                auto crossedFrameIndex = _frameIndex;
+                if (_timelineArray != nullptr)
+                {
+                    _frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + _frameIndex];
+                    if (isReverse) 
+                    {
+                        if (crossedFrameIndex < 0) 
+                        {
+                            const auto prevFrameIndex = (unsigned)(prevTime * _frameRate);
+                            crossedFrameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + prevFrameIndex];
+                            if (currentPlayTimes == prevPlayTimes) // Start.
+                            {
+                                if (crossedFrameIndex == frameIndex) // Uncrossed.
+                                {
+                                    crossedFrameIndex = -1;
+                                }
+                            }
+                        }
+
+                        while (crossedFrameIndex >= 0) 
+                        {
+                            const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
+                            const auto framePosition = _frameArray[frameOffset] * _frameRateR;
+                            if (
+                                _position <= framePosition &&
+                                framePosition <= _position + _duration
+                            )  // Support interval play.
+                            {
+                                _onCrossFrame(crossedFrameIndex);
+                            }
+
+                            if (loopCompleteEvent != nullptr && crossedFrameIndex == 0) // Add loop complete event after first frame.
+                            { 
+                                _armature->_dragonBones->bufferEvent(loopCompleteEvent);
+                                loopCompleteEvent = nullptr;
+                            }
+
+                            if (crossedFrameIndex > 0) 
+                            {
+                                crossedFrameIndex--;
+                            }
+                            else 
+                            {
+                                crossedFrameIndex = _frameCount - 1;
+                            }
+
+                            if (crossedFrameIndex ==  frameIndex)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        if (crossedFrameIndex < 0)
+                        {
+                            const auto prevFrameIndex = (unsigned)(prevTime * _frameRate);
+                            crossedFrameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + prevFrameIndex];
+                            const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
+                            const auto framePosition = _frameArray[frameOffset] * _frameRateR;
+                            if (currentPlayTimes == prevPlayTimes) // Start.
+                            { 
+                                if (prevTime <= framePosition) // Crossed.
+                                {
+                                    if (crossedFrameIndex > 0) 
+                                    {
+                                        crossedFrameIndex--;
+                                    }
+                                    else 
+                                    {
+                                        crossedFrameIndex = _frameCount - 1;
+                                    }
+                                }
+                                else if (crossedFrameIndex == frameIndex) // Uncrossed.
+                                { 
+                                    crossedFrameIndex = -1;
+                                }
+                            }
+                        }
+
+                        while (crossedFrameIndex >= 0) 
+                        {
+                            if ((unsigned)crossedFrameIndex < _frameCount - 1) 
+                            {
+                                crossedFrameIndex++;
+                            }
+                            else 
+                            {
+                                crossedFrameIndex = 0;
+                            }
+
+                            const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
+                            const auto framePosition = _frameArray[frameOffset] * _frameRateR;
+                            if (
+                                _position <= framePosition &&
+                                framePosition <= _position + _duration
+                            ) // Support interval play.
+                            {
+                                _onCrossFrame(crossedFrameIndex);
+                            }
+
+                            if (loopCompleteEvent != nullptr && crossedFrameIndex == 0) // Add loop complete event before first frame.
+                            {
+                                _armature->_dragonBones->bufferEvent(loopCompleteEvent);
+                                loopCompleteEvent = nullptr;
+                            }
+
+                            if (crossedFrameIndex == frameIndex)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (_frameIndex < 0) 
+        {
+            _frameIndex = 0;
+            if (_timelineData != nullptr)
+            {
+                _frameOffset = _animationData->frameOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset];
+                // Arrive at frame.
+                const auto framePosition = _frameArray[_frameOffset] * _frameRateR;
+                if (currentPlayTimes == prevPlayTimes) // Start.
+                {
+                    if (prevTime <= framePosition) 
+                    {
+                        _onCrossFrame(_frameIndex);
+                    }
+                }
+                else if (_position <= framePosition) // Loop complete.
+                {
+                    if (!isReverse && loopCompleteEvent != nullptr) // Add loop complete event before first frame.
+                    {
+                        _armature->_dragonBones->bufferEvent(loopCompleteEvent);
+                        loopCompleteEvent = nullptr;
+                    }
+
+                    _onCrossFrame(_frameIndex);
                 }
             }
         }
 
-        if (_tweenColor == TweenType::None)
+        if (loopCompleteEvent != nullptr)
         {
-            if (
-                currentColor.alphaMultiplier - _slotColor->alphaMultiplier != 0.f ||
-                currentColor.redMultiplier - _slotColor->redMultiplier != 0.f ||
-                currentColor.greenMultiplier - _slotColor->greenMultiplier != 0.f ||
-                currentColor.blueMultiplier - _slotColor->blueMultiplier != 0.f ||
-                currentColor.alphaOffset - _slotColor->alphaOffset != 0.f ||
-                currentColor.redOffset - _slotColor->redOffset != 0.f ||
-                currentColor.greenOffset - _slotColor->greenOffset != 0.f ||
-                currentColor.blueOffset - _slotColor->blueOffset != 0.f
-                )
+            _armature->_dragonBones->bufferEvent(loopCompleteEvent);
+        }
+
+        if (completeEvent != nullptr)
+        {
+            _armature->_dragonBones->bufferEvent(completeEvent);
+        }
+    }
+}
+
+void ActionTimelineState::setCurrentTime(float value)
+{
+    _setCurrentTime(value);
+    _frameIndex = -1;
+}
+
+void ZOrderTimelineState::_onArriveAtFrame()
+{
+    if (playState >= 0) 
+    {
+        const auto count = _frameArray[_frameOffset + 1];
+        if (count > 0) 
+        {
+            _armature->_sortZOrder(_frameArray, _frameOffset + 2);
+        }
+        else {
+            _armature->_sortZOrder(nullptr, 0);
+        }
+    }
+}
+
+void BoneAllTimelineState::_onArriveAtFrame()
+{
+    BoneTimelineState::_onArriveAtFrame();
+
+    if (_timelineData != nullptr) 
+    {
+        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 6; // ...(timeline value offset)|xxxxxx|xxxxxx|(Value offset)xxxxx|(Next offset)xxxxx|xxxxxx|xxxxxx|...
+
+        bonePose->current.x = frameFloatArray[valueOffset++];
+        bonePose->current.y = frameFloatArray[valueOffset++];
+        bonePose->current.rotation = frameFloatArray[valueOffset++];
+        bonePose->current.skew = frameFloatArray[valueOffset++];
+        bonePose->current.scaleX = frameFloatArray[valueOffset++];
+        bonePose->current.scaleY = frameFloatArray[valueOffset++];
+
+        if (_tweenState == TweenState::Always) 
+        {
+            if (_frameIndex == _frameCount - 1) 
             {
-                _tweenColor = TweenType::Once;
+                valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }
+
+            bonePose->delta.x = frameFloatArray[valueOffset++] - bonePose->current.x;
+            bonePose->delta.y = frameFloatArray[valueOffset++] - bonePose->current.y;
+            bonePose->delta.rotation = frameFloatArray[valueOffset++] - bonePose->current.rotation;
+            bonePose->delta.skew = frameFloatArray[valueOffset++] - bonePose->current.skew;
+            bonePose->delta.scaleX = frameFloatArray[valueOffset++] - bonePose->current.scaleX;
+            bonePose->delta.scaleY = frameFloatArray[valueOffset++] - bonePose->current.scaleY;
         }
     }
     else
     {
-        this->_tweenEasing = NO_TWEEN;
-        this->_curve = nullptr;
-        _tweenColor = TweenType::None;
+        bonePose->current.x = 0.0f;
+        bonePose->current.y = 0.0f;
+        bonePose->current.rotation = 0.0f;
+        bonePose->current.skew = 0.0f;
+        bonePose->current.scaleX = 1.0f;
+        bonePose->current.scaleY = 1.0f;
     }
 }
 
-void SlotTimelineState::_onUpdateFrame(bool isUpdate)
+void BoneAllTimelineState::_onUpdateFrame()
 {
-    TweenTimelineState::_onUpdateFrame(isUpdate);
+    BoneTimelineState::_onUpdateFrame();
 
-    if (_tweenColor != TweenType::None)
+    bone->_transformDirty = true;
+    if (_tweenState != TweenState::Always) 
     {
-        if (_tweenColor == TweenType::Once)
+        _tweenState = TweenState::None;
+    }
+
+    bonePose->result.x = bonePose->current.x + bonePose->delta.x * _tweenProgress;
+    bonePose->result.y = bonePose->current.y + bonePose->delta.y * _tweenProgress;
+    bonePose->result.rotation = bonePose->current.rotation + bonePose->delta.rotation * _tweenProgress;
+    bonePose->result.skew = bonePose->current.skew + bonePose->delta.skew * _tweenProgress;
+    bonePose->result.scaleX = bonePose->current.scaleX + bonePose->delta.scaleX * _tweenProgress;
+    bonePose->result.scaleY = bonePose->current.scaleY + bonePose->delta.scaleY * _tweenProgress;
+}
+
+void BoneAllTimelineState::fadeOut()
+{
+    bonePose->result.rotation = Transform::normalizeRadian(bonePose->result.rotation);
+    bonePose->result.skew = Transform::normalizeRadian(bonePose->result.skew);
+}
+
+void SlotDislayIndexTimelineState::_onArriveAtFrame()
+{
+    if (playState >= 0) 
+    {
+        const auto displayIndex = _timelineData != nullptr ? _frameArray[_frameOffset + 1] : slot->slotData->displayIndex;
+        if (slot->getDisplayIndex() != displayIndex) 
         {
-            _tweenColor = TweenType::None;
+            slot->_setDisplayIndex(displayIndex, true);
         }
-
-        const auto& currentColor = *this->_currentFrame->color;
-        _color.alphaMultiplier = currentColor.alphaMultiplier + _durationColor.alphaMultiplier * this->_tweenProgress;
-        _color.redMultiplier = currentColor.redMultiplier + _durationColor.redMultiplier * this->_tweenProgress;
-        _color.greenMultiplier = currentColor.greenMultiplier + _durationColor.greenMultiplier * this->_tweenProgress;
-        _color.blueMultiplier = currentColor.blueMultiplier + _durationColor.blueMultiplier * this->_tweenProgress;
-        _color.alphaOffset = currentColor.alphaOffset + _durationColor.alphaOffset * this->_tweenProgress;
-        _color.redOffset = currentColor.redOffset + _durationColor.redOffset * this->_tweenProgress;
-        _color.greenOffset = currentColor.greenOffset + _durationColor.greenOffset * this->_tweenProgress;
-        _color.blueOffset = currentColor.blueOffset + _durationColor.blueOffset * this->_tweenProgress;
-
-        _colorDirty = true;
     }
 }
 
-void SlotTimelineState::fadeIn(Armature* armature, AnimationState* animationState, SlotTimelineData* timelineData, float time)
+void SlotColorTimelineState::_onClear()
 {
-    TimelineState::fadeIn(armature, animationState, timelineData, time);
+    SlotTimelineState::_onClear();
 
-    _slotColor = &slot->_colorTransform;
+    _dirty = false;
 }
 
-void SlotTimelineState::fadeOut()
+void SlotColorTimelineState::_onArriveAtFrame()
 {
-    _tweenColor = TweenType::None;
-}
+    SlotTimelineState::_onArriveAtFrame();
 
-void SlotTimelineState::update(float time)
-{
-    TweenTimelineState::update(time);
-
-    if (_tweenColor != TweenType::None || _colorDirty)
+    if (_timelineData != nullptr) 
     {
-        const auto weight = this->_animationState->_weightResult;
-        if (weight > 0.f)
+        const auto intArray = _dragonBonesData->intArray;
+        const auto frameIntArray = _dragonBonesData->frameIntArray;
+        const auto valueOffset = _animationData->frameIntOffset + _frameValueOffset + _frameIndex * 1; // ...(timeline value offset)|x|x|(Value offset)|(Next offset)|x|x|...
+        unsigned colorOffset = frameIntArray[valueOffset];
+        _current[0] = intArray[colorOffset++];
+        _current[1] = intArray[colorOffset++];
+        _current[2] = intArray[colorOffset++];
+        _current[3] = intArray[colorOffset++];
+        _current[4] = intArray[colorOffset++];
+        _current[5] = intArray[colorOffset++];
+        _current[6] = intArray[colorOffset++];
+        _current[7] = intArray[colorOffset++];
+
+        if (_tweenState == TweenState::Always) 
         {
-            const auto fadeProgress = this->_animationState->_fadeProgress;
-            if (fadeProgress < 1.f)
+            if (_frameIndex == _frameCount - 1) 
             {
-                _slotColor->alphaMultiplier += (_color.alphaMultiplier - _slotColor->alphaMultiplier) * fadeProgress;
-                _slotColor->redMultiplier += (_color.alphaMultiplier - _slotColor->redMultiplier) * fadeProgress;
-                _slotColor->greenMultiplier += (_color.alphaMultiplier - _slotColor->greenMultiplier) * fadeProgress;
-                _slotColor->blueMultiplier += (_color.alphaMultiplier - _slotColor->blueMultiplier) * fadeProgress;
-                _slotColor->alphaOffset += (_color.alphaMultiplier - _slotColor->alphaOffset) * fadeProgress;
-                _slotColor->redOffset += (_color.alphaMultiplier - _slotColor->redOffset) * fadeProgress;
-                _slotColor->greenOffset += (_color.alphaMultiplier - _slotColor->greenOffset) * fadeProgress;
-                _slotColor->blueOffset += (_color.alphaMultiplier - _slotColor->blueOffset) * fadeProgress;
-                
+                colorOffset = frameIntArray[_animationData->frameIntOffset + _frameValueOffset];
+            }
+            else 
+            {
+                colorOffset = frameIntArray[valueOffset + 1 * 1];
+            }
+
+            _delta[0] = intArray[colorOffset++] - _current[0];
+            _delta[1] = intArray[colorOffset++] - _current[1];
+            _delta[2] = intArray[colorOffset++] - _current[2];
+            _delta[3] = intArray[colorOffset++] - _current[3];
+            _delta[4] = intArray[colorOffset++] - _current[4];
+            _delta[5] = intArray[colorOffset++] - _current[5];
+            _delta[6] = intArray[colorOffset++] - _current[6];
+            _delta[7] = intArray[colorOffset++] - _current[7];
+        }
+    }
+    else 
+    {
+        const auto color = slot->slotData->color;
+        _current[0] = color->alphaMultiplier * 100.0f;
+        _current[1] = color->redMultiplier * 100.0f;
+        _current[2] = color->greenMultiplier * 100.0f;
+        _current[3] = color->blueMultiplier * 100.0f;
+        _current[4] = color->alphaOffset;
+        _current[5] = color->redOffset;
+        _current[6] = color->greenOffset;
+        _current[7] = color->blueOffset;
+    }
+}
+
+void SlotColorTimelineState::_onUpdateFrame()
+{
+    SlotTimelineState::_onUpdateFrame();
+
+    _dirty = true;
+    if (_tweenState != TweenState::Always) 
+    {
+        _tweenState = TweenState::None;
+    }
+
+    _result[0] = (_current[0] + _delta[0] * _tweenProgress) * 0.01f;
+    _result[1] = (_current[1] + _delta[1] * _tweenProgress) * 0.01f;
+    _result[2] = (_current[2] + _delta[2] * _tweenProgress) * 0.01f;
+    _result[3] = (_current[3] + _delta[3] * _tweenProgress) * 0.01f;
+    _result[4] = _current[4] + _delta[4] * _tweenProgress;
+    _result[5] = _current[5] + _delta[5] * _tweenProgress;
+    _result[6] = _current[6] + _delta[6] * _tweenProgress;
+    _result[7] = _current[7] + _delta[7] * _tweenProgress;
+}
+
+void SlotColorTimelineState::fadeOut()
+{
+    _tweenState = TweenState::None;
+    _dirty = false;
+}
+
+void SlotColorTimelineState::update(float passedTime)
+{
+    SlotTimelineState::update(passedTime);
+
+    // Fade animation.
+    if (_tweenState != TweenState::None || _dirty) 
+    {
+        const auto result = &(slot->_colorTransform);
+
+        if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0)
+        {
+            if (
+                result->alphaMultiplier != _result[0] ||
+                result->redMultiplier != _result[1] ||
+                result->greenMultiplier != _result[2] ||
+                result->blueMultiplier != _result[3] ||
+                result->alphaOffset != _result[4] ||
+                result->redOffset != _result[5] ||
+                result->greenOffset != _result[6] ||
+                result->blueOffset != _result[7]
+            ) 
+            {
+                const auto fadeProgress = pow(_animationState->_fadeProgress, 2);
+
+                result->alphaMultiplier += (_result[0] - result->alphaMultiplier) * fadeProgress;
+                result->redMultiplier += (_result[1] - result->redMultiplier) * fadeProgress;
+                result->greenMultiplier += (_result[2] - result->greenMultiplier) * fadeProgress;
+                result->blueMultiplier += (_result[3] - result->blueMultiplier) * fadeProgress;
+                result->alphaOffset += (_result[4] - result->alphaOffset) * fadeProgress;
+                result->redOffset += (_result[5] - result->redOffset) * fadeProgress;
+                result->greenOffset += (_result[6] - result->greenOffset) * fadeProgress;
+                result->blueOffset += (_result[7] - result->blueOffset) * fadeProgress;
+
                 slot->_colorDirty = true;
             }
-            else if (_colorDirty)
+        }
+        else if (_dirty) 
+        {
+            _dirty = false;
+            if (
+                result->alphaMultiplier != _result[0] ||
+                result->redMultiplier != _result[1] ||
+                result->greenMultiplier != _result[2] ||
+                result->blueMultiplier != _result[3] ||
+                result->alphaOffset != _result[4] ||
+                result->redOffset != _result[5] ||
+                result->greenOffset != _result[6] ||
+                result->blueOffset != _result[7]
+            ) 
             {
-                _colorDirty = false;
-                _slotColor->alphaMultiplier = _color.alphaMultiplier;
-                _slotColor->redMultiplier = _color.redMultiplier;
-                _slotColor->greenMultiplier = _color.greenMultiplier;
-                _slotColor->blueMultiplier = _color.blueMultiplier;
-                _slotColor->alphaOffset = _color.alphaOffset;
-                _slotColor->redOffset = _color.redOffset;
-                _slotColor->greenOffset = _color.greenOffset;
-                _slotColor->blueOffset = _color.blueOffset;
+                result->alphaMultiplier = _result[0];
+                result->redMultiplier = _result[1];
+                result->greenMultiplier = _result[2];
+                result->blueMultiplier = _result[3];
+                result->alphaOffset = _result[4];
+                result->redOffset = _result[5];
+                result->greenOffset = _result[6];
+                result->blueOffset = _result[7];
 
                 slot->_colorDirty = true;
             }
@@ -604,137 +574,192 @@ void SlotTimelineState::update(float time)
     }
 }
 
-FFDTimelineState::FFDTimelineState() :
-    _durationFFDFrame(nullptr)
+void SlotFFDTimelineState::_onClear()
 {
-    _onClear();
-}
-FFDTimelineState::~FFDTimelineState() 
-{
-    _onClear();
-}
+    SlotTimelineState::_onClear();
 
-void FFDTimelineState::_onClear()
-{
-    TweenTimelineState::_onClear();
+    meshOffset = 0;
 
-    slot = nullptr;
-
-    _tweenFFD = TweenType::None;
-    _slotFFDVertices = nullptr;
-
-    if (_durationFFDFrame)
-    {
-        _durationFFDFrame->returnToPool();
-        _durationFFDFrame = nullptr;
-    }
-
-    _ffdVertices.clear();
+    _dirty = false;
+    _frameFloatOffset = 0;
+    _ffdCount = 0;
+    _valueCount = 0;
+    _valueOffset = 0;
+    _current.clear();
+    _delta.clear();
+    _result.clear();
 }
 
-void FFDTimelineState::_onArriveAtFrame(bool isUpdate)
+void SlotFFDTimelineState::_onArriveAtFrame()
 {
-    TweenTimelineState::_onArriveAtFrame(isUpdate);
+    SlotTimelineState::_onArriveAtFrame();
 
-    _tweenFFD = TweenType::None;
-
-    if (this->_tweenEasing != NO_TWEEN || this->_curve)
+    if (_timelineData != nullptr) 
     {
-        _tweenFFD = this->_updateExtensionKeyFrame(*this->_currentFrame, *this->_currentFrame->next, *_durationFFDFrame);
-    }
+        const auto isTween = _tweenState == TweenState::Always;
+        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        const auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * _valueCount;
 
-    if (_tweenFFD == TweenType::None)
-    {
-        const auto& currentFFDVertices = this->_currentFrame->tweens;
-        for (std::size_t i = 0, l = currentFFDVertices.size(); i < l; ++i)
+        if (isTween) 
         {
-            if ((*_slotFFDVertices)[i] != currentFFDVertices[i])
+            auto nextValueOffset = valueOffset + _valueCount;
+            if (_frameIndex == _frameCount - 1) 
             {
-                _tweenFFD = TweenType::Once;
-                break;
+                nextValueOffset = _animationData->frameFloatOffset + _frameValueOffset;
+            }
+
+            for (std::size_t i = 0; i < _valueCount; ++i)
+            {
+                _delta[i] = frameFloatArray[nextValueOffset + i] - (_current[i] = frameFloatArray[valueOffset + i]);
+            }
+        }
+        else 
+        {
+            for (std::size_t i = 0; i < _valueCount; ++i)
+            {
+                _current[i] = frameFloatArray[valueOffset + i];
             }
         }
     }
-}
-
-void FFDTimelineState::_onUpdateFrame(bool isUpdate)
-{
-    TweenTimelineState::_onUpdateFrame(isUpdate);
-
-    if (_tweenFFD != TweenType::None)
+    else 
     {
-        if (_tweenFFD == TweenType::Once)
+        for (std::size_t i = 0; i < _valueCount; ++i)
         {
-            _tweenFFD = TweenType::None;
-        }
-
-        const auto& currentFFDVertices = this->_currentFrame->tweens;
-        const auto& nextFFDVertices = _durationFFDFrame->tweens;
-        for (std::size_t i = 0, l = currentFFDVertices.size(); i < l; ++i)
-        {
-            _ffdVertices[i] = currentFFDVertices[i] + nextFFDVertices[i] * this->_tweenProgress;
-        }
-
-        slot->_ffdDirty = true;
-    }
-}
-
-void FFDTimelineState::fadeIn(Armature* armature, AnimationState* animationState, FFDTimelineData* timelineData, float time)
-{
-    TimelineState::fadeIn(armature, animationState, timelineData, time);
-
-    _slotFFDVertices = &slot->_ffdVertices;
-    _durationFFDFrame = BaseObject::borrowObject<ExtensionFrameData>();
-    _durationFFDFrame->tweens.resize(_slotFFDVertices->size(), 0.f);
-    _ffdVertices.resize(_slotFFDVertices->size(), 0.f);
-}
-
-void FFDTimelineState::update(float time)
-{
-    TweenTimelineState::update(time);
-
-    const auto weight = this->_animationState->_weightResult;
-    if (weight > 0.f)
-    {
-        if (slot->_blendIndex == 0)
-        {
-            for (std::size_t i = 0, l = _ffdVertices.size(); i < l; ++i)
-            {
-                (*_slotFFDVertices)[i] = _ffdVertices[i] * weight;
-            }
-        }
-        else
-        {
-            for (std::size_t i = 0, l = _ffdVertices.size(); i < l; ++i)
-            {
-                (*_slotFFDVertices)[i] += _ffdVertices[i] * weight;
-            }
-        }
-
-        slot->_blendIndex++;
-
-        const auto fadeProgress = this->_animationState->_fadeProgress;
-        if (fadeProgress < 1.f)
-        {
-            slot->_ffdDirty = true;
+            _current[i] = 0.0f;
         }
     }
 }
 
-ZOrderTimelineState::ZOrderTimelineState()
+void SlotFFDTimelineState::_onUpdateFrame()
 {
-    _onClear();
-}
-ZOrderTimelineState::~ZOrderTimelineState()
-{
-    _onClear();
+    SlotTimelineState::_onUpdateFrame();
+
+    _dirty = true;
+    if (_tweenState != TweenState::Always) 
+    {
+        _tweenState = TweenState::None;
+    }
+
+    for (std::size_t i = 0; i < _valueCount; ++i)
+    {
+        _result[i] = _current[i] + _delta[i] * _tweenProgress;
+    }
 }
 
-void ZOrderTimelineState::_onArriveAtFrame(bool isUpdate)
+void SlotFFDTimelineState::init(Armature* armature, AnimationState* animationState, TimelineData* timelineData)
 {
-    TweenTimelineState::_onArriveAtFrame(isUpdate);
+    SlotTimelineState::init(armature, animationState, timelineData);
 
-    this->_armature->_sortZOrder(this->_currentFrame->zOrder);
+    if (_timelineData != nullptr) 
+    {
+        const auto frameIntArray = _dragonBonesData->frameIntArray;
+        const auto frameIntOffset = _animationData->frameIntOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameValueCount];
+        meshOffset = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineMeshOffset];
+        _ffdCount = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFFDCount];
+        _valueCount = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueCount];
+        _valueOffset = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueOffset];
+        _frameFloatOffset = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFloatOffset] + _animationData->frameFloatOffset;
+    }
+    else 
+    {
+        _valueCount = 0;
+    }
+
+    _current.resize(_valueCount);
+    _delta.resize(_valueCount, 0.0f);
+    _result.resize(_valueCount);
+}
+
+void SlotFFDTimelineState::fadeOut()
+{
+    _tweenState = TweenState::None;
+    _dirty = false;
+}
+
+void SlotFFDTimelineState::update(float passedTime)
+{
+    if (slot->_meshData == nullptr || (_timelineData != nullptr && slot->_meshData->offset != meshOffset)) 
+    {
+        return;
+    }
+
+    SlotTimelineState::update(passedTime);
+
+    if (_tweenState != TweenState::None || _dirty) 
+    {
+        const auto result = &(slot->_ffdVertices);
+        if (_timelineData != nullptr)
+        {
+            const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+            if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0)
+            {
+                const auto fadeProgress = pow(_animationState->_fadeProgress, 2);
+                for (std::size_t i = 0; i < _ffdCount; ++i) 
+                {
+                    if (i < _valueOffset) 
+                    {
+                        (*result)[i] += (frameFloatArray[_frameFloatOffset + i] - (*result)[i]) * fadeProgress;
+                    }
+                    else if (i < _valueOffset + _valueCount)
+                    {
+                        (*result)[i] += (_result[i - _valueOffset] - (*result)[i]) * fadeProgress;
+                    }
+                    else 
+                    {
+                        (*result)[i] += (frameFloatArray[_frameFloatOffset + i - _valueCount] - (*result)[i]) * fadeProgress;
+                    }
+                }
+
+                slot->_meshDirty = true;
+            }
+            else if (_dirty) 
+            {
+                _dirty = false;
+
+                for (std::size_t i = 0; i < _ffdCount; ++i) 
+                {
+                    if (i < _valueOffset) 
+                    {
+                        (*result)[i] = frameFloatArray[_frameFloatOffset + i];
+                    }
+                    else if (i < _valueOffset + _valueCount)
+                    {
+                        (*result)[i] = _result[i - _valueOffset];
+                    }
+                    else 
+                    {
+                        (*result)[i] = frameFloatArray[_frameFloatOffset + i - _valueCount];
+                    }
+                }
+
+                slot->_meshDirty = true;
+            }
+        }
+        else 
+        {
+            _ffdCount = (*result).size(); //
+            if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0) 
+            {
+                const auto fadeProgress = pow(_animationState->_fadeProgress, 4);
+                for (std::size_t i = 0; i < _ffdCount; ++i) {
+                    (*result)[i] += (0.0f - (*result)[i]) * fadeProgress;
+                }
+
+                slot->_meshDirty = true;
+            }
+            else if (_dirty) 
+            {
+                _dirty = false;
+
+                for (std::size_t i = 0; i < _ffdCount; ++i) 
+                {
+                    (*result)[i] = 0.0f;
+                }
+
+                slot->_meshDirty = true;
+            }
+        }
+    }
 }
 
 DRAGONBONES_NAMESPACE_END

@@ -4,72 +4,131 @@
 #include "../core/BaseObject.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-class IEventDispatcher;
-class Armature;
-class Bone;
-class Slot;
-class AnimationState;
-class AnimationFrameData;
-class CustomData;
-
-class EventObject final : public BaseObject
+/**
+* 事件数据。
+* @version DragonBones 4.5
+* @language zh_CN
+*/
+class EventObject : public BaseObject
 {
-    BIND_CLASS_TYPE(EventObject);
+    BIND_CLASS_TYPE_A(EventObject);
 
 public:
+    /**
+    * 动画开始。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* START;
+    /**
+    * 动画循环播放一次完成。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* LOOP_COMPLETE;
+    /**
+    * 动画播放完成。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* COMPLETE;
-
+    /**
+    * 动画淡入开始。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* FADE_IN;
+    /**
+    * 动画淡入完成。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* FADE_IN_COMPLETE;
+    /**
+    * 动画淡出开始。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* FADE_OUT;
+    /**
+    * 动画淡出完成。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* FADE_OUT_COMPLETE;
-
+    /**
+    * 动画帧事件。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* FRAME_EVENT;
+    /**
+    * 动画声音事件。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     static const char* SOUND_EVENT;
 
 public:
-    /** @private */
-    static IEventDispatcher* _soundEventManager;
-
-public:
+    /**
+    * @private
+    */
+    float time;
+    /**
+    * 事件类型。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     std::string type;
+    /**
+    * 事件名称。 (帧标签的名称或声音的名称)
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     std::string name;
-    CustomData* data;
-    void* userData;
+    /**
+    * 发出事件的骨架。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     Armature* armature;
+    /**
+    * 发出事件的骨骼。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     Bone* bone;
+    /**
+    * 发出事件的插槽。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     Slot* slot;
+    /**
+    * 发出事件的动画状态。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     AnimationState* animationState;
-    AnimationFrameData* frame;
+    /**
+    * 自定义数据
+    * @see dragonBones.CustomData
+    * @version DragonBones 5.0
+    * @language zh_CN
+    */
+    UserData* data;
 
-public:
-    EventObject();
-    ~EventObject();
+    void copyFrom(const EventObject& value);
 
 protected:
-    void _onClear() override;
+    virtual void _onClear() override;
 
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(EventObject);
+public: // For WebAssembly.
+    Armature* getArmature() const { return armature; }
+    Bone* getBone() const { return bone; }
+    Slot* getSlot() const { return slot; }
+    AnimationState* getAnimationState() const { return animationState; }
+    UserData* getUserData() const { return data; }
 };
-
-class IEventDispatcher
-{
-protected:
-    IEventDispatcher() {};
-    virtual ~IEventDispatcher() {};
-
-public:
-    /** @private */
-    virtual void _onClear() = 0;
-    /** @private */
-    virtual void _dispatchEvent(EventObject* value) = 0;
-
-    virtual bool hasEvent(const std::string& type) const = 0;
-};
-
 DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_EVENT_OBJECT_H

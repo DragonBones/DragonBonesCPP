@@ -1,10 +1,10 @@
-﻿#include "AppDelegate.h"
+#include "AppDelegate.h"
 
 #include "HelloDragonBones.h"
-#include "PerformanceTest.h"
+/* "PerformanceTest.h"
 #include "AnimationBaseTest.h"
 #include "Knight.h"
-#include "CoreElement.h"
+#include "CoreElement.h"*/
 
 USING_NS_CC;
 
@@ -47,11 +47,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     FileUtils::getInstance()->addSearchPath("res");
 
     // create a scene. it's an autorelease object
-    //auto scene = HelloDragonBones::createScene();
+    auto scene = HelloDragonBones::createScene();
     //auto scene = PerformanceTest::createScene();
     //auto scene = AnimationBaseTest::createScene();
     //auto scene = KnightGame::createScene();
-    auto scene = CoreElementGame::createScene();
+    //auto scene = CoreElementGame::createScene();
 
     // run
     director->runWithScene(scene);

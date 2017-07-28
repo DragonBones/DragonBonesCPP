@@ -4,11 +4,10 @@
 #include "../core/DragonBones.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
 /**
  * @private
  */
-class ColorTransform final
+class ColorTransform
 {
 public:
     float alphaMultiplier;
@@ -21,16 +20,15 @@ public:
     int blueOffset;
 
     ColorTransform():
-        alphaMultiplier(1.f),
-        redMultiplier(1.f),
-        greenMultiplier(1.f),
-        blueMultiplier(1.f),
+        alphaMultiplier(1.0f),
+        redMultiplier(1.0f),
+        greenMultiplier(1.0f),
+        blueMultiplier(1.0f),
         alphaOffset(0),
         redOffset(0),
         greenOffset(0),
         blueOffset(0)
-    {
-    }
+    {}
     ColorTransform(const ColorTransform &value)
     {
         operator=(value);
@@ -51,7 +49,7 @@ public:
 
     inline void identity()
     {
-        alphaMultiplier = redMultiplier = greenMultiplier = blueMultiplier = 1.f;
+        alphaMultiplier = redMultiplier = greenMultiplier = blueMultiplier = 1.0f;
         alphaOffset = redOffset = greenOffset = blueOffset = 0;
     }
 };

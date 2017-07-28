@@ -1,36 +1,45 @@
-﻿#ifndef DRAGONBONES_BASE_OBJECT_H
+#ifndef DRAGONBONES_BASE_OBJECT_H
 #define DRAGONBONES_BASE_OBJECT_H
 
 #include "DragonBones.h"
 
-#define BIND_CLASS_TYPE(CLASS) \
-public:\
-static std::size_t getTypeIndex()\
-{\
-    static const auto typeIndex = typeid(CLASS).hash_code();\
-    return typeIndex;\
-}\
-virtual std::size_t getClassTypeIndex() const override\
-{\
-    return CLASS::getTypeIndex();\
-}\
-
 DRAGONBONES_NAMESPACE_BEGIN
-
+/**
+ * 基础对象。
+ * @version DragonBones 4.5
+ * @language zh_CN
+ */
 class BaseObject
 {
 private:
-    static std::size_t _hashCode;
-    static std::size_t _defaultMaxCount;
-    static std::map<std::size_t, std::size_t> _maxCountMap;
+    static unsigned _hashCode;
+    static unsigned _defaultMaxCount;
+    static std::map<std::size_t, unsigned> _maxCountMap;
     static std::map<std::size_t, std::vector<BaseObject*>> _poolsMap;
-
     static void _returnObject(BaseObject *object);
 
 public:
-    static void setMaxCount(std::size_t classTypeIndex, std::size_t maxCount);
+    /**
+     * 设置每种对象池的最大缓存数量。
+     * @param objectConstructor 对象类。
+     * @param maxCount 最大缓存数量。 (设置为 0 则不缓存)
+     * @version DragonBones 4.5
+     * @language zh_CN
+     */
+    static void setMaxCount(std::size_t classTypeIndex, unsigned maxCount);
+    /**
+     * 清除对象池缓存的对象。
+     * @param objectConstructor 对象类。 (不设置则清除所有缓存)
+     * @version DragonBones 4.5
+     * @language zh_CN
+     */
     static void clearPool(std::size_t classTypeIndex);
-
+    /**
+     * 从对象池中创建指定对象。
+     * @param objectConstructor 对象类。
+     * @version DragonBones 4.5
+     * @language zh_CN
+     */
     template<typename T>
     static T* borrowObject() 
     {
@@ -41,33 +50,51 @@ public:
             auto& pool = iterator->second;
             if (!pool.empty())
             {
-                const auto object = dynamic_cast<T*>(pool.back());
+                const auto object = static_cast<T*>(pool.back());
                 pool.pop_back();
-
+                object->_isInPool = false;
                 return object;
             }
         }
 
-        return new (std::nothrow) T();
+        const auto object = new (std::nothrow) T();
+        return object;
     }
 
 public:
-    const std::size_t hashCode;
+    /**
+     * 对象的唯一标识。
+     * @version DragonBones 4.5
+     * @language zh_CN
+     */
+    const unsigned hashCode;
 
-public:
-    /** @private */
-    BaseObject();
-    /** @private */
-    virtual ~BaseObject() = 0;
+    virtual ~BaseObject() {}
+
+private:
+    bool _isInPool;
 
 protected:
+    BaseObject() :
+        hashCode(BaseObject::_hashCode++),
+        _isInPool(false)
+    {}
     virtual void _onClear() = 0;
 
 public:
-    /** @private */
+    /**
+     * @private
+     */
     virtual std::size_t getClassTypeIndex() const = 0;
-    
+    /**
+     * 清除数据并返还对象池。
+     * @version DragonBones 4.5
+     * @language zh_CN
+     */
     void returnToPool();
+
+public: // For WebAssembly.
+    int getHashCode() const { return hashCode; }
 };
 
 DRAGONBONES_NAMESPACE_END

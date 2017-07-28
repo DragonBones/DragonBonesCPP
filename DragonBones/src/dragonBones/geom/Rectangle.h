@@ -4,11 +4,10 @@
 #include "../core/DragonBones.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
 /**
  * @private
  */
-class Rectangle final
+class Rectangle
 {
 public:
     float x;
@@ -17,12 +16,11 @@ public:
     float height;
 
     Rectangle():
-        x(0.f),
-        y(0.f),
-        width(0.f),
-        height(0.f) 
-    {
-    }
+        x(0.0f),
+        y(0.0f),
+        width(0.0f),
+        height(0.0f)
+    {}
     Rectangle(const Rectangle& value)
     {
         operator=(value);
@@ -39,8 +37,8 @@ public:
 
     void clear()
     {
-        x = y = 0.f;
-        width = height = 0.f;
+        x = y = 0.0f;
+        width = height = 0.0f;
     }
 };
 

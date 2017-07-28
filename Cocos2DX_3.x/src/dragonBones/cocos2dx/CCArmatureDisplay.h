@@ -5,85 +5,101 @@
 #include "cocos2d.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-class CCArmatureDisplay : public cocos2d::Node, public virtual IArmatureDisplay
+/**
+* @inheritDoc
+*/
+class CCArmatureDisplay : public cocos2d::Node, public virtual IArmatureProxy
 {
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(CCArmatureDisplay)
+
 public:
-    /** @private */
+    /**
+    * @private
+    */
     static CCArmatureDisplay* create();
 
-public:
-    /** @private */
-    Armature* _armature;
-
 protected:
+    Armature* _armature;
     cocos2d::EventDispatcher* _dispatcher;
 
 protected:
-    CCArmatureDisplay();
-    virtual ~CCArmatureDisplay();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(CCArmatureDisplay);
-
-public:
-    /** @private */
-    virtual void _onClear() override;
-    /** @private */
-    virtual void _dispatchEvent(EventObject* value) override;
-    /** @private */
-    virtual void dispose() override;
-    /** @private */
-    virtual void update(float passedTime) override;
-
-public:
-    virtual void advanceTimeBySelf(bool on) override;
-    
-    void addEvent(const std::string& type, const std::function<void(EventObject*)>& callback);
-    void removeEvent(const std::string& type);
-
-    inline bool hasEvent(const std::string& type) const override
+    CCArmatureDisplay() :
+        _armature(nullptr),
+        _dispatcher(nullptr)
     {
-        return _eventCallback || _dispatcher->isEnabled();
+        _dispatcher = new cocos2d::EventDispatcher();
+        this->setEventDispatcher(_dispatcher);
+        _dispatcher->setEnabled(true);
     }
+    virtual ~CCArmatureDisplay() {}
 
-    inline Armature* getArmature() const override 
+public:
+    /**
+    * @inheritDoc
+    */
+    virtual void init(Armature* armature) override;
+    /**
+    * @inheritDoc
+    */
+    virtual void clear() override;
+    /**
+    * @inheritDoc
+    */
+    virtual void dispose(bool disposeProxy) override;
+    /**
+    * @inheritDoc
+    */
+    virtual void debugUpdate(bool isEnabled) override;
+    /**
+    * @inheritDoc
+    */
+    virtual void _dispatchEvent(const std::string& type, EventObject* value) override;
+    /**
+    * @inheritDoc
+    */
+    virtual void addEvent(const std::string& type, const std::function<void(EventObject*)>& listener) override;
+    /**
+    * @inheritDoc
+    */
+    virtual void removeEvent(const std::string& type, const std::function<void(EventObject*)>& listener) override;
+    /**
+    * @inheritDoc
+    */
+    inline virtual bool hasEvent(const std::string& type) const override
+    {
+        return _dispatcher->isEnabled();
+    }
+    /**
+    * @inheritDoc
+    */
+    inline virtual Armature* getArmature() const override
     {
         return _armature;
     }
-
-    virtual Animation& getAnimation() const override 
+    /**
+    * @inheritDoc
+    */
+    inline virtual Animation* getAnimation() const override
     {
         return _armature->getAnimation();
     }
-
-CC_CONSTRUCTOR_ACCESS:
-    // methods added for js bindings
-    void setEventCallback(const std::function<void(EventObject*)>& callback) {
-        this->_eventCallback = callback;
-    }
-    inline bool hasEventCallback() { return this->_eventCallback ? true : false; }
-    inline void clearEventCallback() { this->_eventCallback = nullptr; }
-
-private:
-    // added for js bindings
-    std::function<void(EventObject*)> _eventCallback;
 };
-
-/** @private */
+/**
+* @private
+*/
 class DBCCSprite : public cocos2d::Sprite
 {
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(DBCCSprite)
+
 public:
-    /** @private */
+    /**
+    * @private
+    */
     static DBCCSprite* create();
 
 protected:
-    DBCCSprite();
-    virtual ~DBCCSprite();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(DBCCSprite);
-
+    DBCCSprite() {}
+    virtual ~DBCCSprite() {}
     /**
     * Modify for polyInfo rect
     */
@@ -98,9 +114,6 @@ public:
      * Modify for cocos2dx 3.7, 3.8, 3.9
      */
     cocos2d::PolygonInfo& getPolygonInfoModify();
-#if COCOS2D_VERSION >= 0x00031400
-    void setRenderMode(RenderMode m);
-#endif
 };
 
 DRAGONBONES_NAMESPACE_END

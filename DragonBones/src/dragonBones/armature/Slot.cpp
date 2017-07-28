@@ -1,15 +1,16 @@
 #include "Slot.h"
+
+#include "../model/DragonBonesData.h"
+#include "../model/UserData.h"
+#include "../model/ArmatureData.h"
+#include "../model/DisplayData.h"
+#include "../model/BoundingBoxData.h"
+#include "../model/TextureAtlasData.h"
 #include "Armature.h"
-#include "../model/TimelineData.h"
+#include "Bone.h"
 #include "../animation/Animation.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-Slot::Slot() :
-    _rawDisplay(nullptr),
-    _meshDisplay(nullptr)
-{}
-Slot::~Slot() {}
 
 void Slot::_onClear()
 {
@@ -48,53 +49,231 @@ void Slot::_onClear()
         _disposeDisplay(_rawDisplay);
     }
 
-    inheritAnimation = true;
-    displayController.clear();
-
-    _colorDirty = false;
-    _ffdDirty = false;
-    _blendIndex = 0;
-    _zOrder = 0;
-    _blendMode = BlendMode::Normal;
-    _pivotX = 0.f;
-    _pivotY = 0.f;
-    _displayDataSet = nullptr;
-    _meshData = nullptr;
-    _cacheFrames = nullptr;
-    _rawDisplay = nullptr;
-    _meshDisplay = nullptr;
-    _colorTransform.identity();
-    _ffdVertices.clear();
-    _replacedDisplayDataSet.clear();
+    displayController = "";
+    slotData = nullptr;
 
     _displayDirty = false;
+    _zOrderDirty = false;
     _blendModeDirty = false;
-    _originDirty = false;
+    _colorDirty = false;
+    _meshDirty = false;
     _transformDirty = false;
-    _displayIndex = 0;
+    _visible = true;
+    _blendMode = BlendMode::Normal;
+    _displayIndex = -1;
+    _animationDisplayIndex = -1;
+    _zOrder = 0;
+    _cachedFrameIndex = -1;
+    _pivotX = 0.0f;
+    _pivotY = 0.0f;
+    _localMatrix.identity();
+    _colorTransform.identity();
+    _ffdVertices.clear();
+    _displayList.clear();
+    _displayDatas.clear();
+	_meshBones.clear();
+    _rawDisplayDatas = nullptr; //
+    _displayData = nullptr;
+    _textureData = nullptr;
+    _meshData = nullptr;
+    _boundingBoxData = nullptr;
+    _rawDisplay = nullptr;
+    _meshDisplay = nullptr;
     _display = nullptr;
     _childArmature = nullptr;
-    _localMatrix.identity();
-    _displayList.clear();
-    _meshBones.clear();
+    _cachedFrameIndices = nullptr;
+}
+
+void Slot::_updateDisplayData()
+{
+    const auto prevDisplayData = _displayData;
+    const auto prevTextureData = _textureData;
+    const auto prevMeshData = _meshData;
+    const auto rawDisplayData = _displayIndex >= 0 && (unsigned)_displayIndex < _rawDisplayDatas->size() ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
+
+    if (_displayIndex >= 0 && (unsigned)_displayIndex < _displayDatas.size())
+    {
+        _displayData = _displayDatas[_displayIndex];
+    }
+    else
+    {
+        _displayData = nullptr;
+    }
+
+    // Update texture and mesh data.
+    if (_displayData != nullptr)
+    {
+        if (_displayData->type == DisplayType::Image || _displayData->type == DisplayType::Mesh)
+        {
+            _textureData = static_cast<ImageDisplayData*>(_displayData)->texture;
+            if (_displayData->type == DisplayType::Mesh)
+            {
+                _meshData = static_cast<MeshDisplayData*>(_displayData);
+            }
+            else if (rawDisplayData != nullptr && rawDisplayData->type == DisplayType::Mesh)
+            {
+                _meshData = static_cast<MeshDisplayData*>(rawDisplayData);
+            }
+            else
+            {
+                _meshData = nullptr;
+            }
+        }
+        else
+        {
+            _textureData = nullptr;
+            _meshData = nullptr;
+        }
+    }
+    else
+    {
+        _textureData = nullptr;
+        _meshData = nullptr;
+    }
+
+    // Update bounding box data.
+    if (_displayData != nullptr && _displayData->type == DisplayType::BoundingBox)
+    {
+        _boundingBoxData = static_cast<BoundingBoxDisplayData*>(_displayData)->boundingBox;
+    }
+    else if (rawDisplayData != nullptr && rawDisplayData->type == DisplayType::BoundingBox)
+    {
+        _boundingBoxData = static_cast<BoundingBoxDisplayData*>(rawDisplayData)->boundingBox;
+    }
+    else
+    {
+        _boundingBoxData = nullptr;
+    }
+
+    if (_displayData != prevDisplayData || _textureData != prevTextureData || _meshData != prevMeshData)
+    {
+        // Update pivot offset.
+        if (_meshData != nullptr)
+        {
+            _pivotX = 0.0f;
+            _pivotY = 0.0f;
+        }
+        else if (_textureData != nullptr) 
+        {
+            const auto imageDisplayData = static_cast<ImageDisplayData*>(_displayData);
+            const auto scale = _armature->armatureData->scale;
+            const auto frame = _textureData->frame;
+
+            _pivotX = imageDisplayData->pivot.x;
+            _pivotY = imageDisplayData->pivot.y;
+
+            const auto& rect = frame != nullptr ? *frame : _textureData->region;
+            float width = rect.width * scale;
+            float height = rect.height * scale;
+
+            if (_textureData->rotated && frame == nullptr) 
+            {
+                width = rect.height;
+                height = rect.width;
+            }
+
+            _pivotX *= width;
+            _pivotY *= height;
+
+            if (frame != nullptr)
+            {
+                _pivotX += frame->x * scale;
+                _pivotY += frame->y * scale;
+            }
+        }
+        else
+        {
+            _pivotX = 0.0f;
+            _pivotY = 0.0f;
+        }
+
+        // Update mesh bones and ffd vertices.
+        if (_meshData != prevMeshData)
+        {
+            if (_meshData != nullptr)
+            {
+                if (_meshData->weight != nullptr)
+                {
+                    _ffdVertices.resize(_meshData->weight->count * 2);
+                    _meshBones.resize(_meshData->weight->bones.size());
+
+                    for (std::size_t i = 0, l = _meshBones.size(); i < l; ++i)
+                    {
+                        _meshBones[i] = _armature->getBone(_meshData->weight->bones[i]->name);
+                    }
+                }
+                else
+                {
+                    const auto vertexCount = (_meshData->parent->parent->intArray)[_meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+                    _ffdVertices.resize(vertexCount * 2);
+                    _meshBones.resize(0);
+                }
+
+                for (std::size_t i = 0, l = _ffdVertices.size(); i < l; ++i)
+                {
+                    _ffdVertices[i] = 0.0f;
+                }
+
+                _meshDirty = true;
+            }
+            else
+            {
+                _ffdVertices.resize(0);
+                _meshBones.resize(0);
+            }
+        }
+        else if (_meshData != nullptr && _textureData != prevTextureData) // Update mesh after update frame.
+        {
+            _meshDirty = true;
+        }
+
+        if (_displayData != nullptr && rawDisplayData != nullptr && _displayData != rawDisplayData && _meshData == nullptr)
+        {
+            rawDisplayData->transform.toMatrix(_helpMatrix);
+            _helpMatrix.invert();
+            _helpMatrix.transformPoint(0.0f, 0.0f, _helpPoint);
+            _pivotX -= _helpPoint.x;
+            _pivotY -= _helpPoint.y;
+
+            _displayData->transform.toMatrix(_helpMatrix);
+            _helpMatrix.invert();
+            _helpMatrix.transformPoint(0.0f, 0.0f, _helpPoint);
+            _pivotX += _helpPoint.x;
+            _pivotY += _helpPoint.y;
+        }
+
+        // Update original transform.
+        if (rawDisplayData != nullptr)
+        {
+            origin = &rawDisplayData->transform;
+        }
+        else if (_displayData != nullptr)
+        {
+            origin = &_displayData->transform;
+        }
+
+        _displayDirty = true;
+        _transformDirty = true;
+    }
 }
 
 void Slot::_updateDisplay()
 {
-    const auto prevDisplay = _display ? _display : _rawDisplay;
+    const auto prevDisplay = _display != nullptr ? _display : _rawDisplay;
     const auto prevChildArmature = _childArmature;
 
+    // Update display and child armature.
     if (_displayIndex >= 0 && (std::size_t)_displayIndex < _displayList.size())
     {
         const auto& displayPair = _displayList[_displayIndex];
-        if (displayPair.second == DisplayType::Armature)
+        _display = displayPair.first;
+        if (_display != nullptr && displayPair.second == DisplayType::Armature)
         {
             _childArmature = static_cast<Armature*>(displayPair.first);
-            _display = _childArmature->_display;
+            _display = _childArmature->getDisplay();
         }
         else
         {
-            _display = displayPair.first;
             _childArmature = nullptr;
         }
     }
@@ -104,53 +283,41 @@ void Slot::_updateDisplay()
         _childArmature = nullptr;
     }
 
-    const auto currentDisplay = _display ? _display : _rawDisplay;
-
+    const auto currentDisplay = _display != nullptr ? _display : _rawDisplay;
     if (currentDisplay != prevDisplay)
     {
         _onUpdateDisplay();
+        _replaceDisplay(prevDisplay, prevChildArmature != nullptr);
 
-        if (prevDisplay)
-        {
-            _replaceDisplay(prevDisplay, prevChildArmature != nullptr);
-        }
-        else
-        {
-            _addDisplay();
-        }
-
+        _visibleDirty = true;
         _blendModeDirty = true;
         _colorDirty = true;
     }
 
-    if (_displayDataSet && _displayIndex >= 0 && (std::size_t)_displayIndex < _displayDataSet->displays.size())
-    {
-        this->origin = _displayDataSet->displays[_displayIndex]->transform; // copy
-        _originDirty = true;
-    }
-
-    _updateMeshData(false);
-
+    // Update frame.
     if (currentDisplay == _rawDisplay || currentDisplay == _meshDisplay)
     {
         _updateFrame();
     }
 
+    // Update child armature.
     if (_childArmature != prevChildArmature)
     {
-        if (prevChildArmature)
+        if (prevChildArmature != nullptr)
         {
-            prevChildArmature->_parent = nullptr;
-            if (inheritAnimation)
+            prevChildArmature->_parent = nullptr; // Update child armature parent.
+            prevChildArmature->setClock(nullptr);
+            if (prevChildArmature->inheritAnimation)
             {
-                prevChildArmature->getAnimation().reset();
+                prevChildArmature->getAnimation()->reset();
             }
         }
 
-        if (_childArmature)
+        if (_childArmature != nullptr)
         {
-            _childArmature->_parent = this;
-            if (inheritAnimation)
+            _childArmature->_parent = this; // Update child armature parent.
+            _childArmature->setClock(_armature->getClock());
+            if (prevChildArmature->inheritAnimation) // Set child armature cache frameRate.
             {
                 if (_childArmature->getCacheFrameRate() == 0)
                 {
@@ -160,23 +327,62 @@ void Slot::_updateDisplay()
                         _childArmature->setCacheFrameRate(chacheFrameRate);
                     }
                 }
-                
-                const auto slotData = this->_armature->getArmatureData().getSlot(this->name);
-                const auto& actions = !slotData->actions.empty() ? slotData->actions : _childArmature->getArmatureData().actions;
-                if (!actions.empty())
-                {
-                    for (const auto action : actions) 
-                    {
-                        _childArmature->_bufferAction(action);
-                    }
+
+                // Child armature action.
+                std::vector<ActionData*>* actions = nullptr;
+                if (_displayData != nullptr && _displayData->type == DisplayType::Armature) {
+                    actions = &(static_cast<ArmatureDisplayData*>(_displayData)->actions);
                 }
                 else 
                 {
-                    _childArmature->getAnimation().play();
+                    const auto rawDisplayData = ( _displayIndex >= 0 && (unsigned)_displayIndex < _rawDisplayDatas->size()) ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
+                    if (rawDisplayData != nullptr && rawDisplayData->type == DisplayType::Armature) 
+                    {
+                        actions = &(static_cast<ArmatureDisplayData*>(rawDisplayData)->actions);
+                    }
+                }
+
+                if (actions != nullptr && !actions->empty())
+                {
+                    for (const auto action : *actions)
+                    {
+                        _childArmature->getAnimation()->fadeIn(action->name);
+                    }
+                }
+                else
+                {
+                    _childArmature->getAnimation()->play();
                 }
             }
         }
     }
+}
+
+void Slot::_updateGlobalTransformMatrix(bool isCache)
+{
+    globalTransformMatrix = _localMatrix; // Copy.
+    globalTransformMatrix.concat(_parent->globalTransformMatrix);
+    if (isCache)
+    {
+        global.fromMatrix(globalTransformMatrix);
+    }
+    else
+    {
+        _globalDirty = true;
+    }
+}
+
+bool Slot::_isMeshBonesUpdate() const
+{
+    for (const auto bone : _meshBones)
+    {
+        if (bone != nullptr && bone->_childrenTransformDirty)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Slot::_setArmature(Armature* value)
@@ -206,168 +412,50 @@ void Slot::_setArmature(Armature* value)
     }
 }
 
-void Slot::_updateMeshData(bool isTimelineUpdate)
+bool Slot::_setDisplayIndex(int value, bool isAnimation)
 {
-    const auto prevMeshData = _meshData;
-    auto rawMeshData = (MeshData*)nullptr;
-    if (_display && _display == _meshDisplay && _displayIndex >= 0)
+    if (isAnimation)
     {
-        rawMeshData = (_displayDataSet && _displayIndex < _displayDataSet->displays.size()) ? _displayDataSet->displays[_displayIndex]->mesh : nullptr;
-        const auto replaceDisplayData = (_displayIndex < _replacedDisplayDataSet.size()) ? _replacedDisplayDataSet[_displayIndex] : nullptr;
-        const auto replaceMeshData = replaceDisplayData ? replaceDisplayData->mesh : nullptr;
-        _meshData = replaceMeshData? replaceMeshData: rawMeshData;
-    }
-    else
-    {
-        _meshData = nullptr;
-    }
-
-    if (_meshData != prevMeshData)
-    {
-        if (_meshData && _meshData == rawMeshData)
+        if (_animationDisplayIndex == value)
         {
-            if (_meshData->skinned)
-            {
-                _meshBones.resize(_meshData->bones.size(), nullptr);
-
-                for (std::size_t i = 0, l = _meshBones.size(); i < l; ++i)
-                {
-                    _meshBones[i] = this->_armature->getBone(_meshData->bones[i]->name);
-                }
-
-                std::size_t ffdVerticesCount = 0;
-                for (std::size_t i = 0, l = _meshData->boneIndices.size(); i < l; ++i)
-                {
-                    ffdVerticesCount += _meshData->boneIndices[i].size();
-                }
-
-                _ffdVertices.resize(ffdVerticesCount * 2.f, 0.f);
-            }
-            else
-            {
-                _meshBones.clear();
-                _ffdVertices.resize(_meshData->vertices.size(), 0.f);
-            }
-
-            _ffdDirty = true;
-        }
-        else
-        {
-            _meshBones.clear();
-            _ffdVertices.clear();
+            return false;
         }
 
-        if (isTimelineUpdate)
-        {
-            _armature->getAnimation()._updateFFDTimelineStates();
-        }
+        _animationDisplayIndex = value;
     }
+
+    if (_displayIndex == value)
+    {
+        return false;
+    }
+
+    _displayIndex = value;
+    _displayDirty = true;
+
+    _updateDisplayData();
+
+    return _displayDirty;
 }
 
-void Slot::_update(int cacheFrameIndex)
+bool Slot::_setZorder(int value)
 {
-    _blendIndex = 0;
-
-    if (_displayDirty)
+    if (_zOrder == value)
     {
-        _displayDirty = false;
-        _updateDisplay();
+        //return false;
     }
 
-    if (!_display)
-    {
-        return;
-    }
+    _zOrder = value;
+    _zOrderDirty = true;
 
-    if (_blendModeDirty)
-    {
-        _blendModeDirty = false;
-        _updateBlendMode();
-    }
+    return _zOrderDirty;
+}
 
-    if (_zOrderDirty)
-    {
-        _zOrderDirty = false;
-        _updateZOrder();
-    }
+bool Slot::_setColor(const ColorTransform& value)
+{
+    _colorTransform = value; // copy
+    _colorDirty = true;
 
-    if (_colorDirty)
-    {
-        _colorDirty = false;
-        _updateColor();
-    }
-
-    if (_meshData)
-    {
-        if (_ffdDirty || (_meshData->skinned && _isMeshBonesUpdate()))
-        {
-            _ffdDirty = false;
-            _updateMesh();
-        }
-
-        if (_meshData->skinned)
-        {
-            return;
-        }
-    }
-
-    if (_originDirty)
-    {
-        _originDirty = false;
-        _transformDirty = true;
-        _updateLocalTransformMatrix();
-    }
-
-    if (cacheFrameIndex >= 0)
-    {
-        const auto cacheFrame = (*_cacheFrames)[cacheFrameIndex];
-        if (this->globalTransformMatrix == cacheFrame)
-        {
-            _transformDirty = false;
-        }
-        else if (cacheFrame)
-        {
-            _transformDirty = true;
-            this->globalTransformMatrix = cacheFrame;
-        }
-        else if (_transformDirty || this->_parent->_transformDirty != Bone::BoneTransformDirty::None)
-        {
-            _transformDirty = true;
-            this->globalTransformMatrix = &this->_globalTransformMatrix;
-        }
-        else if (this->globalTransformMatrix != &this->_globalTransformMatrix)
-        {
-            _transformDirty = false;
-            (*_cacheFrames)[cacheFrameIndex] = this->globalTransformMatrix;
-        }
-        else
-        {
-            _transformDirty = true;
-            this->globalTransformMatrix = &this->_globalTransformMatrix;
-        }
-    }
-    else if (_transformDirty || this->_parent->_transformDirty != Bone::BoneTransformDirty::None)
-    {
-        _transformDirty = true;
-        this->globalTransformMatrix = &this->_globalTransformMatrix;
-    }
-
-    if (_transformDirty)
-    {
-        _transformDirty = false;
-
-        if (this->globalTransformMatrix == &this->_globalTransformMatrix)
-        {
-            _updateGlobalTransformMatrix();
-
-            if (cacheFrameIndex >= 0 && !(*_cacheFrames)[cacheFrameIndex])
-            {
-                this->globalTransformMatrix = SlotTimelineData::cacheFrame(*_cacheFrames, cacheFrameIndex, this->_globalTransformMatrix);
-            }
-        }
-
-        _updateTransform();
-    }
+    return true;
 }
 
 bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& value)
@@ -384,8 +472,9 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
             const auto& eachPair = value[i];
             if (
                 eachPair.first && eachPair.first != _rawDisplay && eachPair.first != _meshDisplay &&
-                eachPair.second != DisplayType::Armature && std::find(_displayList.cbegin(), _displayList.cend(), eachPair) == _displayList.cend()
-            )
+                eachPair.second != DisplayType::Armature
+                && std::find(_displayList.cbegin(), _displayList.cend(), eachPair) == _displayList.cend()
+                )
             {
                 _initDisplay(eachPair.first);
             }
@@ -408,75 +497,267 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
         _displayDirty = _display != nullptr;
     }
 
-    return _displayDirty;
-}
-
-bool Slot::_setZOrder(int value)
-{
-    if (_zOrder == value)
-    {
-        return false;
-    }
-
-    _zOrder = value;
-    _zOrderDirty = true;
-
-    return true;
-}
-
-bool Slot::_setDisplayIndex(int value)
-{
-    if (_displayIndex == value)
-    {
-        return false;
-    }
-
-    _displayIndex = value;
-    _displayDirty = true;
+    _updateDisplayData();
 
     return _displayDirty;
 }
 
-bool Slot::_setBlendMode(BlendMode value)
+void Slot::init(SlotData* pslotData, std::vector<DisplayData*>* displayDatas, void* rawDisplay, void* meshDisplay)
 {
-    if (_blendMode == value)
+    if (pslotData == nullptr)
     {
-        return false;
+        return;
     }
 
-    _blendMode = value;
+    slotData = pslotData;
+    name = slotData->name;
+
+    _visibleDirty = true;
     _blendModeDirty = true;
+    _colorDirty = true;
+    _blendMode = slotData->blendMode;
+    _zOrder = slotData->zOrder;
+    _colorTransform = *(slotData->color);
+    _rawDisplayDatas = displayDatas;
+    _rawDisplay = rawDisplay;
+    _meshDisplay = meshDisplay;
 
-    return true;
+    _displayDatas.resize(_rawDisplayDatas->size());
+    for (std::size_t i = 0, l = _displayDatas.size(); i < l; ++i)
+    {
+        _displayDatas[i] = (*_rawDisplayDatas)[i];
+    }
 }
 
-bool Slot::_setColor(const ColorTransform& value)
+void Slot::update(int cacheFrameIndex)
 {
-    _colorTransform = value; // copy
-    _colorDirty = true;
+    if (_displayDirty)
+    {
+        _displayDirty = false;
+        _updateDisplay();
 
-    return true;
+        if (_transformDirty) // Update local matrix. (Only updated when both display and transform are dirty.)
+        {
+            if (origin != nullptr) 
+            {
+                global = *origin;
+                global.add(offset).toMatrix(_localMatrix);
+            }
+            else 
+            {
+                global = offset;
+                global.toMatrix(_localMatrix);
+            }
+        }
+    }
+
+    if (_zOrderDirty) 
+    {
+        _zOrderDirty = false;
+        _updateZOrder();
+    }
+
+    if (cacheFrameIndex >= 0 && _cachedFrameIndices != nullptr)
+    {
+        const auto cachedFrameIndex = (*_cachedFrameIndices)[cacheFrameIndex];
+        if (cachedFrameIndex >= 0 && _cachedFrameIndex == cachedFrameIndex) // Same cache.
+        {
+            _transformDirty = false;
+        }
+        else if (cachedFrameIndex >= 0) // Has been Cached.
+        {
+            _transformDirty = true;
+            _cachedFrameIndex = cachedFrameIndex;
+        }
+        else if (_transformDirty || _parent->_childrenTransformDirty) // Dirty.
+        {
+            _transformDirty = true;
+            _cachedFrameIndex = -1;
+        }
+        else if (_cachedFrameIndex >= 0) // Same cache, but not set index yet.
+        {
+            _transformDirty = false;
+            (*_cachedFrameIndices)[cacheFrameIndex] = _cachedFrameIndex;
+        }
+        else // Dirty.
+        {
+            _transformDirty = true;
+            _cachedFrameIndex = -1;
+        }
+    }
+    else if (_transformDirty || this->_parent->_childrenTransformDirty)
+    {
+        cacheFrameIndex = -1;
+        _transformDirty = true;
+        _cachedFrameIndex = -1;
+    }
+
+    if (_display == nullptr)
+    {
+        return;
+    }
+
+    if (_blendModeDirty)
+    {
+        _blendModeDirty = false;
+        _updateBlendMode();
+    }
+
+    if (_colorDirty)
+    {
+        _colorDirty = false;
+        _updateColor();
+    }
+
+    if (_meshData != nullptr && _display == _meshDisplay)
+    {
+        const auto isSkinned = _meshData->weight != nullptr;
+        if (_meshDirty || (isSkinned && _isMeshBonesUpdate())) 
+        {
+            _meshDirty = false;
+            _updateMesh();
+        }
+
+        if (isSkinned) 
+        {
+            if (_transformDirty) 
+            {
+                _transformDirty = false;
+                _updateTransform(true);
+            }
+
+            return;
+        }
+    }
+
+    if (_transformDirty)
+    {
+        _transformDirty = false;
+
+        if (_cachedFrameIndex < 0)
+        {
+            const auto isCache = cacheFrameIndex >= 0;
+            _updateGlobalTransformMatrix(isCache);
+
+            if (isCache && _cachedFrameIndices != nullptr)
+            {
+                _cachedFrameIndex = (*_cachedFrameIndices)[cacheFrameIndex] = _armature->armatureData->setCacheFrame(globalTransformMatrix, global);
+            }
+        }
+        else
+        {
+            _armature->armatureData->getCacheFrame(globalTransformMatrix, global, _cachedFrameIndex);
+        }
+
+        _updateTransform(false);
+    }
+}
+
+bool Slot::containsPoint(float x, float y)
+{
+    if (_boundingBoxData == nullptr) 
+    {
+        return false;
+    }
+
+    updateTransformAndMatrix();
+
+    _helpMatrix = globalTransformMatrix; // Copy.
+    _helpMatrix.invert();
+    _helpMatrix.transformPoint(x, y, _helpPoint);
+
+    return _boundingBoxData->containsPoint(_helpPoint.x, _helpPoint.y);
+}
+
+int Slot::intersectsSegment(
+    float xA, float yA, float xB, float yB,
+    Point* intersectionPointA,
+    Point* intersectionPointB,
+    Point* normalRadians
+)
+{
+    if (_boundingBoxData == nullptr) 
+    {
+        return 0;
+    }
+
+    updateTransformAndMatrix();
+    _helpMatrix = globalTransformMatrix;
+    _helpMatrix.invert();
+    _helpMatrix.transformPoint(xA, yA, _helpPoint);
+    xA = _helpPoint.x;
+    yA = _helpPoint.y;
+    _helpMatrix.transformPoint(xB, yB, _helpPoint);
+    xB = _helpPoint.x;
+    yB = _helpPoint.y;
+
+    const auto intersectionCount = _boundingBoxData->intersectsSegment(xA, yA, xB, yB, intersectionPointA, intersectionPointB, normalRadians);
+    if (intersectionCount > 0)
+    {
+        if (intersectionCount == 1 || intersectionCount == 2) 
+        {
+            if (intersectionPointA == nullptr) 
+            {
+                globalTransformMatrix.transformPoint(intersectionPointA->x, intersectionPointA->y, *intersectionPointA);
+                if (intersectionPointB == nullptr) 
+                {
+                    intersectionPointB->x = intersectionPointA->x;
+                    intersectionPointB->y = intersectionPointA->y;
+                }
+            }
+            else if (intersectionPointB == nullptr) 
+            {
+                globalTransformMatrix.transformPoint(intersectionPointB->x, intersectionPointB->y, *intersectionPointB);
+            }
+        }
+        else 
+        {
+            if (intersectionPointA == nullptr) 
+            {
+                globalTransformMatrix.transformPoint(intersectionPointA->x, intersectionPointA->y, *intersectionPointA);
+            }
+
+            if (intersectionPointB == nullptr) 
+            {
+                globalTransformMatrix.transformPoint(intersectionPointB->x, intersectionPointB->y, *intersectionPointB);
+            }
+        }
+
+        if (normalRadians == nullptr)
+        {
+            globalTransformMatrix.transformPoint(cos(normalRadians->x), sin(normalRadians->x), _helpPoint, true);
+            normalRadians->x = atan2(_helpPoint.y, _helpPoint.x);
+
+            globalTransformMatrix.transformPoint(cos(normalRadians->y), sin(normalRadians->y), _helpPoint, true);
+            normalRadians->y = atan2(_helpPoint.y, _helpPoint.x);
+        }
+    }
+
+    return intersectionCount;
 }
 
 void Slot::setDisplayIndex(int value)
 {
-    if (_setDisplayIndex(value))
+    if (_setDisplayIndex(value)) 
     {
-        _update(-1);
+        update(-1);
     }
 }
 
+//TODO lsc check
 void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& value)
 {
+    printf("Slot::setDisplayList 000\n");
     const auto backupDisplayList = _displayList; // copy
     auto disposeDisplayList = backupDisplayList; // copy
     disposeDisplayList.clear();
 
     if (_setDisplayList(value))
     {
-        _update(-1);
+        update(-1);
     }
 
+    printf("Slot::setDisplayList 1\n");
     for (const auto& pair : backupDisplayList)
     {
         if (
@@ -489,6 +770,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
         }
     }
 
+    printf("Slot::setDisplayList 2\n");
     for (const auto& pair : disposeDisplayList)
     {
         if (pair.second == DisplayType::Armature)
@@ -500,6 +782,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
             _disposeDisplay(pair.first);
         }
     }
+    printf("Slot::setDisplayList 0000----\n");
 }
 
 void Slot::setDisplay(void* value, DisplayType displayType)
@@ -541,12 +824,26 @@ void Slot::setChildArmature(Armature* value)
         return;
     }
 
-    if (value)
-    {
-        (value->getDisplay())->advanceTimeBySelf(false);
-    }
-
     setDisplay(value, DisplayType::Armature);
 }
+
+void Slot::switchDisplayData(std::vector<DisplayData *> * displayDatas)
+{
+    _rawDisplayDatas = displayDatas;
+    _displayDatas.resize(_rawDisplayDatas->size());
+    for (size_t i = 0, l = _displayDatas.size(); i < l; ++i) {
+        _displayDatas[i] = (*_rawDisplayDatas)[i];
+    }
+}
+
+void Slot::replaceDisplayData(DisplayData *displayData, unsigned displayIndex)
+{
+    if (_displayDatas.size() <= displayIndex) {
+        _displayDatas.resize(displayIndex + 1);
+    }
+
+    _displayDatas[displayIndex] = displayData;
+}
+
 
 DRAGONBONES_NAMESPACE_END

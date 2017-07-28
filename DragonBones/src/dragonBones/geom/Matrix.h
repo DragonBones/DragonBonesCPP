@@ -5,8 +5,12 @@
 #include "Point.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-class Matrix final
+/**
+* 2D 矩阵。
+* @version DragonBones 3.0
+* @language zh_CN
+*/
+class Matrix
 {
 public:
     float a;
@@ -17,14 +21,13 @@ public:
     float ty;
 
     Matrix():
-        a(1.f),
-        b(0.f),
-        c(0.f),
-        d(1.f),
-        tx(0.f),
-        ty(0.f)
-    {
-    }
+        a(1.0f),
+        b(0.0f),
+        c(0.0f),
+        d(1.0f),
+        tx(0.0f),
+        ty(0.0f)
+    {}
     Matrix(const Matrix& value)
     {
         operator=(value);
@@ -40,14 +43,23 @@ public:
         tx = value.tx;
         ty = value.ty;
     }
-
+    /**
+    * 转换为单位矩阵。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     inline void identity()
     {
-        a = d = 1.f;
-        b = c = 0.f;
-        tx = ty = 0.f;
+        a = d = 1.0f;
+        b = c = 0.0f;
+        tx = ty = 0.0f;
     }
-
+    /**
+    * 将当前矩阵与另一个矩阵相乘。
+    * @param value 需要相乘的矩阵。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     inline void concat(const Matrix& value)
     {
         const auto aA = a;
@@ -70,7 +82,11 @@ public:
         tx = aB * txA + cB * tyA + txB;
         ty = dB * tyA + bB * txA + tyB;
     }
-
+    /**
+    * 转换为逆矩阵。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     inline void invert() 
     {
         const auto aA = a;
@@ -88,7 +104,15 @@ public:
         tx = (cA * tyA - dA * txA) / n;
         ty = -(aA * tyA - bA * txA) / n;
     }
-
+    /**
+    * 将矩阵转换应用于指定点。
+    * @param x 横坐标。
+    * @param y 纵坐标。
+    * @param result 应用转换之后的坐标。
+    * @params delta 是否忽略 tx，ty 对坐标的转换。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     inline void transformPoint(float x, float y, Point& result, bool delta = false) const
     {
         result.x = a * x + c * y;

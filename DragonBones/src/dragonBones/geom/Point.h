@@ -4,21 +4,19 @@
 #include "../core/DragonBones.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
 /**
  * @private
  */
-class Point final
+class Point
 {
 public:
     float x;
     float y;
 
     Point():
-        x(0.f),
-        y(0.f)
-    {
-    }
+        x(0.0f),
+        y(0.0f)
+    {}
     Point(const Point& value)
     {
         operator=(value);
@@ -33,7 +31,7 @@ public:
 
     inline void clear()
     {
-        x = y = 0.f;
+        x = y = 0.0f;
     }
 };
 

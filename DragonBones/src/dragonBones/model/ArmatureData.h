@@ -2,330 +2,412 @@
 #define DRAGONBONES_ARMATURE_DATA_H
 
 #include "../core/BaseObject.h"
+#include "../geom/Matrix.h"
 #include "../geom/Transform.h"
-#include "../geom/Point.h"
 #include "../geom/ColorTransform.h"
-#include "../textures/TextureData.h"
-#include "AnimationData.h"
+#include "../geom/Rectangle.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-class DragonBonesData;
-class ArmatureData;
-
-class BoneData : public BaseObject 
+/**
+ * 骨架数据。
+ * @version DragonBones 3.0
+ * @language zh_CN
+ */
+class ArmatureData : public BaseObject
 {
-    BIND_CLASS_TYPE(BoneData);
+    BIND_CLASS_TYPE_B(ArmatureData);
 
 public:
-    /** @private */
-    bool inheritTranslation;
-    /** @private */
-    bool inheritRotation;
-    /** @private */
-    bool inheritScale;
-    /** @private */
-    bool bendPositive;
-    /** @private */
-    unsigned chain;
-    /** @private */
-    int chainIndex;
-    /** @private */
-    float weight;
-    /** @private */
-    float length;
-
+    /**
+    * @private
+    */
+    ArmatureType type;
+    /**
+    * 动画帧率。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    unsigned frameRate;
+    /**
+    * @private
+    */
+    unsigned cacheFrameRate;
+    /**
+    * @private
+    */
+    float scale;
+    /**
+    * 数据名称。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     std::string name;
-
-    BoneData* parent;
-    /** @private */
-    BoneData* ik;
-    /** @private */
-    Transform transform;
-
-    /** @private */
-    BoneData();
-    /** @private */
-    ~BoneData();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(BoneData);
+    /**
+    * @private
+    */
+    Rectangle aabb;
+    /**
+    * 所有动画数据名称。
+    * @see #armatures
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    std::vector<std::string> animationNames;
+    /**
+    * @private
+    */
+    std::vector<BoneData*> sortedBones;
+    /**
+    * @private
+    */
+    std::vector<SlotData*> sortedSlots;
+    /**
+    * @private
+    */
+    std::vector<ActionData*> defaultActions;
+    /**
+    * @private
+    */
+    std::vector<ActionData*> actions;
+    /**
+    * 所有骨骼数据。
+    * @see dragonBones.BoneData
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    std::map<std::string, BoneData*> bones;
+    /**
+    * 所有插槽数据。
+    * @see dragonBones.SlotData
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    std::map<std::string, SlotData*> slots;
+    /**
+    * @private
+    */
+    std::map<std::string, SkinData*> skins;
+    /**
+    * 所有动画数据。
+    * @see dragonBones.AnimationData
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    std::map<std::string, AnimationData*> animations;
+    /**
+    * @private
+    */
+    SkinData* defaultSkin;
+    /**
+    * @private
+    */
+    AnimationData* defaultAnimation;
+    /**
+    * @private
+    */
+    UserData* userData;
+    /**
+    * 所属的龙骨数据。
+    * @see dragonBones.DragonBonesData
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
+    DragonBonesData* parent;
+    /**
+    * @private
+    */
+    ArmatureData() :
+        userData(nullptr)
+    {
+        _onClear();
+    }
+    ~ArmatureData()
+    {
+        _onClear();
+    }
 
 protected:
     virtual void _onClear() override;
-};
-
-class SlotData : public BaseObject
-{
-    BIND_CLASS_TYPE(SlotData);
 
 public:
-    /** @private */
-    static ColorTransform DEFAULT_COLOR;
-    /** @private */
-    static ColorTransform* generateColor();
-
-public:
-    /** @private */
-    int displayIndex;
-    /** @private */
-    int zOrder;
-    /** @private */
-    BlendMode blendMode;
-
-    std::string name;
-
-    BoneData* parent;
-    /** @private */
-    ColorTransform* color;
-    /** @private */
-    std::vector<ActionData*> actions;
-
-    /** @private */
-    SlotData();
-    /** @private */
-    ~SlotData();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(SlotData);
-
-protected:
-    void _onClear() override;
-};
-
-/** 
- * @private
- */
-class MeshData final : public BaseObject
-{
-    BIND_CLASS_TYPE(MeshData);
-
-public:
-    bool skinned;
-    Matrix slotPose;
-
-    std::vector<float> uvs;
-    std::vector<float> vertices;
-    std::vector<unsigned short> vertexIndices;
-
-    std::vector<std::vector<unsigned short>> boneIndices;
-    std::vector<std::vector<float>> weights;
-    std::vector<std::vector<float>> boneVertices;
-
-    std::vector<BoneData*> bones;
-    std::vector<Matrix> inverseBindPose;
-
-    MeshData();
-    ~MeshData();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(MeshData);
-
-protected:
-    void _onClear() override;
-};
-
-/**
- * @private
- */
-class DisplayData final : public BaseObject
-{
-    BIND_CLASS_TYPE(DisplayData);
-
-public:
-    bool isRelativePivot;
-    DisplayType type;
-    std::string name;
-    TextureData* texture;
-    ArmatureData* armature;
-    MeshData* mesh;
-    Point pivot;
-    Transform transform;
-
-    DisplayData();
-    ~DisplayData();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(DisplayData);
-
-protected:
-    void _onClear() override;
-};
-
-/**
- * @private
- */
-class SlotDisplayDataSet final : public BaseObject
-{
-    BIND_CLASS_TYPE(SlotDisplayDataSet);
-
-public:
-    SlotData* slot;
-    std::vector<DisplayData*> displays;
-
-    SlotDisplayDataSet();
-    ~SlotDisplayDataSet();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(SlotDisplayDataSet);
-
-protected:
-    void _onClear() override;
-};
-
-class SkinData final : public BaseObject
-{
-    BIND_CLASS_TYPE(SkinData);
-
-public:
-    std::string name;
-    /** @private */
-    std::map<std::string, SlotDisplayDataSet*> slots;
-
-    /** @private */
-    SkinData();
-    /** @private */
-    ~SkinData();
-
-protected:
-    void _onClear() override;
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(SkinData);
-
-public:
-    /** @private */
-    void addSlot(SlotDisplayDataSet* value);
-
-    /** @private */
-    inline SlotDisplayDataSet* getSlot(const std::string& name) const
-    {
-        return mapFind(slots, name);
-    }
-};
-
-class ArmatureData : public BaseObject
-{
-    BIND_CLASS_TYPE(ArmatureData);
-
-private:
-    static bool _onSortSlots(const SlotData* a, const SlotData* b);
-
-public:
-    unsigned frameRate;
-    ArmatureType type;
-    std::string name;
-    Rectangle aabb;
-    DragonBonesData* parent;
-    std::map<std::string, BoneData*> bones;
-    std::map<std::string, SlotData*> slots;
-    std::map<std::string, SkinData*> skins;
-    std::map<std::string, AnimationData*> animations;
-    /** @private */
-    std::vector<ActionData*> actions;
-
-    /** @private */
-    unsigned cacheFrameRate;
-    /** @private */
-    float scale;
-
-private:
-    bool _boneDirty;
-    bool _slotDirty;
-    SkinData* _defaultSkin;
-    AnimationData* _defaultAnimation;
-    std::vector<BoneData*> _sortedBones;
-    std::vector<SlotData*> _sortedSlots;
-    std::map<std::string, std::vector<BoneData*>> _bonesChildren;
-
-public:
-    /** @private */
-    ArmatureData();
-    /** @private */
-    ~ArmatureData();
-
-private:
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(ArmatureData);
-
-    void _sortBones();
-    void _sortSlots();
-
-protected:
-    void _onClear() override;
-
-public:
-    /** @private */
-    void cacheFrames(unsigned value);
-    /** @private */
-    void addBone(BoneData* value, const std::string& parentName = "");
-    /** @private */
+    /**
+    * @private
+    */
+    void sortBones();
+    /**
+    * @private
+    */
+    void cacheFrames(unsigned frameRate);
+    /**
+    * @private
+    */
+    int setCacheFrame(const Matrix& globalTransformMatrix, const Transform& transform);
+    /**
+    * @private
+    */
+    void getCacheFrame(Matrix& globalTransformMatrix, Transform& transform, unsigned arrayOffset);
+    /**
+    * @private
+    */
+    void addBone(BoneData* value);
+    /**
+    * @private
+    */
     void addSlot(SlotData* value);
-    /** @private */
+    /**
+    * @private
+    */
     void addSkin(SkinData* value);
-    /** @private */
+    /**
+    * @private
+    */
     void addAnimation(AnimationData* value);
-
+    /**
+    * 获取骨骼数据。
+    * @param name 骨骼数据名称。
+    * @version DragonBones 3.0
+    * @see dragonBones.BoneData
+    * @language zh_CN
+    */
     inline BoneData* getBone(const std::string& name) const
     {
-        return mapFind(bones, name);
+        return mapFind<BoneData>(bones, name);
     }
-
+    /**
+    * 获取插槽数据。
+    * @param name 插槽数据名称。
+    * @version DragonBones 3.0
+    * @see dragonBones.SlotData
+    * @language zh_CN
+    */
     inline SlotData* getSlot(const std::string& name) const
     {
-        return mapFind(slots, name);
+        return mapFind<SlotData>(slots, name);
     }
-
+    /**
+    * @private
+    */
     inline SkinData* getSkin(const std::string& name) const
     {
-        if (name.empty())
-        {
-            return _defaultSkin;
-        }
-
         return mapFind(skins, name);
     }
-
+    /**
+    * 获取动画数据。
+    * @param name 动画数据名称。
+    * @version DragonBones 3.0
+    * @see dragonBones.AnimationData
+    * @language zh_CN
+    */
     inline AnimationData* getAnimation(const std::string& name) const
     {
-        if (name.empty())
-        {
-            return _defaultAnimation;
-        }
-
         return mapFind(animations, name);
     }
 
-    inline const std::vector<BoneData*>& getSortedBones() // const
-    {
-        if (_boneDirty)
-        {
-            _boneDirty = false;
-            _sortBones();
-        }
+public: // For WebAssembly.
+    Rectangle getAABB() const { return aabb; }
+    std::vector<ActionData*>* getDefaultActions() { return &defaultActions; }
+    std::vector<ActionData*>* getActions() { return &actions; }
+    AnimationData* getDefaultAnimation() const { return defaultAnimation; }
+    SkinData* getDefaultSkin() const { return defaultSkin; }
+    UserData* getUserData() const { return userData; }
+    DragonBonesData* getParent() const { return parent; }
 
-        return _sortedBones;
+    void setAABB(const Rectangle& value) { aabb = value; }
+    void inline setDefaultAnimation(AnimationData* value) { defaultAnimation = value; }
+    void inline setDefaultSkin(SkinData* value) { defaultSkin = value; }
+    void setUserData(UserData* value) { userData = value; }
+    void inline setParent(DragonBonesData* value) { parent = value; }
+};
+/**
+* 骨骼数据。
+* @version DragonBones 3.0
+* @language zh_CN
+*/
+class BoneData : public BaseObject 
+{
+    BIND_CLASS_TYPE_B(BoneData);
+
+public:
+    /**
+    * @private
+    */
+    bool inheritTranslation;
+    /**
+    * @private
+    */
+    bool inheritRotation;
+    /**
+    * @private
+    */
+    bool inheritScale;
+    /**
+    * @private
+    */
+    bool inheritReflection;
+    /**
+    * @private
+    */
+    float length;
+    /**
+    * 数据名称。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    std::string name;
+    /**
+    * @private
+    */
+    Transform transform;
+    /**
+    * @private
+    */
+    std::vector<ConstraintData*> constraints;
+    /**
+    * 所属的父骨骼数据。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    BoneData* parent;
+    /**
+    * @private
+    */
+    UserData* userData;
+    /**
+    * @private
+    */
+    BoneData() :
+        userData(nullptr)
+    {
+        _onClear();
+    }
+    ~BoneData()
+    {
+        _onClear();
     }
 
-    inline const std::vector<SlotData*>& getSortedSlots() // const
-    {
-        if (_slotDirty)
-        {
-            _slotDirty = false;
-            _sortSlots();
-        }
+protected:
+    virtual void _onClear() override;
 
-        return _sortedSlots;
+public: // For WebAssembly.
+    Transform* getTransfrom() { return &transform; }
+    std::vector<ConstraintData*>* getConstraints() { return &constraints; }
+    BoneData* getParent() const { return parent; }
+    UserData* getUserData() const { return userData; }
+
+    void setParent(BoneData* value) { parent = value; }
+    void setUserData(UserData* value) { userData = value; }
+};
+/**
+* 插槽数据。
+* @see dragonBones.Slot
+* @version DragonBones 3.0
+* @language zh_CN
+*/
+class SlotData : public BaseObject
+{
+    BIND_CLASS_TYPE_B(SlotData);
+
+public:
+    /**
+    * @private
+    */
+    static ColorTransform DEFAULT_COLOR;
+    /**
+    * @private
+    */
+    static ColorTransform* createColor();
+
+public:
+    /**
+    * @private
+    */
+    BlendMode blendMode;
+    /**
+    * @private
+    */
+    int displayIndex;
+    /**
+    * @private
+    */
+    int zOrder;
+    /**
+    * 数据名称。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    std::string name;
+    /**
+    * 所属的父骨骼数据。
+    * @see dragonBones.BoneData
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    BoneData* parent;
+    /**
+    * @private
+    */
+    ColorTransform* color;
+    /**
+    * @private
+    */
+    UserData* userData;
+    /**
+    * @private
+    */
+    SlotData() :
+        color(nullptr),
+        userData(nullptr)
+    {
+        _onClear();
+    }
+    ~SlotData()
+    {
+        _onClear();
     }
 
-    inline SkinData* getDefaultSkin() const
+protected:
+    virtual void _onClear() override;
+
+public: // For WebAssembly.
+    static ColorTransform* getDEFAULT_COLOR() { return &DEFAULT_COLOR; }
+
+    int getBlendMode() { return (int)blendMode; }
+    ColorTransform* getColor() { return color; }
+    BoneData* getParent() const { return parent; }
+    UserData* getUserData() const { return userData; }
+
+    void setBlendMode(int value) { blendMode = (BlendMode)value; }
+    void setColor(ColorTransform* value) { color = value; }
+    void setParent(BoneData* value) { parent = value; }
+    void setUserData(UserData* value) { userData = value; }
+};
+/**
+* @private
+*/
+class SkinData final : public BaseObject
+{
+    BIND_CLASS_TYPE_A(SkinData);
+
+public:
+    std::string name;
+    std::map<std::string, std::vector<DisplayData*>> displays;
+
+protected:
+    virtual void _onClear() override;
+
+public:
+    void addDisplay(const std::string& slotName, DisplayData* value);
+
+    DisplayData* getDisplay(const std::string& slotName, const std::string& displayName);
+
+    inline std::vector<DisplayData*>* getDisplays(const std::string& slotName)
     {
-        return _defaultSkin;
+        return mapFindB(displays, slotName);
     }
 
-    inline AnimationData* getDefaultAnimation() const
-    {
-        return _defaultAnimation;
-    }
+public: // For WebAssembly.
+    std::vector<std::string> skinSlotNames;
+    std::vector<std::string>* getSkinSlotNames() { return &skinSlotNames; } // TODO
 };
 
 DRAGONBONES_NAMESPACE_END
