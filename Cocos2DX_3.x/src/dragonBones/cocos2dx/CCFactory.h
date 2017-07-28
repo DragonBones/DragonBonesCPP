@@ -38,7 +38,7 @@ public:
             cocos2d::Director::getInstance()->getScheduler()->schedule(
                 [&](float passedTime)
                 {
-                    _dragonBonesInstance->getClock()->advanceTime(passedTime);
+                    _dragonBonesInstance->advanceTime(passedTime);
                 },
                 this, 0.0f, false, "dragonBonesClock"
             );
@@ -46,7 +46,9 @@ public:
 
         _dragonBones = _dragonBonesInstance;
     }
-    ~CCFactory() {}
+    ~CCFactory() 
+    {
+    }
 
 protected:
     virtual TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const override;

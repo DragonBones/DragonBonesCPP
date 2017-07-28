@@ -1592,6 +1592,7 @@ DragonBonesData* JSONDataParser::_parseDragonBonesData(const rapidjson::Value& r
 
             if (data->intArray == nullptr)
             {
+                
                 const auto l1 = _intArray.size() * 2;
                 const auto l2 = _floatArray.size() * 4;
                 const auto l3 = _frameIntArray.size() * 2;
@@ -1607,6 +1608,14 @@ DragonBonesData* JSONDataParser::_parseDragonBonesData(const rapidjson::Value& r
                 data->frameFloatArray = (float*)(data->buffer + l1 + l2 + l3);
                 data->frameArray = (int16_t*)(data->buffer + l1 + l2 + l3 + l4);
                 data->timelineArray = (uint16_t*)(data->buffer + l1 + l2 + l3 + l4 + l5);
+                
+
+                /*data->intArray = new int16_t[_intArray.size()];
+                data->floatArray = new float[_floatArray.size()];
+                data->frameIntArray = new int16_t[_frameIntArray.size()];
+                data->frameFloatArray = new float[_frameFloatArray.size()];
+                data->frameArray = new int16_t[_frameArray.size()];
+                data->timelineArray = new uint16_t[_intArray.size()];*/
 
                 for (std::size_t i = 0, l = _intArray.size(); i < l; ++i)
                 {

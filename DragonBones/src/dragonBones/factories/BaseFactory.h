@@ -85,10 +85,8 @@ public:
     {
         clear();
 
-        if (_dataParser != &BaseFactory::_jsonParser)
-        {
-            delete _dataParser;
-        }
+        _dragonBones = nullptr;
+        _dataParser = nullptr;
     }
 
 protected:

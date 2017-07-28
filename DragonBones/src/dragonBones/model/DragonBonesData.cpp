@@ -38,7 +38,7 @@ void DragonBonesData::_onClear()
     timelineArray = nullptr;
     userData = nullptr;
 
-    // TODO ĞèÒªÊÍ·Å buffer
+    // TODO éœ€è¦é‡Šæ”¾ buffer
 	// TODO lsc JS call delete
 }
 

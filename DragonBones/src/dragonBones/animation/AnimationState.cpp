@@ -515,7 +515,7 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
     if (isCacheEnabled) // Cache time internval.
     {
         const auto internval = cacheFrameRate * 2.0f;
-        _actionTimeline->currentTime = (unsigned)(_actionTimeline->currentTime * internval / internval);
+        _actionTimeline->currentTime = (unsigned)(_actionTimeline->currentTime * internval) / internval;
     }
 
     if (_zOrderTimeline != nullptr) // Update zOrder timeline.
