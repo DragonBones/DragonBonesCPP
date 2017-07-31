@@ -110,11 +110,11 @@ public:
     * @private
     */
     static int rectangleIntersectsSegment(
-		float xA, float yA, float xB, float yB,
-		float xMin, float yMin, float xMax, float yMax,
-		Point* intersectionPointA = nullptr,
-		Point* intersectionPointB = nullptr,
-		Point* normalRadians = nullptr
+        float xA, float yA, float xB, float yB,
+        float xMin, float yMin, float xMax, float yMax,
+        Point* intersectionPointA = nullptr,
+        Point* intersectionPointB = nullptr,
+        Point* normalRadians = nullptr
     );
     /**
     * @inherDoc
@@ -190,7 +190,7 @@ public:
         Point* intersectionPointB = nullptr,
         Point* normalRadians = nullptr
     );
-	// TODO Check (int->unsigned)
+    // TODO Check (int->unsigned)
     /**
     * @private
     */

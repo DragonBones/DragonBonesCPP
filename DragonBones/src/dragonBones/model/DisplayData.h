@@ -85,7 +85,7 @@ class MeshDisplayData : public ImageDisplayData
 
 public: // TODO 删除了 textureName 属性，增加了 path 属性
     bool inheritAnimation;
-	// TODO Check (int->unsigned)
+    // TODO Check (int->unsigned)
     unsigned offset;
     WeightData* weight;
 

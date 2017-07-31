@@ -142,7 +142,7 @@ void Armature::_sortZOrder(int16_t* slotIndices, unsigned offset)
     {
         for (std::size_t i = 0, l = slotDatas.size(); i < l; ++i) 
         {
-            const auto slotIndex = isOriginal ? i : (std::size_t)slotIndices[offset + i];
+            const auto slotIndex = isOriginal ? i : (unsigned)slotIndices[offset + i];
             if (slotIndex < 0 || slotIndex >= l)
             {
                 continue;
@@ -205,7 +205,6 @@ void Armature::dispose()
 {
     if (armatureData != nullptr) 
     {
-        printf("Armature dispose 0\n");
         _delayDispose = true;
         _dragonBones->bufferObject(this);
     }
@@ -213,7 +212,6 @@ void Armature::dispose()
 
 void Armature::init(ArmatureData *parmatureData, IArmatureProxy* pproxy, void* display, DragonBones* dragonBones)
 {
-//    printf("Armature init 1\n");
     if (armatureData != nullptr)
     {
         return;
@@ -228,7 +226,6 @@ void Armature::init(ArmatureData *parmatureData, IArmatureProxy* pproxy, void* d
     _animation->init(this);
     _animation->setAnimations(armatureData->animations);
     _proxy->init(this);
-//    printf("Armature init 2\n");
 }
 
 void Armature::advanceTime(float passedTime)

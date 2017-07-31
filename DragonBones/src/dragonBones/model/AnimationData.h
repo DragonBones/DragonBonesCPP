@@ -176,7 +176,7 @@ class TimelineData : public BaseObject
 
 public:
     TimelineType type;
-	// TODO Check(int->unsigned)
+    // TODO Check(int->unsigned)
     unsigned offset;
     int frameIndicesOffset;
 

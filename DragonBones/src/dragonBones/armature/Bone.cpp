@@ -65,7 +65,7 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
 
     if (inherit) 
     {
-        const auto parentMatrix = &_parent->globalTransformMatrix;
+        const auto& parentMatrix = _parent->globalTransformMatrix;
         if (boneData->inheritScale) 
         {
             if (!boneData->inheritRotation) 
@@ -77,7 +77,7 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
             }
 
             global.toMatrix(globalTransformMatrix);
-            globalTransformMatrix.concat(*parentMatrix);
+            globalTransformMatrix.concat(parentMatrix);
 
             if (boneData->inheritTranslation) 
             {
@@ -105,8 +105,8 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
             {
                 const auto x = global.x;
                 const auto y = global.y;
-                global.x = parentMatrix->a * x + parentMatrix->c * y + parentMatrix->tx;
-                global.y = parentMatrix->d * y + parentMatrix->b * x + parentMatrix->ty;
+                global.x = parentMatrix.a * x + parentMatrix.c * y + parentMatrix.tx;
+                global.y = parentMatrix.d * y + parentMatrix.b * x + parentMatrix.ty;
             }
             else 
             {
@@ -127,12 +127,18 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
 
                 dR = _parent->global.rotation;
 
-                if (flipX != flipY) 
+                if (_parent->global.scaleX < 0.0f) 
+                {
+                    dR += Transform::PI;
+                }
+
+                if (parentMatrix.a * parentMatrix.d - parentMatrix.b * parentMatrix.c < 0.0f)
                 {
                     dR -= global.rotation * 2.0f;
-                    if (flipX) 
+
+                    if (flipX != flipY || boneData->inheritReflection) 
                     {
-                        dR += Transform::PI;
+                        global.skew += Transform::PI;
                     }
                 }
 

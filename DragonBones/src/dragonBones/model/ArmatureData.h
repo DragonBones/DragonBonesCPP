@@ -84,7 +84,10 @@ public:
     */
     std::map<std::string, SlotData*> slots;
     /**
-    * @private
+    * 所有皮肤数据。
+    * @see dragonBones.SkinData
+    * @version DragonBones 3.0
+    * @language zh_CN
     */
     std::map<std::string, SkinData*> skins;
     /**
@@ -95,7 +98,10 @@ public:
     */
     std::map<std::string, AnimationData*> animations;
     /**
-    * @private
+    * 获取默认皮肤数据。
+    * @see dragonBones.SkinData
+    * @version DragonBones 4.5
+    * @language zh_CN
     */
     SkinData* defaultSkin;
     /**
@@ -164,7 +170,7 @@ public:
     void addAnimation(AnimationData* value);
     /**
     * 获取骨骼数据。
-    * @param name 骨骼数据名称。
+    * @param name 数据名称。
     * @version DragonBones 3.0
     * @see dragonBones.BoneData
     * @language zh_CN
@@ -175,7 +181,7 @@ public:
     }
     /**
     * 获取插槽数据。
-    * @param name 插槽数据名称。
+    * @param name 数据名称。
     * @version DragonBones 3.0
     * @see dragonBones.SlotData
     * @language zh_CN
@@ -185,7 +191,11 @@ public:
         return mapFind<SlotData>(slots, name);
     }
     /**
-    * @private
+    * 获取皮肤数据。
+    * @param name 数据名称。
+    * @version DragonBones 3.0
+    * @see dragonBones.SkinData
+    * @language zh_CN
     */
     inline SkinData* getSkin(const std::string& name) const
     {
@@ -193,7 +203,7 @@ public:
     }
     /**
     * 获取动画数据。
-    * @param name 动画数据名称。
+    * @param name 数据名称。
     * @version DragonBones 3.0
     * @see dragonBones.AnimationData
     * @language zh_CN
@@ -382,24 +392,41 @@ public: // For WebAssembly.
     void setUserData(UserData* value) { userData = value; }
 };
 /**
-* @private
+* 皮肤数据。（通常一个骨架数据至少包含一个皮肤数据）
+* @version DragonBones 3.0
+* @language zh_CN
 */
 class SkinData final : public BaseObject
 {
     BIND_CLASS_TYPE_A(SkinData);
 
 public:
+    /**
+    * 数据名称。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
     std::string name;
+    /**
+    * @private
+    */
     std::map<std::string, std::vector<DisplayData*>> displays;
 
 protected:
     virtual void _onClear() override;
 
 public:
+    /**
+    * @private
+    */
     void addDisplay(const std::string& slotName, DisplayData* value);
-
+    /**
+    * @private
+    */
     DisplayData* getDisplay(const std::string& slotName, const std::string& displayName);
-
+    /**
+    * @private
+    */
     inline std::vector<DisplayData*>* getDisplays(const std::string& slotName)
     {
         return mapFindB(displays, slotName);

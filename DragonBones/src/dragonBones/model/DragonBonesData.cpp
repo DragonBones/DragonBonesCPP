@@ -39,7 +39,7 @@ void DragonBonesData::_onClear()
     userData = nullptr;
 
     // TODO 需要释放 buffer
-	// TODO lsc JS call delete
+    // TODO lsc JS call delete
 }
 
 void DragonBonesData::addArmature(ArmatureData* value)

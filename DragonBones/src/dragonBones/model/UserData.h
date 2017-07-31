@@ -37,9 +37,9 @@ protected:
     virtual void _onClear() override;
 
 public:
-    int getInt(size_t index) const;
-    float getFloat(size_t index) const;
-    std::string getString(size_t index) const;
+    int getInt(unsigned index) const;
+    float getFloat(unsigned index) const;
+    std::string getString(unsigned index) const;
 };
 /**
 * @private

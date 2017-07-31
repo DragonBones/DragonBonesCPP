@@ -9,17 +9,17 @@ void UserData::_onClear()
     strings.clear();
 }
 
-int UserData::getInt(size_t index) const
+int UserData::getInt(unsigned index) const
 {
     return index < ints.size() ? ints[index] : 0;
 }
 
-float UserData::getFloat(size_t index) const
+float UserData::getFloat(unsigned index) const
 {
     return index < floats.size() ? floats[index] : 0;
 }
 
-std::string UserData::getString(size_t index) const
+std::string UserData::getString(unsigned index) const
 {
     return index < strings.size() ? strings[index] : 0;
 }

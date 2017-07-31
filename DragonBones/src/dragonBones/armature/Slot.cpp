@@ -71,7 +71,7 @@ void Slot::_onClear()
     _ffdVertices.clear();
     _displayList.clear();
     _displayDatas.clear();
-	_meshBones.clear();
+    _meshBones.clear();
     _rawDisplayDatas = nullptr; //
     _displayData = nullptr;
     _textureData = nullptr;
@@ -263,7 +263,7 @@ void Slot::_updateDisplay()
     const auto prevChildArmature = _childArmature;
 
     // Update display and child armature.
-    if (_displayIndex >= 0 && (std::size_t)_displayIndex < _displayList.size())
+    if (_displayIndex >= 0 && (unsigned)_displayIndex < _displayList.size())
     {
         const auto& displayPair = _displayList[_displayIndex];
         _display = displayPair.first;
@@ -317,7 +317,7 @@ void Slot::_updateDisplay()
         {
             _childArmature->_parent = this; // Update child armature parent.
             _childArmature->setClock(_armature->getClock());
-            if (prevChildArmature->inheritAnimation) // Set child armature cache frameRate.
+            if (_childArmature->inheritAnimation) // Set child armature cache frameRate.
             {
                 if (_childArmature->getCacheFrameRate() == 0)
                 {
@@ -488,7 +488,7 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
         _displayList.clear();
     }
 
-    if (_displayIndex >= 0 && (std::size_t)_displayIndex < _displayList.size())
+    if (_displayIndex >= 0 && (unsigned)_displayIndex < _displayList.size())
     {
         _displayDirty = _display != _displayList[_displayIndex].first;
     }
@@ -747,7 +747,6 @@ void Slot::setDisplayIndex(int value)
 //TODO lsc check
 void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& value)
 {
-    printf("Slot::setDisplayList 000\n");
     const auto backupDisplayList = _displayList; // copy
     auto disposeDisplayList = backupDisplayList; // copy
     disposeDisplayList.clear();
@@ -757,7 +756,6 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
         update(-1);
     }
 
-    printf("Slot::setDisplayList 1\n");
     for (const auto& pair : backupDisplayList)
     {
         if (
@@ -770,7 +768,6 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
         }
     }
 
-    printf("Slot::setDisplayList 2\n");
     for (const auto& pair : disposeDisplayList)
     {
         if (pair.second == DisplayType::Armature)
@@ -782,7 +779,6 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
             _disposeDisplay(pair.first);
         }
     }
-    printf("Slot::setDisplayList 0000----\n");
 }
 
 void Slot::setDisplay(void* value, DisplayType displayType)
@@ -805,7 +801,7 @@ void Slot::setDisplay(void* value, DisplayType displayType)
     else
     {
         auto relpaceDisplayList = _displayList; // copy
-        if (displayListLength <= (std::size_t)_displayIndex)
+        if (displayListLength <= (unsigned)_displayIndex)
         {
             relpaceDisplayList.resize(_displayIndex + 1);
         }
@@ -831,7 +827,7 @@ void Slot::switchDisplayData(std::vector<DisplayData *> * displayDatas)
 {
     _rawDisplayDatas = displayDatas;
     _displayDatas.resize(_rawDisplayDatas->size());
-    for (size_t i = 0, l = _displayDatas.size(); i < l; ++i) {
+    for (std::size_t i = 0, l = _displayDatas.size(); i < l; ++i) {
         _displayDatas[i] = (*_rawDisplayDatas)[i];
     }
 }

@@ -30,7 +30,7 @@ public:
 
     virtual void update() = 0;
 
-	// For WebAssembly.
+    // For WebAssembly.
     Bone* getTarget() const { return  target; }
     Bone* getBone() const { return bone; }
     Bone* getRoot() const { return root; }

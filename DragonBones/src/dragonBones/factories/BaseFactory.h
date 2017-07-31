@@ -101,7 +101,7 @@ protected:
     ) const;
     virtual void _buildBones(const BuildArmaturePackage& dataPackage, Armature& armature) const;
     virtual void _buildSlots(const BuildArmaturePackage& dataPackage, Armature& armature) const;
-    virtual std::pair<void*, DisplayType> _getSlotDisplay(const BuildArmaturePackage& dataPackage, DisplayData& displayData, DisplayData* rawDisplayData, const Slot& slot) const;
+    virtual std::pair<void*, DisplayType> _getSlotDisplay(const BuildArmaturePackage* dataPackage, DisplayData& displayData, DisplayData* rawDisplayData, const Slot& slot) const;
     virtual void _replaceSlotDisplay(const BuildArmaturePackage& dataPackage, DisplayData* displayData, Slot& slot, int displayIndex) const;
 
     virtual TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const = 0;
@@ -186,6 +186,15 @@ public:
     */
     virtual void removeTextureAtlasData(const std::string& name, bool disposeData = true);
     /**
+    * 获取骨架数据。
+    * @param name 骨架数据名称。
+    * @param dragonBonesName 龙骨数据名称。
+    * @see dragonBones.ArmatureData
+    * @version DragonBones 5.1
+    * @language zh_CN
+    */
+    virtual ArmatureData* getArmatureData(const std::string& name, const std::string& dragonBonesName) const;
+    /**
     * 清除所有的数据。
     * @param disposeData 是否释放数据。
     * @version DragonBones 4.5
@@ -205,33 +214,6 @@ public:
     * @language zh_CN
     */
     virtual Armature* buildArmature(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string & textureAtlasName = "") const;
-    /**
-    * @version DragonBones 5.1
-    * @language zh_CN
-    */
-    virtual void changeSkin(
-        Armature* armature,
-        const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "",
-        std::vector<std::string>* exclude = nullptr
-    ) const;
-    /**
-    * 将骨架的动画替换成其他骨架的动画。 (通常这些骨架应该具有相同的骨架结构)
-    * @param toArmature 指定的骨架。
-    * @param fromArmatreName 其他骨架的名称。
-    * @param fromSkinName 其他骨架的皮肤名称，如果未设置，则使用默认皮肤。
-    * @param fromDragonBonesDataName 其他骨架属于的龙骨数据名称，如果未设置，则检索所有的龙骨数据。
-    * @param replaceOriginalAnimation 是否替换原有的同名动画。
-    * @returns 是否替换成功。
-    * @see dragonBones.Armature
-    * @see dragonBones.ArmatureData
-    * @version DragonBones 4.5
-    * @language zh_CN
-    */
-    virtual bool copyAnimationsToArmature(
-        Armature& toArmature,
-        const std::string& fromArmatreName, const std::string& fromSkinName = "", const std::string& fromDragonBonesDataName = "",
-        bool replaceOriginalAnimation = true
-    ) const;
     /**
     * 用指定资源替换指定插槽的显示对象。(用 "dragonBonesName/armatureName/slotName/displayName" 的资源替换 "slot" 的显示对象)
     * @param dragonBonesName 指定的龙骨数据名称。
@@ -259,6 +241,35 @@ public:
     virtual void replaceSlotDisplayList(
         const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName,
         Slot& slot
+    ) const;
+    /**
+    * 更换骨架皮肤。
+    * @param armature 骨架。
+    * @param skin 皮肤数据。
+    * @param exclude 不需要更新的插槽。
+    * @see dragonBones.Armature
+    * @see dragonBones.SkinData
+    * @version DragonBones 5.1
+    * @language zh_CN
+    */
+    virtual void changeSkin(Armature* armature, SkinData* skin, std::vector<std::string>* exclude = nullptr) const;
+    /**
+    * 将骨架的动画替换成其他骨架的动画。 (通常这些骨架应该具有相同的骨架结构)
+    * @param toArmature 指定的骨架。
+    * @param fromArmatreName 其他骨架的名称。
+    * @param fromSkinName 其他骨架的皮肤名称，如果未设置，则使用默认皮肤。
+    * @param fromDragonBonesDataName 其他骨架属于的龙骨数据名称，如果未设置，则检索所有的龙骨数据。
+    * @param replaceOriginalAnimation 是否替换原有的同名动画。
+    * @returns 是否替换成功。
+    * @see dragonBones.Armature
+    * @see dragonBones.ArmatureData
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
+    virtual bool copyAnimationsToArmature(
+        Armature& toArmature,
+        const std::string& fromArmatreName, const std::string& fromSkinName = "", const std::string& fromDragonBonesDataName = "",
+        bool replaceOriginalAnimation = true
     ) const;
     /**
     * 获取指定名称的龙骨数据。
@@ -293,7 +304,7 @@ public:
     /**
     * @private
     */
-    inline std::map<std::string, DragonBonesData*> getAllDragonBonesData() const
+    inline const std::map<std::string, DragonBonesData*>& getAllDragonBonesData() const
     {
         return _dragonBonesDataMap;
     }

@@ -93,7 +93,6 @@ void Animation::init(Armature* armature)
 
 void Animation::advanceTime(float passedTime)
 {
-//    printf("Animation advanceTime 000 passedTime=%4.4f \n", passedTime);
     if (passedTime < 0.0f)
     {
         passedTime = -passedTime;
@@ -110,7 +109,6 @@ void Animation::advanceTime(float passedTime)
     }
 
     const auto animationStateCount = _animationStates.size();
-//    printf("Animation advanceTime size= %d \n", animationStateCount );
     if (animationStateCount == 1)
     {
         const auto animationState = _animationStates[0];
@@ -232,7 +230,6 @@ void Animation::stop(const std::string& animationName)
 AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
 {
     const auto& animationName = animationConfig->animation;
-//    printf("playConfig name=%s\n", animationName.c_str());
     if (_animations.find(animationName) == _animations.end())
     {
         DRAGONBONES_ASSERT(
@@ -246,7 +243,6 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
         return nullptr;
     }
 
-//    printf("playConfig name 0-2 =%s, mode=%d\n", animationName.c_str(), (int)animationConfig->fadeOutMode);
     const auto animationData = _animations[animationName];
 
     if (animationConfig->fadeOutMode == AnimationFadeOutMode::Single) 
@@ -259,7 +255,7 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
             }
         }
     }
-//    printf("playConfig name 0-3 \n");
+
     if (animationConfig->fadeInTime < 0.0f) 
     {
         if (_animationStates.empty()) 
@@ -281,7 +277,6 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
         animationConfig->timeScale = 1.0f / animationData->scale;
     }
 
-//    printf("playConfig name 0-4 \n");
     if (animationData->frameCount > 1)
     {
         if (animationConfig->position < 0.0f) 
@@ -324,18 +319,15 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
 
     _fadeOut(animationConfig);
 
-//    printf("playConfig name 0-5 \n");
     const auto animationState = BaseObject::borrowObject<AnimationState>();
     animationState->init(_armature, animationData, animationConfig);
     _animationDirty = true;
     _armature->_cacheFrameIndex = -1;
 
-//    printf("playConfig name=%s, animationState size=%d\n", animationName.c_str(), _animationStates.size());
-//    printf("playConfig name 0-7 \n");
     if (!_animationStates.empty())
     {
         auto added = false;
-        for (size_t i = 0, l = _animationStates.size(); i < l; ++i) 
+        for (std::size_t i = 0, l = _animationStates.size(); i < l; ++i) 
         {
             if (animationState->layer >= _animationStates[i]->layer) 
             {
@@ -343,8 +335,6 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
             else 
             {
                 added = true;
-                //_animationStates.insert(i + 1, animationState); // TODO
-//                printf("playConfig name 0-222 add \n");
                 _animationStates.push_back(animationState);
                 break;
             }
@@ -352,12 +342,11 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
 
         if (!added) 
         {
-//            printf("playConfig name 0-000 add \n");
             _animationStates.push_back(animationState);
         }
     }
-    else {
-//        printf("playConfig name 0-111 add \n");
+    else 
+    {
         _animationStates.push_back(animationState);
     }
 
@@ -375,14 +364,13 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
         }
     }
 
-    // if (animationConfig->fadeInTime <= 0.0f) // Blend animation state, update armature.
-    // {
-    //    _armature->advanceTime(0.0f);
-    // }
+    if (animationConfig->fadeInTime <= 0.0f) // Blend animation state, update armature.
+    {
+       _armature->advanceTime(0.0f);
+    }
 
     _lastAnimationState = animationState;
 
-//    printf("playConfig name 1 \n");
     return animationState;
 }
 
@@ -394,15 +382,12 @@ AnimationState* Animation::play(const std::string& animationName, int playTimes)
     _animationConfig->fadeInTime = 0.0f;
     _animationConfig->animation = animationName;
 
-//    printf("Animation play 0 \n");
     if (!animationName.empty())
     {
-//        printf("Animation play 0-1 \n");
         playConfig(_animationConfig);
     }
     else if (_lastAnimationState == nullptr)
     {
-//        printf("Animation play 0-1 \n");
         const auto defaultAnimation = _armature->armatureData->defaultAnimation;
         if (defaultAnimation != nullptr)
         {
@@ -412,23 +397,25 @@ AnimationState* Animation::play(const std::string& animationName, int playTimes)
     }
     else if (!_lastAnimationState->isPlaying() && !_lastAnimationState->isCompleted())
     {
-//        printf("Animation play 0-2 \n");
         _lastAnimationState->play();
     }
     else
     {
-//        printf("Animation play 0-3 \n");
         _animationConfig->animation = _lastAnimationState->name;
         playConfig(_animationConfig);
     }
 
-//    printf("Animation play 1 \n");
     return _lastAnimationState;
 }
-
+#ifdef EGRET_WASM
 AnimationState* Animation::fadeIn(
     const std::string& animationName, float fadeInTime, int playTimes,
     int layer, const std::string& group, int fadeOutMode /*AnimationFadeOutMode*/
+#else
+AnimationState* Animation::fadeIn(
+    const std::string& animationName, float fadeInTime, int playTimes,
+    int layer, const std::string& group, AnimationFadeOutMode fadeOutMode
+#endif // EGRET_WASM
 )
 {
     _animationConfig->clear();
@@ -483,7 +470,7 @@ AnimationState* Animation::gotoAndPlayByProgress(const std::string& animationNam
     if (animationData != nullptr) {
         _animationConfig->position = animationData->duration * (progress > 0.0f ? progress : 0.0f);
     }
-//    printf("gotoAndPlayByProgress position=%4.4f\n", _animationConfig->position);
+
     return playConfig(_animationConfig);
 }
 
@@ -577,12 +564,6 @@ const std::string& Animation::getLastAnimationName() const
     return DEFAULT_NAME;
 }
 
-AnimationConfig* Animation::animationConfig() const
-{
-    _animationConfig->clear();
-    return _animationConfig;
-}
-
 void Animation::setAnimations(const std::map<std::string, AnimationData*>& value)
 {
     if (_animations == value)
@@ -594,10 +575,15 @@ void Animation::setAnimations(const std::map<std::string, AnimationData*>& value
 
     for (const auto& pair : value)
     {
-//        printf("Animation setAnimation name=%s\n", pair.first.c_str());
         _animations[pair.first] = pair.second;
         _animationNames.push_back(pair.first);
     }
+}
+
+AnimationConfig* Animation::getAnimationConfig() const
+{
+    _animationConfig->clear();
+    return _animationConfig;
 }
 
 DRAGONBONES_NAMESPACE_END

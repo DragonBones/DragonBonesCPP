@@ -190,54 +190,54 @@ DisplayType DataParser::_getDisplayType(const std::string& value)
     {
         return DisplayType::Mesh;
     }
-	else if (lower == "boundingbox")
-	{
-		return DisplayType::BoundingBox;
-	}
+    else if (lower == "boundingbox")
+    {
+        return DisplayType::BoundingBox;
+    }
 
     return DisplayType::Image;
 }
 
 BoundingBoxType DataParser::_getBoundingBoxType(const std::string & value)
 {
-	auto lower = value;
-	std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    auto lower = value;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-	if (lower == "rectangle")
-	{
-		return BoundingBoxType::Rectangle;
-	}
-	else if (lower == "ellipse")
-	{
-		return BoundingBoxType::Ellipse;
-	}
-	else if (lower == "polygon")
-	{
-		return BoundingBoxType::Polygon;
-	}
+    if (lower == "rectangle")
+    {
+        return BoundingBoxType::Rectangle;
+    }
+    else if (lower == "ellipse")
+    {
+        return BoundingBoxType::Ellipse;
+    }
+    else if (lower == "polygon")
+    {
+        return BoundingBoxType::Polygon;
+    }
 
-	return BoundingBoxType::Rectangle;
+    return BoundingBoxType::Rectangle;
 }
 
 ActionType DataParser::_getActionType(const std::string& value)
 {
-	auto lower = value;
-	std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    auto lower = value;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-	if (lower == "play")
-	{
-		return ActionType::Play;
-	}
-	else if (lower == "frame")
-	{
-		return ActionType::Frame;
-	}
-	else if (lower == "sound")
-	{
-		return ActionType::Sound;
-	}
+    if (lower == "play")
+    {
+        return ActionType::Play;
+    }
+    else if (lower == "frame")
+    {
+        return ActionType::Frame;
+    }
+    else if (lower == "sound")
+    {
+        return ActionType::Sound;
+    }
 
-	return ActionType::Play;
+    return ActionType::Play;
 }
 
 BlendMode DataParser::_getBlendMode(const std::string& value)

@@ -32,7 +32,7 @@
 #include "armature/Constraint.h"
 
 // animation
-#include "animation/IAnimateble.h"
+#include "animation/IAnimatable.h"
 #include "animation/WorldClock.h"
 #include "animation/Animation.h"
 #include "animation/AnimationState.h"

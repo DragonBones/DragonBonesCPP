@@ -12,9 +12,9 @@ DRAGONBONES_NAMESPACE_BEGIN
  * @see dragonBones.Armature
  * @version DragonBones 3.0
  */
-class IAnimateble
+class IAnimatable
 {
-    ABSTRACT_CLASS(IAnimateble)
+    ABSTRACT_CLASS(IAnimatable)
 
 public:
     /**

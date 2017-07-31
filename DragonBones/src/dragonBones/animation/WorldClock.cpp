@@ -33,16 +33,16 @@ void WorldClock::advanceTime(float passedTime)
     std::size_t i = 0, r = 0, l = _animatebles.size();
     for (; i < l; ++i)
     {
-        const auto animateble = _animatebles[i];
-        if (animateble != nullptr)
+        const auto animatable = _animatebles[i];
+        if (animatable != nullptr)
         {
             if (r > 0)
             {
-                _animatebles[i - r] = animateble;
+                _animatebles[i - r] = animatable;
                 _animatebles[i] = nullptr;
             }
 
-            animateble->advanceTime(passedTime);
+            animatable->advanceTime(passedTime);
         }
         else
         {
@@ -70,12 +70,12 @@ void WorldClock::advanceTime(float passedTime)
     }
 }
 
-bool WorldClock::contains(const IAnimateble* value) const
+bool WorldClock::contains(const IAnimatable* value) const
 {
     return std::find(_animatebles.cbegin(), _animatebles.cend(), value) != _animatebles.cend();
 }
 
-void WorldClock::add(IAnimateble* value)
+void WorldClock::add(IAnimatable* value)
 {
     if (std::find(_animatebles.begin(), _animatebles.end(), value) == _animatebles.end())
     {
@@ -84,7 +84,7 @@ void WorldClock::add(IAnimateble* value)
     }
 }
 
-void WorldClock::remove(IAnimateble* value)
+void WorldClock::remove(IAnimatable* value)
 {
     const auto iterator = std::find(_animatebles.begin(), _animatebles.end(), value);
     if (iterator != _animatebles.end())
@@ -96,11 +96,11 @@ void WorldClock::remove(IAnimateble* value)
 
 void WorldClock::clear()
 {
-    for (const auto animateble : _animatebles)
+    for (const auto animatable : _animatebles)
     {
-        if (animateble != nullptr)
+        if (animatable != nullptr)
         {
-            animateble->setClock(nullptr);
+            animatable->setClock(nullptr);
         }
     }
 }

@@ -2,7 +2,7 @@
 #define DRAGONBONES_WORLD_CLOCK_H
 
 #include "../core/DragonBones.h"
-#include "IAnimateble.h"
+#include "IAnimatable.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
@@ -12,7 +12,7 @@ DRAGONBONES_NAMESPACE_BEGIN
  * @version DragonBones 3.0
  * @language zh_CN
  */
-class WorldClock : public IAnimateble
+class WorldClock : public IAnimatable
 {
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(WorldClock)
 
@@ -40,7 +40,7 @@ public:
     float timeScale;
 
 private:
-    std::vector<IAnimateble*> _animatebles;
+    std::vector<IAnimatable*> _animatebles;
     WorldClock* _clock;
 
 public:
@@ -79,21 +79,21 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    bool contains(const IAnimateble* value) const;
+    bool contains(const IAnimatable* value) const;
     /**
      * 添加 IAnimatable 实例。
      * @param value IAnimatable 实例。
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    void add(IAnimateble* value);
+    void add(IAnimatable* value);
     /**
      * 移除 IAnimatable 实例。
      * @param value IAnimatable 实例。
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    void remove(IAnimateble* value);
+    void remove(IAnimatable* value);
     /**
      * 清除所有的 IAnimatable 实例。
      * @version DragonBones 3.0

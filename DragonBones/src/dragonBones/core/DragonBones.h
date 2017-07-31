@@ -18,7 +18,6 @@
     } while (0)
 #endif
 
-
 // namespace dragonBones {}
 #define DRAGONBONES_NAMESPACE_BEGIN namespace dragonBones {
 #define DRAGONBONES_NAMESPACE_END }
@@ -292,7 +291,7 @@ class Slot;
 class Constraint;
 class IKConstraint;
 
-class IAnimateble;
+class IAnimatable;
 class WorldClock;
 class Animation;
 class BonePose;

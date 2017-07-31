@@ -154,7 +154,6 @@ void AnimationState::_blendBoneTimline(BoneTimelineState * timeline) const
     auto animationPose = &(bone->animationPose);
 
     auto boneWeight = _weightResult > 0.0f ? _weightResult : -_weightResult;
-//    printf("_blendBoneTimeline 1 p=%p, bone.name =%s, bone->boneWeight=%4.4f", bone, bone->name.c_str(), boneWeight);
     if (!bone->_blendDirty) 
     {
         bone->_blendDirty = true;
@@ -186,8 +185,6 @@ void AnimationState::_blendBoneTimline(BoneTimelineState * timeline) const
     {
         bone->_transformDirty = true;
     }
-//    printf("_blendBoneTimeline 2 bone=%p, bone->_blendDirty= %d, %4.4f, %4.4f, %4.4f, %4.4f\n",
-//           bone, bone->_blendDirty?1:0, animationPose->x, animationPose->y, animationPose->rotation, animationPose->skew);
 }
 
 void AnimationState::init(Armature* parmature, AnimationData* panimationData, AnimationConfig* animationConfig)
@@ -206,7 +203,6 @@ void AnimationState::init(Armature* parmature, AnimationData* panimationData, An
     layer = animationConfig->layer;
     playTimes = animationConfig->playTimes;
     timeScale = animationConfig->timeScale;
-//    printf("AnimationState init timeScale= %2.2f", timeScale);
     fadeTotalTime = animationConfig->fadeInTime;
     autoFadeOutTime = animationConfig->autoFadeOutTime;
     weight = animationConfig->weight;
@@ -270,6 +266,10 @@ void AnimationState::init(Armature* parmature, AnimationData* panimationData, An
     _actionTimeline = BaseObject::borrowObject<ActionTimelineState>();
     _actionTimeline->init(_armature, this, animationData->actionTimeline); //
     _actionTimeline->currentTime = _time;
+    if (_actionTimeline->currentTime < 0.0f) 
+    {
+        _actionTimeline->currentTime = _duration - _actionTimeline->currentTime;
+    }
 
     if (animationData->zOrderTimeline != nullptr) 
     {
@@ -295,23 +295,18 @@ void AnimationState::updateTimelines()
         }
 
         const auto timelineDatas = animationData->getBoneTimelines(timelineName);
-//        printf("AnimationState::updateTimelines 1 animationData = %p, bone name=%s size=%d\n", timelineDatas, timelineName.c_str(), timelineDatas->size());
         const auto iterator = boneTimelines.find(timelineName);
         if (iterator != boneTimelines.end()) // Remove bone timeline from map.
         {
-//            printf("AnimationState::updateTimelines 1 -0 animationData = %p, bone name=%s size=%d\n", animationData, timelineName.c_str(), timelineDatas->size());
             boneTimelines.erase(iterator);
         }
         else // Create new bone timeline.
         {
-//            printf("AnimationState::updateTimelines 2 -0 bone\n");
             const auto bonePose = _bonePoses.find(timelineName) != _bonePoses.end() ? _bonePoses[timelineName] : (_bonePoses[timelineName] = BaseObject::borrowObject<BonePose>());
             if (timelineDatas != nullptr) 
             {
                 for (const auto timelineData : *timelineDatas) 
                 {
-//                    printf("AnimationState::updateTimelines 2 bone name=%s timelinedata->frameIndicesOffset=%d, offset=%d\n",
-//                           timelineName.c_str(),timelineData->frameIndicesOffset,timelineData->offset);
                     switch (timelineData->type)
                     {
                         case TimelineType::BoneAll: 
@@ -380,7 +375,6 @@ void AnimationState::updateTimelines()
 
         const auto& timelineName = slot->name;
         const auto timelineDatas = animationData->getSlotTimeline(timelineName);
-//        printf("AnimationState::updateTimelines timelineDatas size=%d \n", timelineDatas->size());
         const auto iterator = slotTimelines.find(timelineName);
         if (iterator != slotTimelines.end()) // Remove slot timeline from map.
         {
@@ -426,6 +420,7 @@ void AnimationState::updateTimelines()
                             ffdFlags.push_back(timeline->meshOffset);
                             break;
                         }
+
                         default:
                             break;
                     }
@@ -551,11 +546,9 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
         {
             Bone* bone = nullptr;
             BoneTimelineState* prevTimeline = nullptr;
-//            printf("AnimationState advance 1 bonetimeline size=%d \n", _boneTimelines.size());
             for (std::size_t i = 0, l = _boneTimelines.size(); i < l; ++i) 
             {
                 const auto timeline = _boneTimelines[i];
-//                printf("AnimationState advance 1 bonetimeline size=%d, p=%p \n", _boneTimelines.size(), bone);
                 if (bone != timeline->bone) // Blend bone pose.
                 { 
                     if (bone != nullptr) 
@@ -604,7 +597,6 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
             }
         }
 
-////        printf("AnimationState advance 1 slottimeline size=%d", _slotTimelines.size());
         for (std::size_t i = 0, l = _slotTimelines.size(); i < l; ++i)
         {
             const auto timeline = _slotTimelines[i];
@@ -632,7 +624,6 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
             }
         }
     }
-//    printf("----------------AnimationState advance e passed time\n");
 }
 
 void AnimationState::play()

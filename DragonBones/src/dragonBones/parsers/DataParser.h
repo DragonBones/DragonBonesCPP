@@ -22,8 +22,8 @@ protected:
     static const char* DATA_VERSION_2_3;
     static const char* DATA_VERSION_3_0;
     static const char* DATA_VERSION_4_0;
-	static const char* DATA_VERSION_4_5;
-	static const char* DATA_VERSION_5_0;
+    static const char* DATA_VERSION_4_5;
+    static const char* DATA_VERSION_5_0;
     static const char* DATA_VERSION;
 
     static const std::vector<std::string> DATA_VERSIONS;
@@ -41,7 +41,7 @@ protected:
     static const char* FRAME_HEIGHT;
 
     static const char* DRADON_BONES;
-	static const char* USER_DATA;
+    static const char* USER_DATA;
     static const char* ARMATURE;
     static const char* BONE;
     static const char* IK;
@@ -50,15 +50,15 @@ protected:
     static const char* DISPLAY;
     static const char* ANIMATION;
     static const char* Z_ORDER;
-	static const char* FFD;
+    static const char* FFD;
     static const char* FRAME;
-	static const char* DEFAULT_ACTIONS;
-	static const char* ACTIONS;
-	static const char* EVENTS;
-	static const char* INTS;
-	static const char* FLOATS;
-	static const char* STRINGS;
-	static const char* CANVAS;
+    static const char* DEFAULT_ACTIONS;
+    static const char* ACTIONS;
+    static const char* EVENTS;
+    static const char* INTS;
+    static const char* FLOATS;
+    static const char* STRINGS;
+    static const char* CANVAS;
 
     static const char* PIVOT;
     static const char* TRANSFORM;
@@ -66,24 +66,24 @@ protected:
     static const char* COLOR;
 
     static const char* VERSION;
-	static const char* COMPATIBLE_VERSION;
+    static const char* COMPATIBLE_VERSION;
     static const char* FRAME_RATE;
     static const char* TYPE;
-	static const char* SUB_TYPE;
+    static const char* SUB_TYPE;
     static const char* NAME;
     static const char* PARENT;
-	static const char* TARGET;
-	static const char* SHARE;
-	static const char* PATH;
+    static const char* TARGET;
+    static const char* SHARE;
+    static const char* PATH;
     static const char* LENGTH;
     static const char* DISPLAY_INDEX;
     static const char* BLEND_MODE;
     static const char* INHERIT_TRANSLATION;
     static const char* INHERIT_ROTATION;
     static const char* INHERIT_SCALE;
-	static const char* INHERIT_REFLECTION;
-	static const char* INHERIT_ANIMATION;
-	static const char* INHERIT_FFD;
+    static const char* INHERIT_REFLECTION;
+    static const char* INHERIT_ANIMATION;
+    static const char* INHERIT_FFD;
     static const char* BEND_POSITIVE;
     static const char* CHAIN;
     static const char* WEIGHT;
@@ -104,8 +104,8 @@ protected:
 
     static const char* X;
     static const char* Y;
-	static const char* ROTATION;
-	static const char* SKEW;
+    static const char* ROTATION;
+    static const char* SKEW;
     static const char* SKEW_X;
     static const char* SKEW_Y;
     static const char* SCALE_X;
@@ -134,18 +134,18 @@ protected:
     static TextureFormat _getTextureFormat(const std::string& value);
     static ArmatureType _getArmatureType(const std::string& value);
     static DisplayType _getDisplayType(const std::string& value);
-	static BoundingBoxType _getBoundingBoxType(const std::string& value);
-	static ActionType _getActionType(const std::string& value);
+    static BoundingBoxType _getBoundingBoxType(const std::string& value);
+    static ActionType _getActionType(const std::string& value);
     static BlendMode _getBlendMode(const std::string& value);
 
 public:
-	/**
-	* @private
-	*/
+    /**
+    * @private
+    */
     virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.f) = 0;
-	/**
-	* @private
-	*/
+    /**
+    * @private
+    */
     virtual bool parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale = 0.f) = 0;
 };
 

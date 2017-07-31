@@ -21,7 +21,6 @@ void Constraint::_onClear()
 
 void IKConstraint::update()
 {
-//    printf("IKConstraint update \n");
     if (root == nullptr) 
     {
         bone->updateByConstraint();
@@ -37,13 +36,11 @@ void IKConstraint::update()
 
 void IKConstraint::_onClear()
 {
-//    printf("IKConstraint _onClear 0\n");
     Constraint::_onClear();
 
     bendPositive = false;
     scaleEnabled = false;
     weight = 1.0f;
-//    printf("IKConstraint _onClear 1\n");
 }
 
 void IKConstraint::_computeA()

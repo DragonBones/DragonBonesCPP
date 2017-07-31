@@ -2,7 +2,7 @@
 #define DRAGONBONES_ARMATURE_H
 
 #include "../core/BaseObject.h"
-#include "../animation/IAnimateble.h"
+#include "../animation/IAnimatable.h"
 #include "../model/ArmatureData.h"
 #include "IArmatureProxy.h"
 
@@ -16,7 +16,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 * @version DragonBones 3.0
 * @language zh_CN
 */
-class Armature : public virtual IAnimateble, public BaseObject
+class Armature : public virtual IAnimatable, public BaseObject
 {
     BIND_CLASS_TYPE_B(Armature);
 
@@ -109,7 +109,7 @@ public:
     /**
     * @private
     */
-	// TODO lsc Check(int -> unsigned)
+    // TODO lsc Check(int -> unsigned)
     void _sortZOrder(int16_t* slotIndices, unsigned offset);
     /**
     * @private
@@ -262,7 +262,8 @@ public:
     }
     void setFlipX(bool value) 
     { 
-        _flipX = value; 
+        _flipX = value;
+        invalidUpdate("");
     }
 
     bool getFlipY() const 
@@ -271,7 +272,8 @@ public:
     }
     void setFlipY(bool value) 
     { 
-        _flipY = value; 
+        _flipY = value;
+        invalidUpdate("");
     }
     /**
     * 动画缓存帧率，当设置的值大于 0 的时，将会开启动画缓存。
@@ -367,7 +369,7 @@ public:
     void setReplacedTexture(void* value);
 
 public: // For WebAssembly.
-    IAnimateble* getAnimateble() { return this; }
+    IAnimatable* getAnimatable() { return this; }
     inline const ArmatureData* getArmatureData() const { return armatureData; }
 };
 

@@ -116,10 +116,17 @@ public:
      * @version DragonBones 4.5
      * @language zh_CN
      */
+#ifdef EGRET_WASM
     AnimationState* fadeIn(
         const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1,
         int layer = 0, const std::string& group = "", int fadeOutMode = 3/*AnimationFadeOutMode fadeOutMode = AnimationFadeOutMode::SameLayerAndGroup*/
     );
+#else
+    AnimationState* fadeIn(
+        const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1,
+        int layer = 0, const std::string& group = "", AnimationFadeOutMode fadeOutMode = AnimationFadeOutMode::SameLayerAndGroup
+    );
+#endif // EGRET_WASM
     /**
      * 从指定时间开始播放动画。
      * @param animationName 动画数据的名称。
@@ -230,23 +237,6 @@ public:
      */
     const std::string& getLastAnimationName() const;
     /**
-     * 上一个正在播放的动画状态名称。
-     * @see #lastAnimationState
-     * @version DragonBones 3.0
-     * @language zh_CN
-     */
-    inline AnimationState* getLastAnimationState() const
-    {
-        return _lastAnimationState;
-    }
-    /**
-     * 一个可以快速使用的动画配置实例。
-     * @see dragonBones.AnimationConfig
-     * @version DragonBones 5.0
-     * @language zh_CN
-     */
-    AnimationConfig* animationConfig() const;
-    /**
      * 所有动画数据名称。
      * @see #animations
      * @version DragonBones 4.5
@@ -267,6 +257,23 @@ public:
         return _animations;
     }
     void setAnimations(const std::map<std::string, AnimationData*>& value);
+    /**
+     * 一个可以快速使用的动画配置实例。
+     * @see dragonBones.AnimationConfig
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
+    AnimationConfig* getAnimationConfig() const;
+    /**
+    * 上一个正在播放的动画状态名称。
+    * @see #lastAnimationState
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    inline AnimationState* getLastAnimationState() const
+    {
+        return _lastAnimationState;
+    }
 };
 
 DRAGONBONES_NAMESPACE_END
