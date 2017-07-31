@@ -66,7 +66,6 @@ TextureAtlasData* CCFactory::_buildTextureAtlasData(TextureAtlasData* textureAtl
                 texture = textureCache->addImage(textureAtlasData->imagePath);
                 if (texture != nullptr)
                 {
-                    texture->retain();
                     cocos2d::Texture2D::setDefaultAlphaPixelFormat(defaultPixelFormat);
                 }
             }

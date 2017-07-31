@@ -37,6 +37,8 @@ public:
             return false;
         }
 
+        const auto& stageSize = cocos2d::Director::getInstance()->getVisibleSize();
+
         const auto factory = dragonBones::CCFactory::getFactory();
         // factory->loadDragonBonesData("dragon_boy_ske.json");
         factory->loadDragonBonesData("dragon_boy_ske.dbbin");
@@ -46,8 +48,6 @@ public:
         armatureDisplay->getAnimation()->play("walk");
 
         addChild(armatureDisplay);
-
-        const auto stageSize = cocos2d::Director::getInstance()->getVisibleSize();
         armatureDisplay->setPosition(stageSize.width * 0.5f, stageSize.height * 0.5f);
 
         return true;

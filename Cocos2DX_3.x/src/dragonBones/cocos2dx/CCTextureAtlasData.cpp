@@ -40,6 +40,7 @@ void CCTextureAtlasData::setRenderTexture(cocos2d::Texture2D* value)
 
     if (_renderTexture != nullptr) 
     {
+        _renderTexture->retain();
         for (const auto& pair : textures) 
         {
             const auto textureData = static_cast<CCTextureData*>(pair.second);

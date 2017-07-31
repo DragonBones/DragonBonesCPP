@@ -45,7 +45,7 @@ public:
     /**
     * @inheritDoc
     */
-    virtual void dispose(bool disposeProxy) override;
+    virtual void dispose(bool disposeProxy = true) override;
     /**
     * @inheritDoc
     */

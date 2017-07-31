@@ -65,7 +65,7 @@ void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
                 if (action->type == ActionType::Sound || eventDispatcher->hasEvent(eventType))
                 {
                     const auto eventObject = BaseObject::borrowObject<EventObject>();
-                    eventObject->time = _frameArray[frameOffset] / _frameRate;
+                    eventObject->time = (float)_frameArray[frameOffset] / _frameRate;
                     eventObject->type = eventType;
                     eventObject->name = action->name;
                     eventObject->data = action->data;
@@ -179,7 +179,7 @@ void ActionTimelineState::update(float passedTime)
                         while (crossedFrameIndex >= 0) 
                         {
                             const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
-                            const auto framePosition = _frameArray[frameOffset] / _frameRate;
+                            const auto framePosition = (float)_frameArray[frameOffset] / _frameRate;
                             if (
                                 _position <= framePosition &&
                                 framePosition <= _position + _duration
@@ -216,7 +216,7 @@ void ActionTimelineState::update(float passedTime)
                             const auto prevFrameIndex = (unsigned)(prevTime * _frameRate);
                             crossedFrameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + prevFrameIndex];
                             const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
-                            const auto framePosition = _frameArray[frameOffset] / _frameRate;
+                            const auto framePosition = (float)_frameArray[frameOffset] / _frameRate;
                             if (currentPlayTimes == prevPlayTimes) // Start.
                             { 
                                 if (prevTime <= framePosition) // Crossed.
@@ -249,7 +249,7 @@ void ActionTimelineState::update(float passedTime)
                             }
 
                             const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
-                            const auto framePosition = _frameArray[frameOffset] / _frameRate;
+                            const auto framePosition = (float)_frameArray[frameOffset] / _frameRate;
                             if (
                                 _position <= framePosition &&
                                 framePosition <= _position + _duration
@@ -280,7 +280,7 @@ void ActionTimelineState::update(float passedTime)
             {
                 _frameOffset = _animationData->frameOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset];
                 // Arrive at frame.
-                const auto framePosition = _frameArray[_frameOffset] / _frameRate;
+                const auto framePosition = (float)_frameArray[_frameOffset] / _frameRate;
                 if (currentPlayTimes == prevPlayTimes) // Start.
                 {
                     if (prevTime <= framePosition) 

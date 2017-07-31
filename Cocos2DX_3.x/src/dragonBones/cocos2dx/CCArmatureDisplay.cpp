@@ -62,6 +62,7 @@ void CCArmatureDisplay::addEvent(const std::string& type, const std::function<vo
 
 void CCArmatureDisplay::removeEvent(const std::string& type, const std::function<void(EventObject*)>& callback)
 {
+    // TODO
     _dispatcher->removeCustomEventListeners(type);
 }
 

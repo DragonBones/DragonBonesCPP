@@ -33,7 +33,7 @@ public:
      * @version DragonBones 4.5
      * @language zh_CN
      */
-    static void clearPool(std::size_t classTypeIndex);
+    static void clearPool(std::size_t classTypeIndex = 0);
     /**
      * 从对象池中创建指定对象。
      * @param objectConstructor 对象类。

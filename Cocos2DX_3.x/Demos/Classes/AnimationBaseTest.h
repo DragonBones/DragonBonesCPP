@@ -26,7 +26,7 @@ public:
         }
 
         _isTouched = false;
-        const auto stageSize = cocos2d::Director::getInstance()->getVisibleSize();
+        const auto& stageSize = cocos2d::Director::getInstance()->getVisibleSize();
 
         const auto factory = dragonBones::CCFactory::getFactory();
         factory->loadDragonBonesData("animation_base_test_ske.json");
@@ -53,23 +53,22 @@ public:
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FRAME_EVENT, std::bind(&AnimationBaseTest::_animationEventHandler, this, std::placeholders::_1));
 
         // Test animation config.
-        const auto animaitonConfig = _armatureDisplay->getAnimation()->getAnimationConfig();
-        animaitonConfig->name = "test"; // Animation state name.
-        animaitonConfig->animation = "idle"; // Animation name.
+        // const auto animaitonConfig = _armatureDisplay->getAnimation()->getAnimationConfig();
+        // animaitonConfig->name = "test"; // Animation state name.
+        // animaitonConfig->animation = "idle"; // Animation name.
 
         // animaitonConfig->playTimes = 1; // Play one time.
-        animaitonConfig->playTimes = 3; // Play several times.
+        // animaitonConfig->playTimes = 3; // Play several times.
         // animaitonConfig->playTimes = 0; // Loop play.
 
         // animaitonConfig->timeScale = 1.0f; // Play speed.
         // animaitonConfig->timeScale = -1.0f; // Reverse play.
 
-        animaitonConfig->position = 1.0f; // Goto and play.
-        // animaitonConfig->duration = 0.0f; // Goto and stop.
-        animaitonConfig->duration = 3.0f; // Interval play.
-        _armatureDisplay->getAnimation()->playConfig(animaitonConfig);
+        // animaitonConfig->position = 1.0f; // Goto and play.
+        // animaitonConfig->duration = 3.0f; // Interval play.
+        // _armatureDisplay->getAnimation()->playConfig(animaitonConfig);
 
-        // _armatureDisplay->getAnimation()->play("idle", 1);
+        _armatureDisplay->getAnimation()->play("idle", 1);
 
         const auto listener = cocos2d::EventListenerTouchOneByOne::create();
         listener->onTouchBegan = CC_CALLBACK_2(AnimationBaseTest::_touchBeganHandler, this);
@@ -127,7 +126,6 @@ private:
     void _animationEventHandler(cocos2d::EventCustom* event) const
     {
         const auto eventObject = (dragonBones::EventObject*)event->getUserData();
-
         cocos2d::log("%s %s %s", eventObject->animationState->name.c_str(), eventObject->type.c_str(), eventObject->name.c_str());
     }
 };

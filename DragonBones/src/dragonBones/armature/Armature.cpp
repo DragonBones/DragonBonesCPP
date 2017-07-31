@@ -18,6 +18,11 @@ int Armature::_onSortSlots(Slot* a, Slot* b)
 
 void Armature::_onClear()
 {
+    if (_clock != nullptr) // Remove clock first.
+    {
+        _clock->remove(this);
+    }
+
     for (const auto bone : _bones)
     {
         bone->returnToPool();
@@ -36,11 +41,6 @@ void Armature::_onClear()
     if(_proxy != nullptr)
     {
         _proxy->clear();
-    }
-
-    if (_clock != nullptr) 
-    {
-        _clock->remove(this);
     }
 
     if (_replaceTextureAtlasData != nullptr)
