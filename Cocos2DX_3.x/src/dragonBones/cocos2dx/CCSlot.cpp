@@ -29,7 +29,7 @@ void CCSlot::_onUpdateDisplay()
     {
         if (_childArmature != nullptr)
         {
-            _renderDisplay = dynamic_cast<cocos2d::Node*>(static_cast<IArmatureProxy*>(_display));
+            _renderDisplay = static_cast<cocos2d::Node*>(_display);
         }
         else
         {
@@ -265,11 +265,11 @@ void CCSlot::_updateMesh()
     {
         const auto intArray = meshData->parent->parent->intArray;
         const auto floatArray = meshData->parent->parent->floatArray;
-        const auto vertexCount = (std::size_t)intArray[meshData->offset + (std::size_t)BinaryOffset::MeshVertexCount];
-        const auto weightFloatOffset = (std::size_t)intArray[weightData->offset + (std::size_t)BinaryOffset::WeigthFloatOffset];
+        const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+        const auto weightFloatOffset = (std::size_t)intArray[weightData->offset + (unsigned)BinaryOffset::WeigthFloatOffset];
 
         for (
-            std::size_t i = 0, iD = 0, iB = weightData->offset + (std::size_t)BinaryOffset::WeigthBoneIndices + weightData->bones.size(), iV = weightFloatOffset, iF = 0;
+            std::size_t i = 0, iD = 0, iB = weightData->offset + (unsigned)BinaryOffset::WeigthBoneIndices + weightData->bones.size(), iV = weightFloatOffset, iF = 0;
             i < vertexCount;
             ++i
         )
@@ -278,7 +278,7 @@ void CCSlot::_updateMesh()
             auto xG = 0.0f, yG = 0.0f;
             for (std::size_t j = 0; j < boneCount; ++j)
             {
-                const auto boneIndex = (std::size_t)intArray[iB++];
+                const auto boneIndex = (unsigned)intArray[iB++];
                 const auto bone = _meshBones[boneIndex];
                 if (bone != nullptr) 
                 {
@@ -328,8 +328,8 @@ void CCSlot::_updateMesh()
     {
         const auto intArray = meshData->parent->parent->intArray;
         const auto floatArray = meshData->parent->parent->floatArray;
-        const auto vertexCount = (std::size_t)intArray[meshData->offset + (std::size_t)BinaryOffset::MeshVertexCount];
-        const auto vertexOffset = (std::size_t)intArray[meshData->offset + (std::size_t)BinaryOffset::MeshFloatOffset];
+        const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+        const auto vertexOffset = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
 
         for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
         {

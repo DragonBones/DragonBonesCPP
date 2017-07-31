@@ -6,8 +6,7 @@
 DRAGONBONES_NAMESPACE_BEGIN
 
 DragonBones* CCFactory::_dragonBonesInstance = nullptr;
-
-CCFactory CCFactory::factory;
+CCFactory* CCFactory::_factory = nullptr;
 
 TextureAtlasData* CCFactory::_buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const
 {
@@ -65,8 +64,11 @@ TextureAtlasData* CCFactory::_buildTextureAtlasData(TextureAtlasData* textureAtl
 
                 cocos2d::Texture2D::setDefaultAlphaPixelFormat(pixelFormat);
                 texture = textureCache->addImage(textureAtlasData->imagePath);
-                texture->retain();
-                cocos2d::Texture2D::setDefaultAlphaPixelFormat(defaultPixelFormat);
+                if (texture != nullptr)
+                {
+                    texture->retain();
+                    cocos2d::Texture2D::setDefaultAlphaPixelFormat(defaultPixelFormat);
+                }
             }
 
             static_cast<CCTextureAtlasData*>(textureAtlasData)->setRenderTexture(texture);
@@ -150,7 +152,10 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
     }
     else 
     {
-        return parseDragonBonesData((char*)cocos2dData.getBytes(), dragonBonesName, 1.0f / scale);
+        // return parseDragonBonesData((char*)cocos2dData.getBytes(), dragonBonesName, 1.0f / scale);
+
+        const auto str = cocos2d::FileUtils::getInstance()->getStringFromFile(fullpath);
+        return parseDragonBonesData(str.c_str(), dragonBonesName, 1.0f / scale);
     }
 }
 

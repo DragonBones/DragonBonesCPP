@@ -53,7 +53,8 @@ void CCArmatureDisplay::_dispatchEvent(const std::string& type, EventObject* val
 
 void CCArmatureDisplay::addEvent(const std::string& type, const std::function<void(EventObject*)>& callback)
 {
-    auto lambda = [callback](cocos2d::EventCustom* event) -> void {
+    auto lambda = [callback](cocos2d::EventCustom* event) -> void 
+    {
         callback(static_cast<EventObject*>(event->getUserData()));
     };
     _dispatcher->addCustomEventListener(type, lambda);
