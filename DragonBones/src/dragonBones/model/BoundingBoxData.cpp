@@ -1,6 +1,3 @@
-//
-// Created by liangshuochen on 08/06/2017.
-//
 
 #include "BoundingBoxData.h"
 #include "DisplayData.h"

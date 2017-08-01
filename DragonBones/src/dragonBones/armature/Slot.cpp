@@ -263,7 +263,7 @@ void Slot::_updateDisplay()
     const auto prevChildArmature = _childArmature;
 
     // Update display and child armature.
-    if (_displayIndex >= 0 && (unsigned)_displayIndex < _displayList.size())
+    if (_displayIndex >= 0 && (std::size_t)_displayIndex < _displayList.size())
     {
         const auto& displayPair = _displayList[_displayIndex];
         _display = displayPair.first;
@@ -488,7 +488,7 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
         _displayList.clear();
     }
 
-    if (_displayIndex >= 0 && (unsigned)_displayIndex < _displayList.size())
+    if (_displayIndex >= 0 && (std::size_t)_displayIndex < _displayList.size())
     {
         _displayDirty = _display != _displayList[_displayIndex].first;
     }
@@ -801,7 +801,7 @@ void Slot::setDisplay(void* value, DisplayType displayType)
     else
     {
         auto relpaceDisplayList = _displayList; // copy
-        if (displayListLength <= (unsigned)_displayIndex)
+        if (displayListLength <= (std::size_t)_displayIndex)
         {
             relpaceDisplayList.resize(_displayIndex + 1);
         }

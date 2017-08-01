@@ -331,14 +331,19 @@ private:
     IEventDispatcher* _eventManager;
 
 public:
-    DragonBones(IEventDispatcher* eventManager) :
+
+    DragonBones() :
         _events(),
         _objects(),
         _clock(nullptr),
         _eventManager(nullptr)
-    {
-        _eventManager = eventManager;
-    }
+    {}
+    DragonBones(IEventDispatcher* value) :
+            _events(),
+            _objects(),
+            _clock(nullptr),
+            _eventManager(value)
+    {}
 
     virtual ~DragonBones() {}
 

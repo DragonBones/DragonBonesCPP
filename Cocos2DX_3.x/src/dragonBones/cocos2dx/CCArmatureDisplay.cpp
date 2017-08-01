@@ -18,7 +18,7 @@ CCArmatureDisplay* CCArmatureDisplay::create()
     return displayContainer;
 }
 
-void CCArmatureDisplay::init(Armature* armature)
+void CCArmatureDisplay::_init(Armature* armature)
 {
     _armature = armature;
 }
