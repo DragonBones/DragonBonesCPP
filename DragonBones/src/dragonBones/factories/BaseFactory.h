@@ -193,7 +193,7 @@ public:
     * @version DragonBones 5.1
     * @language zh_CN
     */
-    virtual ArmatureData* getArmatureData(const std::string& name, const std::string& dragonBonesName) const;
+    virtual ArmatureData* getArmatureData(const std::string& name, const std::string& dragonBonesName = "") const;
     /**
     * 清除所有的数据。
     * @param disposeData 是否释放数据。
@@ -227,7 +227,7 @@ public:
     */
     virtual void replaceSlotDisplay(
         const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, const std::string& displayName,
-        Slot& slot, int displayIndex = -1
+        Slot* slot, int displayIndex = -1
     ) const;
     /**
     * 用指定资源列表替换插槽的显示对象列表。
@@ -240,7 +240,7 @@ public:
     */
     virtual void replaceSlotDisplayList(
         const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName,
-        Slot& slot
+        Slot* slot
     ) const;
     /**
     * 更换骨架皮肤。
@@ -252,7 +252,7 @@ public:
     * @version DragonBones 5.1
     * @language zh_CN
     */
-    virtual void changeSkin(Armature* armature, SkinData* skin, std::vector<std::string>* exclude = nullptr) const;
+    virtual void changeSkin(Armature* armature, SkinData* skin, const std::vector<std::string>* exclude = nullptr) const;
     /**
     * 将骨架的动画替换成其他骨架的动画。 (通常这些骨架应该具有相同的骨架结构)
     * @param toArmature 指定的骨架。

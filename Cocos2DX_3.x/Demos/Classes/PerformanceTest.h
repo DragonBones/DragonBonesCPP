@@ -6,9 +6,8 @@
 
 class PerformanceTest : public cocos2d::LayerColor
 {
-    CREATE_FUNC(PerformanceTest);
-
 public:
+    CREATE_FUNC(PerformanceTest);
     static cocos2d::Scene* createScene()
     {
         auto scene = cocos2d::Scene::create();

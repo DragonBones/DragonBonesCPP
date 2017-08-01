@@ -1,6 +1,8 @@
 #include "AppDelegate.h"
 
 #include "HelloDragonBones.h"
+#include "ReplaceSlotDisplay.h"
+#include "CoreElement.h"
 #include "PerformanceTest.h"
 #include "AnimationBaseTest.h"
 
@@ -45,10 +47,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     FileUtils::getInstance()->addSearchPath("assets");
 
     // create a scene. it's an autorelease object
-    // auto scene = HelloDragonBones::createScene();
+    auto scene = HelloDragonBones::createScene();
+    // auto scene = ReplaceSlotDisplay::createScene();
     // auto scene = CoreElementGame::createScene();
 
-    auto scene = PerformanceTest::createScene();
+    // auto scene = PerformanceTest::createScene();
     // auto scene = AnimationBaseTest::createScene();
 
     // run

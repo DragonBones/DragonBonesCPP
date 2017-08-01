@@ -10,9 +10,8 @@ private:
     float _speedX;
     float _speedY;
 
-    dragonBones::Armature* _armature;
     dragonBones::CCArmatureDisplay* _armatureDisplay;
-    dragonBones::Armature* _effect;
+    dragonBones::CCArmatureDisplay* _effectDisplay;
 
 public:
     CoreElementBullet(const std::string& armatureName, const std::string& effectArmatureName, float radian, float speed, const cocos2d::Vec2& position);
@@ -33,6 +32,7 @@ public:
     static const float MAX_MOVE_SPEED_BACK;
     static const char* WEAPON_R_LIST[6];
     static const char* WEAPON_L_LIST[5];
+    static const char* SKINS[4];
 
 private:
     bool _isJumpingA;
@@ -42,13 +42,13 @@ private:
     bool _isAttackingB;
     unsigned _weaponRIndex;
     unsigned _weaponLIndex;
+    unsigned _skinIndex;
     int _faceDir;
     int _aimDir;
     int _moveDir;
     float _aimRadian;
     float _speedX;
     float _speedY;
-    dragonBones::Armature* _armature;
     dragonBones::CCArmatureDisplay* _armatureDisplay;
     dragonBones::Armature* _weaponR;
     dragonBones::Armature* _weaponL;
@@ -68,6 +68,7 @@ public:
     void attack(bool isAttacking);
     void switchWeaponR();
     void switchWeaponL();
+    void switchSkin();
     void aim(const cocos2d::Vec2& target);
 
 private:
@@ -83,21 +84,24 @@ private:
 class CoreElementGame : public cocos2d::LayerColor
 {
 public:
-    static cocos2d::Scene* createScene();
+    CREATE_FUNC(CoreElementGame);
+    static cocos2d::Scene* createScene()
+    {
+        auto scene = cocos2d::Scene::create();
+        auto layer = CoreElementGame::create();
+
+        scene->addChild(layer);
+        return scene;
+    }
 
     virtual bool init();
 
-    CREATE_FUNC(CoreElementGame);
-
 public:
-    static const int GROUND;
+    static int STAGE_WIDTH;
+    static int STAGE_HEIGHT;
+    static int GROUND;
     static const float G;
     static CoreElementGame* instance;
-
-public:
-    dragonBones::CCFactory factory;
-
-    void addBullet(CoreElementBullet* bullet);
 
 private:
     bool _left;
@@ -112,6 +116,9 @@ private:
     void _mouseUpHandler(cocos2d::EventMouse* event);
     void _mouseMovedHandler(cocos2d::EventMouse* event);
     void _updateMove(int dir) const;
+
+public:
+    void addBullet(CoreElementBullet* bullet);
 };
 
 #endif // __CORE_ELEMENT_H__

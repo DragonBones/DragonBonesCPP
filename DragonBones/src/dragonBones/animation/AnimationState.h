@@ -280,6 +280,15 @@ public:
      */
     float getCurrentTime() const;
     void setCurrentTime(float value);
+    /**
+    * 动画名称。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    inline const std::string& getName() const
+    {
+        return name;
+    }
 };
 
 DRAGONBONES_NAMESPACE_END

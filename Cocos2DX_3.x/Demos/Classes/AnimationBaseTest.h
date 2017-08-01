@@ -6,9 +6,8 @@
 
 class AnimationBaseTest : public cocos2d::LayerColor
 {
-    CREATE_FUNC(AnimationBaseTest);
-
 public:
+    CREATE_FUNC(AnimationBaseTest);
     static cocos2d::Scene* createScene()
     {
         auto scene = cocos2d::Scene::create();

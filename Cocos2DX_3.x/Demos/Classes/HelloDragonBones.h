@@ -21,6 +21,7 @@
 class HelloDragonBones : public cocos2d::LayerColor
 {
 public:
+    CREATE_FUNC(HelloDragonBones);
     static cocos2d::Scene* createScene()
     {
         auto scene = cocos2d::Scene::create();
@@ -44,7 +45,6 @@ public:
         factory->loadDragonBonesData("dragon_boy_ske.dbbin");
         factory->loadTextureAtlasData("dragon_boy_tex.json");
         const auto armatureDisplay = factory->buildArmatureDisplay("DragonBoy");
-        armatureDisplay->getArmature()->setCacheFrameRate(24);
         armatureDisplay->getAnimation()->play("walk");
 
         addChild(armatureDisplay);
@@ -52,8 +52,6 @@ public:
 
         return true;
     }
-
-    CREATE_FUNC(HelloDragonBones);
 };
 
 #endif // HELLO_DRAGONBONES_H

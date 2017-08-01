@@ -498,8 +498,10 @@ Armature * BaseFactory::buildArmature(const std::string& armatureName, const std
     return armature;
 }
 
-void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, const std::string& displayName, Slot& slot, int displayIndex) const
+void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, const std::string& displayName, Slot* slot, int displayIndex) const
 {
+    DRAGONBONES_ASSERT(slot, "");
+
     BuildArmaturePackage dataPackage;
     if (!_fillBuildArmaturePackage(dataPackage, dragonBonesName, armatureName, "", "") || dataPackage.skin == nullptr)
     {
@@ -516,13 +518,15 @@ void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const s
     {
         if (displayData->name == displayName)
         {
-            _replaceSlotDisplay(dataPackage, displayData, slot, displayIndex);
+            _replaceSlotDisplay(dataPackage, displayData, *slot, displayIndex);
         }
     }
 }
 
-void BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, Slot& slot) const
+void BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, Slot* slot) const
 {
+    DRAGONBONES_ASSERT(slot, "");
+
     BuildArmaturePackage dataPackage;
     if (!_fillBuildArmaturePackage(dataPackage, dragonBonesName, armatureName, "", "") || dataPackage.skin == nullptr)
     {
@@ -538,17 +542,17 @@ void BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, con
     int displayIndex = 0;
     for (const auto displayData : *displays)
     {
-        _replaceSlotDisplay(dataPackage, displayData, slot, displayIndex++);
+        _replaceSlotDisplay(dataPackage, displayData, *slot, displayIndex++);
     }
 }
 
-void BaseFactory::changeSkin(Armature* armature, SkinData* skin, std::vector<std::string>* exclude) const
+void BaseFactory::changeSkin(Armature* armature, SkinData* skin, const std::vector<std::string>* exclude) const
 {
     DRAGONBONES_ASSERT(armature && skin, "");
 
     for (const auto slot : armature->getSlots()) 
     {
-        if (skin->displays.find(slot->name) != skin->displays.cend() || std::find(exclude->cbegin(), exclude->cend(), slot->name) != exclude->cend()) 
+        if (skin->displays.find(slot->name) == skin->displays.cend() || std::find(exclude->cbegin(), exclude->cend(), slot->name) != exclude->cend()) 
         {
             continue;
         }

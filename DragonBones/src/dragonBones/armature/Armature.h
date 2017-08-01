@@ -298,13 +298,7 @@ public:
     */
     inline const std::string& getName() const
     {
-        if (armatureData != nullptr)
-        {
-            return armatureData->name;
-        }
-
-        static const std::string DEFAULT_NAME = "";
-        return DEFAULT_NAME;
+        return armatureData->name;
     }
     /**
     * 获得动画控制器。
