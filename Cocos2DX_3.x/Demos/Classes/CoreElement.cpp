@@ -293,14 +293,14 @@ void Mecha::attack(bool isAttacking)
 
 void Mecha::switchWeaponR()
 {
+    auto weaponDisplay = static_cast<dragonBones::CCArmatureDisplay*>(_weaponR->getDisplay());
+    weaponDisplay->getEventDispatcher()->removeCustomEventListeners(dragonBones::EventObject::FRAME_EVENT);
+
     _weaponRIndex++;
     if (_weaponRIndex >= sizeof(WEAPON_R_LIST) / sizeof(WEAPON_R_LIST[0]))
     {
         _weaponRIndex = 0;
     }
-
-    auto weaponDisplay = static_cast<dragonBones::CCArmatureDisplay*>(_weaponR->getDisplay());
-    weaponDisplay->getEventDispatcher()->removeCustomEventListeners(dragonBones::EventObject::FRAME_EVENT);
 
     const auto weaponName = WEAPON_R_LIST[_weaponRIndex];
     _weaponR = dragonBones::CCFactory::getFactory()->buildArmature(weaponName);
@@ -312,15 +312,14 @@ void Mecha::switchWeaponR()
 
 void Mecha::switchWeaponL()
 {
-    _weaponLIndex++;
+    auto weaponDisplay = static_cast<dragonBones::CCArmatureDisplay*>(_weaponL->getDisplay());
+    weaponDisplay->getEventDispatcher()->removeCustomEventListeners(dragonBones::EventObject::FRAME_EVENT);
 
+    _weaponLIndex++;
     if (_weaponLIndex >= sizeof(WEAPON_L_LIST) / sizeof(WEAPON_L_LIST[0]))
     {
         _weaponLIndex = 0;
     }
-
-    auto weaponDisplay = static_cast<dragonBones::CCArmatureDisplay*>(_weaponL->getDisplay());
-    weaponDisplay->getEventDispatcher()->removeCustomEventListeners(dragonBones::EventObject::FRAME_EVENT);
 
     const auto weaponName = WEAPON_L_LIST[_weaponLIndex];
     _weaponL = dragonBones::CCFactory::getFactory()->buildArmature(weaponName);
@@ -628,7 +627,7 @@ CoreElementBullet::CoreElementBullet(const std::string& armatureName, const std:
     if (!effectArmatureName.empty())
     {
         _effectDisplay = dragonBones::CCFactory::getFactory()->buildArmatureDisplay(effectArmatureName);
-        _effectDisplay->setPosition(position);
+        _effectDisplay->setPosition(_armatureDisplay->getPosition());
         _effectDisplay->setRotation(-radian * dragonBones::Transform::RAD_DEG);
         _effectDisplay->setScaleX(cocos2d::random(1.0f, 2.0f));
         _effectDisplay->setScaleY(cocos2d::random(1.0f, 1.5f));

@@ -337,10 +337,20 @@ public:
         _clock(nullptr),
         _eventManager(nullptr)
     {
+        _clock = new WorldClock();
         _eventManager = eventManager;
     }
 
-    virtual ~DragonBones() {}
+    virtual ~DragonBones() 
+    {
+        if (_clock != nullptr)
+        {
+            delete _clock;
+        }
+
+        _clock = nullptr;
+        _eventManager = nullptr;
+    }
 
     void advanceTime(float passedTime);
     void bufferEvent(EventObject* value);
@@ -354,7 +364,6 @@ public:
     {
         _eventManager = value;
     }
-
 
 public: // For WebAssembly.
     std::vector<BaseObject*>* getObjects() { return &_objects; }

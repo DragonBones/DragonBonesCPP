@@ -21,7 +21,7 @@ class Armature : public virtual IAnimatable, public BaseObject
     BIND_CLASS_TYPE_B(Armature);
 
 private:
-    static int _onSortSlots(Slot* a, Slot* b);
+    static bool _onSortSlots(Slot* a, Slot* b);
 
 public:
     /**
@@ -68,7 +68,7 @@ public:
      */
     TextureAtlasData* _replaceTextureAtlasData;
 
-private:
+protected:
     bool _debugDraw;
     bool _delayDispose;
     bool _bonesDirty;
@@ -79,6 +79,7 @@ private:
     std::vector<Bone*> _bones;
     std::vector<Slot*> _slots;
     Animation* _animation;
+    IArmatureProxy* _proxy;
     void* _display;
     WorldClock* _clock;
     void* _replacedTexture;
@@ -100,7 +101,6 @@ public:
 protected:
     virtual void _onClear() override;
 
-    IArmatureProxy* _proxy;
 private:
     void _sortBones();
     void _sortSlots();
@@ -109,7 +109,6 @@ public:
     /**
     * @private
     */
-    // TODO lsc Check(int -> unsigned)
     void _sortZOrder(int16_t* slotIndices, unsigned offset);
     /**
     * @private

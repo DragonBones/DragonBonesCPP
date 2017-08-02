@@ -83,7 +83,7 @@ class MeshDisplayData : public ImageDisplayData
 {
     BIND_CLASS_TYPE_B(MeshDisplayData);
 
-public: // TODO 删除了 textureName 属性，增加了 path 属性
+public:
     bool inheritAnimation;
     // TODO Check (int->unsigned)
     unsigned offset;

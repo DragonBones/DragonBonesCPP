@@ -29,7 +29,7 @@ protected:
     {
         _dispatcher = new cocos2d::EventDispatcher();
         this->setEventDispatcher(_dispatcher);
-        // _dispatcher->setEnabled(true); // 默认不开启，需要手动开启（浪费性能）
+        // _dispatcher->setEnabled(true);
     }
     virtual ~CCArmatureDisplay() {}
 

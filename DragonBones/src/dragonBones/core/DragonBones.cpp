@@ -56,11 +56,6 @@ void DragonBones::bufferObject(BaseObject* object)
 
 WorldClock* DragonBones::getClock()
 {
-    if (_clock == nullptr)
-    {
-        _clock = new WorldClock();
-    }
-
     return _clock;
 }
 

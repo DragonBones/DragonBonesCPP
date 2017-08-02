@@ -11,9 +11,9 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-int Armature::_onSortSlots(Slot* a, Slot* b)
+bool Armature::_onSortSlots(Slot* a, Slot* b)
 {
-    return a->_zOrder > b->_zOrder ? 1 : -1;
+    return a->_zOrder > b->_zOrder ? true : false;
 }
 
 void Armature::_onClear()
