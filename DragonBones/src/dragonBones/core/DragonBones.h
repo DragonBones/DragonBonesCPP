@@ -331,16 +331,8 @@ private:
     IEventDispatcher* _eventManager;
 
 public:
-    DragonBones(IEventDispatcher* eventManager) :
-        _events(),
-        _objects(),
-        _clock(nullptr),
-        _eventManager(nullptr)
-    {
-        _clock = new WorldClock();
-        _eventManager = eventManager;
-    }
-
+    DragonBones();
+    DragonBones(IEventDispatcher* eventManager);
     virtual ~DragonBones() 
     {
         if (_clock != nullptr)
@@ -359,10 +351,6 @@ public:
     IEventDispatcher* getEventManager() const
     {
         return _eventManager;
-    }
-    void setEventManager(IEventDispatcher* value )
-    {
-        _eventManager = value;
     }
 
 public: // For WebAssembly.

@@ -37,7 +37,7 @@ public:
     /**
     * @inheritDoc
     */
-    virtual void init(Armature* armature) override;
+    virtual void _init(Armature* armature) override;
     /**
     * @inheritDoc
     */

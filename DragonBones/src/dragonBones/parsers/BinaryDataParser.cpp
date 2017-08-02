@@ -200,7 +200,7 @@ DragonBonesData* BinaryDataParser::parseDragonBonesData(const char* rawData, flo
         return nullptr;
     }
 
-    const auto headerLength = (unsigned)(((uint32_t*)(rawData + 8))[0]);
+    const auto headerLength = (std::size_t)(((uint32_t*)(rawData + 8))[0]);
     const auto headerBytes = rawData + 8 + 4;
     rapidjson::Document document;
     document.Parse(headerBytes, headerLength);

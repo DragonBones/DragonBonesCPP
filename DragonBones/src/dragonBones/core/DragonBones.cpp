@@ -11,6 +11,24 @@ bool DragonBones::yDown = true;
 bool DragonBones::debug = false;
 bool DragonBones::debugDraw = false;
 
+DragonBones::DragonBones() :
+    _events(),
+    _objects(),
+    _clock(nullptr),
+    _eventManager(nullptr)
+{
+    _clock = new WorldClock();
+}
+DragonBones::DragonBones(IEventDispatcher* eventManager) :
+    _events(),
+    _objects(),
+    _clock(nullptr),
+    _eventManager(eventManager)
+{
+    _clock = new WorldClock();
+    _eventManager = eventManager;
+}
+
 void DragonBones::advanceTime(float passedTime)
 {
     if (!_objects.empty())

@@ -1,6 +1,3 @@
-//
-// Created by liangshuochen on 08/06/2017.
-//
 
 #ifndef DRAGONBONESCPP_DISPLAYDATA_H
 #define DRAGONBONESCPP_DISPLAYDATA_H

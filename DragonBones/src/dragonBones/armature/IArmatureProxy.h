@@ -18,7 +18,7 @@ public:
     /**
     * @private
     */
-    virtual void init(Armature* armature) = 0;
+    virtual void _init(Armature* armature) = 0;
     /**
     * @private
     */

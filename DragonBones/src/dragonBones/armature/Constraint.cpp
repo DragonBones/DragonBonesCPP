@@ -12,6 +12,10 @@ Matrix Constraint::_helpMatrix;
 Transform Constraint::_helpTransform;
 Point Constraint::_helpPoint;
 
+Constraint::~Constraint()
+{
+    _onClear();
+}
 void Constraint::_onClear()
 {
     target = nullptr;

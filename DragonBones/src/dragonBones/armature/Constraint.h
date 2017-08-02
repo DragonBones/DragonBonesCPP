@@ -16,7 +16,10 @@ DRAGONBONES_NAMESPACE_BEGIN
 */
 class Constraint : public BaseObject
 {
-    ABSTRACT_CLASS(Constraint);
+
+public:
+    Constraint() : target(nullptr), bone(nullptr), root(nullptr) {}
+    virtual ~Constraint();
 
 protected:
     static Matrix _helpMatrix;

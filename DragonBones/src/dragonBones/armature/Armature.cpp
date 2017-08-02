@@ -142,7 +142,7 @@ void Armature::_sortZOrder(int16_t* slotIndices, unsigned offset)
     {
         for (std::size_t i = 0, l = slotDatas.size(); i < l; ++i) 
         {
-            const auto slotIndex = isOriginal ? i : (unsigned)slotIndices[offset + i];
+            const auto slotIndex = isOriginal ? i : (std::size_t)slotIndices[offset + i];
             if (slotIndex < 0 || slotIndex >= l)
             {
                 continue;
@@ -225,7 +225,7 @@ void Armature::init(ArmatureData *parmatureData, IArmatureProxy* pproxy, void* d
 
     _animation->init(this);
     _animation->setAnimations(armatureData->animations);
-    _proxy->init(this);
+    _proxy->_init(this);
 }
 
 void Armature::advanceTime(float passedTime)

@@ -32,7 +32,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::createWithRect("DragonBones", Rect(0, 0, 1136, 640));
+        glview = GLViewImpl::createWithRect("DragonBones", cocos2d::Rect(0, 0, 1136, 640));
         director->setOpenGLView(glview);
     }
 
