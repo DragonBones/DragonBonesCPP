@@ -84,6 +84,8 @@ private:
             case TweenType::QuadInOut:
                 value = 0.5f * (1.0f - std::cos(progress * Transform::PI));
                 break;
+            default:
+                break;
         }
 
         return (value - progress) * easing + progress;

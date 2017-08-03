@@ -333,16 +333,8 @@ private:
 public:
     DragonBones();
     DragonBones(IEventDispatcher* eventManager);
-    virtual ~DragonBones() 
-    {
-        if (_clock != nullptr)
-        {
-            delete _clock;
-        }
+    virtual ~DragonBones();
 
-        _clock = nullptr;
-        _eventManager = nullptr;
-    }
 
     void advanceTime(float passedTime);
     void bufferEvent(EventObject* value);

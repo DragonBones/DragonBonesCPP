@@ -29,6 +29,16 @@ DragonBones::DragonBones(IEventDispatcher* eventManager) :
     _eventManager = eventManager;
 }
 
+DragonBones::~DragonBones()
+{
+    if (_clock != nullptr)
+    {
+        delete _clock;
+    }
+
+    _clock = nullptr;
+    _eventManager = nullptr;
+}
 void DragonBones::advanceTime(float passedTime)
 {
     if (!_objects.empty())
