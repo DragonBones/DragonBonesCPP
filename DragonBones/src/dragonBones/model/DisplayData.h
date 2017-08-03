@@ -143,6 +143,9 @@ public:
     unsigned offset;
     std::vector<BoneData*> bones;
 
+public: // For WebAssembly.
+    std::vector<BoneData*> * getBones() { return &bones; }
+
 protected:
     virtual void _onClear() override;
 };

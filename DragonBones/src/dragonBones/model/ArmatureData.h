@@ -218,6 +218,7 @@ public: // For WebAssembly.
     std::vector<ActionData*>* getDefaultActions() { return &defaultActions; }
     std::vector<ActionData*>* getActions() { return &actions; }
     AnimationData* getDefaultAnimation() const { return defaultAnimation; }
+    std::vector<std::string>* getAnimationNames() { return &animationNames; }
     SkinData* getDefaultSkin() const { return defaultSkin; }
     UserData* getUserData() const { return userData; }
     DragonBonesData* getParent() const { return parent; }
