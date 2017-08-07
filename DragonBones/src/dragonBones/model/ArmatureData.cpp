@@ -50,6 +50,9 @@ void ArmatureData::_onClear()
     scale = 1.0f;
     name = "";
     aabb.clear();
+    animationNames.clear();
+    sortedBones.clear();
+    sortedSlots.clear();
     defaultActions.clear();
     actions.clear();
     bones.clear();
