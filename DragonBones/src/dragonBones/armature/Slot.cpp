@@ -346,7 +346,7 @@ void Slot::_updateDisplay()
                 {
                     for (const auto action : *actions)
                     {
-                        _childArmature->getAnimation()->fadeIn(action->name);
+                        _childArmature->_bufferAction(action, false);
                     }
                 }
                 else

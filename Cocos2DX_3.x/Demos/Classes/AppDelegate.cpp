@@ -5,6 +5,7 @@
 #include "CoreElement.h"
 #include "PerformanceTest.h"
 #include "AnimationBaseTest.h"
+#include "DragonBonesTest.h"
 
 USING_NS_CC;
 
@@ -45,14 +46,16 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.f / 60.f);
 
     FileUtils::getInstance()->addSearchPath("assets");
+    FileUtils::getInstance()->addSearchPath("temp");
 
     // create a scene. it's an autorelease object
-    auto scene = HelloDragonBones::createScene();
+    // auto scene = HelloDragonBones::createScene();
     // auto scene = ReplaceSlotDisplay::createScene();
-    // auto scene = CoreElementGame::createScene();
+    auto scene = CoreElementGame::createScene();
 
     // auto scene = PerformanceTest::createScene();
     // auto scene = AnimationBaseTest::createScene();
+    // auto scene = DragonBonesTest::createScene();
 
     // run
     director->runWithScene(scene);

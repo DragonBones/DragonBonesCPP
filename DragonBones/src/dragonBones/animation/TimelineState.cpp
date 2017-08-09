@@ -28,7 +28,6 @@ void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
         {
             const auto actionIndex = _frameArray[frameOffset + 2 + i];
             const auto action = actions[actionIndex];
-            //TODO lsc check 000
             if (action->type == ActionType::Play)
             {
                 if (action->slot != nullptr) 
@@ -39,7 +38,7 @@ void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
                         const auto childArmature = slot->getChildArmature();
                         if (childArmature != nullptr) 
                         {
-                            childArmature->getAnimation()->fadeIn(action->name);
+                            childArmature->_bufferAction(action, true);
                         }
                     }
                 }
@@ -50,13 +49,13 @@ void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
                         const auto childArmature = slot->getChildArmature();
                         if (childArmature != nullptr && slot->getParent()->boneData == action->bone) 
                         {
-                            childArmature->getAnimation()->fadeIn(action->name);
+                            childArmature->_bufferAction(action, true);
                         }
                     }
                 }
                 else 
                 {
-                    _armature->getAnimation()->fadeIn(action->name);
+                    _armature->_bufferAction(action, true);
                 }
             }
             else

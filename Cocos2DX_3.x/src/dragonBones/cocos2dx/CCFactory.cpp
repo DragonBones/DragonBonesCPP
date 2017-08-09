@@ -129,7 +129,13 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
     }
 
     const auto fullpath = cocos2d::FileUtils::getInstance()->fullPathForFilename(filePath);
+#if COCOS2D_VERSION >= 0x00031200
+    cocos2d::Data cocos2dData;
+    cocos2d::FileUtils::getInstance()->getContents(fullpath, &cocos2dData);
+#else
     auto cocos2dData = cocos2d::FileUtils::getInstance()->getDataFromFile(fullpath);
+#endif
+
     if (cocos2dData.getSize() == 0)
     {
         return nullptr;
@@ -152,10 +158,7 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
     }
     else 
     {
-        // return parseDragonBonesData((char*)cocos2dData.getBytes(), dragonBonesName, 1.0f / scale);
-
-        const auto str = cocos2d::FileUtils::getInstance()->getStringFromFile(fullpath);
-        return parseDragonBonesData(str.c_str(), dragonBonesName, 1.0f / scale);
+        return parseDragonBonesData((char*)cocos2dData.getBytes(), dragonBonesName, 1.0f / scale);
     }
 }
 

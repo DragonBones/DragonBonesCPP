@@ -70,7 +70,7 @@ public:
 
 protected:
     bool _debugDraw;
-    bool _delayDispose;
+    bool _lockUpdate;
     bool _bonesDirty;
     bool _slotsDirty;
     bool _zOrderDirty;
@@ -78,6 +78,7 @@ protected:
     bool _flipY;
     std::vector<Bone*> _bones;
     std::vector<Slot*> _slots;
+    std::vector<ActionData*> _actions;
     Animation* _animation;
     IArmatureProxy* _proxy;
     void* _display;
@@ -126,6 +127,10 @@ public:
     * @private
     */
     void _removeSlotFromSlotList(Slot* value);
+    /**
+    * @private
+    */
+    void _bufferAction(ActionData* action, bool append);
     /**
     * 释放骨架。 (回收到对象池)
     * @version DragonBones 3.0

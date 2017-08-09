@@ -101,14 +101,14 @@ private:
     {
         if (_armatures.empty())
         {
-            dragonBones::CCFactory::getFactory()->loadDragonBonesData("dragon_boy_ske.json");
-            dragonBones::CCFactory::getFactory()->loadTextureAtlasData("dragon_boy_tex.json");
+            dragonBones::CCFactory::getFactory()->loadDragonBonesData("pink_tree_ske.dbbin");
+            dragonBones::CCFactory::getFactory()->loadTextureAtlasData("pink_tree_tex.json");
         }
 
-        const auto armatureDisplay = dragonBones::CCFactory::getFactory()->buildArmatureDisplay("DragonBoy");
+        const auto armatureDisplay = dragonBones::CCFactory::getFactory()->buildArmatureDisplay("pink_tree");
         armatureDisplay->setScale(0.7f);
         armatureDisplay->getArmature()->setCacheFrameRate(24);
-        armatureDisplay->getAnimation()->play("walk", 0);
+        armatureDisplay->getAnimation()->play("0-1", 0);
         addChild(armatureDisplay);
 
         _armatures.push_back(armatureDisplay);
@@ -129,7 +129,7 @@ private:
 
         if (_armatures.empty())
         {
-            dragonBones::CCFactory::getFactory()->clear(true);
+            dragonBones::CCFactory::getFactory()->clear();
             dragonBones::BaseObject::clearPool();
         }
     }

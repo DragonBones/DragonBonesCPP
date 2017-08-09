@@ -24,7 +24,6 @@ public:
             return false;
         }
 
-        _isTouched = false;
         const auto& stageSize = cocos2d::Director::getInstance()->getVisibleSize();
 
         const auto factory = dragonBones::CCFactory::getFactory();
@@ -32,7 +31,7 @@ public:
         factory->loadTextureAtlasData("animation_base_test_tex.json");
 
         _armatureDisplay = factory->buildArmatureDisplay("progressBar");
-        _armatureDisplay->setPosition(stageSize.width * 0.5f, stageSize.height * 0.5);
+        _armatureDisplay->setPosition(stageSize.width * 0.5f, stageSize.height * 0.5f);
         _armatureDisplay->setScale(1.0f);
         addChild(_armatureDisplay);
 
@@ -69,10 +68,10 @@ public:
 
         _armatureDisplay->getAnimation()->play("idle", 1);
 
-        const auto listener = cocos2d::EventListenerTouchOneByOne::create();
-        listener->onTouchBegan = CC_CALLBACK_2(AnimationBaseTest::_touchBeganHandler, this);
-        listener->onTouchEnded = CC_CALLBACK_2(AnimationBaseTest::_touchEndedHandler, this);
-        listener->onTouchMoved = CC_CALLBACK_2(AnimationBaseTest::_touchMovedHandler, this);
+        const auto listener = cocos2d::EventListenerMouse::create();
+        listener->onMouseDown = CC_CALLBACK_1(AnimationBaseTest::_mouseDownHandler, this);
+        listener->onMouseUp = CC_CALLBACK_1(AnimationBaseTest::_mouseUpHandler, this);
+        listener->onMouseMove = CC_CALLBACK_1(AnimationBaseTest::_mouseMovedHandler, this);
         getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
         const auto text = cocos2d::Label::create();
@@ -85,14 +84,11 @@ public:
     }
 
 private:
-    bool _isTouched;
     dragonBones::CCArmatureDisplay* _armatureDisplay;
 
-    bool _touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
+    bool _mouseDownHandler(cocos2d::EventMouse* event)
     {
-        _isTouched = true;
-
-        const auto progress = std::min(std::max((touch->getLocation().x - _armatureDisplay->getPosition().x + 300.0f) / 600.0f, 0.0f), 1.0f);
+        const auto progress = std::min(std::max((event->getCursorX() - _armatureDisplay->getPosition().x + 300.0f) / 600.0f, 0.0f), 1.0f);
 
         // _armatureDisplay->getAnimation()->gotoAndPlayByTime("idle", 0.5f, 1);
         // _armatureDisplay->getAnimation()->gotoAndStopByTime("idle", 1);
@@ -106,17 +102,16 @@ private:
         return true;
     }
 
-    void _touchEndedHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
+    void _mouseUpHandler(cocos2d::EventMouse* event)
     {
-        _isTouched = false;
         _armatureDisplay->getAnimation()->play();
     }
 
-    void _touchMovedHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
+    void _mouseMovedHandler(cocos2d::EventMouse* event)
     {
-        if (_isTouched)
+        if (event->getMouseButton() != 0)
         {
-            const auto progress = std::min(std::max((touch->getLocation().x - _armatureDisplay->getPosition().x + 300.0f) / 600.0f, 0.0f), 1.0f);
+            const auto progress = std::min(std::max((event->getCursorX() - _armatureDisplay->getPosition().x + 300.0f) / 600.0f, 0.0f), 1.0f);
             const auto animationState = _armatureDisplay->getAnimation()->getState("idle");
             animationState->setCurrentTime(animationState->getTotalTime() * progress);
         }

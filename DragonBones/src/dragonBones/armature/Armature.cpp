@@ -33,6 +33,11 @@ void Armature::_onClear()
         slot->returnToPool();
     }
 
+    for (const auto action : _actions)
+    {
+        action->returnToPool();
+    }
+
     if(_animation != nullptr)
     {
         _animation->returnToPool();
@@ -54,7 +59,7 @@ void Armature::_onClear()
     userData = nullptr;
 
     _debugDraw = false;
-    _delayDispose = false;
+    _lockUpdate = false;
     _bonesDirty = false;
     _slotsDirty = false;
     _zOrderDirty = false;
@@ -63,6 +68,7 @@ void Armature::_onClear()
     _cacheFrameIndex = -1;
     _bones.clear();
     _slots.clear();
+    _actions.clear();
     _dragonBones = nullptr;
     _animation = nullptr;
     _proxy = nullptr;
@@ -201,11 +207,26 @@ void Armature::_removeSlotFromSlotList(Slot* value)
     }
 }
 
+void Armature::_bufferAction(ActionData* action, bool append)
+{
+    if (std::find(_actions.cbegin(), _actions.cend(), action) == _actions.cend()) 
+    {
+        if (append) 
+        {
+            _actions.push_back(action);
+        }
+        else 
+        {
+            _actions.insert(_actions.begin(), action);
+        }
+    }
+}
+
 void Armature::dispose()
 {
     if (armatureData != nullptr) 
     {
-        _delayDispose = true;
+        _lockUpdate = true;
         _dragonBones->bufferObject(this);
     }
 }
@@ -230,7 +251,7 @@ void Armature::init(ArmatureData *parmatureData, IArmatureProxy* pproxy, void* d
 
 void Armature::advanceTime(float passedTime)
 {
-    if (_delayDispose)
+    if (_lockUpdate)
     {
         return;
     }
@@ -274,6 +295,21 @@ void Armature::advanceTime(float passedTime)
         {
             slot->update(_cacheFrameIndex);
         }
+    }
+
+    if (!_actions.empty()) 
+    {
+        _lockUpdate = true;
+        for (const auto action : _actions)
+        {
+            if (action->type == ActionType::Play) 
+            {
+                _animation->fadeIn(action->name);
+            }
+        }
+
+        _actions.clear();
+        _lockUpdate = false;
     }
 
     const auto drawed = debugDraw || DragonBones::debugDraw;
