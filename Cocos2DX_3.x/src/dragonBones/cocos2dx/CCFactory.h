@@ -74,6 +74,7 @@ public:
     }
     virtual ~CCFactory() 
     {
+        clear();
     }
 
 protected:
@@ -82,7 +83,22 @@ protected:
     virtual Slot* _buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature& armature) const override;
 
 public:
+    /**
+    * 加载并解析 Cocos 本地龙骨数据。
+    * @param filePath 文件路径。
+    * @param name 为数据提供一个名称，以便可以通过这个名称获取数据，如果未设置，则使用数据中的名称。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     virtual DragonBonesData* loadDragonBonesData(const std::string& filePath, const std::string& name = "");
+    /**
+    * 加载并解析 Cocos 本地贴图数据。
+    * @param filePath 文件路径。
+    * @param name 为数据提供一个名称，以便可以通过这个名称获取数据，如果未设置，则使用数据中的名称。
+    * @param scale 为贴图集设置一个缩放值。
+    * @version DragonBones 4.5
+    * @language zh_CN
+    */
     virtual TextureAtlasData* loadTextureAtlasData(const std::string& filePath, const std::string& name = "", float scale = 0.0f);
     /**
     * 创建一个指定名称的骨架。

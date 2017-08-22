@@ -699,7 +699,7 @@ PolygonBoundingBoxData* JSONDataParser::_parsePolygonBoundingBox(const rapidjson
 
     polygonBoundingBox->offset = _floatArray.size();
     polygonBoundingBox->count = rawVertices.Size();
-    //polygonBoundingBox->vertices = _floatArray; // TODO
+    _polygonBoundingBoxes.push_back(polygonBoundingBox);
     _floatArray.resize(_floatArray.size() + polygonBoundingBox->count);
     
     for (std::size_t i = 0, l = polygonBoundingBox->count; i < l; i += 2) 
@@ -1129,6 +1129,11 @@ unsigned JSONDataParser::_parseZOrderFrame(const rapidjson::Value& rawData, unsi
             std::vector<int> zOrders;
             unchanged.resize(slotCount - rawZOrder.Size() / 2);
             zOrders.resize(slotCount);
+
+            for (std::size_t i = 0; i < unchanged.size(); ++i)
+            {
+                unchanged[i] = 0;
+            }
 
             for (std::size_t i = 0; i < slotCount; ++i) 
             {
@@ -1592,6 +1597,27 @@ DragonBonesData* JSONDataParser::_parseDragonBonesData(const rapidjson::Value& r
 
             if (data->intArray == nullptr)
             {
+                // Align.
+                if (fmod(_intArray.size(), 2) != 0)
+                {
+                    _intArray.push_back(0);
+                }
+
+                if (fmod(_frameIntArray.size(), 2) != 0)
+                {
+                    _frameIntArray.push_back(0);
+                }
+
+                if (fmod(_frameArray.size(), 2) != 0)
+                {
+                    _frameArray.push_back(0);
+                }
+
+                if (fmod(_timelineArray.size(), 2) != 0)
+                {
+                    _timelineArray.push_back(0);
+                }
+
                 const auto l1 = _intArray.size() * 2;
                 const auto l2 = _floatArray.size() * 4;
                 const auto l3 = _frameIntArray.size() * 2;
@@ -1637,10 +1663,16 @@ DragonBonesData* JSONDataParser::_parseDragonBonesData(const rapidjson::Value& r
                 {
                     data->timelineArray[i] = _timelineArray[i];
                 }
+
+                for (const auto polygonBoundingBoxData : _polygonBoundingBoxes) 
+                {
+                    polygonBoundingBoxData->vertices = data->floatArray;
+                }
             }
 
             _data = nullptr;
             _defalultColorOffset = -1;
+            _polygonBoundingBoxes.clear();
         }
 
         _rawTextureAtlasIndex = 0;

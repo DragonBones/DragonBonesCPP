@@ -292,12 +292,10 @@ void SkinData::_onClear()
 
     name = "";
     displays.clear();
-    skinSlotNames.clear();
 }
 
 void SkinData::addDisplay(const std::string& slotName, DisplayData* value)
 {
-    skinSlotNames.push_back(slotName);
     displays[slotName].push_back(value); // TODO clear prev
 }
 

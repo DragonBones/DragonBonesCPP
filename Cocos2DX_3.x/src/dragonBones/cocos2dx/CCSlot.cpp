@@ -48,10 +48,10 @@ void CCSlot::_addDisplay()
     container->addChild(_renderDisplay);
 }
 
-void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplayContainer)
+void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplay)
 {
     const auto container = static_cast<CCArmatureDisplay*>(_armature->getDisplay());
-    const auto prevDisplay = isArmatureDisplayContainer ? static_cast<cocos2d::Node*>(value) : static_cast<cocos2d::Node*>(value);
+    const auto prevDisplay = isArmatureDisplay ? static_cast<cocos2d::Node*>(value) : static_cast<cocos2d::Node*>(value);
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
 }
@@ -160,12 +160,13 @@ void CCSlot::_updateFrame()
             const auto scale = _armature->armatureData->scale;
 
             if (meshData != nullptr) // Mesh.
-            { 
+            {
                 const auto intArray = meshData->parent->parent->intArray;
                 const auto floatArray = meshData->parent->parent->floatArray;
                 const unsigned vertexCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
                 const unsigned triangleCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
                 const unsigned verticesOffset = intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+                const unsigned triangleOffset = meshData->offset + (unsigned)BinaryOffset::MeshVertexIndices;
                 const unsigned uvOffset = verticesOffset + vertexCount * 2;
 
                 const auto& region = currentTextureData->region;
@@ -212,7 +213,7 @@ void CCSlot::_updateFrame()
 
                 for (std::size_t i = 0; i < triangleCount * 3; ++i) 
                 {
-                    vertexIndices[i] = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i];
+                    vertexIndices[i] = intArray[triangleOffset + i];
                 }
 
                 frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
@@ -241,8 +242,10 @@ void CCSlot::_updateFrame()
                 frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
             }
 
+            _visibleDirty = true;
             _blendModeDirty = true; // Relpace texture will override blendMode and color.
             _colorDirty = true;
+
             return;
         }
     }
@@ -250,6 +253,7 @@ void CCSlot::_updateFrame()
     frameDisplay->setTexture(nullptr);
     frameDisplay->setTextureRect(cocos2d::Rect::ZERO);
     frameDisplay->setPosition(0.0f, 0.0f);
+    frameDisplay->setVisible(false);
 }
 
 void CCSlot::_updateMesh() 

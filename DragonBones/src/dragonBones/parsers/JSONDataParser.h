@@ -117,7 +117,7 @@ protected:
     {
         if (rawData.Size() > index)
         {
-            return rawData[(int) index].GetFloat();
+            return rawData[(int) index].GetDouble();
         }
 
         return defaultValue;
@@ -157,6 +157,7 @@ private:
     Point _helpPoint;
     std::vector<float> _helpArray;
     std::vector<ActionFrame> _actionFrames;
+    std::vector<PolygonBoundingBoxData*> _polygonBoundingBoxes;
     std::map<std::string, const rapidjson::Value*> _weightSlotPose;
     std::map<std::string, const rapidjson::Value*> _weightBonePoses;
     std::map<std::string, std::vector<unsigned>> _weightBoneIndices;
@@ -193,6 +194,7 @@ public:
         _helpColorTransform(),
         _helpPoint(),
         _helpArray(),
+        _polygonBoundingBoxes(),
         _actionFrames(),
         _weightSlotPose(),
         _weightBonePoses(),

@@ -7,6 +7,7 @@
 #include "../model/ArmatureData.h"
 #include "../model/ConstraintData.h"
 #include "../model/DisplayData.h"
+#include "../model/BoundingBoxData.h"
 #include "../model/AnimationData.h"
 #include "../model/TextureAtlasData.h"
 

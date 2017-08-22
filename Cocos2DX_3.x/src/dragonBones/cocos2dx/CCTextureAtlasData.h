@@ -29,7 +29,7 @@ protected:
     virtual void _onClear() override;
 };
 /**
-* Cocos ��ͼ�����ݡ�
+* Cocos 贴图集数据。
 * @version DragonBones 3.0
 * @language zh_CN
 */
@@ -60,7 +60,7 @@ public:
     */
     virtual TextureData* createTexture() const override;
     /**
-    * Cocos ��ͼ��
+    * Cocos 贴图。
     * @version DragonBones 3.0
     * @language zh_CN
     */

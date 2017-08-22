@@ -33,11 +33,6 @@ void Armature::_onClear()
         slot->returnToPool();
     }
 
-    for (const auto action : _actions)
-    {
-        action->returnToPool();
-    }
-
     if(_animation != nullptr)
     {
         _animation->returnToPool();

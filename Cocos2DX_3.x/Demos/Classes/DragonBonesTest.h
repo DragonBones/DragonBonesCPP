@@ -65,10 +65,10 @@ public:
         _animationIndex = 0;
 
         const auto& fullpath = cocos2d::FileUtils::getInstance()->fullPathForFilename("base_test.res.json");
-        auto cocos2dData = cocos2d::FileUtils::getInstance()->getDataFromFile(fullpath);
+        auto jsonString = cocos2d::FileUtils::getInstance()->getStringFromFile(fullpath);
 
         rapidjson::Document document;
-        document.Parse((char*)cocos2dData.getBytes());
+        document.Parse(jsonString.c_str());
         const auto& resources = document["resources"];
         const auto& groups = document["groups"];
         const auto factory = dragonBones::CCFactory::getFactory();
@@ -90,7 +90,7 @@ public:
                 const auto& result = splitString(groupKeysString, ",");
                 for (const auto& key : result)
                 {
-                    // const auto& dragonBonesData = resources[resourceMap[key]];
+                    // const auto& dragonBonesResource = resources[resourceMap[key]];
                     const auto& dragonBonesResource = resources[resourceMap[key + "_binary"]];
                     factory->loadDragonBonesData(dragonBonesResource["url"].GetString());
 
@@ -346,7 +346,7 @@ private:
             _text->setString(
                 "DragonBones: " + _armatureDisplay->getArmature()->armatureData->parent->name +
                 "    Armature: " + _armatureDisplay->getArmature()->getName() +
-                "\nTouch screen left/right to change prev/next armature.\nTouch center to play next animation."
+                "\nTouch screen left / right to change prev / next armature.\nTouch center to play next animation."
             );
             return;
         }

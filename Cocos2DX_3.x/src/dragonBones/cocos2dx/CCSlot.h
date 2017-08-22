@@ -19,12 +19,11 @@ private:
 
 protected:
     virtual void _onClear() override;
-
     virtual void _initDisplay(void* value) override;
     virtual void _disposeDisplay(void* value) override;
     virtual void _onUpdateDisplay() override;
     virtual void _addDisplay() override;
-    virtual void _replaceDisplay(void* value, bool isArmatureDisplayContainer) override;
+    virtual void _replaceDisplay(void* value, bool isArmatureDisplay) override;
     virtual void _removeDisplay() override;
     virtual void _updateZOrder() override;
 public:

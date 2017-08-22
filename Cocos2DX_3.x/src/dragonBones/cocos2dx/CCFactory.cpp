@@ -13,7 +13,7 @@ TextureAtlasData* CCFactory::_buildTextureAtlasData(TextureAtlasData* textureAtl
     if (textureAtlasData != nullptr)
     {
         const auto pos = _prevPath.find_last_of("/");
-        if (std::string::npos != pos)
+        if (pos != std::string::npos)
         {
             const auto basePath = _prevPath.substr(0, pos + 1);
             textureAtlasData->imagePath = basePath + textureAtlasData->imagePath;
@@ -117,11 +117,11 @@ Slot* CCFactory::_buildSlot(const BuildArmaturePackage& dataPackage, SlotData* s
     return slot;
 }
 
-DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, const std::string& dragonBonesName)
+DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, const std::string& name)
 {
-    if (!dragonBonesName.empty())
+    if (!name.empty())
     {
-        const auto existedData = getDragonBonesData(dragonBonesName);
+        const auto existedData = getDragonBonesData(name);
         if (existedData)
         {
             return existedData;
@@ -129,40 +129,36 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
     }
 
     const auto fullpath = cocos2d::FileUtils::getInstance()->fullPathForFilename(filePath);
+    if (cocos2d::FileUtils::getInstance()->isFileExist(filePath)) 
+    {
+        const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor();
+        const auto pos = fullpath.find(".json");
+        if (pos != std::string::npos)
+        {
+            const auto data = cocos2d::FileUtils::getInstance()->getStringFromFile(filePath);
+            return parseDragonBonesData(data.c_str(), name, 1.0f / scale);
+        }
+        else
+        {
 #if COCOS2D_VERSION >= 0x00031200
-    cocos2d::Data cocos2dData;
-    cocos2d::FileUtils::getInstance()->getContents(fullpath, &cocos2dData);
+            cocos2d::Data cocos2dData;
+            cocos2d::FileUtils::getInstance()->getContents(fullpath, &cocos2dData);
 #else
-    auto cocos2dData = cocos2d::FileUtils::getInstance()->getDataFromFile(fullpath);
+            const auto cocos2dData = cocos2d::FileUtils::getInstance()->getDataFromFile(fullpath);
 #endif
+            const auto buffer = (unsigned char*)malloc(sizeof(unsigned char) * cocos2dData.getSize());
+            memcpy(buffer, cocos2dData.getBytes(), cocos2dData.getSize());
+            const auto data = parseDragonBonesData((char*)buffer, name, 1.0f / scale);
+            data->buffer = (char*)buffer;
 
-    if (cocos2dData.getSize() == 0)
-    {
-        return nullptr;
+            return data;
+        }
     }
 
-    const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor();
-    if (
-        cocos2dData.getBytes()[0] == 'D' &&
-        cocos2dData.getBytes()[1] == 'B' &&
-        cocos2dData.getBytes()[2] == 'D' &&
-        cocos2dData.getBytes()[3] == 'T'
-    ) 
-    {
-        const auto buffer = (unsigned char*)malloc(sizeof(unsigned char) * cocos2dData.getSize());
-        memcpy(buffer, cocos2dData.getBytes(), cocos2dData.getSize());
-        const auto data = parseDragonBonesData((char*)buffer, dragonBonesName, 1.0f / scale);
-        data->buffer = (char*)buffer;
-
-        return data;
-    }
-    else 
-    {
-        return parseDragonBonesData((char*)cocos2dData.getBytes(), dragonBonesName, 1.0f / scale);
-    }
+    return nullptr;
 }
 
-TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, const std::string& dragonBonesName, float scale)
+TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, const std::string& name, float scale)
 {
     _prevPath = cocos2d::FileUtils::getInstance()->fullPathForFilename(filePath);
     const auto data = cocos2d::FileUtils::getInstance()->getStringFromFile(_prevPath);
@@ -171,7 +167,7 @@ TextureAtlasData* CCFactory::loadTextureAtlasData(const std::string& filePath, c
         return nullptr;
     }
 
-    return static_cast<CCTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.c_str(), nullptr, dragonBonesName, scale));
+    return static_cast<CCTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.c_str(), nullptr, name, scale));
 }
 
 CCArmatureDisplay* CCFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const

@@ -367,8 +367,8 @@ public:
     void setReplacedTexture(void* value);
 
 public: // For WebAssembly.
-    IAnimatable* getAnimatable() { return this; }
     inline const ArmatureData* getArmatureData() const { return armatureData; }
+    inline const IAnimatable* getAnimatable() const { return this; }
 };
 
 DRAGONBONES_NAMESPACE_END

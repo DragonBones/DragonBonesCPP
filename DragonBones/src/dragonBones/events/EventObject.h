@@ -128,7 +128,7 @@ public: // For WebAssembly.
     Bone* getBone() const { return bone; }
     Slot* getSlot() const { return slot; }
     AnimationState* getAnimationState() const { return animationState; }
-    UserData* getUserData() const { return data; }
+    UserData* getData() const { return data; }
 };
 DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_EVENT_OBJECT_H

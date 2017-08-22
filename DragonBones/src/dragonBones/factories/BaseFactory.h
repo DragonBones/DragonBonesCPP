@@ -90,7 +90,7 @@ public:
     }
 
 protected:
-    virtual bool _isSupportMesh() const
+    virtual inline bool _isSupportMesh() const
     {
         return true;
     }
@@ -121,10 +121,10 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual DragonBonesData* parseDragonBonesData(const char* rawData, const std::string& name = "", float scale = 1.f);
+    virtual DragonBonesData* parseDragonBonesData(const char* rawData, const std::string& name = "", float scale = 1.0f);
     /**
     * 解析并添加贴图集数据。
-    * @param rawData 需要解析的原始数据。 (JSON)
+    * @param rawData 需要解析的原始数据。
     * @param textureAtlas 贴图。
     * @param name 为数据指定一个名称，以便可以通过这个名称获取数据，如果未设置，则使用数据中的名称。
     * @param scale 为贴图集设置一个缩放值。
@@ -136,7 +136,22 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual TextureAtlasData* parseTextureAtlasData(const char* rawData, void* textureAtlas, const std::string& name = "", float scale = 0.f);
+    virtual TextureAtlasData* parseTextureAtlasData(const char* rawData, void* textureAtlas, const std::string& name = "", float scale = 0.0f);
+    /**
+    * 获取指定名称的龙骨数据。
+    * @param name 数据名称。
+    * @returns DragonBonesData
+    * @see #parseDragonBonesData()
+    * @see #addDragonBonesData()
+    * @see #removeDragonBonesData()
+    * @see dragonBones.DragonBonesData
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    inline DragonBonesData* getDragonBonesData(const std::string& name) const
+    {
+        return mapFind(_dragonBonesDataMap, name);
+    }
     /**
     * 添加龙骨数据。
     * @param data 龙骨数据。
@@ -161,6 +176,21 @@ public:
     * @language zh_CN
     */
     virtual void removeDragonBonesData(const std::string& name, bool disposeData = true);
+    /**
+    * 获取指定名称的贴图集数据列表。
+    * @param name 数据名称。
+    * @returns 贴图集数据列表。
+    * @see #parseTextureAtlasData()
+    * @see #addTextureAtlasData()
+    * @see #removeTextureAtlasData()
+    * @see dragonBones.TextureAtlasData
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    inline std::vector<TextureAtlasData*>* getTextureAtlasData(const std::string& name)
+    {
+        return mapFindB(_textureAtlasDataMap, name);
+    }
     /**
     * 添加贴图集数据。
     * @param data 贴图集数据。
@@ -271,36 +301,6 @@ public:
         const std::string& fromArmatreName, const std::string& fromSkinName = "", const std::string& fromDragonBonesDataName = "",
         bool replaceOriginalAnimation = true
     ) const;
-    /**
-    * 获取指定名称的龙骨数据。
-    * @param name 数据名称。
-    * @returns DragonBonesData
-    * @see #parseDragonBonesData()
-    * @see #addDragonBonesData()
-    * @see #removeDragonBonesData()
-    * @see dragonBones.DragonBonesData
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
-    inline DragonBonesData* getDragonBonesData(const std::string& name) const
-    {
-        return mapFind(_dragonBonesDataMap, name);
-    }
-    /**
-    * 获取指定名称的贴图集数据列表。
-    * @param name 数据名称。
-    * @returns 贴图集数据列表。
-    * @see #parseTextureAtlasData()
-    * @see #addTextureAtlasData()
-    * @see #removeTextureAtlasData()
-    * @see dragonBones.TextureAtlasData
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
-    inline std::vector<TextureAtlasData*>* getTextureAtlasData(const std::string& name)
-    {
-        return mapFindB(_textureAtlasDataMap, name);
-    }
     /**
     * @private
     */

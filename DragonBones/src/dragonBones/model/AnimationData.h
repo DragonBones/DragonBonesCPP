@@ -154,18 +154,6 @@ public:
     {
         return mapFindB(slotCachedFrameIndices, name);
     }
-    
-public: // For WebAssembly.
-    unsigned getFrameOffset() const { return frameOffset; } // TODO remove
-    void setFrameOffset(unsigned value) { frameOffset = value; }// TODO remove
-
-    TimelineData* getActionTimeline(const std::string& name) const { return actionTimeline; }
-    TimelineData* getZOrderTimeline(const std::string& name) const { return zOrderTimeline; }
-    ArmatureData* getParent() const { return parent; }
-
-    void setActionTimeline(TimelineData* pactionTimeline) { actionTimeline = pactionTimeline; }
-    void setZOrderTimeline(TimelineData* value) { zOrderTimeline = value; }
-    void setParent(ArmatureData* value) { parent = value; }
 };
 /**
 * @private

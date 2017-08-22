@@ -60,24 +60,13 @@ public:
     {
         _onClear();
     }
-    ~ActionData()
+    virtual ~ActionData()
     {
         _onClear();
     }
 
 protected:
     virtual void _onClear() override;
-
-public: // For WebAssembly.
-    int getType() const { return (int)type; }
-    BoneData* getBone() const { return bone; }
-    SlotData* getSlot() const { return slot; }
-    UserData* getData() const { return data; }
-
-    void setType(int value) { type = (ActionType)value; }
-    void setBone(BoneData* value) { bone = value; }
-    void setSlot(SlotData* value) { slot = value; }
-    void setData(UserData* value) { data = value; }
 };
 
 DRAGONBONES_NAMESPACE_END

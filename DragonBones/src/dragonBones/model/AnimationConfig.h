@@ -179,15 +179,6 @@ public:
     bool containsBoneMask(const std::string& name);
     void addBoneMask(Armature* armature, const std::string& name, bool recursive);
     void removeBoneMask(Armature* armature, const std::string& name, bool recursive);
-
-public: // For WebAssembly.
-    int getFadeOutMode() { return (int)fadeOutMode; }
-    int getFadeOutTweenType() { return (int)fadeOutTweenType; }
-    int getFadeInTweenType() { return (int)fadeInTweenType; }
-
-    void setFadeOutMode(int value) { fadeOutMode = (AnimationFadeOutMode)value; }
-    void setFadeOutTweenType(int value) { fadeOutTweenType = (TweenType)value; }
-    void setFadeInTweenType(int value) { fadeInTweenType = (TweenType)value; }
 };
 
 DRAGONBONES_NAMESPACE_END

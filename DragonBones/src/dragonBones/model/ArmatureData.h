@@ -214,20 +214,11 @@ public:
     }
 
 public: // For WebAssembly.
-    Rectangle getAABB() const { return aabb; }
-    std::vector<ActionData*>* getDefaultActions() { return &defaultActions; }
-    std::vector<ActionData*>* getActions() { return &actions; }
-    AnimationData* getDefaultAnimation() const { return defaultAnimation; }
-    std::vector<std::string>* getAnimationNames() { return &animationNames; }
-    SkinData* getDefaultSkin() const { return defaultSkin; }
-    UserData* getUserData() const { return userData; }
-    DragonBonesData* getParent() const { return parent; }
-
-    void setAABB(const Rectangle& value) { aabb = value; }
-    void inline setDefaultAnimation(AnimationData* value) { defaultAnimation = value; }
-    void inline setDefaultSkin(SkinData* value) { defaultSkin = value; }
-    void setUserData(UserData* value) { userData = value; }
-    void inline setParent(DragonBonesData* value) { parent = value; }
+    const Rectangle& getAABB() const { return aabb; }
+    const SkinData* getDefaultSkin() const { return defaultSkin; }
+    const AnimationData* getDefaultAnimation() const { return defaultAnimation; }
+    const UserData* getUserData() const { return userData; }
+    const DragonBonesData* getParent() const { return parent; }
 };
 /**
 * 骨骼数据。
@@ -300,13 +291,9 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    Transform* getTransfrom() { return &transform; }
-    std::vector<ConstraintData*>* getConstraints() { return &constraints; }
-    BoneData* getParent() const { return parent; }
-    UserData* getUserData() const { return userData; }
-
-    void setParent(BoneData* value) { parent = value; }
-    void setUserData(UserData* value) { userData = value; }
+    const Transform& getTransfrom() const { return transform; }
+    const UserData* getUserData() const { return userData; }
+    const BoneData* getParent() const { return parent; }
 };
 /**
 * 插槽数据。
@@ -380,17 +367,8 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    static ColorTransform* getDEFAULT_COLOR() { return &DEFAULT_COLOR; }
-
-    int getBlendMode() { return (int)blendMode; }
-    ColorTransform* getColor() { return color; }
     BoneData* getParent() const { return parent; }
     UserData* getUserData() const { return userData; }
-
-    void setBlendMode(int value) { blendMode = (BlendMode)value; }
-    void setColor(ColorTransform* value) { color = value; }
-    void setParent(BoneData* value) { parent = value; }
-    void setUserData(UserData* value) { userData = value; }
 };
 /**
 * 皮肤数据。（通常一个骨架数据至少包含一个皮肤数据）
@@ -432,10 +410,6 @@ public:
     {
         return mapFindB(displays, slotName);
     }
-
-public: // For WebAssembly.
-    std::vector<std::string> skinSlotNames;
-    std::vector<std::string>* getSkinSlotNames() { return &skinSlotNames; } // TODO
 };
 
 DRAGONBONES_NAMESPACE_END

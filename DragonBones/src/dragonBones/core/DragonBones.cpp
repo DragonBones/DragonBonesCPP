@@ -59,10 +59,13 @@ void DragonBones::advanceTime(float passedTime)
         {
             const auto eventObject = _events[i];
             const auto armature = eventObject->armature;
-            armature->getEventDispatcher()->_dispatchEvent(eventObject->type, eventObject);
-            if (eventObject->type == EventObject::SOUND_EVENT)
+            if (armature->armatureData != nullptr)
             {
-                _eventManager->_dispatchEvent(eventObject->type, eventObject);
+                armature->getEventDispatcher()->_dispatchEvent(eventObject->type, eventObject);
+                if (eventObject->type == EventObject::SOUND_EVENT)
+                {
+                    _eventManager->_dispatchEvent(eventObject->type, eventObject);
+                }
             }
 
             bufferObject(eventObject);

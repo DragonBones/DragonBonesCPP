@@ -139,6 +139,9 @@ public:
         return _visible;
     }
     void setVisible(bool value);
+
+public: // For WebAssembly.
+    inline const BoneData* getBoneData() const { return boneData; }
 };
 
 DRAGONBONES_NAMESPACE_END

@@ -57,18 +57,18 @@ public:
     /**
     * @inheritDoc
     */
+    inline virtual bool hasEvent(const std::string& type) const override
+    {
+        return _dispatcher->isEnabled();
+    }
+    /**
+    * @inheritDoc
+    */
     virtual void addEvent(const std::string& type, const std::function<void(EventObject*)>& listener) override;
     /**
     * @inheritDoc
     */
     virtual void removeEvent(const std::string& type, const std::function<void(EventObject*)>& listener) override;
-    /**
-    * @inheritDoc
-    */
-    inline virtual bool hasEvent(const std::string& type) const override
-    {
-        return _dispatcher->isEnabled();
-    }
     /**
     * @inheritDoc
     */

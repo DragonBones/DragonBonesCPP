@@ -105,10 +105,9 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    Rectangle* getRegion() { return &region; }
-    inline TextureAtlasData* getParent() const { return parent; }
-    inline Rectangle* getFrame() const { return frame; }
-    inline void setFrame(Rectangle* value) { frame = value; }
+    inline const Rectangle& getRegion() const { return region; }
+    inline const TextureAtlasData* getParent() const { return parent; }
+    inline const Rectangle* getFrame() const { return frame; }
 };
 
 DRAGONBONES_NAMESPACE_END

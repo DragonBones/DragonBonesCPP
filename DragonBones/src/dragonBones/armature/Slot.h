@@ -39,7 +39,7 @@ public:
 public:
     bool _colorDirty;
     bool _meshDirty;
-    BlendMode _blendMode; // C++
+    BlendMode _blendMode;
     int _zOrder;
     float _pivotX;
     float _pivotY;
@@ -86,7 +86,7 @@ protected:
     virtual void _disposeDisplay(void* value) = 0;
     virtual void _onUpdateDisplay() = 0;
     virtual void _addDisplay() = 0;
-    virtual void _replaceDisplay(void* value, bool isArmatureDisplayContainer) = 0;
+    virtual void _replaceDisplay(void* value, bool isArmatureDisplay) = 0;
     virtual void _removeDisplay() = 0;
     virtual void _updateZOrder() = 0;
 public:
@@ -102,17 +102,13 @@ protected:
     void _updateDisplay();
     void _updateDisplayData();
     void _updateGlobalTransformMatrix(bool isCache);
+
 public:
     virtual void _setArmature(Armature* value) override;
     bool _setDisplayIndex(int value, bool isAnimation = false);
     bool _setZorder(int value);
     bool _setColor(const ColorTransform& value);
     bool _setDisplayList(const std::vector<std::pair<void*, DisplayType>>& value);
-    /**
-     * Egret 5.0
-     */
-    void switchDisplayData(std::vector<DisplayData*>* displayDatas);
-    void replaceDisplayData(DisplayData* displayData, unsigned displayIndex);
 
 public:
     void init(SlotData* slotData, std::vector<DisplayData*> * displayDatas, void* rawDisplay, void* meshDisplay);
@@ -192,21 +188,21 @@ public:
     * @see dragonBones.Armature
     * @version DragonBones 3.0
     */
-    inline BoundingBoxData* getBoundingBoxData()
+    inline const BoundingBoxData* getBoundingBoxData() const
     {
         return _boundingBoxData;
     }
     /**
     * @private
     */
-    inline void* getRawDisplay() const
+    inline const void* getRawDisplay() const
     {
         return _rawDisplay;
     }
     /**
     * @private
     */
-    inline void* getMeshDisplay() const
+    inline const void* getMeshDisplay() const
     {
         return _meshDisplay;
     }
@@ -215,7 +211,7 @@ public:
     * @version DragonBones 3.0
     * @language zh_CN
     */
-    inline void* getDisplay() const
+    inline const void* getDisplay() const
     {
         return _display;
     }
@@ -226,11 +222,14 @@ public:
     * @version DragonBones 3.0
     * @language zh_CN
     */
-    inline Armature* getChildArmature() const
+    inline Armature* getChildArmature()
     {
         return _childArmature;
     }
     void setChildArmature(Armature* value);
+
+public: // For WebAssembly.
+    inline const SlotData* getSlotData() const { return slotData; }
 };
 
 DRAGONBONES_NAMESPACE_END

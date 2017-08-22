@@ -472,9 +472,9 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
             const auto& eachPair = value[i];
             if (
                 eachPair.first && eachPair.first != _rawDisplay && eachPair.first != _meshDisplay &&
-                eachPair.second != DisplayType::Armature
-                && std::find(_displayList.cbegin(), _displayList.cend(), eachPair) == _displayList.cend()
-                )
+                eachPair.second != DisplayType::Armature && 
+                std::find(_displayList.cbegin(), _displayList.cend(), eachPair) == _displayList.cend()
+            )
             {
                 _initDisplay(eachPair.first);
             }
@@ -595,6 +595,12 @@ void Slot::update(int cacheFrameIndex)
     if (_display == nullptr)
     {
         return;
+    }
+
+    if (_visibleDirty)
+    {
+        _visibleDirty = false;
+        _updateVisible();
     }
 
     if (_blendModeDirty)
@@ -822,24 +828,5 @@ void Slot::setChildArmature(Armature* value)
 
     setDisplay(value, DisplayType::Armature);
 }
-
-void Slot::switchDisplayData(std::vector<DisplayData *> * displayDatas)
-{
-    _rawDisplayDatas = displayDatas;
-    _displayDatas.resize(_rawDisplayDatas->size());
-    for (std::size_t i = 0, l = _displayDatas.size(); i < l; ++i) {
-        _displayDatas[i] = (*_rawDisplayDatas)[i];
-    }
-}
-
-void Slot::replaceDisplayData(DisplayData *displayData, unsigned displayIndex)
-{
-    if (_displayDatas.size() <= displayIndex) {
-        _displayDatas.resize(displayIndex + 1);
-    }
-
-    _displayDatas[displayIndex] = displayData;
-}
-
 
 DRAGONBONES_NAMESPACE_END
