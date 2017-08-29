@@ -39,7 +39,7 @@ void Animation::_fadeOut(AnimationConfig* animationConfig)
         case AnimationFadeOutMode::SameLayer:
             for (const auto animationState : _animationStates)
             {
-                if (animationState->layer == animationConfig->layer)
+                if (animationState->layer == (unsigned)animationConfig->layer)
                 {
                     animationState->fadeOut(animationConfig->fadeOutTime, animationConfig->pauseFadeOut);
                 }
@@ -59,7 +59,7 @@ void Animation::_fadeOut(AnimationConfig* animationConfig)
         case AnimationFadeOutMode::SameLayerAndGroup:
             for (const auto animationState : _animationStates)
             {
-                if (animationState->layer == animationConfig->layer && animationState->group == animationConfig->group)
+                if (animationState->layer == (unsigned)animationConfig->layer && animationState->group == animationConfig->group)
                 {
                     animationState->fadeOut(animationConfig->fadeOutTime, animationConfig->pauseFadeOut);
                 }

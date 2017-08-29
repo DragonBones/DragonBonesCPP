@@ -49,6 +49,42 @@ public:
 /**
 * @private
 */
+class BoneTranslateTimelineState : public BoneTimelineState
+{
+    BIND_CLASS_TYPE_A(BoneTranslateTimelineState);
+
+protected:
+    virtual void _onArriveAtFrame() override;
+    virtual void _onUpdateFrame() override;
+};
+/**
+* @private
+*/
+class BoneRotateTimelineState : public BoneTimelineState
+{
+    BIND_CLASS_TYPE_A(BoneRotateTimelineState);
+
+protected:
+    virtual void _onArriveAtFrame() override;
+    virtual void _onUpdateFrame() override;
+
+public:
+    virtual void fadeOut() override;
+};
+/**
+* @private
+*/
+class BoneScaleTimelineState : public BoneTimelineState
+{
+    BIND_CLASS_TYPE_A(BoneScaleTimelineState);
+
+protected:
+    virtual void _onArriveAtFrame() override;
+    virtual void _onUpdateFrame() override;
+};
+/**
+* @private
+*/
 class SlotDislayIndexTimelineState : public SlotTimelineState
 {
     BIND_CLASS_TYPE_A(SlotDislayIndexTimelineState);

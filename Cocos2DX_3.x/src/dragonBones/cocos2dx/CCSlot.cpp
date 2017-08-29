@@ -259,11 +259,17 @@ void CCSlot::_updateFrame()
 void CCSlot::_updateMesh() 
 {
     const auto hasFFD = !_ffdVertices.empty();
+    const auto textureData = static_cast<CCTextureData*>(_textureData);
     const auto meshData = _meshData;
     const auto weightData = meshData->weight;
     const auto meshDisplay = static_cast<DBCCSprite*>(_renderDisplay);
     const auto vertices = meshDisplay->getPolygonInfoModify().triangles.verts;
     cocos2d::Rect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
+
+    if (!textureData || meshDisplay->getSpriteFrame() != textureData->spriteFrame)
+    {
+        return;
+    }
 
     if (weightData != nullptr)
     {

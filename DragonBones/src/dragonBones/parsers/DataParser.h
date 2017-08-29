@@ -25,6 +25,7 @@ protected:
     static const char* DATA_VERSION_4_0;
     static const char* DATA_VERSION_4_5;
     static const char* DATA_VERSION_5_0;
+    static const char* DATA_VERSION_5_5;
     static const char* DATA_VERSION;
 
     static const std::vector<std::string> DATA_VERSIONS;
@@ -53,6 +54,11 @@ protected:
     static const char* Z_ORDER;
     static const char* FFD;
     static const char* FRAME;
+    static const char* TRANSLATE_FRAME;
+    static const char* ROTATE_FRAME;
+    static const char* SCALE_FRAME;
+    static const char* DISPLAY_FRAME;
+    static const char* COLOR_FRAME;
     static const char* DEFAULT_ACTIONS;
     static const char* ACTIONS;
     static const char* EVENTS;
@@ -98,6 +104,7 @@ protected:
     static const char* TWEEN_EASING;
     static const char* TWEEN_ROTATE;
     static const char* TWEEN_SCALE;
+    static const char* CLOCK_WISE;
     static const char* CURVE;
     static const char* EVENT;
     static const char* SOUND;
@@ -105,12 +112,13 @@ protected:
 
     static const char* X;
     static const char* Y;
-    static const char* ROTATION;
-    static const char* SKEW;
     static const char* SKEW_X;
     static const char* SKEW_Y;
     static const char* SCALE_X;
     static const char* SCALE_Y;
+    static const char* VALUE;
+    static const char* ROTATE;
+    static const char* SKEW;
 
     static const char* ALPHA_OFFSET;
     static const char* RED_OFFSET;

@@ -23,7 +23,7 @@ class JSONDataParser : public DataParser
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(JSONDataParser)
 
 protected:
-    inline static bool _getBoolean(const rapidjson::Value& rawData, const char*& key, bool defaultValue)
+    inline static bool _getBoolean(const rapidjson::Value& rawData, const char* key, bool defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -58,7 +58,7 @@ protected:
         return defaultValue;
     }
 
-    inline static unsigned _getNumber(const rapidjson::Value& rawData, const char*& key, unsigned defaultValue)
+    inline static unsigned _getNumber(const rapidjson::Value& rawData, const char* key, unsigned defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -68,7 +68,7 @@ protected:
         return defaultValue;
     }
 
-    inline static int _getNumber(const rapidjson::Value& rawData, const char*& key, int defaultValue)
+    inline static int _getNumber(const rapidjson::Value& rawData, const char* key, int defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -78,7 +78,7 @@ protected:
         return defaultValue;
     }
 
-    inline static float _getNumber(const rapidjson::Value& rawData, const char*& key, float defaultValue)
+    inline static float _getNumber(const rapidjson::Value& rawData, const char* key, float defaultValue)
     {
         if (rawData.HasMember(key) && rawData[key].IsNumber())
         {
@@ -88,7 +88,7 @@ protected:
         return defaultValue;
     }
 
-    inline static std::string _getString(const rapidjson::Value& rawData, const char*& key, const std::string& defaultValue)
+    inline static std::string _getString(const rapidjson::Value& rawData, const char* key, const std::string& defaultValue)
     {
         if (rawData.HasMember(key))
         {
@@ -148,7 +148,7 @@ protected:
 
 private:
     int _defalultColorOffset;
-    int _prevTweenRotate;
+    int _prevClockwise;
     float _prevRotation;
     Matrix _helpMatrixA;
     Matrix _helpMatrixB;
@@ -156,6 +156,12 @@ private:
     ColorTransform _helpColorTransform;
     Point _helpPoint;
     std::vector<float> _helpArray;
+    std::vector<std::int16_t> _intArray;
+    std::vector<float> _floatArray;
+    std::vector<std::int16_t> _frameIntArray;
+    std::vector<float> _frameFloatArray;
+    std::vector<std::int16_t> _frameArray;
+    std::vector<std::uint16_t> _timelineArray;
     std::vector<ActionFrame> _actionFrames;
     std::vector<PolygonBoundingBoxData*> _polygonBoundingBoxes;
     std::map<std::string, const rapidjson::Value*> _weightSlotPose;
@@ -163,13 +169,8 @@ private:
     std::map<std::string, std::vector<unsigned>> _weightBoneIndices;
     std::map<std::string, std::vector<BoneData*>> _cacheBones;
     std::map<std::string, MeshDisplayData*> _meshs;
+    std::map<std::string, std::vector<MeshDisplayData*>> _shareMeshs;
     std::map<std::string, std::vector<ActionData*>> _slotChildActions;
-    std::vector<std::int16_t> _intArray;
-    std::vector<float> _floatArray;
-    std::vector<std::int16_t> _frameIntArray;
-    std::vector<float> _frameFloatArray;
-    std::vector<std::int16_t> _frameArray;
-    std::vector<std::uint16_t> _timelineArray;
 
 public:
     JSONDataParser() :
@@ -186,7 +187,7 @@ public:
         _rawTextureAtlases(nullptr),
 
         _defalultColorOffset(-1),
-        _prevTweenRotate(0),
+        _prevClockwise(0),
         _prevRotation(0.0f),
         _helpMatrixA(),
         _helpMatrixB(),
@@ -194,6 +195,12 @@ public:
         _helpColorTransform(),
         _helpPoint(),
         _helpArray(),
+        _intArray(),
+        _floatArray(),
+        _frameIntArray(),
+        _frameFloatArray(),
+        _frameArray(),
+        _timelineArray(),
         _polygonBoundingBoxes(),
         _actionFrames(),
         _weightSlotPose(),
@@ -201,13 +208,8 @@ public:
         _weightBoneIndices(),
         _cacheBones(),
         _meshs(),
-        _slotChildActions(),
-        _intArray(),
-        _floatArray(),
-        _frameIntArray(),
-        _frameFloatArray(),
-        _frameArray(),
-        _timelineArray()
+        _shareMeshs(),
+        _slotChildActions()
     {
     }
     virtual ~JSONDataParser()
@@ -238,7 +240,7 @@ protected:
     virtual PolygonBoundingBoxData* _parsePolygonBoundingBox(const rapidjson::Value& rawData);
     virtual AnimationData* _parseAnimation(const rapidjson::Value& rawData);
     virtual TimelineData* _parseTimeline(
-        const rapidjson::Value& rawData, TimelineType type,
+        const rapidjson::Value& rawData, const char* framesKey, TimelineType type,
         bool addIntOffset, bool addFloatOffset, unsigned frameValueCount,
         const std::function<unsigned(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)>& frameParser
     );
@@ -247,7 +249,10 @@ protected:
     virtual unsigned _parseFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseTweenFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseZOrderFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
-    virtual unsigned _parseBoneFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual unsigned _parseBoneAllFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual unsigned _parseBoneTranslateFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual unsigned _parseBoneRotateFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual unsigned _parseBoneScaleFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseSlotDisplayIndexFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseSlotColorFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseSlotFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);

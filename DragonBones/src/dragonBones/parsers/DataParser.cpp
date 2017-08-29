@@ -7,13 +7,15 @@ const char* DataParser::DATA_VERSION_3_0 = "3.0";
 const char* DataParser::DATA_VERSION_4_0 = "4.0";
 const char* DataParser::DATA_VERSION_4_5 = "4.5";
 const char* DataParser::DATA_VERSION_5_0 = "5.0";
-const char* DataParser::DATA_VERSION = DataParser::DATA_VERSION_5_0;
+const char* DataParser::DATA_VERSION_5_5 = "5.5";
+const char* DataParser::DATA_VERSION = DataParser::DATA_VERSION_5_5;
 
 const std::vector<std::string> DataParser::DATA_VERSIONS
 { 
     DataParser::DATA_VERSION_4_0,
     DataParser::DATA_VERSION_4_5,
-    DataParser::DATA_VERSION_5_0
+    DataParser::DATA_VERSION_5_0,
+    DataParser::DATA_VERSION_5_5
 };
 
 const char* DataParser::TEXTURE_ATLAS = "TextureAtlas";
@@ -40,6 +42,11 @@ const char* DataParser::ANIMATION = "animation";
 const char* DataParser::Z_ORDER = "zOrder";
 const char* DataParser::FFD = "ffd";
 const char* DataParser::FRAME = "frame";
+const char* DataParser::TRANSLATE_FRAME = "translateFrame";
+const char* DataParser::ROTATE_FRAME = "rotateFrame";
+const char* DataParser::SCALE_FRAME = "scaleFrame";
+const char* DataParser::DISPLAY_FRAME = "displayFrame";
+const char* DataParser::COLOR_FRAME = "colorFrame";
 const char* DataParser::DEFAULT_ACTIONS = "defaultActions";
 const char* DataParser::ACTIONS = "actions";
 const char* DataParser::EVENTS = "events";
@@ -85,6 +92,7 @@ const char* DataParser::DURATION = "duration";
 const char* DataParser::TWEEN_EASING = "tweenEasing";
 const char* DataParser::TWEEN_ROTATE = "tweenRotate";
 const char* DataParser::TWEEN_SCALE = "tweenScale";
+const char* DataParser::CLOCK_WISE = "clockwise";
 const char* DataParser::CURVE = "curve";
 const char* DataParser::EVENT = "event";
 const char* DataParser::SOUND = "sound";
@@ -92,12 +100,13 @@ const char* DataParser::ACTION = "action";
 
 const char* DataParser::X = "x";
 const char* DataParser::Y = "y";
-const char* DataParser::ROTATION = "r";
-const char* DataParser::SKEW = "sk";
 const char* DataParser::SKEW_X = "skX";
 const char* DataParser::SKEW_Y = "skY";
 const char* DataParser::SCALE_X = "scX";
 const char* DataParser::SCALE_Y = "scY";
+const char* DataParser::VALUE = "value";
+const char* DataParser::ROTATE = "rotate";
+const char* DataParser::SKEW = "skew";
 
 const char* DataParser::ALPHA_OFFSET = "aO";
 const char* DataParser::RED_OFFSET = "rO";

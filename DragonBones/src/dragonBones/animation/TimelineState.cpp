@@ -153,7 +153,7 @@ void ActionTimelineState::update(float passedTime)
             const auto timelineData = _timelineData;
             const auto timelineFrameIndex = (unsigned)(currentTime * _frameRate); // uint
             const auto frameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + timelineFrameIndex];
-            if (_frameIndex != frameIndex) // Arrive at frame.  
+            if ((unsigned)_frameIndex != frameIndex) // Arrive at frame.  
             {
                 auto crossedFrameIndex = _frameIndex;
                 _frameIndex = frameIndex;
@@ -168,7 +168,7 @@ void ActionTimelineState::update(float passedTime)
                             crossedFrameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + prevFrameIndex];
                             if (currentPlayTimes == prevPlayTimes) // Start.
                             {
-                                if (crossedFrameIndex == frameIndex) // Uncrossed.
+                                if ((unsigned)crossedFrameIndex == frameIndex) // Uncrossed.
                                 {
                                     crossedFrameIndex = -1;
                                 }
@@ -202,7 +202,7 @@ void ActionTimelineState::update(float passedTime)
                                 crossedFrameIndex = _frameCount - 1;
                             }
 
-                            if (crossedFrameIndex ==  frameIndex)
+                            if ((unsigned)crossedFrameIndex ==  frameIndex)
                             {
                                 break;
                             }
@@ -229,7 +229,7 @@ void ActionTimelineState::update(float passedTime)
                                         crossedFrameIndex = _frameCount - 1;
                                     }
                                 }
-                                else if (crossedFrameIndex == frameIndex) // Uncrossed.
+                                else if ((unsigned)crossedFrameIndex == frameIndex) // Uncrossed.
                                 { 
                                     crossedFrameIndex = -1;
                                 }
@@ -263,7 +263,7 @@ void ActionTimelineState::update(float passedTime)
                                 loopCompleteEvent = nullptr;
                             }
 
-                            if (crossedFrameIndex == frameIndex)
+                            if ((unsigned)crossedFrameIndex == frameIndex)
                             {
                                 break;
                             }
@@ -351,7 +351,7 @@ void BoneAllTimelineState::_onArriveAtFrame()
 
         if (_tweenState == TweenState::Always) 
         {
-            if (_frameIndex == _frameCount - 1) 
+            if ((unsigned)_frameIndex == _frameCount - 1)
             {
                 valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }
@@ -399,6 +399,143 @@ void BoneAllTimelineState::fadeOut()
     bonePose->result.skew = Transform::normalizeRadian(bonePose->result.skew);
 }
 
+void BoneTranslateTimelineState::_onArriveAtFrame()
+{
+    BoneTimelineState::_onArriveAtFrame();
+
+    if (_timelineData != nullptr)
+    {
+        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
+
+        bonePose->current.x = frameFloatArray[valueOffset++];
+        bonePose->current.y = frameFloatArray[valueOffset++];
+
+        if (_tweenState == TweenState::Always)
+        {
+            if ((unsigned)_frameIndex == _frameCount - 1)
+            {
+                valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
+            }
+
+            bonePose->delta.x = frameFloatArray[valueOffset++] - bonePose->current.x;
+            bonePose->delta.y = frameFloatArray[valueOffset++] - bonePose->current.y;
+        }
+    }
+    else
+    {
+        bonePose->current.x = 0.0f;
+        bonePose->current.y = 0.0f;
+    }
+}
+
+void BoneTranslateTimelineState::_onUpdateFrame()
+{
+    BoneTimelineState::_onUpdateFrame();
+
+    bone->_transformDirty = true;
+    if (_tweenState != TweenState::Always)
+    {
+        _tweenState = TweenState::None;
+    }
+
+    bonePose->result.x = bonePose->current.x + bonePose->delta.x * _tweenProgress;
+    bonePose->result.y = bonePose->current.y + bonePose->delta.y * _tweenProgress;
+}
+
+void BoneRotateTimelineState::_onArriveAtFrame()
+{
+    BoneTimelineState::_onArriveAtFrame();
+
+    if (_timelineData != nullptr)
+    {
+        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
+
+        bonePose->current.rotation = frameFloatArray[valueOffset++];
+        bonePose->current.skew = frameFloatArray[valueOffset++];
+
+        if (_tweenState == TweenState::Always)
+        {
+            if ((unsigned)_frameIndex == _frameCount - 1)
+            {
+                valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
+            }
+
+            bonePose->delta.rotation = frameFloatArray[valueOffset++] - bonePose->current.rotation;
+            bonePose->delta.skew = frameFloatArray[valueOffset++] - bonePose->current.skew;
+        }
+    }
+    else
+    {
+        bonePose->current.rotation = 0.0f;
+        bonePose->current.skew = 0.0f;
+    }
+}
+
+void BoneRotateTimelineState::_onUpdateFrame()
+{
+    BoneTimelineState::_onUpdateFrame();
+
+    bone->_transformDirty = true;
+    if (_tweenState != TweenState::Always)
+    {
+        _tweenState = TweenState::None;
+    }
+
+    bonePose->result.rotation = bonePose->current.rotation + bonePose->delta.rotation * _tweenProgress;
+    bonePose->result.skew = bonePose->current.skew + bonePose->delta.skew * _tweenProgress;
+}
+
+void BoneRotateTimelineState::fadeOut()
+{
+    bonePose->result.rotation = Transform::normalizeRadian(bonePose->result.rotation);
+    bonePose->result.skew = Transform::normalizeRadian(bonePose->result.skew);
+}
+
+void BoneScaleTimelineState::_onArriveAtFrame()
+{
+    BoneTimelineState::_onArriveAtFrame();
+
+    if (_timelineData != nullptr)
+    {
+        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
+        bonePose->current.scaleX = frameFloatArray[valueOffset++];
+        bonePose->current.scaleY = frameFloatArray[valueOffset++];
+
+        if (_tweenState == TweenState::Always)
+        {
+            if ((unsigned)_frameIndex == _frameCount - 1)
+            {
+                valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
+            }
+
+            bonePose->delta.scaleX = frameFloatArray[valueOffset++] - bonePose->current.scaleX;
+            bonePose->delta.scaleY = frameFloatArray[valueOffset++] - bonePose->current.scaleY;
+        }
+    }
+    else
+    {
+        bonePose->current.scaleX = 1.0f;
+        bonePose->current.scaleY = 1.0f;
+    }
+}
+
+void BoneScaleTimelineState::_onUpdateFrame()
+{
+    BoneTimelineState::_onUpdateFrame();
+
+    bone->_transformDirty = true;
+    if (_tweenState != TweenState::Always)
+    {
+        _tweenState = TweenState::None;
+    }
+
+    bonePose->result.scaleX = bonePose->current.scaleX + bonePose->delta.scaleX * _tweenProgress;
+    bonePose->result.scaleY = bonePose->current.scaleY + bonePose->delta.scaleY * _tweenProgress;
+}
+
 void SlotDislayIndexTimelineState::_onArriveAtFrame()
 {
     if (playState >= 0) 
@@ -439,7 +576,7 @@ void SlotColorTimelineState::_onArriveAtFrame()
 
         if (_tweenState == TweenState::Always) 
         {
-            if (_frameIndex == _frameCount - 1) 
+            if ((unsigned)_frameIndex == _frameCount - 1)
             {
                 colorOffset = frameIntArray[_animationData->frameIntOffset + _frameValueOffset];
             }
@@ -592,7 +729,7 @@ void SlotFFDTimelineState::_onArriveAtFrame()
         if (isTween) 
         {
             auto nextValueOffset = valueOffset + _valueCount;
-            if (_frameIndex == _frameCount - 1) 
+            if ((unsigned)_frameIndex == _frameCount - 1)
             {
                 nextValueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }

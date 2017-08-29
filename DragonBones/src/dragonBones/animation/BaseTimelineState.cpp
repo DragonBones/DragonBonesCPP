@@ -170,7 +170,7 @@ void TimelineState::update(float passedTime)
         {
             const auto timelineFrameIndex = (unsigned)(currentTime * _frameRate);
             const auto frameIndex = (*_frameIndices)[_timelineData->frameIndicesOffset + timelineFrameIndex];
-            if (_frameIndex != frameIndex)
+            if ((unsigned)_frameIndex != frameIndex)
             {
                 _frameIndex = frameIndex;
                 _frameOffset = _animationData->frameOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + _frameIndex];
@@ -213,7 +213,7 @@ void TweenTimelineState::_onArriveAtFrame()
     if (
         _frameCount > 1 &&
         (
-            _frameIndex != _frameCount - 1 ||
+            (unsigned)_frameIndex != _frameCount - 1 ||
             _animationState->playTimes == 0 ||
             _animationState->getCurrentPlayTimes() < _animationState->playTimes - 1
         )
@@ -231,7 +231,7 @@ void TweenTimelineState::_onArriveAtFrame()
         }
 
         _framePosition = _frameArray[_frameOffset] * _frameRateR;
-        if (_frameIndex == _frameCount - 1) 
+        if ((unsigned)_frameIndex == _frameCount - 1)
         {
             _frameDurationR = 1.0f / (_animationData->duration - _framePosition);
         }

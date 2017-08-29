@@ -319,20 +319,36 @@ void AnimationState::updateTimelines()
                             break;
                         }
 
-                        case TimelineType::BoneT:
-                        case TimelineType::BoneR:
-                        case TimelineType::BoneS:
-                            // TODO support more timeline type
+                        case TimelineType::BoneTranslate:
+                        {
+                            const auto timeline = BaseObject::borrowObject<BoneTranslateTimelineState>();
+                            timeline->bone = bone;
+                            timeline->bonePose = bonePose;
+                            timeline->init(_armature, this, timelineData);
+                            _boneTimelines.push_back(timeline);
                             break;
+                        }
 
-                        case TimelineType::BoneX:
-                        case TimelineType::BoneY:
-                        case TimelineType::BoneRotation:
-                        case TimelineType::BoneSkew:
-                        case TimelineType::BoneScaleX:
-                        case TimelineType::BoneScaleY:
-                            // TODO support more timeline type
+                        case TimelineType::BoneRotate:
+                        {
+                            const auto timeline = BaseObject::borrowObject<BoneRotateTimelineState>();
+                            timeline->bone = bone;
+                            timeline->bonePose = bonePose;
+                            timeline->init(_armature, this, timelineData);
+                            _boneTimelines.push_back(timeline);
                             break;
+                        }
+
+                        case TimelineType::BoneScale:
+                        {
+                            const auto timeline = BaseObject::borrowObject<BoneScaleTimelineState>();
+                            timeline->bone = bone;
+                            timeline->bonePose = bonePose;
+                            timeline->init(_armature, this, timelineData);
+                            _boneTimelines.push_back(timeline);
+                            break;
+                        }
+
                         default:
                             break;
                     }
@@ -521,7 +537,7 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
     if (isCacheEnabled) // Update cache.
     {
         const auto cacheFrameIndex = (unsigned)(_actionTimeline->currentTime * cacheFrameRate); // uint
-        if (_armature->_cacheFrameIndex == cacheFrameIndex) // Same cache.
+        if ((unsigned)_armature->_cacheFrameIndex == cacheFrameIndex) // Same cache.
         { 
             isUpdateTimeline = false;
             isUpdateBoneTimeline = false;
@@ -558,7 +574,7 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
                         {
                             if (bone->_blendLeftWeight > 0.0f) 
                             {
-                                if (bone->_blendLayer != layer)
+                                if ((unsigned)bone->_blendLayer != layer)
                                 {
                                     if (bone->_blendLayerWeight >= bone->_blendLeftWeight) {
                                         bone->_blendLeftWeight = 0.0f;
