@@ -69,7 +69,7 @@ void AnimationTimelineState::_onCrossFrame(AnimationFrameData* frame)
             }
 
             eventObject->name = eventData->name;
-            //eventObject->data = eventData->data; // TODO
+            eventObject->data = eventData->data;
 
             this->_armature->_bufferEvent(eventObject, eventType);
         }
@@ -719,6 +719,22 @@ void FFDTimelineState::update(float time)
             slot->_ffdDirty = true;
         }
     }
+}
+
+ZOrderTimelineState::ZOrderTimelineState()
+{
+    _onClear();
+}
+ZOrderTimelineState::~ZOrderTimelineState()
+{
+    _onClear();
+}
+
+void ZOrderTimelineState::_onArriveAtFrame(bool isUpdate)
+{
+    TweenTimelineState::_onArriveAtFrame(isUpdate);
+
+    this->_armature->_sortZOrder(this->_currentFrame->zOrder);
 }
 
 DRAGONBONES_NAMESPACE_END

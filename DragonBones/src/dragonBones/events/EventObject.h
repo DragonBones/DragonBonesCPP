@@ -11,6 +11,7 @@ class Bone;
 class Slot;
 class AnimationState;
 class AnimationFrameData;
+class CustomData;
 
 class EventObject final : public BaseObject
 {
@@ -36,7 +37,7 @@ public:
 public:
     std::string type;
     std::string name;
-    //void* data; // TODO
+    CustomData* data;
     void* userData;
     Armature* armature;
     Bone* bone;

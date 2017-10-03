@@ -30,15 +30,16 @@ protected:
         scale = 1.f;
         offset = 0.f;
 
-        T* prevFrame = nullptr;
-        for (const auto frame : frames)
-        {
-            if (prevFrame && frame != prevFrame)
-            {
-                prevFrame->returnToPool();
+        std::vector<T*> deleteFrames;
+        for (const auto frame : frames) {
+            auto i = std::find(deleteFrames.begin(), deleteFrames.end(), frame);
+            if (i == deleteFrames.end()) {
+                deleteFrames.push_back(frame);
             }
+        }
 
-            prevFrame = frame;
+        for (const auto frame : deleteFrames) {
+            frame->returnToPool();
         }
 
         frames.clear();
@@ -122,6 +123,21 @@ private:
 
 protected:
     void _onClear() override;
+};
+
+/**
+* @private
+*/
+class ZOrderTimelineData final : public TimelineData<ZOrderFrameData>
+{
+    BIND_CLASS_TYPE(ZOrderTimelineData);
+
+public:
+    ZOrderTimelineData();
+    ~ZOrderTimelineData();
+
+private:
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(ZOrderTimelineData);
 };
 
 DRAGONBONES_NAMESPACE_END

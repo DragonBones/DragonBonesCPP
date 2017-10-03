@@ -231,7 +231,7 @@ Mecha::Mecha() :
     _target()
 {
     _armature = CoreElementGame::instance->factory.buildArmature("mecha_1502b");
-    _armatureDisplay = (dragonBones::CCArmatureDisplay*)_armature->getDisplay();
+    _armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_armature->getDisplay());
     _armatureDisplay->setPosition(480.f, CoreElementGame::GROUND);
     _armatureDisplay->setScale(1.f);
     _armatureDisplay->getEventDispatcher()->setEnabled(true);
@@ -243,8 +243,8 @@ Mecha::Mecha() :
 
     _weaponR = _armature->getSlot("weapon_r")->getChildArmature();
     _weaponL = _armature->getSlot("weapon_l")->getChildArmature();
-    const auto weaponRDisplay = (dragonBones::CCArmatureDisplay*)_weaponR->getDisplay();
-    const auto weaponLDisplay = (dragonBones::CCArmatureDisplay*)_weaponL->getDisplay();
+    const auto weaponRDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_weaponR->getDisplay());
+    const auto weaponLDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_weaponL->getDisplay());
     weaponRDisplay->getEventDispatcher()->setEnabled(true);
     weaponLDisplay->getEventDispatcher()->setEnabled(true);
     weaponRDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FRAME_EVENT, std::bind(&Mecha::_frameEventHandler, this, std::placeholders::_1));
@@ -320,13 +320,13 @@ void Mecha::switchWeaponR()
         _weaponRIndex = 0;
     }
 
-    auto weaponDisplay = (dragonBones::CCArmatureDisplay*)_weaponR->getDisplay();
+    auto weaponDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_weaponR->getDisplay());
     weaponDisplay->getEventDispatcher()->removeCustomEventListeners(dragonBones::EventObject::FRAME_EVENT);
 
     const auto weaponName = WEAPON_R_LIST[_weaponRIndex];
     _weaponR = CoreElementGame::instance->factory.buildArmature(weaponName);
     _armature->getSlot("weapon_r")->setChildArmature(_weaponR);
-    weaponDisplay = (dragonBones::CCArmatureDisplay*)_weaponR->getDisplay();
+    weaponDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_weaponR->getDisplay());
     weaponDisplay->getEventDispatcher()->setEnabled(true);
     weaponDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FRAME_EVENT, std::bind(&Mecha::_frameEventHandler, this, std::placeholders::_1));
 }
@@ -340,13 +340,13 @@ void Mecha::switchWeaponL()
         _weaponLIndex = 0;
     }
 
-    auto weaponDisplay = (dragonBones::CCArmatureDisplay*)_weaponL->getDisplay();
+    auto weaponDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_weaponL->getDisplay());
     weaponDisplay->getEventDispatcher()->removeCustomEventListeners(dragonBones::EventObject::FRAME_EVENT);
 
     const auto weaponName = WEAPON_L_LIST[_weaponLIndex];
     _weaponL = CoreElementGame::instance->factory.buildArmature(weaponName);
     _armature->getSlot("weapon_l")->setChildArmature(_weaponL);
-    weaponDisplay = (dragonBones::CCArmatureDisplay*)_weaponL->getDisplay();
+    weaponDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_weaponL->getDisplay());
     weaponDisplay->getEventDispatcher()->setEnabled(true);
     weaponDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FRAME_EVENT, std::bind(&Mecha::_frameEventHandler, this, std::placeholders::_1));
 }
@@ -392,7 +392,7 @@ void Mecha::_frameEventHandler(cocos2d::EventCustom* event)
     const auto eventObject = (dragonBones::EventObject*)event->getUserData();
     if (eventObject->name == "onFire")
     {
-        const auto display = (dragonBones::CCArmatureDisplay*)eventObject->armature->getDisplay();
+        const auto display = dynamic_cast<dragonBones::CCArmatureDisplay*>(eventObject->armature->getDisplay());
         const auto firePointBone = eventObject->armature->getBone("firePoint");
         const auto transform = display->getNodeToWorldTransform();
         cocos2d::Vec3 localPoint(firePointBone->global.x, -firePointBone->global.y, 0.f);
@@ -601,7 +601,7 @@ CoreElementBullet::CoreElementBullet(const std::string& armatureName, const std:
     _speedY = -std::sin(radian) * speed;
 
     _armature = CoreElementGame::instance->factory.buildArmature(armatureName);
-    _armatureDisplay = (dragonBones::CCArmatureDisplay*)_armature->getDisplay();
+    _armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_armature->getDisplay());
     _armatureDisplay->setPosition(position);
     _armatureDisplay->setRotation(radian * dragonBones::RADIAN_TO_ANGLE);
     _armature->getAnimation().play("idle");
@@ -609,7 +609,7 @@ CoreElementBullet::CoreElementBullet(const std::string& armatureName, const std:
     if (!effectArmatureName.empty())
     {
         _effect = CoreElementGame::instance->factory.buildArmature(effectArmatureName);
-        const auto effectDisplay = (dragonBones::CCArmatureDisplay*)_effect->getDisplay();
+        const auto effectDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(_effect->getDisplay());
         effectDisplay->setPosition(position);
         effectDisplay->setRotation(radian * dragonBones::RADIAN_TO_ANGLE);
         effectDisplay->setScaleX(cocos2d::random(1.f, 2.f));
@@ -649,7 +649,7 @@ bool CoreElementBullet::update()
         if (_effect)
         {
             dragonBones::WorldClock::clock.remove(_effect);
-            CoreElementGame::instance->removeChild((dragonBones::CCArmatureDisplay*)_effect->getDisplay());
+            CoreElementGame::instance->removeChild(dynamic_cast<dragonBones::CCArmatureDisplay*>(_effect->getDisplay()));
             _effect->dispose();
         }
 

@@ -10,7 +10,8 @@ DRAGONBONES_NAMESPACE_BEGIN
 bool AnimationState::stateActionEnabled = true;
 
 AnimationState::AnimationState() :
-    _timeline(nullptr)
+    _timeline(nullptr),
+    _zOrderTimeline(nullptr)
 {
     _onClear();
 }
@@ -58,7 +59,13 @@ void AnimationState::_onClear()
         _timeline->returnToPool();
         _timeline = nullptr;
     }
-    
+
+    if (_zOrderTimeline)
+    {
+        _zOrderTimeline->returnToPool();
+    }
+    _zOrderTimeline = nullptr;
+
     _isPlaying = true;
     _isPausePlayhead = false;
     _isFadeOut = false;
@@ -243,7 +250,7 @@ void AnimationState::_updateTimelineStates()
     {
         const auto boneTimelineState = pair.second;
         boneTimelineState->bone->invalidUpdate();
-        _boneTimelines.erase(std::find(_boneTimelines.cbegin(), _boneTimelines.cend(), boneTimelineState));
+        _boneTimelines.erase(std::find(_boneTimelines.begin(), _boneTimelines.end(), boneTimelineState));
         boneTimelineState->returnToPool();
     }
 
@@ -279,8 +286,21 @@ void AnimationState::_updateTimelineStates()
     for (const auto& pair : slotTimelineStates)
     {
         const auto timelineState = pair.second;
-        _slotTimelines.erase(std::find(_slotTimelines.cbegin(), _slotTimelines.cend(), timelineState));
+        _slotTimelines.erase(std::find(_slotTimelines.begin(), _slotTimelines.end(), timelineState));
         timelineState->returnToPool();
+    }
+
+    if (_zOrderTimeline)
+    {
+        _zOrderTimeline->returnToPool();
+        _zOrderTimeline = nullptr;
+    }
+
+    const auto zOrderTimelineData = _animationData->getZOrderTimeline();
+    if(zOrderTimelineData)
+    {
+        _zOrderTimeline = BaseObject::borrowObject<ZOrderTimelineState>();
+        _zOrderTimeline->fadeIn(_armature, this, zOrderTimelineData, time);
     }
 
     _updateFFDTimelineStates();
@@ -344,7 +364,7 @@ void AnimationState::_updateFFDTimelineStates()
     {
         const auto ffdTimelineState = pair.second;
         //ffdTimelineState->slot->_ffdDirty = true;
-        _ffdTimelines.erase(std::find(_ffdTimelines.cbegin(), _ffdTimelines.cend(), ffdTimelineState));
+        _ffdTimelines.erase(std::find(_ffdTimelines.begin(), _ffdTimelines.end(), ffdTimelineState));
         ffdTimelineState->returnToPool();
     }
 }
@@ -437,6 +457,10 @@ void AnimationState::_advanceTime(float passedTime, float weightLeft, int index)
             {
                 ffdTimelineState->update(time);
             }
+
+            if(_zOrderTimeline){
+                _zOrderTimeline->update(time);
+            }
         }
     }
 
@@ -490,6 +514,10 @@ void AnimationState::fadeOut(float fadeOutTime, bool pausePlayhead)
         {
             slotTimelineState->fadeOut();
         }
+
+        if(_zOrderTimeline){
+            _zOrderTimeline->fadeOut();
+        }
     }
 
     displayControl = false;
@@ -534,7 +562,7 @@ void AnimationState::addBoneMask(const std::string& name, bool recursive)
 
 void AnimationState::removeBoneMask(const std::string& name, bool recursive)
 {
-    const auto iterator = std::find(_boneMask.cbegin(), _boneMask.cend(), name);
+    auto iterator = std::find(_boneMask.begin(), _boneMask.end(), name);
     if (iterator != _boneMask.cend())
     {
         _boneMask.erase(iterator);
@@ -548,7 +576,7 @@ void AnimationState::removeBoneMask(const std::string& name, bool recursive)
             for (const auto bone : _armature->getBones())
             {
                 const auto boneName = bone->name;
-                const auto iterator = std::find(_boneMask.cbegin(), _boneMask.cend(), boneName);
+                auto iterator = std::find(_boneMask.begin(), _boneMask.end(), boneName);
                 if (
                     iterator != _boneMask.cend() &&
                     currentBone->contains(bone)
@@ -608,6 +636,10 @@ void AnimationState::setCurrentTime(float value)
     for (const auto ffdTimelineState : _ffdTimelines)
     {
         ffdTimelineState->_isCompleted = false;
+    }
+
+    if(_zOrderTimeline){
+        _zOrderTimeline->_isCompleted = false;
     }
 }
 

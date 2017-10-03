@@ -29,6 +29,8 @@ public:
     /** @private */
     std::map<std::string, std::map<std::string, std::map<std::string, FFDTimelineData*>>> ffdTimelines; // skin slot displayIndex
     /** @private */
+    ZOrderTimelineData* zOrderTimeline;
+    /** @private */
     std::vector<bool> cachedFrames;
 
     /** @private */
@@ -51,6 +53,8 @@ public:
     void addSlotTimeline(SlotTimelineData* value);
     /** @private */
     void addFFDTimeline(FFDTimelineData* value);
+    /** @private */
+    void addZOrderTimeline(ZOrderTimelineData* value);
 
     /** @private */
     inline BoneTimelineData* getBoneTimeline(const std::string& name) const
@@ -80,6 +84,12 @@ public:
         }
 
         return nullptr;
+    }
+
+    /** @private */
+    inline ZOrderTimelineData* getZOrderTimeline() const
+    {
+        return zOrderTimeline;
     }
 };
 

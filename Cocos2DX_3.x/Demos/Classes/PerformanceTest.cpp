@@ -93,7 +93,7 @@ bool PerformanceTest::init()
 void PerformanceTest::_addArmature()
 {
     const auto armature = _factory.buildArmature(_dragonBonesData->getArmatureNames()[1]);
-    const auto armatureDisplay = static_cast<dragonBones::CCArmatureDisplay*>(armature->getDisplay());
+    const auto armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(armature->getDisplay());
 
     armatureDisplay->setScale(0.3f);
     this->addChild(armatureDisplay);
@@ -114,7 +114,7 @@ void PerformanceTest::_removeArmature()
     }
 
     const auto armature = _armatures.back();
-    const auto armatureDisplay = static_cast<dragonBones::CCArmatureDisplay*>(armature->getDisplay());
+    const auto armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(armature->getDisplay());
     this->removeChild(armatureDisplay);
     dragonBones::WorldClock::clock.remove(armature);
     armature->dispose();
@@ -137,7 +137,7 @@ void PerformanceTest::_resetPosition()
     for (std::size_t i = 0, l = _armatures.size(); i < l; ++i)
     {
         const auto armature = _armatures[i];
-        const auto armatureDisplay = static_cast<dragonBones::CCArmatureDisplay*>(armature->getDisplay());
+        const auto armatureDisplay = dynamic_cast<dragonBones::CCArmatureDisplay*>(armature->getDisplay());
         const auto lineY = (unsigned)std::floor(i / columnNum);
 
         armatureDisplay->setPosition(

@@ -46,6 +46,7 @@ public: // private friend class
     std::vector<DisplayData*> _replacedDisplayDataSet;
 
 protected:
+    bool _zOrderDirty;
     bool _displayDirty;
     bool _blendModeDirty;
     bool _originDirty;
@@ -107,6 +108,8 @@ protected:
 
 public:
     /** @private */
+    virtual void _updateZOrder() = 0;
+    /** @private */
     virtual void _updateVisible() = 0;
     /** @private */
     virtual void _updateBlendMode() = 0;
@@ -125,6 +128,8 @@ public:
     bool _setBlendMode(BlendMode value);
     /** @private */
     bool _setColor(const ColorTransform& value);
+    /** @private */
+    bool _setZOrder(int value);
 
 public:
     inline void invalidUpdate() 

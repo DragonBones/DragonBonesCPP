@@ -13,6 +13,7 @@ class AnimationTimelineState;
 class BoneTimelineState;
 class SlotTimelineState;
 class FFDTimelineState;
+class ZOrderTimelineState;
 
 class AnimationState final : public BaseObject
 {
@@ -62,6 +63,7 @@ private:
     std::vector<BoneTimelineState*> _boneTimelines;
     std::vector<SlotTimelineState*> _slotTimelines;
     std::vector<FFDTimelineState*> _ffdTimelines;
+    ZOrderTimelineState* _zOrderTimeline;
 
 public:
     AnimationState();
