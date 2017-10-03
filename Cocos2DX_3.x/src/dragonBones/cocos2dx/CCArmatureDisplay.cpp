@@ -57,6 +57,8 @@ void CCArmatureDisplay::dispose()
         _armature->dispose();
         _armature = nullptr;
     }
+    
+    release()
 }
 
 void CCArmatureDisplay::update(float passedTime)
@@ -199,10 +201,12 @@ cocos2d::PolygonInfo& DBCCSprite::getPolygonInfoModify()
     return this->_polyInfo;
 }
 
+
 #if COCOS2D_VERSION >= 0x00031400
 void DBCCSprite::setRenderMode(RenderMode m) {
     _renderMode = m;
 }
 #endif
+
 
 DRAGONBONES_NAMESPACE_END
