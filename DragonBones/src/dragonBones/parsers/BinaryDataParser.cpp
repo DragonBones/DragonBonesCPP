@@ -17,10 +17,13 @@ TimelineData* BinaryDataParser::_parseBinaryTimeline(TimelineType type, unsigned
     }
     else 
     {
+        unsigned frameIndicesOffset = 0;
         const auto totalFrameCount = _animation->frameCount + 1; // One more frame than animation.
-        const auto& frameIndices = &_data->frameIndices;
-        timeline->frameIndicesOffset = frameIndices->size();
-        frameIndices->resize(frameIndices->size() + totalFrameCount);
+        auto& frameIndices = _data->frameIndices;
+
+        frameIndicesOffset = frameIndices.size();
+        timeline->frameIndicesOffset = frameIndicesOffset;
+        frameIndices.resize(frameIndicesOffset + totalFrameCount);
 
         for (
             std::size_t i = 0, iK = 0, frameStart = 0, frameCount = 0;
@@ -43,7 +46,7 @@ TimelineData* BinaryDataParser::_parseBinaryTimeline(TimelineType type, unsigned
                 iK++;
             }
 
-            (*frameIndices)[timeline->frameIndicesOffset + i] = iK - 1;
+            frameIndices[frameIndicesOffset + i] = iK - 1;
         }
     }
 
@@ -63,33 +66,25 @@ void BinaryDataParser::_parseMesh(const rapidjson::Value& rawData, MeshDisplayDa
         const auto vertexCount = _intArray[mesh.offset + (unsigned)BinaryOffset::MeshVertexCount];
         const auto boneCount = (unsigned)_intArray[weightOffset + (unsigned)BinaryOffset::WeigthBoneCount];
         weight->offset = weightOffset;
-        weight->bones.resize(boneCount);
 
         for (std::size_t i = 0; i < boneCount; ++i) 
         {
             const auto boneIndex = _intArray[weightOffset + (unsigned)BinaryOffset::WeigthBoneIndices + i];
-            weight->bones[i] = _rawBones[boneIndex];
+            weight->addBone(_rawBones[boneIndex]);
         }
 
         auto boneIndicesOffset = weightOffset + (unsigned)BinaryOffset::WeigthBoneIndices + boneCount;
+        unsigned weightCount = 0;
         for (std::size_t i = 0, l = vertexCount; i < l; ++i)
         {
             const auto vertexBoneCount = (unsigned)_intArray[boneIndicesOffset++];
-            weight->count += vertexBoneCount;
+            weightCount += vertexBoneCount;
             boneIndicesOffset += vertexBoneCount;
         }
 
+        weight->count = weightCount;
         mesh.weight = weight;
     }
-}
-
-BoundingBoxData* BinaryDataParser::_parseBoundingBox(const rapidjson::Value& rawData)
-{
-    const auto polygonBoundingBox = BaseObject::borrowObject<PolygonBoundingBoxData>();
-    polygonBoundingBox->offset = rawData[OFFSET].GetUint();
-    polygonBoundingBox->vertices = _floatArray;
-
-    return polygonBoundingBox;
 }
 
 AnimationData* BinaryDataParser::_parseAnimation(const rapidjson::Value& rawData)
@@ -97,7 +92,7 @@ AnimationData* BinaryDataParser::_parseAnimation(const rapidjson::Value& rawData
     const auto animation =  BaseObject::borrowObject<AnimationData>();
     animation->frameCount = std::max(_getNumber(rawData, DURATION, 1), 1);
     animation->playTimes = _getNumber(rawData, PLAY_TIMES, 1);
-    animation->duration = (float)(animation->frameCount) / _armature->frameRate;
+    animation->duration = (float)(animation->frameCount) / _armature->frameRate; // float
     animation->fadeInTime = _getNumber(rawData, FADE_IN_TIME, 0.0f);
     animation->scale = _getNumber(rawData, SCALE, 1.0f);
     animation->name = _getString(rawData, NAME, DEFAULT_NAME);
@@ -177,6 +172,7 @@ void BinaryDataParser::_parseArray(const rapidjson::Value& rawData)
 {
     const auto& offsets = rawData[OFFSET];
 
+	_data->binary = _binary;
     _data->intArray = _intArray = (int16_t*)(_binary + offsets[0].GetUint());
     _data->floatArray = _floatArray = (float*)(_binary + offsets[2].GetUint());
     _data->frameIntArray = _frameIntArray = (int16_t*)(_binary + offsets[4].GetUint());

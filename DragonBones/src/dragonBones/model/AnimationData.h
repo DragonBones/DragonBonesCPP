@@ -87,15 +87,15 @@ public:
     /**
     * @private
     */
-    ArmatureData* parent;
-    /**
-    * @private
-    */
     TimelineData* actionTimeline;
     /**
     * @private
     */
     TimelineData* zOrderTimeline;
+    /**
+    * @private
+    */
+    ArmatureData* parent;
     /**
     * @private
     */
@@ -154,6 +154,16 @@ public:
     {
         return mapFindB(slotCachedFrameIndices, name);
     }
+
+public: // For WebAssembly.
+    TimelineData* getActionTimeline(const std::string& name) const { return actionTimeline; }
+    void setActionTimeline(TimelineData* pactionTimeline) { actionTimeline = pactionTimeline; }
+
+    TimelineData* getZOrderTimeline(const std::string& name) const { return zOrderTimeline; }
+    void setZOrderTimeline(TimelineData* value) { zOrderTimeline = value; }
+
+    ArmatureData* getParent() const { return parent; }
+    void setParent(ArmatureData* value) { parent = value; }
 };
 /**
 * @private
@@ -164,7 +174,6 @@ class TimelineData : public BaseObject
 
 public:
     TimelineType type;
-    // TODO Check(int->unsigned)
     unsigned offset;
     int frameIndicesOffset;
 
@@ -172,8 +181,7 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    int getType() { return (int)type; }
-
+    int getType() const { return (int)type; }
     void setType(int value) { type = (TimelineType)value; }
 };
 

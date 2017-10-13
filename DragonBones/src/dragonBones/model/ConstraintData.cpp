@@ -9,6 +9,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 void ConstraintData::_onClear()
 {
     order = 0;
+    name = "";
     target = nullptr;
     bone = nullptr;
     root = nullptr;

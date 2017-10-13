@@ -19,18 +19,19 @@ public:
     std::string name;
     std::string path;
     Transform transform;
-    ArmatureData* parent;
+    SkinData* parent;
 
 protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
     int getType() const { return (int)type; }
-    Transform* getTransform() { return &transform; }
-    ArmatureData* getParent() const { return parent; }
-
     void setType(int value) { type = (DisplayType)value; }
-    void setParent(ArmatureData* value) { parent = value; }
+
+    Transform* getTransform() { return &transform; }
+
+    SkinData* getParent() const { return parent; }
+    void setParent(SkinData* value) { parent = value; }
 };
 /**
 * @private
@@ -48,8 +49,8 @@ protected:
 
 public: // For WebAssembly.
     Point* getPivot() { return &pivot; }
-    TextureData* getTexture() const { return texture; }
 
+    TextureData* getTexture() const { return texture; }
     void setTexture(TextureData* value) { texture = value; }
 };
 /**
@@ -67,10 +68,16 @@ public:
 protected:
     virtual void _onClear() override;
 
-public: // For WebAssembly.
-    std::vector<ActionData*> * getActions() { return &actions; }
-    ArmatureData* getArmature() const { return armature; }
+public:
+    /**
+    * @private
+    */
+    void addAction(ActionData* value);
 
+public: // For WebAssembly.
+    const std::vector<ActionData*>& getActions() const { return actions; }
+
+    ArmatureData* getArmature() const { return armature; }
     void setArmature(ArmatureData* value) { armature = value; }
 };
 /**
@@ -82,7 +89,6 @@ class MeshDisplayData : public ImageDisplayData
 
 public:
     bool inheritAnimation;
-    // TODO Check (int->unsigned)
     unsigned offset;
     WeightData* weight;
 
@@ -101,7 +107,6 @@ protected:
 
 public: // For WebAssembly.
     WeightData* getWeight() const { return weight; }
-
     void setWeight(WeightData* value) { weight = value; }
 };
 /**
@@ -128,7 +133,7 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    BoundingBoxData* getBoundingBox() const { return boundingBox; }
+    const BoundingBoxData* getBoundingBox() const { return boundingBox; }
     void setBoundingBox(BoundingBoxData* value) { boundingBox = value; }
 };
 /**
@@ -143,11 +148,14 @@ public:
     unsigned offset;
     std::vector<BoneData*> bones;
 
-public: // For WebAssembly.
-    std::vector<BoneData*> * getBones() { return &bones; }
-
 protected:
     virtual void _onClear() override;
+
+public:
+    void addBone(BoneData* value);
+
+public: // For WebAssembly.
+    const std::vector<BoneData*>& getBones() const { return bones; }
 };
 
 DRAGONBONES_NAMESPACE_END

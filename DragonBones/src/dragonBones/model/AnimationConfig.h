@@ -176,9 +176,19 @@ protected:
 public:
     void clear();
     void copyFrom(AnimationConfig* value);
-    bool containsBoneMask(const std::string& name);
+    bool containsBoneMask(const std::string& name) const;
     void addBoneMask(Armature* armature, const std::string& name, bool recursive);
     void removeBoneMask(Armature* armature, const std::string& name, bool recursive);
+
+public: // For WebAssembly.
+    int getFadeOutMode() const { return (int)fadeOutMode; }
+    void setFadeOutMode(int value) { fadeOutMode = (AnimationFadeOutMode)value; }
+
+    int getFadeOutTweenType() const { return (int)fadeOutTweenType; }
+    void setFadeOutTweenType(int value) { fadeOutTweenType = (TweenType)value; }
+
+    int getFadeInTweenType() const { return (int)fadeInTweenType; }
+    void setFadeInTweenType(int value) { fadeInTweenType = (TweenType)value; }
 };
 
 DRAGONBONES_NAMESPACE_END

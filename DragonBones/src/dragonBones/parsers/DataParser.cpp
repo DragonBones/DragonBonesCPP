@@ -68,6 +68,7 @@ const char* DataParser::SUB_TYPE = "subType";
 const char* DataParser::NAME = "name";
 const char* DataParser::PARENT = "parent";
 const char* DataParser::TARGET = "target";
+const char* DataParser::STAGE = "stage";
 const char* DataParser::SHARE = "share";
 const char* DataParser::PATH = "path";
 const char* DataParser::LENGTH = "length";

@@ -44,12 +44,14 @@
 #include "events/IEventDispatcher.h"
 
 #ifndef EGRET_WASM
+
 // parser
 #include "parsers/DataParser.h"
 #include "parsers/JSONDataParser.h"
+#include "parsers/BinaryDataParser.h"
+
 // factory
 #include "factories/BaseFactory.h"
-#endif //EGRET_WASM
-
+#endif // EGRET_WASM
 
 #endif // DRAGONBONES_HEADERS_H

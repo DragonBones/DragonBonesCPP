@@ -15,6 +15,7 @@ class CCSlot : public Slot
     BIND_CLASS_TYPE_A(CCSlot);
 
 private:
+    float _textureScale;
     cocos2d::Node* _renderDisplay;
 
 protected:
@@ -35,6 +36,16 @@ protected:
     virtual void _updateMesh() override;
     virtual void _updateTransform(bool isSkinnedMesh) override;
 
+public:
+    inline cocos2d::Node* getCCDisplay() const
+    {
+        return static_cast<cocos2d::Node*>(_display);
+    }
+
+    inline void setCCDisplay(cocos2d::Node* value)
+    {
+        setDisplay(value, DisplayType::Image);
+    }
 };
 
 DRAGONBONES_NAMESPACE_END

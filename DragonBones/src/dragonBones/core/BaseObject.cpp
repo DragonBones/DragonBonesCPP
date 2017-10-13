@@ -2,7 +2,7 @@
 DRAGONBONES_NAMESPACE_BEGIN
 
 unsigned BaseObject::_hashCode = 0;
-unsigned BaseObject::_defaultMaxCount = 1000;
+unsigned BaseObject::_defaultMaxCount = 2000;
 std::map<std::size_t, unsigned> BaseObject::_maxCountMap;
 std::map<std::size_t, std::vector<BaseObject*>> BaseObject::_poolsMap;
 
@@ -56,11 +56,6 @@ void BaseObject::setMaxCount(std::size_t classType, unsigned maxCount)
         _defaultMaxCount = maxCount;
         for (auto& pair : _poolsMap)
         {
-            if (_maxCountMap.find(pair.first) == _maxCountMap.end())
-            {
-                continue;
-            }
-
             auto& pool = pair.second;
             if (pool.size() > (size_t)maxCount)
             {
@@ -72,7 +67,10 @@ void BaseObject::setMaxCount(std::size_t classType, unsigned maxCount)
                 pool.resize(maxCount);
             }
 
-            _maxCountMap[pair.first] = maxCount;
+            if (_maxCountMap.find(pair.first) != _maxCountMap.end())
+            {
+                _maxCountMap[pair.first] = maxCount;
+            }
         }
     }
 }

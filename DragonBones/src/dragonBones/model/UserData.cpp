@@ -9,6 +9,21 @@ void UserData::_onClear()
     strings.clear();
 }
 
+void UserData::addInt(int value)
+{
+    ints.push_back(value);
+}
+
+void UserData::addFloat(float value)
+{
+    floats.push_back(value);
+}
+
+void UserData::addString(std::string value)
+{
+    strings.push_back(value);
+}
+
 int UserData::getInt(unsigned index) const
 {
     return index < ints.size() ? ints[index] : 0;

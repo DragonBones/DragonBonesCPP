@@ -41,15 +41,20 @@ void CCTextureAtlasData::setRenderTexture(cocos2d::Texture2D* value)
     if (_renderTexture != nullptr) 
     {
         _renderTexture->retain();
+
         for (const auto& pair : textures) 
         {
             const auto textureData = static_cast<CCTextureData*>(pair.second);
+
             if (textureData->spriteFrame == nullptr)
             {
-                cocos2d::Rect rect(textureData->region.x, textureData->region.y, textureData->region.width, textureData->region.height);
+                cocos2d::Rect rect(
+                    textureData->region.x, textureData->region.y,
+                    textureData->rotated ? textureData->region.height : textureData->region.width,
+                    textureData->rotated ? textureData->region.width : textureData->region.height
+                );
                 cocos2d::Vec2 offset(0.0f, 0.0f);
-                cocos2d::Size originSize(textureData->region.width, textureData->region.height);
-
+                cocos2d::Size originSize(rect.size.width, rect.size.height);
                 textureData->spriteFrame = cocos2d::SpriteFrame::createWithTexture(_renderTexture, rect, textureData->rotated, offset, originSize); // TODO multiply textureAtlas
                 textureData->spriteFrame->retain();
             }
@@ -60,6 +65,7 @@ void CCTextureAtlasData::setRenderTexture(cocos2d::Texture2D* value)
         for (const auto& pair : textures)
         {
             const auto textureData = static_cast<CCTextureData*>(pair.second);
+
             if (textureData->spriteFrame != nullptr)
             {
                 textureData->spriteFrame->release();

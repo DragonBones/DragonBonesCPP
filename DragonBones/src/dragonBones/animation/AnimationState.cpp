@@ -96,7 +96,7 @@ void AnimationState::_advanceFadeTime(float passedTime)
         _subFadeState = 0;
 
         const auto eventType = isFadeOut ? EventObject::FADE_OUT : EventObject::FADE_IN;
-        if (_armature->getEventDispatcher()->hasEvent(eventType))
+        if (_armature->getProxy()->hasEvent(eventType))
         {
             const auto eventObject = BaseObject::borrowObject<EventObject>();
             eventObject->type = eventType;
@@ -136,7 +136,7 @@ void AnimationState::_advanceFadeTime(float passedTime)
         }
 
         const auto eventType = isFadeOut ? EventObject::FADE_OUT_COMPLETE : EventObject::FADE_IN_COMPLETE;
-        if (_armature->getEventDispatcher()->hasEvent(eventType))
+        if (_armature->getProxy()->hasEvent(eventType))
         {
             const auto eventObject = BaseObject::borrowObject<EventObject>();
             eventObject->type = eventType;
@@ -461,14 +461,17 @@ void AnimationState::updateTimelines()
                     _slotTimelines.push_back(timeline);
                 }
 
-                for (const auto displayData : *(slot->_rawDisplayDatas)) 
+                if (slot->getRawDisplayDatas() != nullptr)
                 {
-                    if (displayData != nullptr && displayData->type == DisplayType::Mesh && std::find(ffdFlags.cbegin(), ffdFlags.cend(), static_cast<MeshDisplayData*>(displayData)->offset) == ffdFlags.cend())
+                    for (const auto displayData : *(slot->getRawDisplayDatas()))
                     {
-                        const auto timeline = BaseObject::borrowObject<SlotFFDTimelineState>();
-                        timeline->slot = slot;
-                        timeline->init(_armature, this, nullptr);
-                        _slotTimelines.push_back(timeline);
+                        if (displayData != nullptr && displayData->type == DisplayType::Mesh && std::find(ffdFlags.cbegin(), ffdFlags.cend(), static_cast<MeshDisplayData*>(displayData)->offset) == ffdFlags.cend())
+                        {
+                            const auto timeline = BaseObject::borrowObject<SlotFFDTimelineState>();
+                            timeline->slot = slot;
+                            timeline->init(_armature, this, nullptr);
+                            _slotTimelines.push_back(timeline);
+                        }
                     }
                 }
             }

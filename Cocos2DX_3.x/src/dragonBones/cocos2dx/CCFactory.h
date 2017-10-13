@@ -61,6 +61,7 @@ public:
 
             _dragonBonesInstance = new DragonBones(eventManager);
             _dragonBonesInstance->yDown = false;
+
             cocos2d::Director::getInstance()->getScheduler()->schedule(
                 [&](float passedTime)
                 {

@@ -5,17 +5,17 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 void AnimationData::_onClear()
 {
-    for (auto& pair : boneTimelines)
+    for (const auto& pair : boneTimelines)
     {
-        for (auto timeline : pair.second)
+        for (const auto timeline : pair.second)
         {
             timeline->returnToPool();
         }
     }
 
-    for (auto& pair : slotTimelines)
+    for (const auto& pair : slotTimelines)
     {
-        for (auto timeline : pair.second)
+        for (const auto timeline : pair.second)
         {
             timeline->returnToPool();
         }

@@ -84,7 +84,7 @@ public:
     /**
     * @private
     */
-    void init(BoneData* pboneData);
+    void init(BoneData* boneData);
     /**
     * @private
     */
@@ -141,6 +141,8 @@ public:
     void setVisible(bool value);
 
 public: // For WebAssembly.
+    inline int getOffsetMode() const { return (int)offsetMode; }
+    inline void setOffsetMode(int value) { offsetMode = (OffsetMode)value; }
     inline const BoneData* getBoneData() const { return boneData; }
 };
 

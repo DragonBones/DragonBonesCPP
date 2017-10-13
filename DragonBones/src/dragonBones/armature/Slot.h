@@ -47,7 +47,6 @@ public:
     ColorTransform _colorTransform;
     std::vector<float> _ffdVertices;
     std::vector<DisplayData*> _displayDatas;
-    std::vector<DisplayData*>* _rawDisplayDatas;
     MeshDisplayData* _meshData;
     void* _rawDisplay;
     void* _meshDisplay;
@@ -66,6 +65,7 @@ protected:
     Matrix _localMatrix;
     std::vector<std::pair<void*, DisplayType>> _displayList;
     std::vector<Bone*> _meshBones;
+    std::vector<DisplayData*>* _rawDisplayDatas;
     DisplayData* _displayData;
     TextureData* _textureData;
     BoundingBoxData* _boundingBoxData;
@@ -89,11 +89,6 @@ protected:
     virtual void _replaceDisplay(void* value, bool isArmatureDisplay) = 0;
     virtual void _removeDisplay() = 0;
     virtual void _updateZOrder() = 0;
-public:
-    virtual void _updateVisible() = 0;
-    virtual void _updateBlendMode() = 0;
-    virtual void _updateColor() = 0;
-protected:
     virtual void _updateFrame() = 0;
     virtual void _updateMesh() = 0;
     virtual void _updateTransform(bool isSkinnedMesh) = 0;
@@ -104,6 +99,11 @@ protected:
     void _updateGlobalTransformMatrix(bool isCache);
 
 public:
+    virtual void _updateVisible() = 0;
+    virtual void _updateBlendMode() = 0;
+    virtual void _updateColor() = 0;
+
+public:
     virtual void _setArmature(Armature* value) override;
     bool _setDisplayIndex(int value, bool isAnimation = false);
     bool _setZorder(int value);
@@ -111,19 +111,22 @@ public:
     bool _setDisplayList(const std::vector<std::pair<void*, DisplayType>>& value);
 
 public:
-    void init(SlotData* slotData, std::vector<DisplayData*> * displayDatas, void* rawDisplay, void* meshDisplay);
+    /**
+    * @private
+    */
+    void init(SlotData* slotData, std::vector<DisplayData*>* displayDatas, void* rawDisplay, void* meshDisplay);
+    /**
+    * @private
+    */
     void update(int cacheFrameIndex);
     /**
     * @private
     */
-    inline void updateTransformAndMatrix()
-    {
-        if (_transformDirty)
-        {
-            _transformDirty = false;
-            _updateGlobalTransformMatrix(false);
-        }
-    }
+    void updateTransformAndMatrix();
+    /**
+    * @private
+    */
+    void replaceDisplayData(DisplayData* displayData, int displayIndex);
     /**
     * 判断指定的点是否在插槽的自定义包围盒内。
     * @param x 点的水平坐标。（骨架内坐标系）
@@ -177,32 +180,40 @@ public:
     * @version DragonBones 3.0
     * @language zh_CN
     */
-    inline const std::vector<std::pair<void*, DisplayType>>& getDisplayList() const
+    inline std::vector<std::pair<void*, DisplayType>> getDisplayList() const
     {
         return _displayList;
     }
     void setDisplayList(const std::vector<std::pair<void*, DisplayType>>& value);
+    /**
+    * @private
+    */
+    inline std::vector<DisplayData*>* getRawDisplayDatas() const 
+    {
+        return _rawDisplayDatas;
+    }
+    void setRawDisplayDatas(std::vector<DisplayData*>* value);
     /**
     * @language zh_CN
     * 插槽此时的自定义包围盒数据。
     * @see dragonBones.Armature
     * @version DragonBones 3.0
     */
-    inline const BoundingBoxData* getBoundingBoxData() const
+    inline BoundingBoxData* getBoundingBoxData() const
     {
         return _boundingBoxData;
     }
     /**
     * @private
     */
-    inline const void* getRawDisplay() const
+    inline void* getRawDisplay() const
     {
         return _rawDisplay;
     }
     /**
     * @private
     */
-    inline const void* getMeshDisplay() const
+    inline void* getMeshDisplay() const
     {
         return _meshDisplay;
     }
@@ -211,7 +222,7 @@ public:
     * @version DragonBones 3.0
     * @language zh_CN
     */
-    inline const void* getDisplay() const
+    inline void* getDisplay() const
     {
         return _display;
     }
@@ -222,14 +233,14 @@ public:
     * @version DragonBones 3.0
     * @language zh_CN
     */
-    inline Armature* getChildArmature()
+    inline Armature* getChildArmature() const
     {
         return _childArmature;
     }
     void setChildArmature(Armature* value);
 
 public: // For WebAssembly.
-    inline const SlotData* getSlotData() const { return slotData; }
+    const SlotData* getSlotData() const { return slotData; }
 };
 
 DRAGONBONES_NAMESPACE_END

@@ -10,15 +10,9 @@ DRAGONBONES_NAMESPACE_BEGIN
 bool DragonBones::yDown = true;
 bool DragonBones::debug = false;
 bool DragonBones::debugDraw = false;
+bool DragonBones::webAssembly = false;
+const std::string DragonBones::version = "5.5.1";
 
-DragonBones::DragonBones() :
-    _events(),
-    _objects(),
-    _clock(nullptr),
-    _eventManager(nullptr)
-{
-    _clock = new WorldClock();
-}
 DragonBones::DragonBones(IEventDispatcher* eventManager) :
     _events(),
     _objects(),
@@ -61,7 +55,7 @@ void DragonBones::advanceTime(float passedTime)
             const auto armature = eventObject->armature;
             if (armature->armatureData != nullptr)
             {
-                armature->getEventDispatcher()->_dispatchEvent(eventObject->type, eventObject);
+                armature->getProxy()->_dispatchEvent(eventObject->type, eventObject);
                 if (eventObject->type == EventObject::SOUND_EVENT)
                 {
                     _eventManager->_dispatchEvent(eventObject->type, eventObject);

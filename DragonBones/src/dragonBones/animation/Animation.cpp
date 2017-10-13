@@ -24,6 +24,7 @@ void Animation::_onClear()
 
     _animationDirty = false;
     _timelineDirty = false;
+    _inheritTimeScale = 1.0f;
     _animations.clear();
     _animationNames.clear();
     _animationStates.clear();
@@ -99,13 +100,17 @@ void Animation::advanceTime(float passedTime)
     }
 
     if (_armature->inheritAnimation && _armature->_parent != nullptr) // Inherit parent animation timeScale.
+    { 
+        _inheritTimeScale = _armature->_parent->_armature->getAnimation()->_inheritTimeScale * timeScale;
+    }
+    else 
     {
-        passedTime *= _armature->_parent->_armature->getAnimation()->timeScale;
+        _inheritTimeScale = timeScale;
     }
 
-    if (timeScale != 1.0f)
+    if (_inheritTimeScale != 1.0f) 
     {
-        passedTime *= timeScale;
+        passedTime *= _inheritTimeScale;
     }
 
     const auto animationStateCount = _animationStates.size();
@@ -335,7 +340,8 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
             else 
             {
                 added = true;
-                _animationStates.push_back(animationState);
+                auto parentInerator = std::find(_animationStates.begin(), _animationStates.end(), _animationStates[i]);
+                _animationStates.insert(parentInerator + 1, animationState);
                 break;
             }
         }

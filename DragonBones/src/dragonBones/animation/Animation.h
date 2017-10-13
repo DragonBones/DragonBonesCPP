@@ -32,6 +32,7 @@ public:
     
 private:
     bool _animationDirty;
+    float _inheritTimeScale;
     std::vector<std::string> _animationNames;
     std::vector<AnimationState*> _animationStates;
     std::map<std::string, AnimationData*> _animations;

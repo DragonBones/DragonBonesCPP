@@ -133,9 +133,11 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
     {
         const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor();
         const auto pos = fullpath.find(".json");
+
         if (pos != std::string::npos)
         {
             const auto data = cocos2d::FileUtils::getInstance()->getStringFromFile(filePath);
+
             return parseDragonBonesData(data.c_str(), name, 1.0f / scale);
         }
         else
@@ -146,10 +148,9 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
 #else
             const auto cocos2dData = cocos2d::FileUtils::getInstance()->getDataFromFile(fullpath);
 #endif
-            const auto buffer = (unsigned char*)malloc(sizeof(unsigned char) * cocos2dData.getSize());
-            memcpy(buffer, cocos2dData.getBytes(), cocos2dData.getSize());
-            const auto data = parseDragonBonesData((char*)buffer, name, 1.0f / scale);
-            data->buffer = (char*)buffer;
+            const auto binary = (unsigned char*)malloc(sizeof(unsigned char)* cocos2dData.getSize());
+            memcpy(binary, cocos2dData.getBytes(), cocos2dData.getSize());
+            const auto data = parseDragonBonesData((char*)binary, name, 1.0f / scale);
 
             return data;
         }
@@ -175,9 +176,9 @@ CCArmatureDisplay* CCFactory::buildArmatureDisplay(const std::string& armatureNa
     const auto armature = buildArmature(armatureName, dragonBonesName, skinName, textureAtlasName);
     if (armature != nullptr)
     {
-        const auto armatureDisplay =  static_cast<CCArmatureDisplay*>(armature->getDisplay());
         _dragonBones->getClock()->add(armature);
-        return armatureDisplay;
+
+        return static_cast<CCArmatureDisplay*>(armature->getDisplay());
     }
 
     return nullptr;
@@ -188,7 +189,8 @@ cocos2d::Sprite* CCFactory::getTextureDisplay(const std::string& textureName, co
     const auto textureData = static_cast<CCTextureData*>(_getTextureData(dragonBonesName, textureName));
     if (textureData != nullptr && textureData->spriteFrame != nullptr)
     {
-        return cocos2d::Sprite::createWithSpriteFrame(textureData->spriteFrame);
+        const auto display = cocos2d::Sprite::createWithSpriteFrame(textureData->spriteFrame);
+        return display;
     }
 
     return nullptr;

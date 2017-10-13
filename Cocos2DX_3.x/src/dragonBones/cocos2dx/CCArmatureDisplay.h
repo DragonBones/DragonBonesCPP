@@ -19,11 +19,13 @@ public:
     static CCArmatureDisplay* create();
 
 protected:
+    bool _debugDraw;
     Armature* _armature;
     cocos2d::EventDispatcher* _dispatcher;
 
 protected:
     CCArmatureDisplay() :
+        _debugDraw(false),
         _armature(nullptr),
         _dispatcher(nullptr)
     {
@@ -37,19 +39,19 @@ public:
     /**
     * @inheritDoc
     */
-    virtual void _init(Armature* armature) override;
+    virtual void dbInit(Armature* armature) override;
     /**
     * @inheritDoc
     */
-    virtual void clear() override;
+    virtual void dbClear() override;
+    /**
+    * @inheritDoc
+    */
+    virtual void dbUpdate() override;
     /**
     * @inheritDoc
     */
     virtual void dispose(bool disposeProxy = true) override;
-    /**
-    * @inheritDoc
-    */
-    virtual void debugUpdate(bool isEnabled) override;
     /**
     * @inheritDoc
     */

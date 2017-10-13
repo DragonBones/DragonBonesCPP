@@ -63,7 +63,7 @@ void AnimationConfig::copyFrom(AnimationConfig* value)
     boneMask = value->boneMask;
 }
 
-bool AnimationConfig::containsBoneMask(const std::string& name)
+bool AnimationConfig::containsBoneMask(const std::string& name) const
 {
     return boneMask.empty() || std::find(boneMask.cbegin(), boneMask.cend(), name) != boneMask.cend();
 }

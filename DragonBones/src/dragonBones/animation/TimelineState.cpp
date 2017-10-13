@@ -17,13 +17,13 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
 {
-    const auto eventDispatcher = _armature->getEventDispatcher();
+    const auto eventDispatcher = _armature->getProxy();
 
     if (_animationState->actionEnabled)
     {
         const auto frameOffset = _animationData->frameOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + frameIndex];
         const unsigned actionCount = _frameArray[frameOffset + 1];
-        const auto& actions = _armature->armatureData->actions;
+        const auto& actions = _animationData->parent->actions; // May be the animaton data not belong to this armature data.
         for (std::size_t i = 0; i < actionCount; ++i)
         {
             const auto actionIndex = _frameArray[frameOffset + 2 + i];
@@ -96,7 +96,7 @@ void ActionTimelineState::update(float passedTime)
 
     if (playState <= 0 && _setCurrentTime(passedTime)) 
     {
-        const auto eventDispatcher = _armature->getEventDispatcher();
+        const auto eventDispatcher = _armature->getProxy();
         if (prevState < 0) 
         {
             if (playState != prevState)
@@ -339,7 +339,7 @@ void BoneAllTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr) 
     {
-        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        const auto frameFloatArray = _frameFloatArray;
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 6; // ...(timeline value offset)|xxxxxx|xxxxxx|(Value offset)xxxxx|(Next offset)xxxxx|xxxxxx|xxxxxx|...
 
         bonePose->current.x = frameFloatArray[valueOffset++];
@@ -405,7 +405,7 @@ void BoneTranslateTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr)
     {
-        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        const auto frameFloatArray = _frameFloatArray;
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
 
         bonePose->current.x = frameFloatArray[valueOffset++];
@@ -449,7 +449,7 @@ void BoneRotateTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr)
     {
-        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        const auto frameFloatArray = _frameFloatArray;
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
 
         bonePose->current.rotation = frameFloatArray[valueOffset++];
@@ -499,7 +499,7 @@ void BoneScaleTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr)
     {
-        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        const auto frameFloatArray = _frameFloatArray;
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
         bonePose->current.scaleX = frameFloatArray[valueOffset++];
         bonePose->current.scaleY = frameFloatArray[valueOffset++];
@@ -562,9 +562,10 @@ void SlotColorTimelineState::_onArriveAtFrame()
     if (_timelineData != nullptr) 
     {
         const auto intArray = _dragonBonesData->intArray;
-        const auto frameIntArray = _dragonBonesData->frameIntArray;
+        const auto frameIntArray = _frameIntArray;
         const auto valueOffset = _animationData->frameIntOffset + _frameValueOffset + _frameIndex * 1; // ...(timeline value offset)|x|x|(Value offset)|(Next offset)|x|x|...
         unsigned colorOffset = frameIntArray[valueOffset];
+
         _current[0] = intArray[colorOffset++];
         _current[1] = intArray[colorOffset++];
         _current[2] = intArray[colorOffset++];
@@ -598,6 +599,7 @@ void SlotColorTimelineState::_onArriveAtFrame()
     else 
     {
         const auto color = slot->slotData->color;
+
         _current[0] = color->alphaMultiplier * 100.0f;
         _current[1] = color->redMultiplier * 100.0f;
         _current[2] = color->greenMultiplier * 100.0f;
@@ -642,31 +644,31 @@ void SlotColorTimelineState::update(float passedTime)
     // Fade animation.
     if (_tweenState != TweenState::None || _dirty) 
     {
-        const auto result = &(slot->_colorTransform);
+        auto& result = slot->_colorTransform;
 
         if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0)
         {
             if (
-                result->alphaMultiplier != _result[0] ||
-                result->redMultiplier != _result[1] ||
-                result->greenMultiplier != _result[2] ||
-                result->blueMultiplier != _result[3] ||
-                result->alphaOffset != _result[4] ||
-                result->redOffset != _result[5] ||
-                result->greenOffset != _result[6] ||
-                result->blueOffset != _result[7]
+                result.alphaMultiplier != _result[0] ||
+                result.redMultiplier != _result[1] ||
+                result.greenMultiplier != _result[2] ||
+                result.blueMultiplier != _result[3] ||
+                result.alphaOffset != _result[4] ||
+                result.redOffset != _result[5] ||
+                result.greenOffset != _result[6] ||
+                result.blueOffset != _result[7]
             ) 
             {
                 const auto fadeProgress = pow(_animationState->_fadeProgress, 2);
 
-                result->alphaMultiplier += (_result[0] - result->alphaMultiplier) * fadeProgress;
-                result->redMultiplier += (_result[1] - result->redMultiplier) * fadeProgress;
-                result->greenMultiplier += (_result[2] - result->greenMultiplier) * fadeProgress;
-                result->blueMultiplier += (_result[3] - result->blueMultiplier) * fadeProgress;
-                result->alphaOffset += (_result[4] - result->alphaOffset) * fadeProgress;
-                result->redOffset += (_result[5] - result->redOffset) * fadeProgress;
-                result->greenOffset += (_result[6] - result->greenOffset) * fadeProgress;
-                result->blueOffset += (_result[7] - result->blueOffset) * fadeProgress;
+                result.alphaMultiplier += (_result[0] - result.alphaMultiplier) * fadeProgress;
+                result.redMultiplier += (_result[1] - result.redMultiplier) * fadeProgress;
+                result.greenMultiplier += (_result[2] - result.greenMultiplier) * fadeProgress;
+                result.blueMultiplier += (_result[3] - result.blueMultiplier) * fadeProgress;
+                result.alphaOffset += (_result[4] - result.alphaOffset) * fadeProgress;
+                result.redOffset += (_result[5] - result.redOffset) * fadeProgress;
+                result.greenOffset += (_result[6] - result.greenOffset) * fadeProgress;
+                result.blueOffset += (_result[7] - result.blueOffset) * fadeProgress;
 
                 slot->_colorDirty = true;
             }
@@ -675,24 +677,24 @@ void SlotColorTimelineState::update(float passedTime)
         {
             _dirty = false;
             if (
-                result->alphaMultiplier != _result[0] ||
-                result->redMultiplier != _result[1] ||
-                result->greenMultiplier != _result[2] ||
-                result->blueMultiplier != _result[3] ||
-                result->alphaOffset != _result[4] ||
-                result->redOffset != _result[5] ||
-                result->greenOffset != _result[6] ||
-                result->blueOffset != _result[7]
+                result.alphaMultiplier != _result[0] ||
+                result.redMultiplier != _result[1] ||
+                result.greenMultiplier != _result[2] ||
+                result.blueMultiplier != _result[3] ||
+                result.alphaOffset != _result[4] ||
+                result.redOffset != _result[5] ||
+                result.greenOffset != _result[6] ||
+                result.blueOffset != _result[7]
             ) 
             {
-                result->alphaMultiplier = _result[0];
-                result->redMultiplier = _result[1];
-                result->greenMultiplier = _result[2];
-                result->blueMultiplier = _result[3];
-                result->alphaOffset = _result[4];
-                result->redOffset = _result[5];
-                result->greenOffset = _result[6];
-                result->blueOffset = _result[7];
+                result.alphaMultiplier = _result[0];
+                result.redMultiplier = _result[1];
+                result.greenMultiplier = _result[2];
+                result.blueMultiplier = _result[3];
+                result.alphaOffset = _result[4];
+                result.redOffset = _result[5];
+                result.greenOffset = _result[6];
+                result.blueOffset = _result[7];
 
                 slot->_colorDirty = true;
             }
@@ -723,7 +725,7 @@ void SlotFFDTimelineState::_onArriveAtFrame()
     if (_timelineData != nullptr) 
     {
         const auto isTween = _tweenState == TweenState::Always;
-        const auto frameFloatArray = _dragonBonesData->frameFloatArray;
+        const auto frameFloatArray = _frameFloatArray;
         const auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * _valueCount;
 
         if (isTween) 
@@ -778,13 +780,12 @@ void SlotFFDTimelineState::init(Armature* armature, AnimationState* animationSta
 
     if (_timelineData != nullptr) 
     {
-        const auto frameIntArray = _dragonBonesData->frameIntArray;
         const auto frameIntOffset = _animationData->frameIntOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameValueCount];
-        meshOffset = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineMeshOffset];
-        _ffdCount = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFFDCount];
-        _valueCount = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueCount];
-        _valueOffset = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueOffset];
-        _frameFloatOffset = frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFloatOffset] + _animationData->frameFloatOffset;
+        meshOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineMeshOffset];
+        _ffdCount = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFFDCount];
+        _valueCount = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueCount];
+        _valueOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueOffset];
+        _frameFloatOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFloatOffset] + _animationData->frameFloatOffset;
     }
     else 
     {
@@ -804,7 +805,7 @@ void SlotFFDTimelineState::fadeOut()
 
 void SlotFFDTimelineState::update(float passedTime)
 {
-    if (slot->_meshData == nullptr || (_timelineData != nullptr && slot->_meshData->offset != meshOffset)) 
+    if (slot->_meshData == nullptr || (_timelineData == nullptr || slot->_meshData->offset != meshOffset)) 
     {
         return;
     }
@@ -813,10 +814,9 @@ void SlotFFDTimelineState::update(float passedTime)
 
     if (_tweenState != TweenState::None || _dirty) 
     {
-        const auto result = &(slot->_ffdVertices);
+        auto& result = slot->_ffdVertices;
         if (_timelineData != nullptr)
         {
-            const auto frameFloatArray = _dragonBonesData->frameFloatArray;
             if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0)
             {
                 const auto fadeProgress = pow(_animationState->_fadeProgress, 2);
@@ -824,15 +824,15 @@ void SlotFFDTimelineState::update(float passedTime)
                 {
                     if (i < _valueOffset) 
                     {
-                        (*result)[i] += (frameFloatArray[_frameFloatOffset + i] - (*result)[i]) * fadeProgress;
+                        result[i] += (_frameFloatArray[_frameFloatOffset + i] - result[i]) * fadeProgress;
                     }
                     else if (i < _valueOffset + _valueCount)
                     {
-                        (*result)[i] += (_result[i - _valueOffset] - (*result)[i]) * fadeProgress;
+                        result[i] += (_result[i - _valueOffset] - result[i]) * fadeProgress;
                     }
                     else 
                     {
-                        (*result)[i] += (frameFloatArray[_frameFloatOffset + i - _valueCount] - (*result)[i]) * fadeProgress;
+                        result[i] += (_frameFloatArray[_frameFloatOffset + i - _valueCount] - result[i]) * fadeProgress;
                     }
                 }
 
@@ -846,15 +846,15 @@ void SlotFFDTimelineState::update(float passedTime)
                 {
                     if (i < _valueOffset) 
                     {
-                        (*result)[i] = frameFloatArray[_frameFloatOffset + i];
+                        result[i] = _frameFloatArray[_frameFloatOffset + i];
                     }
                     else if (i < _valueOffset + _valueCount)
                     {
-                        (*result)[i] = _result[i - _valueOffset];
+                        result[i] = _result[i - _valueOffset];
                     }
                     else 
                     {
-                        (*result)[i] = frameFloatArray[_frameFloatOffset + i - _valueCount];
+                        result[i] = _frameFloatArray[_frameFloatOffset + i - _valueCount];
                     }
                 }
 
@@ -863,12 +863,12 @@ void SlotFFDTimelineState::update(float passedTime)
         }
         else 
         {
-            _ffdCount = (*result).size(); //
+            _ffdCount = result.size(); //
             if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0) 
             {
                 const auto fadeProgress = pow(_animationState->_fadeProgress, 4);
                 for (std::size_t i = 0; i < _ffdCount; ++i) {
-                    (*result)[i] += (0.0f - (*result)[i]) * fadeProgress;
+                    result[i] += (0.0f - result[i]) * fadeProgress;
                 }
 
                 slot->_meshDirty = true;
@@ -879,7 +879,7 @@ void SlotFFDTimelineState::update(float passedTime)
 
                 for (std::size_t i = 0; i < _ffdCount; ++i) 
                 {
-                    (*result)[i] = 0.0f;
+                    result[i] = 0.0f;
                 }
 
                 slot->_meshDirty = true;

@@ -67,31 +67,31 @@ public:
     /**
     * @private
     */
-    char* buffer;
+    const char* binary;
     /**
     * @private
     */
-    int16_t* intArray;
+	const int16_t* intArray;
     /**
     * @private
     */
-    float* floatArray;
+	const float* floatArray;
     /**
     * @private
     */
-    int16_t* frameIntArray;
+	const int16_t* frameIntArray;
     /**
     * @private
     */
-    float* frameFloatArray;
+	const float* frameFloatArray;
     /**
     * @private
     */
-    int16_t* frameArray;
+	const int16_t* frameArray;
     /**
     * @private
     */
-    uint16_t* timelineArray;
+	const uint16_t* timelineArray;
     /**
     * @private
     */
@@ -100,7 +100,7 @@ public:
     * @private
     */
     DragonBonesData() :
-        buffer(nullptr),
+        binary(nullptr),
         userData(nullptr)
     {
         _onClear();
@@ -129,51 +129,16 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    //TODO
-    static DragonBonesData* getDragonBoneData();
-    static void setDragonBoneData(DragonBonesData* value);
-    /**
-    * dragonBones 5.0
-    * @param intarray
-    * @param floatArray
-    * @param frameIntArray
-    * @param frameFloatArray
-    * @param frameArray
-    * @param timelineArray
-    * @return
-    */
-    void setBufferPtr(int16_t* intarray, float* floatArray, int16_t* frameIntArray, float* frameFloatArray, int16_t* frameArray, uint16_t* timelineArray);
-    /**
-     * @code
-     * var buf = Module._malloc(myTypedArray.length*myTypedArray.BYTES_PER_ELEMENT);
-     * Module.HEAPU8.set(myTypedArray, buf);
-     * Module.ccall('my_function', 'number', ['number'], [buf]);
-     * Module._free(buf);
-     * @endcode
-     * @param intArry
-     * @param floatArray
-     * @param frameIntArray
-     * @param frameFloatArray
-     * @param frameArray
-     * @param timelineArray
-     */
-    void parseArrays(int16_t* intArry, float* floatArray, int16_t* frameIntArray, float* frameFloatArray, int16_t* frameArray, uint16_t* timelineArray);
-
-    std::vector<std::string>* getArmatureNames() { return &armatureNames; }
     std::vector<unsigned>* getFrameIndices() { return &frameIndices; }
-    const int16_t* getIntArray() const { return intArray; }
-    const float* getFloatArray() const { return floatArray; }
-    const int16_t* getFrameIntArray() const { return  frameIntArray; }
-    const float* getFrameFloatArray() const { return frameFloatArray; }
-    const int16_t* getFrameArray() const { return  frameArray; }
-    const uint16_t* getTimelineArray() const { return timelineArray; }
+    const std::vector<std::string>& getArmatureNames() const { return armatureNames; }
 
-private:
-    /**
-     * Egret 5.0
-     */
-    static DragonBonesData* _dragonBoneData;
+    unsigned getBinary() const
+    {
+        return (unsigned)binary;
+    }
 
+    const UserData* getUserData() const { return userData; }
+    void setUserData(UserData* value) { userData = value; }
 };
 
 DRAGONBONES_NAMESPACE_END

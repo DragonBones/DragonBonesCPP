@@ -90,8 +90,8 @@ public:
                 const auto& result = splitString(groupKeysString, ",");
                 for (const auto& key : result)
                 {
-                    // const auto& dragonBonesResource = resources[resourceMap[key]];
-                    const auto& dragonBonesResource = resources[resourceMap[key + "_binary"]];
+                    const auto& dragonBonesResource = resources[resourceMap[key]];
+                    // const auto& dragonBonesResource = resources[resourceMap[key + "_binary"]];
                     factory->loadDragonBonesData(dragonBonesResource["url"].GetString());
 
                     unsigned index = 0;
@@ -142,6 +142,7 @@ public:
             addChild(_text);
 
             // Add sound event listener.
+            factory->getSoundEventManager()->getEventDispatcher()->setEnabled(true);
             factory->getSoundEventManager()->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::SOUND_EVENT, std::bind(&DragonBonesTest::_animationEventHandler, this, std::placeholders::_1));
 
             // Add armature.
@@ -319,6 +320,7 @@ private:
         _armatureDisplay->getArmature()->setCacheFrameRate(24); // Cache animation.
 
         // Add listener.
+        _armatureDisplay->getEventDispatcher()->setEnabled(true);
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::START, std::bind(&DragonBonesTest::_animationEventHandler, this, std::placeholders::_1));
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::LOOP_COMPLETE, std::bind(&DragonBonesTest::_animationEventHandler, this, std::placeholders::_1));
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::COMPLETE, std::bind(&DragonBonesTest::_animationEventHandler, this, std::placeholders::_1));
@@ -331,7 +333,7 @@ private:
         addChild(_armatureDisplay);
         //enableDrag(this._armatureDisplay);
 
-        // Update boundingBox tester.
+        // Update boundingBox tester. TODO
         // this._boundingBoxTester.armatureDisplay = this._armatureDisplay;
         // this.addChild(this._boundingBoxTester);
     }
@@ -340,7 +342,7 @@ private:
     */
     void _changeAnimation()
     {
-        const auto animationNames = _armatureDisplay->getAnimation()->getAnimationNames();
+        const auto& animationNames = _armatureDisplay->getAnimation()->getAnimationNames();
         if (animationNames.empty())
         {
             _text->setString(

@@ -4,6 +4,7 @@
 #include "Armature.h"
 #include "Slot.h"
 #include "Constraint.h"
+#include "cocos2d.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -71,9 +72,16 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
             if (!boneData->inheritRotation) 
             {
                 _parent->updateGlobalTransform();
+                dR = _parent->global.rotation;
 
-                dR = _parent->global.rotation; //
-                global.rotation -= dR;
+                if (DragonBones::yDown)
+                {
+                    global.rotation -= dR;
+                }
+                else 
+                {
+                    global.rotation += dR;
+                }
             }
 
             global.toMatrix(globalTransformMatrix);
@@ -251,16 +259,16 @@ void Bone::_setArmature(Armature* value)
     }
 }
 
-void Bone::init(BoneData* pboneData)
+void Bone::init(BoneData* boneData_)
 {
     if (boneData != nullptr) 
     {
         return;
     }
 
-    boneData = pboneData;
-    name = pboneData->name;
-    origin = &pboneData->transform;
+    boneData = boneData_;
+    name = boneData->name;
+    origin = &boneData->transform;
 }
 
 void Bone::update(int cacheFrameIndex)

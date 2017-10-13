@@ -2,6 +2,7 @@
 #include "UserData.h"
 #include "ArmatureData.h"
 
+
 DRAGONBONES_NAMESPACE_BEGIN
 
 void DragonBonesData::_onClear()
@@ -11,9 +12,9 @@ void DragonBonesData::_onClear()
         pair.second->returnToPool();
     }
 
-    if (buffer != nullptr)
+    if (binary != nullptr)
     {
-        delete buffer;
+        delete binary;
     }
 
     if (userData != nullptr)
@@ -29,7 +30,7 @@ void DragonBonesData::_onClear()
     cachedFrames.clear();
     armatureNames.clear();
     armatures.clear();
-    buffer = nullptr;
+    binary = nullptr;
     intArray = nullptr;
     floatArray = nullptr;
     frameIntArray = nullptr;
@@ -37,9 +38,6 @@ void DragonBonesData::_onClear()
     frameArray = nullptr;
     timelineArray = nullptr;
     userData = nullptr;
-
-    // TODO 需要释放 buffer
-    // TODO lsc JS call delete
 }
 
 void DragonBonesData::addArmature(ArmatureData* value)
@@ -53,39 +51,6 @@ void DragonBonesData::addArmature(ArmatureData* value)
     value->parent = this;
     armatures[value->name] = value;
     armatureNames.push_back(value->name);
-}
-
-// For WebAssembly.
-DragonBonesData* DragonBonesData::_dragonBoneData = nullptr;
-
-void DragonBonesData::setDragonBoneData(DragonBonesData* value)
-{
-    _dragonBoneData = value;
-}
-
-DragonBonesData* DragonBonesData::getDragonBoneData()
-{
-    return _dragonBoneData;
-}
-
-void DragonBonesData::parseArrays(int16_t* intArray, float* floatArray, int16_t* frameIntArray, float* frameFloatArray, int16_t* frameArray, uint16_t* timelineArray)
-{
-    this->intArray = intArray;
-    this->floatArray = floatArray;
-    this->frameIntArray = frameIntArray;
-    this->frameFloatArray = frameFloatArray;
-    this->frameArray = frameArray;
-    this->timelineArray = timelineArray;
-}
-
-void DragonBonesData::setBufferPtr(int16_t* intArray, float* floatArray, int16_t* frameIntArray, float* frameFloatArray, int16_t* frameArray, uint16_t* timelineArray)
-{
-    this->intArray = intArray;
-    this->floatArray = floatArray;
-    this->frameIntArray = frameIntArray;
-    this->frameFloatArray = frameFloatArray;
-    this->frameArray = frameArray;
-    this->timelineArray = timelineArray;
 }
 
 DRAGONBONES_NAMESPACE_END

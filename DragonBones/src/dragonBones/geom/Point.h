@@ -10,6 +10,12 @@ DRAGONBONES_NAMESPACE_BEGIN
 class Point
 {
 public:
+    static Point helpPointA;
+    static Point helpPointB;
+    static Point helpPointC;
+    static Point helpPointD;
+
+public:
     float x;
     float y;
 
@@ -33,6 +39,12 @@ public:
     {
         x = y = 0.0f;
     }
+
+public: // For WebAssembly.
+    static Point* getHelpPointA() { return &helpPointA; }
+    static Point* getHelpPointB() { return &helpPointB; }
+    static Point* getHelpPointC() { return &helpPointC; }
+    static Point* getHelpPointD() { return &helpPointD; }
 };
 
 DRAGONBONES_NAMESPACE_END

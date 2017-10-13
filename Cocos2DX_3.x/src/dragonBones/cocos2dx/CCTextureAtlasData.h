@@ -41,6 +41,9 @@ private:
     cocos2d::Texture2D* _renderTexture;
 
 public:
+    /**
+    * @private
+    */
     CCTextureAtlasData() :
         _renderTexture(nullptr)
     {

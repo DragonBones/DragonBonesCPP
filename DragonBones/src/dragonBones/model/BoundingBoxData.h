@@ -182,20 +182,11 @@ public:
     */
     static int polygonIntersectsSegment(
         float xA, float yA, float xB, float yB,
-        float* vertices, unsigned offset, unsigned count,
+        const std::vector<float>& vertices,
         Point* intersectionPointA = nullptr,
         Point* intersectionPointB = nullptr,
         Point* normalRadians = nullptr
     );
-    // TODO Check (int->unsigned)
-    /**
-    * @private
-    */
-    unsigned count;
-    /**
-    * @private
-    */
-    unsigned offset; // FloatArray.
     /**
     * @private
     */
@@ -209,7 +200,7 @@ public:
     * @version DragonBones 5.1
     * @language zh_CN
     */
-    float* vertices; // FloatArray.
+    std::vector<float> vertices;
     /**
     * @private
     */
@@ -242,8 +233,11 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    WeightData* getWeight() const { return weight; }
+    std::vector<float>* getVertices() { return &vertices; }
+
+    /*WeightData* getWeight() const { return weight; }
     void setWeight(WeightData* value) { weight = value; }
+    */
 };
 
 DRAGONBONES_NAMESPACE_END

@@ -140,12 +140,13 @@ void TimelineState::init(Armature* armature, AnimationState* animationState, Tim
         _actionTimeline = nullptr; //
     }
 
-    _frameRate = _armature->armatureData->frameRate;
+    _animationData = _animationState->animationData;
+
+    _frameRate = _animationData->parent->frameRate;
     _frameRateR = 1.0f / _frameRate;
     _position = _animationState->_position;
     _duration = _animationState->_duration;
-    _dragonBonesData = _armature->armatureData->parent;
-    _animationData = _animationState->animationData;
+    _dragonBonesData = _animationData->parent->parent;
 
     if (_timelineData != nullptr) 
     {
@@ -221,6 +222,7 @@ void TweenTimelineState::_onArriveAtFrame()
     {
         _tweenType = (TweenType)_frameArray[_frameOffset + (unsigned)BinaryOffset::FrameTweenType]; // TODO recode ture tween type.
         _tweenState = _tweenType == TweenType::None ? TweenState::Once : TweenState::Always;
+
         if (_tweenType == TweenType::Curve) 
         {
             _curveCount = _frameArray[_frameOffset + (unsigned)BinaryOffset::FrameTweenEasingOrCurveSampleCount];
@@ -231,6 +233,7 @@ void TweenTimelineState::_onArriveAtFrame()
         }
 
         _framePosition = _frameArray[_frameOffset] * _frameRateR;
+
         if ((unsigned)_frameIndex == _frameCount - 1)
         {
             _frameDurationR = 1.0f / (_animationData->duration - _framePosition);
@@ -238,10 +241,20 @@ void TweenTimelineState::_onArriveAtFrame()
         else 
         {
             const auto nextFrameOffset = _animationData->frameOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + _frameIndex + 1];
-            _frameDurationR = 1.0f / (_frameArray[nextFrameOffset] * _frameRateR - _framePosition);
+            const auto frameDuration = _frameArray[nextFrameOffset] * _frameRateR - _framePosition;
+
+            if (frameDuration > 0.0f) // Fixed animation data bug.
+            {
+                _frameDurationR = 1.0f / frameDuration;
+            }
+            else 
+            {
+                _frameDurationR = 0.0f;
+            }
         }
     }
-    else {
+    else 
+    {
         _tweenState = TweenState::Once;
     }
 }
@@ -251,6 +264,7 @@ void TweenTimelineState::_onUpdateFrame()
     if (_tweenState == TweenState::Always) 
     {
         _tweenProgress = (currentTime - _framePosition) * _frameDurationR;
+
         if (_tweenType == TweenType::Curve)
         {
             _tweenProgress = TweenTimelineState::_getEasingCurveValue(_tweenProgress, _frameArray, _curveCount, _frameOffset + (unsigned)BinaryOffset::FrameCurveSamples);

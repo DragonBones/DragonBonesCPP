@@ -80,6 +80,7 @@ protected:
     static const char* NAME;
     static const char* PARENT;
     static const char* TARGET;
+    static const char* STAGE;
     static const char* SHARE;
     static const char* PATH;
     static const char* LENGTH;

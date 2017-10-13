@@ -37,9 +37,41 @@ protected:
     virtual void _onClear() override;
 
 public:
+    /**
+    * @private
+    */
+    void addInt(int value);
+    /**
+    * @private
+    */
+    void addFloat(float value);
+    /**
+    * @private
+    */
+    void addString(std::string value);
+    /**
+    * 获取自定义整数。
+    * @version DragonBones 5.0
+    * @language zh_CN
+    */
     int getInt(unsigned index) const;
+    /**
+    * 获取自定义浮点数。
+    * @version DragonBones 5.0
+    * @language zh_CN
+    */
     float getFloat(unsigned index) const;
+    /**
+    * 获取自定义字符串。
+    * @version DragonBones 5.0
+    * @language zh_CN
+    */
     std::string getString(unsigned index) const;
+
+public: // For WebAssembly.
+    const std::vector<int>& getInts() const { return ints; }
+    const std::vector<float>& getFloats() const { return floats; }
+    const std::vector<std::string>& getStrings() const { return strings; }
 };
 /**
 * @private
@@ -51,9 +83,9 @@ class ActionData : public BaseObject
 public:
     ActionType type;
     std::string name;
-    BoneData* bone;
-    SlotData* slot;
-    UserData* data;
+    const BoneData* bone;
+	const SlotData* slot;
+	UserData* data;
 
     ActionData() :
         data(nullptr)
@@ -67,6 +99,19 @@ public:
 
 protected:
     virtual void _onClear() override;
+
+public: // For WebAssembly.
+    int getType() const { return (int)type; }
+    void setType(int value) { type = (ActionType)value; }
+
+    const BoneData* getBone() const { return bone; }
+    void setBone(const BoneData* value) { bone = value; }
+
+    const SlotData* getSlot() const { return slot; }
+    void setSlot(const SlotData* value) { slot = value; }
+
+    const UserData* getData() const { return data; }
+    void setData(UserData* value) { data = value; }
 };
 
 DRAGONBONES_NAMESPACE_END

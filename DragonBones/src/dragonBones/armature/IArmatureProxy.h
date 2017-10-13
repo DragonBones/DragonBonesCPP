@@ -18,21 +18,21 @@ public:
     /**
     * @private
     */
-    virtual void _init(Armature* armature) = 0;
+    virtual void dbInit(Armature* armature) = 0;
     /**
     * @private
     */
-    virtual void clear() = 0;
+    virtual void dbClear() = 0;
+    /**
+    * @private
+    */
+    virtual void dbUpdate() = 0;
     /**
      * @language zh_CN
      * 释放代理和骨架。 (骨架会回收到对象池)
      * @version DragonBones 4.5
      */
     virtual void dispose(bool disposeProxy) = 0;
-    /**
-    * @private
-    */
-    virtual void debugUpdate(bool isEnabled) = 0;
     /**
      * @language zh_CN
      * 获取骨架。

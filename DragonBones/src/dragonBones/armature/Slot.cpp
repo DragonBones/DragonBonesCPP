@@ -20,7 +20,7 @@ void Slot::_onClear()
     for (const auto& pair : this->_displayList)
     {
         if (
-            pair.first != _rawDisplay && pair.first != _meshDisplay &&
+            pair.first != nullptr && pair.first != _rawDisplay && pair.first != _meshDisplay &&
             std::find(disposeDisplayList.cbegin(), disposeDisplayList.cend(), pair) == disposeDisplayList.cend()
         )
         {
@@ -89,7 +89,7 @@ void Slot::_updateDisplayData()
     const auto prevDisplayData = _displayData;
     const auto prevTextureData = _textureData;
     const auto prevMeshData = _meshData;
-    const auto rawDisplayData = _displayIndex >= 0 && (unsigned)_displayIndex < _rawDisplayDatas->size() ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
+    const auto rawDisplayData = _displayIndex >= 0 && _rawDisplayDatas != nullptr && (unsigned)_displayIndex < _rawDisplayDatas->size() ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
 
     if (_displayIndex >= 0 && (unsigned)_displayIndex < _displayDatas.size())
     {
@@ -156,15 +156,15 @@ void Slot::_updateDisplayData()
         else if (_textureData != nullptr) 
         {
             const auto imageDisplayData = static_cast<ImageDisplayData*>(_displayData);
-            const auto scale = _armature->armatureData->scale;
+            const auto scale = _textureData->parent->scale;
             const auto frame = _textureData->frame;
 
             _pivotX = imageDisplayData->pivot.x;
             _pivotY = imageDisplayData->pivot.y;
 
             const auto& rect = frame != nullptr ? *frame : _textureData->region;
-            float width = rect.width * scale;
-            float height = rect.height * scale;
+            float width = rect.width;
+            float height = rect.height;
 
             if (_textureData->rotated && frame == nullptr) 
             {
@@ -172,8 +172,8 @@ void Slot::_updateDisplayData()
                 height = rect.width;
             }
 
-            _pivotX *= width;
-            _pivotY *= height;
+            _pivotX *= width * scale;
+            _pivotY *= height * scale;
 
             if (frame != nullptr)
             {
@@ -204,7 +204,7 @@ void Slot::_updateDisplayData()
                 }
                 else
                 {
-                    const auto vertexCount = (_meshData->parent->parent->intArray)[_meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+                    const auto vertexCount = (_meshData->parent->parent->parent->intArray)[_meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
                     _ffdVertices.resize(vertexCount * 2);
                     _meshBones.resize(0);
                 }
@@ -335,7 +335,7 @@ void Slot::_updateDisplay()
                 }
                 else 
                 {
-                    const auto rawDisplayData = ( _displayIndex >= 0 && (unsigned)_displayIndex < _rawDisplayDatas->size()) ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
+                    const auto rawDisplayData = ( _displayIndex >= 0 && _rawDisplayDatas != nullptr && (unsigned)_displayIndex < _rawDisplayDatas->size()) ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
                     if (rawDisplayData != nullptr && rawDisplayData->type == DisplayType::Armature) 
                     {
                         actions = &(static_cast<ArmatureDisplayData*>(rawDisplayData)->actions);
@@ -471,7 +471,7 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
         {
             const auto& eachPair = value[i];
             if (
-                eachPair.first && eachPair.first != _rawDisplay && eachPair.first != _meshDisplay &&
+                eachPair.first != nullptr && eachPair.first != _rawDisplay && eachPair.first != _meshDisplay &&
                 eachPair.second != DisplayType::Armature && 
                 std::find(_displayList.cbegin(), _displayList.cend(), eachPair) == _displayList.cend()
             )
@@ -502,14 +502,14 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
     return _displayDirty;
 }
 
-void Slot::init(SlotData* pslotData, std::vector<DisplayData*>* displayDatas, void* rawDisplay, void* meshDisplay)
+void Slot::init(SlotData* slotData_, std::vector<DisplayData*>* displayDatas, void* rawDisplay, void* meshDisplay)
 {
-    if (pslotData == nullptr)
+    if (slotData != nullptr)
     {
         return;
     }
 
-    slotData = pslotData;
+    slotData = slotData_;
     name = slotData->name;
 
     _visibleDirty = true;
@@ -518,15 +518,10 @@ void Slot::init(SlotData* pslotData, std::vector<DisplayData*>* displayDatas, vo
     _blendMode = slotData->blendMode;
     _zOrder = slotData->zOrder;
     _colorTransform = *(slotData->color);
-    _rawDisplayDatas = displayDatas;
     _rawDisplay = rawDisplay;
     _meshDisplay = meshDisplay;
 
-    _displayDatas.resize(_rawDisplayDatas->size());
-    for (std::size_t i = 0, l = _displayDatas.size(); i < l; ++i)
-    {
-        _displayDatas[i] = (*_rawDisplayDatas)[i];
-    }
+    setRawDisplayDatas(displayDatas);
 }
 
 void Slot::update(int cacheFrameIndex)
@@ -659,6 +654,36 @@ void Slot::update(int cacheFrameIndex)
     }
 }
 
+void Slot::updateTransformAndMatrix()
+{
+    if (_transformDirty)
+    {
+        _transformDirty = false;
+        _updateGlobalTransformMatrix(false);
+    }
+}
+
+void Slot::replaceDisplayData(DisplayData *displayData, int displayIndex)
+{
+    if (displayIndex < 0) 
+    {
+        if (_displayIndex < 0) 
+        {
+            displayIndex = 0;
+        }
+        else 
+        {
+            displayIndex = _displayIndex;
+        }
+    }
+
+    if (_displayDatas.size() <= displayIndex) {
+        _displayDatas.resize(displayIndex + 1, nullptr);
+    }
+
+    _displayDatas[displayIndex] = displayData;
+}
+
 bool Slot::containsPoint(float x, float y)
 {
     if (_boundingBoxData == nullptr) 
@@ -765,7 +790,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
     for (const auto& pair : backupDisplayList)
     {
         if (
-            pair.first && pair.first != _rawDisplay && pair.first != _meshDisplay &&
+            pair.first != nullptr && pair.first != _rawDisplay && pair.first != _meshDisplay &&
             std::find(_displayList.cbegin(), _displayList.cend(), pair) == _displayList.cend() &&
             std::find(disposeDisplayList.cbegin(), disposeDisplayList.cend(), pair) == disposeDisplayList.cend()
         )
@@ -784,6 +809,30 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
         {
             _disposeDisplay(pair.first);
         }
+    }
+}
+
+void Slot::setRawDisplayDatas(std::vector<DisplayData*>* value)
+{
+    if (_rawDisplayDatas == value)
+    {
+        return;
+    }
+
+    _displayDirty = true;
+    _rawDisplayDatas = value;
+
+    if (_rawDisplayDatas)
+    {
+        _displayDatas.resize(_rawDisplayDatas->size());
+        for (std::size_t i = 0, l = _displayDatas.size(); i < l; ++i)
+        {
+            _displayDatas[i] = (*_rawDisplayDatas)[i];
+        }
+    }
+    else 
+    {
+        _displayDatas.clear();
     }
 }
 

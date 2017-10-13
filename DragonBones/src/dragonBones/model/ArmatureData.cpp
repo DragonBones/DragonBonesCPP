@@ -7,6 +7,13 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
+void CanvasData::_onClear()
+{
+    hasBackground = false;
+    color = 0x000000;
+    aabb.clear();
+}
+
 void ArmatureData::_onClear()
 {
     for (const auto action : defaultActions)
@@ -39,6 +46,11 @@ void ArmatureData::_onClear()
         pair.second->returnToPool();
     }
 
+    if (canvas != nullptr)
+    {
+        canvas->returnToPool();
+    }
+
     if (userData != nullptr)
     {
         userData->returnToPool();
@@ -62,8 +74,8 @@ void ArmatureData::_onClear()
     parent = nullptr;
     defaultSkin = nullptr;
     defaultAnimation = nullptr;
+    canvas = nullptr;
     userData = nullptr;
-    // TODO canvas
 }
 
 void ArmatureData::sortBones()
@@ -153,7 +165,7 @@ int ArmatureData::setCacheFrame(const Matrix& globalTransformMatrix, const Trans
     return arrayOffset;
 }
 
-void ArmatureData::getCacheFrame(Matrix& globalTransformMatrix, Transform& transform, unsigned arrayOffset)
+void ArmatureData::getCacheFrame(Matrix& globalTransformMatrix, Transform& transform, unsigned arrayOffset) const
 {
     auto& dataArray = *&parent->cachedFrames;
     globalTransformMatrix.a = dataArray[arrayOffset];
@@ -202,7 +214,9 @@ void ArmatureData::addSkin(SkinData* value)
         skins[value->name]->returnToPool();
     }
 
+    value->parent = this;
     skins[value->name] = value;
+
     if (defaultSkin == nullptr)
     {
         defaultSkin = value;
@@ -223,6 +237,18 @@ void ArmatureData::addAnimation(AnimationData* value)
     if (defaultAnimation == nullptr)
     {
         defaultAnimation = value;
+    }
+}
+
+void ArmatureData::addAction(ActionData* value, bool isDefault)
+{
+    if (isDefault)
+    {
+        defaultActions.push_back(value);
+    }
+    else 
+    {
+        actions.push_back(value);
     }
 }
 
@@ -248,6 +274,11 @@ void BoneData::_onClear()
     constraints.clear();
     parent = nullptr;
     userData = nullptr;
+}
+
+void BoneData::addConstraint(ConstraintData* value)
+{
+    constraints.push_back(value);
 }
 
 ColorTransform SlotData::DEFAULT_COLOR;
@@ -292,10 +323,16 @@ void SkinData::_onClear()
 
     name = "";
     displays.clear();
+    parent = nullptr;
 }
 
 void SkinData::addDisplay(const std::string& slotName, DisplayData* value)
 {
+    if (value != nullptr)
+    {
+        value->parent = this;
+    }
+
     displays[slotName].push_back(value); // TODO clear prev
 }
 

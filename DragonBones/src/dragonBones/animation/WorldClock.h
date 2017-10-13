@@ -110,7 +110,7 @@ public:
     virtual void setClock(WorldClock* value) override;
 
 public: // For WebAssembly.
-    const static WorldClock* getStaticClock() { return &WorldClock::clock; }
+    static WorldClock* getStaticClock() { return &clock; }
 };
 
 DRAGONBONES_NAMESPACE_END

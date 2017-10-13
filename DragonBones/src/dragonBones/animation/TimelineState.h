@@ -107,9 +107,9 @@ private:
 
 public:
     SlotColorTimelineState() :
-        _current(new int[8]()),
-        _delta(new int[8]()),
-        _result(new float[8]())
+        _current(new int[8]{ 0 }),
+        _delta(new int[8]{ 0 }),
+        _result(new float[8]{ 0.0f })
     { 
         _onClear(); 
     }

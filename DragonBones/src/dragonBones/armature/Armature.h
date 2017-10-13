@@ -32,10 +32,6 @@ public:
      */
     bool inheritAnimation;
     /**
-     * @private
-     */
-    bool debugDraw; // TODO
-    /**
      * 获取骨架数据。
      * @see dragonBones.ArmatureData
      * @version DragonBones 4.5
@@ -110,7 +106,7 @@ public:
     /**
     * @private
     */
-    void _sortZOrder(int16_t* slotIndices, unsigned offset);
+    void _sortZOrder(const int16_t* slotIndices, unsigned offset);
     /**
     * @private
     */
@@ -140,7 +136,7 @@ public:
     /**
     * @private
     */
-    void init(ArmatureData *parmatureData, IArmatureProxy* pproxy, void* display, DragonBones* dragonBones);
+    void init(ArmatureData *armatureData, IArmatureProxy* proxy, void* display, DragonBones* dragonBones);
     /**
     * 更新骨架和动画。
     * @param passedTime 两帧之间的时间间隔。 (以秒为单位)
@@ -234,7 +230,7 @@ public:
     /**
     * @deprecated
     */
-    void addBone(Bone* value, const std::string& parentName = "");
+    void addBone(Bone* value, const std::string& parentName);
     /**
     * @deprecated
     */
@@ -322,13 +318,6 @@ public:
         return _proxy;
     }
     /**
-    * @pivate
-    */
-    inline IEventDispatcher* getEventDispatcher() const
-    {
-        return _proxy;
-    }
-    /**
     * 获取显示容器，插槽的显示对象都会以此显示容器为父级，根据渲染平台的不同，类型会不同，通常是 DisplayObjectContainer 类型。
     * @version DragonBones 3.0
     * @language zh_CN
@@ -340,9 +329,9 @@ public:
     /**
     * @inheritDoc
     */
-    inline WorldClock* getClock() const  override
+    inline WorldClock* getClock() const override
     {
-        return _clock; 
+        return _clock;
     }
     void setClock(WorldClock* value) override;
     /**
@@ -367,8 +356,8 @@ public:
     void setReplacedTexture(void* value);
 
 public: // For WebAssembly.
-    inline const ArmatureData* getArmatureData() const { return armatureData; }
-    inline const IAnimatable* getAnimatable() const { return this; }
+    const ArmatureData* getArmatureData() const { return armatureData; }
+    IAnimatable* getAnimatable() const { return (IAnimatable*)this; }
 };
 
 DRAGONBONES_NAMESPACE_END

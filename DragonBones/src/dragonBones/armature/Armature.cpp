@@ -13,12 +13,12 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 bool Armature::_onSortSlots(Slot* a, Slot* b)
 {
-    return a->_zOrder > b->_zOrder ? true : false;
+    return a->_zOrder < b->_zOrder ? true : false;
 }
 
 void Armature::_onClear()
 {
-    if (_clock != nullptr) // Remove clock first.
+    if (_clock != nullptr) // Remove clock before slots clear.
     {
         _clock->remove(this);
     }
@@ -38,9 +38,9 @@ void Armature::_onClear()
         _animation->returnToPool();
     }
 
-    if(_proxy != nullptr)
+    if (_proxy != nullptr)
     {
-        _proxy->clear();
+        _proxy->dbClear();
     }
 
     if (_replaceTextureAtlasData != nullptr)
@@ -49,7 +49,6 @@ void Armature::_onClear()
     }
 
     inheritAnimation = true;
-    debugDraw = false;
     armatureData = nullptr;
     userData = nullptr;
 
@@ -86,7 +85,7 @@ void Armature::_sortBones()
     unsigned index = 0;
     unsigned count = 0;
 
-    _bones.resize(0);
+    _bones.clear();
 
     while (count < total) 
     {
@@ -134,7 +133,7 @@ void Armature::_sortSlots()
     std::sort(_slots.begin(), _slots.end(), Armature::_onSortSlots);
 }
 
-void Armature::_sortZOrder(int16_t* slotIndices, unsigned offset)
+void Armature::_sortZOrder(const int16_t* slotIndices, unsigned offset)
 {
     const auto& slotDatas = armatureData->sortedSlots;
     const auto isOriginal = slotIndices == nullptr;
@@ -226,22 +225,23 @@ void Armature::dispose()
     }
 }
 
-void Armature::init(ArmatureData *parmatureData, IArmatureProxy* pproxy, void* display, DragonBones* dragonBones)
+void Armature::init(ArmatureData *armatureData_, IArmatureProxy* proxy, void* display, DragonBones* dragonBones)
 {
     if (armatureData != nullptr)
     {
         return;
     }
 
-    armatureData = parmatureData;
+    armatureData = armatureData_;
     _animation = BaseObject::borrowObject<Animation>();
-    _proxy = pproxy;
+    _proxy = proxy;
     _display = display;
     _dragonBones = dragonBones;
 
     _animation->init(this);
     _animation->setAnimations(armatureData->animations);
-    _proxy->_init(this);
+
+    _proxy->dbInit(this);
 }
 
 void Armature::advanceTime(float passedTime)
@@ -258,7 +258,7 @@ void Armature::advanceTime(float passedTime)
     }
     else if(armatureData->parent == nullptr)
     {
-        DRAGONBONES_ASSERT(false, "The armature data has been disposed.");
+        DRAGONBONES_ASSERT(false, "The armature data has been disposed.\nPlease make sure dispose armature before call factory.clear().");
         return;
     }
 
@@ -299,7 +299,7 @@ void Armature::advanceTime(float passedTime)
         {
             if (action->type == ActionType::Play) 
             {
-                _animation->fadeIn(action->name);
+               _animation->fadeIn(action->name);
             }
         }
 
@@ -307,12 +307,7 @@ void Armature::advanceTime(float passedTime)
         _lockUpdate = false;
     }
 
-    const auto drawed = debugDraw || DragonBones::debugDraw;
-    if (drawed || _debugDraw) 
-    {
-        _debugDraw = drawed;
-        _proxy->debugUpdate(_debugDraw);
-    }
+    _proxy->dbUpdate();
 }
 
 void Armature::invalidUpdate(const std::string& boneName, bool updateSlotDisplay)

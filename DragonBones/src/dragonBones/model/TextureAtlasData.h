@@ -78,6 +78,9 @@ public:
 
 protected:
     virtual void _onClear() override;
+
+public: // For WebAssembly.
+    const std::map<std::string, TextureData*>& getTextures() const { return textures; }
 };
 /**
 * @private
@@ -91,8 +94,8 @@ public:
     bool rotated;
     std::string name;
     Rectangle region;
-    TextureAtlasData* parent;
     Rectangle* frame;
+    TextureAtlasData* parent;
 
     TextureData() :
         frame(nullptr)
@@ -105,9 +108,11 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    inline const Rectangle& getRegion() const { return region; }
-    inline const TextureAtlasData* getParent() const { return parent; }
-    inline const Rectangle* getFrame() const { return frame; }
+    Rectangle* getRegion() { return &region; }
+    const Rectangle* getFrame() const { return frame; }
+    void setFrame(Rectangle* value) { frame = value; }
+    const TextureAtlasData* getParent() const { return parent; }
+    void setParent(TextureAtlasData* value) { parent = value; }
 };
 
 DRAGONBONES_NAMESPACE_END

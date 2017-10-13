@@ -413,7 +413,7 @@ int EllipseBoundingBoxData::intersectsSegment(
 
 int PolygonBoundingBoxData::polygonIntersectsSegment(
     float xA, float yA, float xB, float yB,
-    float* vertices, unsigned offset, unsigned count,
+    const std::vector<float>& vertices,
     Point* intersectionPointA,
     Point* intersectionPointB,
     Point* normalRadians)
@@ -428,12 +428,13 @@ int PolygonBoundingBoxData::polygonIntersectsSegment(
         yA = yB + 0.000001f;
     }
 
+    const auto count = vertices.size();
     const auto dXAB = xA - xB;
     const auto dYAB = yA - yB;
     const auto llAB = xA * yB - yA * xB;
     auto intersectionCount = 0;
-    auto xC = vertices[offset + count - 2];
-    auto yC = vertices[offset + count - 1];
+    auto xC = vertices[count - 2];
+    auto yC = vertices[count - 1];
     auto dMin = 0.0f;
     auto dMax = 0.0f;
     auto xMin = 0.0f;
@@ -443,8 +444,8 @@ int PolygonBoundingBoxData::polygonIntersectsSegment(
 
     for (std::size_t i = 0; i < count; i += 2) 
     {
-        const auto xD = vertices[offset + i];
-        const auto yD = vertices[offset + i + 1];
+        const auto xD = vertices[i];
+        const auto yD = vertices[i + 1];
 
         if (xC == xD) 
         {
@@ -589,11 +590,9 @@ void PolygonBoundingBoxData::_onClear()
     }
 
     type = BoundingBoxType::Polygon;
-    count = 0;
-    offset = 0;
     x = 0.0f;
     y = 0.0f;
-    vertices = nullptr;
+    vertices.clear();
     weight = nullptr;
 }
 
@@ -602,14 +601,14 @@ bool PolygonBoundingBoxData::containsPoint(float pX, float pY)
     auto isInSide = false;
     if (pX >= x && pX <= width && pY >= y && pY <= height) 
     {
-        for (std::size_t i = 0, l = count, iP = l - 2; i < l; i += 2)
+        for (std::size_t i = 0, l = vertices.size(), iP = l - 2; i < l; i += 2)
         {
-            const auto yA = vertices[offset + iP + 1];
-            const auto yB = vertices[offset + i + 1];
+            const auto yA = vertices[iP + 1];
+            const auto yB = vertices[i + 1];
             if ((yB < pY && yA >= pY) || (yA < pY && yB >= pY)) 
             {
-                const auto xA = vertices[offset + iP];
-                const auto xB = vertices[offset + i];
+                const auto xA = vertices[iP];
+                const auto xB = vertices[i];
                 if ((pY - yB) * (xA - xB) / (yA - yB) + xB < pX) 
                 {
                     isInSide = !isInSide;
@@ -634,7 +633,7 @@ int PolygonBoundingBoxData::intersectsSegment(
     if (RectangleBoundingBoxData::rectangleIntersectsSegment(xA, yA, xB, yB, x, y, width, height, nullptr, nullptr, nullptr) != 0) {
         intersectionCount = PolygonBoundingBoxData::polygonIntersectsSegment(
             xA, yA, xB, yB,
-            vertices, offset, count,
+            vertices,
             intersectionPointA, intersectionPointB, normalRadians
         );
     }

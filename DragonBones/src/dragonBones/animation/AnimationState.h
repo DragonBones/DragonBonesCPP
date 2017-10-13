@@ -290,7 +290,7 @@ public:
         return name;
     }
 public: // For WebAssembly.
-    const AnimationData* getAnimationData() { return animationData; }
+    const AnimationData* getAnimationData() const { return animationData; }
 };
 
 DRAGONBONES_NAMESPACE_END

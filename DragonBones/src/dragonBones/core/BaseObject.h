@@ -36,7 +36,6 @@ public:
     static void clearPool(std::size_t classTypeIndex = 0);
     /**
      * 从对象池中创建指定对象。
-     * @param objectConstructor 对象类。
      * @version DragonBones 4.5
      * @language zh_CN
      */
@@ -58,6 +57,7 @@ public:
         }
 
         const auto object = new (std::nothrow) T();
+
         return object;
     }
 
@@ -69,16 +69,18 @@ public:
      */
     const unsigned hashCode;
 
-    virtual ~BaseObject() {}
-
 private:
     bool _isInPool;
+
+public:
+    virtual ~BaseObject() {}
 
 protected:
     BaseObject() :
         hashCode(BaseObject::_hashCode++),
         _isInPool(false)
     {}
+
     virtual void _onClear() = 0;
 
 public:
@@ -92,9 +94,6 @@ public:
      * @language zh_CN
      */
     void returnToPool();
-
-public: // For WebAssembly.
-    int getHashCode() const { return hashCode; }
 };
 
 DRAGONBONES_NAMESPACE_END

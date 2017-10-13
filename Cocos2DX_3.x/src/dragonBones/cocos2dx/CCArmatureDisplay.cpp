@@ -5,7 +5,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 CCArmatureDisplay* CCArmatureDisplay::create()
 {
     CCArmatureDisplay* displayContainer = new (std::nothrow) CCArmatureDisplay();
-    //if (displayContainer && ((cocos2d::Node*)(static_cast<IArmatureProxy*>(displayContainer)))->init()) // TODO
+    if (displayContainer && displayContainer->init())
     if (displayContainer)
     {
         displayContainer->autorelease();
@@ -18,14 +18,14 @@ CCArmatureDisplay* CCArmatureDisplay::create()
     return displayContainer;
 }
 
-void CCArmatureDisplay::_init(Armature* armature)
+void CCArmatureDisplay::dbInit(Armature* armature)
 {
     _armature = armature;
 }
 
-void CCArmatureDisplay::clear()
+void CCArmatureDisplay::dbClear()
 {
-    this->setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
+    setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
 
     _armature = nullptr;
     CC_SAFE_RELEASE(_dispatcher);
@@ -41,9 +41,21 @@ void CCArmatureDisplay::dispose(bool disposeProxy)
     }
 }
 
-void CCArmatureDisplay::debugUpdate(bool isEnabled)
+void CCArmatureDisplay::dbUpdate()
 {
-    // TODO
+    const auto drawed = DragonBones::debugDraw;
+    if (drawed || _debugDraw) 
+    {
+        _debugDraw = drawed;
+        if (_debugDraw) 
+        {
+
+        }
+        else 
+        {
+            // TODO
+        }
+    }
 }
 
 void CCArmatureDisplay::_dispatchEvent(const std::string& type, EventObject* value)

@@ -16,10 +16,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 */
 class Constraint : public BaseObject
 {
-
-public:
-    Constraint() : target(nullptr), bone(nullptr), root(nullptr) {}
-    virtual ~Constraint();
+    ABSTRACT_CLASS(Constraint)
 
 protected:
     static Matrix _helpMatrix;
@@ -33,17 +30,18 @@ public:
 
     virtual void update() = 0;
 
-    // For WebAssembly.
-    Bone* getTarget() const { return  target; }
-    Bone* getBone() const { return bone; }
-    Bone* getRoot() const { return root; }
-
-    void setTarget(Bone* value ) { target = value; }
-    void setBone(Bone* value ) { bone = value; }
-    void setRoot(Bone* value ) { root = value; }
-
 protected:
     virtual void _onClear() override;
+
+public:
+    // For WebAssembly.
+    const Bone* getTarget() const { return target; }
+    const Bone* getBone() const { return bone; }
+    const Bone* getRoot() const { return root; }
+
+    void setTarget(Bone* value) { target = value; }
+    void setBone(Bone* value) { bone = value; }
+    void setRoot(Bone* value) { root = value; }
 };
 /**
 * @private

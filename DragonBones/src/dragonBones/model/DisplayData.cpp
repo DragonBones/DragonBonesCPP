@@ -40,6 +40,11 @@ void ArmatureDisplayData::_onClear()
     armature = nullptr;
 }
 
+void ArmatureDisplayData::addAction(ActionData* value)
+{
+    actions.push_back(value);
+}
+
 void MeshDisplayData::_onClear()
 {
     ImageDisplayData::_onClear();
@@ -73,6 +78,11 @@ void WeightData::_onClear()
     count = 0;
     offset = 0;
     bones.clear();
+}
+
+void WeightData::addBone(BoneData* value)
+{
+    bones.push_back(value);
 }
 
 DRAGONBONES_NAMESPACE_END

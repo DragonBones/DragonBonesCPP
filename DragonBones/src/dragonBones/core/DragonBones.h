@@ -12,11 +12,10 @@
 #include <assert.h>
 
 // dragonBones assert
-#ifndef DRAGONBONES_ASSERT
-#define DRAGONBONES_ASSERT(cond, msg) do { \
-        assert(cond); \
-    } while (0)
-#endif
+#define DRAGONBONES_ASSERT(cond, msg) \
+do { \
+    assert(cond); \
+} while (0)
 
 // namespace dragonBones {}
 #define DRAGONBONES_NAMESPACE_BEGIN namespace dragonBones {
@@ -25,14 +24,23 @@
 // using dragonBones namespace
 #define DRAGONBONES_USING_NAME_SPACE using namespace dragonBones
 
-#ifndef ABSTRACT_CLASS
 #define ABSTRACT_CLASS(CLASS) \
 public:\
     CLASS(){}\
     virtual ~CLASS(){};
-#endif
 
-#ifndef BIND_CLASS_TYPE_A
+#define BIND_CLASS_TYPE(CLASS) \
+public:\
+    static std::size_t getTypeIndex()\
+    {\
+        static const auto typeIndex = typeid(CLASS).hash_code();\
+        return typeIndex;\
+    }\
+    virtual std::size_t getClassTypeIndex() const override\
+    {\
+        return CLASS::getTypeIndex();\
+    }\
+
 #define BIND_CLASS_TYPE_A(CLASS) \
 public:\
     static std::size_t getTypeIndex()\
@@ -50,9 +58,7 @@ public:\
 private:\
     CLASS(const CLASS&);\
     void operator=(const CLASS&)
-#endif
 
-#ifndef BIND_CLASS_TYPE_B
 #define BIND_CLASS_TYPE_B(CLASS) \
 public:\
     static std::size_t getTypeIndex()\
@@ -67,14 +73,11 @@ public:\
 private:\
     CLASS(const CLASS&);\
     void operator=(const CLASS&)
-#endif
 
-#ifndef DRAGONBONES_DISALLOW_COPY_AND_ASSIGN
 #define DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(CLASS) \
 private:\
     CLASS(const CLASS&);\
     void operator=(const CLASS&);
-#endif
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -114,6 +117,12 @@ enum class ArmatureType
     Armature = 0,
     MovieClip = 1,
     Stage = 2
+};
+
+enum class OffsetMode {
+    None,
+    Additive,
+    Override
 };
 
 enum class DisplayType 
@@ -182,6 +191,15 @@ enum class TimelineType {
     AnimationWeight = 41
 };
 
+enum class AnimationFadeOutMode {
+    None,
+    SameLayer,
+    SameGroup,
+    SameLayerAndGroup,
+    All,
+    Single
+};
+
 enum class TextureFormat
 {
     DEFAULT,
@@ -191,21 +209,6 @@ enum class TextureFormat
     RGB888,
     RGB565,
     RGBA5551
-};
-
-enum class OffsetMode {
-    None,
-    Additive,
-    Override
-};
-
-enum class AnimationFadeOutMode {
-    None,
-    SameLayer,
-    SameGroup,
-    SameLayerAndGroup,
-    All,
-    Single
 };
 
 template <class T>
@@ -254,6 +257,7 @@ class BaseObject;
 class UserData;
 class ActionData;
 class DragonBonesData;
+class CanvasData;
 class ArmatureData;
 class BoneData;
 class SlotData;
@@ -303,10 +307,15 @@ class SlotFFDTimelineState;
 class IEventDispatcher;
 class EventObject;
 
+class DataParser;
+class JSONDataParser;
+class BinaryDataParser;
+
 class BaseFactory;
 class BuildArmaturePackage;
+
 /**
-* VERSION 5.5.0
+* @private
 */
 class DragonBones 
 {
@@ -316,6 +325,8 @@ public:
     static bool yDown;
     static bool debug;
     static bool debugDraw;
+    static bool webAssembly;
+    static const std::string version;
 
 private:
     std::vector<BaseObject*> _objects;
@@ -324,10 +335,8 @@ private:
     IEventDispatcher* _eventManager;
 
 public:
-    DragonBones();
     DragonBones(IEventDispatcher* eventManager);
     virtual ~DragonBones();
-
 
     void advanceTime(float passedTime);
     void bufferEvent(EventObject* value);
@@ -337,10 +346,6 @@ public:
     {
         return _eventManager;
     }
-
-public: // For WebAssembly.
-    std::vector<BaseObject*>* getObjects() { return &_objects; }
-    std::vector<EventObject*>* getEvents() { return &_events; }
 };
 
 DRAGONBONES_NAMESPACE_END

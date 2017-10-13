@@ -9,6 +9,21 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
+* @private
+*/
+class CanvasData : public BaseObject
+{
+    BIND_CLASS_TYPE_A(CanvasData);
+
+public:
+    bool hasBackground;
+    unsigned color;
+    Rectangle aabb;
+
+protected:
+    virtual void _onClear() override;
+};
+/**
  * 骨架数据。
  * @version DragonBones 3.0
  * @language zh_CN
@@ -111,6 +126,10 @@ public:
     /**
     * @private
     */
+    CanvasData* canvas;
+    /**
+    * @private
+    */
     UserData* userData;
     /**
     * 所属的龙骨数据。
@@ -123,6 +142,7 @@ public:
     * @private
     */
     ArmatureData() :
+        canvas(nullptr),
         userData(nullptr)
     {
         _onClear();
@@ -151,7 +171,7 @@ public:
     /**
     * @private
     */
-    void getCacheFrame(Matrix& globalTransformMatrix, Transform& transform, unsigned arrayOffset);
+    void getCacheFrame(Matrix& globalTransformMatrix, Transform& transform, unsigned arrayOffset) const;
     /**
     * @private
     */
@@ -168,6 +188,10 @@ public:
     * @private
     */
     void addAnimation(AnimationData* value);
+    /**
+    * @private
+    */
+    void addAction(ActionData* value, bool isDefault);
     /**
     * 获取骨骼数据。
     * @param name 数据名称。
@@ -214,11 +238,27 @@ public:
     }
 
 public: // For WebAssembly.
-    const Rectangle& getAABB() const { return aabb; }
-    const SkinData* getDefaultSkin() const { return defaultSkin; }
-    const AnimationData* getDefaultAnimation() const { return defaultAnimation; }
+    int getType() const { return (int)type; }
+    void setType(int value) { type = (ArmatureType)value; }
+
+    Rectangle* getAABB() { return &aabb; }
+    const std::vector<std::string>& getAnimationNames() const { return animationNames; }
+    const std::vector<BoneData*>& getSortedBones() const { return sortedBones; }
+    const std::vector<SlotData*>& getSortedSlots() const { return sortedSlots; }
+    const std::vector<ActionData*>& getDefaultActions() const { return defaultActions; }
+    const std::vector<ActionData*>& getActions() const { return actions; }
+
+    SkinData* getDefaultSkin() const { return defaultSkin; }
+    void setDefaultSkin(SkinData* value) { defaultSkin = value; }
+
+    AnimationData* getDefaultAnimation() const { return defaultAnimation; }
+    void setDefaultAnimation(AnimationData* value) { defaultAnimation = value; }
+
     const UserData* getUserData() const { return userData; }
+    void setUserData(UserData* value) { userData = value; }
+
     const DragonBonesData* getParent() const { return parent; }
+    void setParent(DragonBonesData* value) { parent = value; }
 };
 /**
 * 骨骼数据。
@@ -265,15 +305,15 @@ public:
     */
     std::vector<ConstraintData*> constraints;
     /**
+    * @private
+    */
+    UserData* userData;
+    /**
     * 所属的父骨骼数据。
     * @version DragonBones 3.0
     * @language zh_CN
     */
     BoneData* parent;
-    /**
-    * @private
-    */
-    UserData* userData;
     /**
     * @private
     */
@@ -290,10 +330,21 @@ public:
 protected:
     virtual void _onClear() override;
 
+public:
+    /**
+    * @private
+    */
+    void addConstraint(ConstraintData* value);
+
 public: // For WebAssembly.
-    const Transform& getTransfrom() const { return transform; }
+    Transform* getTransfrom() { return &transform; }
+    const std::vector<ConstraintData*>& getConstraints() const { return constraints; }
+
     const UserData* getUserData() const { return userData; }
+    void setUserData(UserData* value) { userData = value; }
+
     const BoneData* getParent() const { return parent; }
+    void setParent(BoneData* value) { parent = value; }
 };
 /**
 * 插槽数据。
@@ -335,13 +386,6 @@ public:
     */
     std::string name;
     /**
-    * 所属的父骨骼数据。
-    * @see dragonBones.BoneData
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
-    BoneData* parent;
-    /**
     * @private
     */
     ColorTransform* color;
@@ -349,6 +393,13 @@ public:
     * @private
     */
     UserData* userData;
+    /**
+    * 所属的父骨骼数据。
+    * @see dragonBones.BoneData
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    BoneData* parent;
     /**
     * @private
     */
@@ -367,15 +418,26 @@ protected:
     virtual void _onClear() override;
 
 public: // For WebAssembly.
-    BoneData* getParent() const { return parent; }
-    UserData* getUserData() const { return userData; }
+    static ColorTransform* getDefaultColor() { return &DEFAULT_COLOR; }
+
+    int getBlendMode() const { return (int)blendMode; }
+    void setBlendMode(int value) { blendMode = (BlendMode)value; }
+
+    ColorTransform* getColor() const { return color; }
+    void setColor(ColorTransform* value) { color = value; }
+
+    const BoneData* getParent() const { return parent; }
+    void setParent(BoneData* value) { parent = value; }
+
+    const UserData* getUserData() const { return userData; }
+    void setUserData(UserData* value) { userData = value; }
 };
 /**
 * 皮肤数据。（通常一个骨架数据至少包含一个皮肤数据）
 * @version DragonBones 3.0
 * @language zh_CN
 */
-class SkinData final : public BaseObject
+class SkinData : public BaseObject
 {
     BIND_CLASS_TYPE_A(SkinData);
 
@@ -390,6 +452,10 @@ public:
     * @private
     */
     std::map<std::string, std::vector<DisplayData*>> displays;
+    /**
+    * @private
+    */
+    ArmatureData* parent;
 
 protected:
     virtual void _onClear() override;
@@ -406,10 +472,13 @@ public:
     /**
     * @private
     */
-    inline std::vector<DisplayData*>* getDisplays(const std::string& slotName)
+    std::vector<DisplayData*>* getDisplays(const std::string& slotName)
     {
         return mapFindB(displays, slotName);
     }
+
+public: // For WebAssembly. TODO parent
+    const std::map<std::string, std::vector<DisplayData*>>& getSlotDisplays() const { return displays; }
 };
 
 DRAGONBONES_NAMESPACE_END

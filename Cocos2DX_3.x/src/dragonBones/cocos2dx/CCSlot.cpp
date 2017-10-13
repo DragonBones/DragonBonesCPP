@@ -8,6 +8,7 @@ void CCSlot::_onClear()
 {
     Slot::_onClear();
 
+    _textureScale = 1.0f;
     _renderDisplay = nullptr;
 }
 
@@ -25,21 +26,7 @@ void CCSlot::_disposeDisplay(void* value)
 
 void CCSlot::_onUpdateDisplay()
 {
-    if (_display != nullptr)
-    {
-        if (_childArmature != nullptr)
-        {
-            _renderDisplay = static_cast<cocos2d::Node*>(_display);
-        }
-        else
-        {
-            _renderDisplay = static_cast<cocos2d::Node*>(_display);
-        }
-    }
-    else
-    {
-        _renderDisplay = static_cast<cocos2d::Node*>(_rawDisplay);
-    }
+    _renderDisplay = static_cast<cocos2d::Node*>(_display != nullptr ? _display : _rawDisplay);
 }
 
 void CCSlot::_addDisplay()
@@ -54,6 +41,7 @@ void CCSlot::_replaceDisplay(void* value, bool isArmatureDisplay)
     const auto prevDisplay = isArmatureDisplay ? static_cast<cocos2d::Node*>(value) : static_cast<cocos2d::Node*>(value);
     container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
     container->removeChild(prevDisplay);
+    _textureScale = 1.0f;
 }
 
 void CCSlot::_removeDisplay()
@@ -71,103 +59,31 @@ void CCSlot::_updateZOrder()
     _renderDisplay->setLocalZOrder(_zOrder);
 }
 
-void CCSlot::_updateVisible()
-{
-    _renderDisplay->setVisible(_parent->getVisible());
-}
-
-void CCSlot::_updateBlendMode()
-{
-    cocos2d::Sprite* spriteDisplay = dynamic_cast<cocos2d::Sprite*>(_renderDisplay);
-    if (spriteDisplay)
-    {
-        switch (_blendMode)
-        {
-            case BlendMode::Normal:
-                //spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
-                break;
-
-            case BlendMode::Add:
-            {
-                const auto texture = spriteDisplay->getTexture();
-                if (texture && texture->hasPremultipliedAlpha())
-                {
-                    cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
-                    spriteDisplay->setBlendFunc(blendFunc);
-                }
-                else
-                {
-                    spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
-                }
-                break;
-            }
-
-            default:
-                break;
-        }
-    }
-    else if (_childArmature)
-    {
-        for (const auto slot : _childArmature->getSlots())
-        {
-            slot->_blendMode = _blendMode;
-            slot->_updateBlendMode();
-        }
-    }
-}
-
-void CCSlot::_updateColor()
-{
-    _renderDisplay->setOpacity(_colorTransform.alphaMultiplier * 255.0f);
-
-    static cocos2d::Color3B helpColor;
-    helpColor.r = _colorTransform.redMultiplier * 255.0f;
-    helpColor.g = _colorTransform.greenMultiplier * 255.0f;
-    helpColor.b = _colorTransform.blueMultiplier * 255.0f;
-
-    _renderDisplay->setColor(helpColor);
-}
-
 void CCSlot::_updateFrame()
 {
     const auto meshData = _display == _meshDisplay ? _meshData : nullptr;
     auto currentTextureData = static_cast<CCTextureData*>(_textureData);
     const auto frameDisplay = static_cast<DBCCSprite*>(_renderDisplay); // In cocos2dx render meshDisplay and frameDisplay are the same display
 
-    if (_displayIndex >= 0 && _display !=nullptr && currentTextureData != nullptr)
+    if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
     {
-        // Update replaced texture atlas.
-        if (_armature->getReplacedTexture() != nullptr && std::find(_rawDisplayDatas->cbegin(), _rawDisplayDatas->cend(), _displayData) != _rawDisplayDatas->cend())
+        if (currentTextureData->spriteFrame != nullptr)
         {
-            auto currentTextureAtlasData = static_cast<CCTextureAtlasData*>(currentTextureData->parent);
-            if (_armature->_replaceTextureAtlasData == nullptr)
-            {
-                currentTextureAtlasData = BaseObject::borrowObject<CCTextureAtlasData>();
-                currentTextureAtlasData->copyFrom(*currentTextureData->parent);
-                currentTextureAtlasData->setRenderTexture(static_cast<cocos2d::Texture2D*>(_armature->getReplacedTexture()));
-                _armature->_replaceTextureAtlasData = currentTextureAtlasData;
-            }
-            else 
-            {
-                currentTextureAtlasData = static_cast<CCTextureAtlasData*>(_armature->_replaceTextureAtlasData);
-            }
-
-            currentTextureData = static_cast<CCTextureData*>(currentTextureAtlasData->getTexture(currentTextureData->name));
-        }
-
-        if (currentTextureData->spriteFrame != nullptr) 
-        {
-            const auto scale = _armature->armatureData->scale;
-
             if (meshData != nullptr) // Mesh.
             {
-                const auto intArray = meshData->parent->parent->intArray;
-                const auto floatArray = meshData->parent->parent->floatArray;
+                const auto data = meshData->parent->parent->parent;
+                const auto intArray = data->intArray;
+                const auto floatArray = data->floatArray;
                 const unsigned vertexCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
                 const unsigned triangleCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
-                const unsigned verticesOffset = intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
-                const unsigned triangleOffset = meshData->offset + (unsigned)BinaryOffset::MeshVertexIndices;
-                const unsigned uvOffset = verticesOffset + vertexCount * 2;
+                int vertexOffset = intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+
+                if (vertexOffset < 0)
+                {
+                    vertexOffset += 65536; // Fixed out of bouds bug. 
+                }
+
+                const unsigned uvOffset = vertexOffset + vertexCount * 2;
 
                 const auto& region = currentTextureData->region;
                 const auto& textureAtlasSize = currentTextureData->spriteFrame->getTexture()->getContentSizeInPixels();
@@ -175,15 +91,27 @@ void CCSlot::_updateFrame()
                 auto vertexIndices = new unsigned short[triangleCount * 3]; // does cocos2dx release it?
                 cocos2d::Rect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
 
-                for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2) 
+                for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
                 {
                     const auto iH = i / 2;
-                    const auto x = floatArray[verticesOffset + i];
-                    const auto y = floatArray[verticesOffset + i + 1];
+                    const auto x = floatArray[vertexOffset + i];
+                    const auto y = floatArray[vertexOffset + i + 1];
+                    auto u = floatArray[uvOffset + i];
+                    auto v = floatArray[uvOffset + i + 1];
                     cocos2d::V3F_C4B_T2F vertexData;
                     vertexData.vertices.set(x, -y, 0.0f);
-                    vertexData.texCoords.u = (region.x + floatArray[uvOffset + i] * region.width) / textureAtlasSize.width;
-                    vertexData.texCoords.v = (region.y + floatArray[uvOffset + i + 1] * region.height) / textureAtlasSize.height;
+
+                    if (currentTextureData->rotated)
+                    {
+                        vertexData.texCoords.u = (region.x + (1.0f - v) * region.width) / textureAtlasSize.width;
+                        vertexData.texCoords.v = (region.y + u * region.height) / textureAtlasSize.height;
+                    }
+                    else
+                    {
+                        vertexData.texCoords.u = (region.x + u * region.width) / textureAtlasSize.width;
+                        vertexData.texCoords.v = (region.y + v * region.height) / textureAtlasSize.height;
+                    }
+
                     vertexData.colors = cocos2d::Color4B::WHITE;
                     vertices[iH] = vertexData;
 
@@ -211,14 +139,14 @@ void CCSlot::_updateFrame()
                 boundsRect.size.width -= boundsRect.origin.x;
                 boundsRect.size.height -= boundsRect.origin.y;
 
-                for (std::size_t i = 0; i < triangleCount * 3; ++i) 
+                for (std::size_t i = 0; i < triangleCount * 3; ++i)
                 {
-                    vertexIndices[i] = intArray[triangleOffset + i];
+                    vertexIndices[i] = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i];
                 }
 
+                _textureScale = 1.0f;
                 frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
 
-                //
                 cocos2d::PolygonInfo polygonInfo;
                 auto& triangles = polygonInfo.triangles;
                 triangles.verts = vertices;
@@ -238,7 +166,17 @@ void CCSlot::_updateFrame()
             }
             else // Normal texture.
             {
-                _pivotY -= currentTextureData->region.height * scale; // TODO check frame
+                // Modify pivot y.
+                const auto frame = currentTextureData->frame;
+                const auto& rect = frame != nullptr ? *frame : currentTextureData->region;
+                float height = rect.height;
+                if (currentTextureData->rotated && frame == nullptr)
+                {
+                    height = rect.width;
+                }
+
+                _textureScale = currentTextureData->parent->scale;
+                _pivotY -= height * _textureScale;
                 frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
             }
 
@@ -273,13 +211,19 @@ void CCSlot::_updateMesh()
 
     if (weightData != nullptr)
     {
-        const auto intArray = meshData->parent->parent->intArray;
-        const auto floatArray = meshData->parent->parent->floatArray;
+        const auto data = meshData->parent->parent->parent;
+        const auto intArray = data->intArray;
+        const auto floatArray = data->floatArray;
         const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-        const auto weightFloatOffset = (std::size_t)intArray[weightData->offset + (unsigned)BinaryOffset::WeigthFloatOffset];
+        int weightFloatOffset = intArray[weightData->offset + (unsigned)BinaryOffset::WeigthFloatOffset];
+
+        if (weightFloatOffset < 0)
+        {
+            weightFloatOffset += 65536; // Fixed out of bouds bug. 
+        }
 
         for (
-            std::size_t i = 0, iD = 0, iB = weightData->offset + (unsigned)BinaryOffset::WeigthBoneIndices + weightData->bones.size(), iV = weightFloatOffset, iF = 0;
+            std::size_t i = 0, iD = 0, iB = weightData->offset + (unsigned)BinaryOffset::WeigthBoneIndices + weightData->bones.size(), iV = (std::size_t)weightFloatOffset, iF = 0;
             i < vertexCount;
             ++i
         )
@@ -336,10 +280,16 @@ void CCSlot::_updateMesh()
     }
     else if (hasFFD)
     {
-        const auto intArray = meshData->parent->parent->intArray;
-        const auto floatArray = meshData->parent->parent->floatArray;
+        const auto data = meshData->parent->parent->parent;
+        const auto intArray = data->intArray;
+        const auto floatArray = data->floatArray;
         const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-        const auto vertexOffset = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+        int vertexOffset = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+
+        if (vertexOffset < 0)
+        {
+            vertexOffset += 65536; // Fixed out of bouds bug. 
+        }
 
         for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
         {
@@ -398,30 +348,103 @@ void CCSlot::_updateTransform(bool isSkinnedMesh)
         transform.m[0] = 1.0f;
         transform.m[1] = 0.0f;
         transform.m[4] = 0.0f;
-        transform.m[5] = DragonBones::yDown ? 1.0f : -1.0f;
+        transform.m[5] = -1.0f;
         transform.m[12] = 0.0f;
         transform.m[13] = 0.0f;
     }
-    else if (DragonBones::yDown)
+    else
     {
-        transform.m[0] = globalTransformMatrix.a;
-        transform.m[1] = -globalTransformMatrix.b;
-        transform.m[4] = -globalTransformMatrix.c;
-        transform.m[5] = globalTransformMatrix.d;
-        transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
-        transform.m[13] = -(globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY));
-    }
-    else 
-    {
-        transform.m[0] = globalTransformMatrix.a;
-        transform.m[1] = globalTransformMatrix.b;
-        transform.m[4] = -globalTransformMatrix.c;
-        transform.m[5] = -globalTransformMatrix.d;
-        transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
-        transform.m[13] = (globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY));
+        if (_textureScale == 1.0f)
+        {
+            transform.m[0] = globalTransformMatrix.a;
+            transform.m[1] = globalTransformMatrix.b;
+            transform.m[4] = -globalTransformMatrix.c;
+            transform.m[5] = -globalTransformMatrix.d;
+        }
+        else 
+        {
+            transform.m[0] = globalTransformMatrix.a * _textureScale;
+            transform.m[1] = globalTransformMatrix.b * _textureScale;
+            transform.m[4] = -globalTransformMatrix.c * _textureScale;
+            transform.m[5] = -globalTransformMatrix.d * _textureScale;
+        }
+
+        if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
+        {
+            transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
+            transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
+        }
+        else if (_childArmature)
+        {
+            transform.m[12] = globalTransformMatrix.tx;
+            transform.m[13] = globalTransformMatrix.ty;
+        }
+        else 
+        {
+            const auto& anchorPoint = _renderDisplay->getAnchorPointInPoints(); // Why anchor point do not work?
+            transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
+            transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
+        }
     }
 
     _renderDisplay->setNodeToParentTransform(transform);
+}
+
+void CCSlot::_updateVisible()
+{
+    _renderDisplay->setVisible(_parent->getVisible());
+}
+
+void CCSlot::_updateBlendMode()
+{
+    cocos2d::Sprite* spriteDisplay = dynamic_cast<cocos2d::Sprite*>(_renderDisplay);
+    if (spriteDisplay)
+    {
+        switch (_blendMode)
+        {
+        case BlendMode::Normal:
+            //spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
+            break;
+
+        case BlendMode::Add:
+        {
+            const auto texture = spriteDisplay->getTexture();
+            if (texture && texture->hasPremultipliedAlpha())
+            {
+                cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
+                spriteDisplay->setBlendFunc(blendFunc);
+            }
+            else
+            {
+                spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
+            }
+            break;
+        }
+
+        default:
+            break;
+        }
+    }
+    else if (_childArmature)
+    {
+        for (const auto slot : _childArmature->getSlots())
+        {
+            slot->_blendMode = _blendMode;
+            slot->_updateBlendMode();
+        }
+    }
+}
+
+void CCSlot::_updateColor()
+{
+    _renderDisplay->setOpacity(_colorTransform.alphaMultiplier * 255.0f);
+
+    static cocos2d::Color3B helpColor;
+    helpColor.r = _colorTransform.redMultiplier * 255.0f;
+    helpColor.g = _colorTransform.greenMultiplier * 255.0f;
+    helpColor.b = _colorTransform.blueMultiplier * 255.0f;
+
+    _renderDisplay->setColor(helpColor);
 }
 
 DRAGONBONES_NAMESPACE_END

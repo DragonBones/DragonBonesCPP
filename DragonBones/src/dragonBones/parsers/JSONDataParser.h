@@ -147,7 +147,7 @@ protected:
     rapidjson::Value* _rawTextureAtlases;
 
 private:
-    int _defalultColorOffset;
+    int _defaultColorOffset;
     int _prevClockwise;
     float _prevRotation;
     Matrix _helpMatrixA;
@@ -163,13 +163,10 @@ private:
     std::vector<std::int16_t> _frameArray;
     std::vector<std::uint16_t> _timelineArray;
     std::vector<ActionFrame> _actionFrames;
-    std::vector<PolygonBoundingBoxData*> _polygonBoundingBoxes;
     std::map<std::string, const rapidjson::Value*> _weightSlotPose;
     std::map<std::string, const rapidjson::Value*> _weightBonePoses;
-    std::map<std::string, std::vector<unsigned>> _weightBoneIndices;
     std::map<std::string, std::vector<BoneData*>> _cacheBones;
-    std::map<std::string, MeshDisplayData*> _meshs;
-    std::map<std::string, std::vector<MeshDisplayData*>> _shareMeshs;
+    std::map<std::string, std::map<std::string, std::map<std::string, std::vector<MeshDisplayData*>>>> _cacheMeshs;
     std::map<std::string, std::vector<ActionData*>> _slotChildActions;
 
 public:
@@ -186,7 +183,7 @@ public:
         _timeline(nullptr),
         _rawTextureAtlases(nullptr),
 
-        _defalultColorOffset(-1),
+        _defaultColorOffset(-1),
         _prevClockwise(0),
         _prevRotation(0.0f),
         _helpMatrixA(),
@@ -201,14 +198,11 @@ public:
         _frameFloatArray(),
         _frameArray(),
         _timelineArray(),
-        _polygonBoundingBoxes(),
         _actionFrames(),
         _weightSlotPose(),
         _weightBonePoses(),
-        _weightBoneIndices(),
         _cacheBones(),
-        _meshs(),
-        _shareMeshs(),
+        _cacheMeshs(),
         _slotChildActions()
     {
     }
@@ -231,7 +225,7 @@ protected:
     virtual ArmatureData* _parseArmature(const rapidjson::Value& rawData, float scale);
     virtual BoneData* _parseBone(const rapidjson::Value& rawData);
     virtual void _parseIKConstraint(const rapidjson::Value& rawData);
-    virtual SlotData* _parseSlot(const rapidjson::Value& rawData);
+    virtual SlotData* _parseSlot(const rapidjson::Value& rawData, int zOrder);
     virtual SkinData* _parseSkin(const rapidjson::Value& rawData);
     virtual DisplayData* _parseDisplay(const rapidjson::Value& rawData);
     virtual void _parsePivot(const rapidjson::Value& rawData, ImageDisplayData& display);
@@ -248,6 +242,7 @@ protected:
     virtual void _parseSlotTimeline(const rapidjson::Value& rawData);
     virtual unsigned _parseFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseTweenFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual unsigned _parseActionFrame(const ActionFrame& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseZOrderFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseBoneAllFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseBoneTranslateFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
@@ -256,7 +251,7 @@ protected:
     virtual unsigned _parseSlotDisplayIndexFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseSlotColorFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseSlotFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
-    virtual unsigned _parseActionData(const rapidjson::Value& rawData, std::vector<ActionData*>& actions, ActionType type, BoneData* bone, SlotData* slot);
+    virtual const std::vector<ActionData*>& _parseActionData(const rapidjson::Value& rawData, ActionType type, BoneData* bone, SlotData* slot);
     virtual void _parseTransform(const rapidjson::Value& rawData, Transform& transform, float scale);
     virtual void _parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color);
     virtual void _parseArray(const rapidjson::Value& rawData);

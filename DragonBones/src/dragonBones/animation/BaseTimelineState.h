@@ -43,11 +43,11 @@ protected:
     Armature* _armature;
     AnimationState* _animationState;
     TimelineState* _actionTimeline;
-    int16_t* _frameArray;
-    int16_t* _frameIntArray;
-    float* _frameFloatArray;
-    uint16_t* _timelineArray;
-    std::vector<unsigned>* _frameIndices;
+    const int16_t* _frameArray;
+	const int16_t* _frameIntArray;
+	const float* _frameFloatArray;
+	const uint16_t* _timelineArray;
+	const std::vector<unsigned>* _frameIndices;
 
 protected:
     virtual void _onClear() override;
@@ -91,7 +91,7 @@ private:
         return (value - progress) * easing + progress;
     }
 
-    inline static float _getEasingCurveValue(float progress, int16_t* samples, unsigned count, unsigned offset)
+    inline static float _getEasingCurveValue(float progress, const int16_t* samples, unsigned count, unsigned offset)
     {
         if (progress <= 0.0f) 
         {

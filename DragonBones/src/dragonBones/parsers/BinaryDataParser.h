@@ -11,18 +11,17 @@ class BinaryDataParser : public JSONDataParser
 
 private:
     const char* _binary;
-    int16_t* _intArray;
-    float* _floatArray;
-    int16_t* _frameIntArray;
-    float* _frameFloatArray;
-    int16_t* _frameArray;
-    uint16_t* _timelineArray;
+	const int16_t* _intArray;
+	const float* _floatArray;
+	const int16_t* _frameIntArray;
+	const float* _frameFloatArray;
+	const int16_t* _frameArray;
+	const uint16_t* _timelineArray;
 
     TimelineData* _parseBinaryTimeline(TimelineType type, unsigned offset, TimelineData* timelineData = nullptr);
 
 protected:
     virtual void _parseMesh(const rapidjson::Value& rawData, MeshDisplayData& mesh) override;
-    virtual BoundingBoxData* _parseBoundingBox(const rapidjson::Value& rawData) override;
     virtual AnimationData* _parseAnimation(const rapidjson::Value& rawData) override;
     virtual void _parseArray(const rapidjson::Value& rawData) override;
 

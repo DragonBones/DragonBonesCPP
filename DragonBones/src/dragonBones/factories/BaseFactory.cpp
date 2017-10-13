@@ -127,7 +127,7 @@ void BaseFactory::_buildBones(const BuildArmaturePackage& dataPackage, Armature&
         }
         else
         {
-            armature.addBone(bone);
+            armature.addBone(bone, "");
         }
 
         for (const auto constraintData : boneData->constraints)
@@ -188,28 +188,29 @@ void BaseFactory::_buildSlots(const BuildArmaturePackage& dataPackage, Armature&
 
     for (const auto slotData : dataPackage.armature->sortedSlots) 
     {
-        if (skinSlots.find(slotData->name) == skinSlots.cend())
-        {
-            continue;
-        }
-
         const auto displays = skinSlots[slotData->name];
         const auto slot = _buildSlot(dataPackage, slotData, displays, armature);
-        std::vector<std::pair<void*, DisplayType>> displayList;
-        for (const auto displayData : *displays)
+        armature.addSlot(slot, slotData->parent->name);
+
+        if (displays != nullptr)
         {
-            if (displayData != nullptr) 
+            std::vector<std::pair<void*, DisplayType>> displayList;
+
+            for (const auto displayData : *displays)
             {
-                displayList.push_back(_getSlotDisplay(&dataPackage, *displayData, nullptr, *slot));
+                if (displayData != nullptr)
+                {
+                    displayList.push_back(_getSlotDisplay(&dataPackage, *displayData, nullptr, *slot));
+                }
+                else
+                {
+                    displayList.push_back(std::make_pair(nullptr, DisplayType::Image));
+                }
             }
-            else 
-            {
-                displayList.push_back(std::make_pair(nullptr, DisplayType::Image));
-            }
+
+            slot->_setDisplayList(displayList);
         }
 
-        armature.addSlot(slot, slotData->parent->name);
-        slot->_setDisplayList(displayList);
         slot->_setDisplayIndex(slotData->displayIndex, true);
     }
 }
@@ -265,7 +266,7 @@ std::pair<void*, DisplayType> BaseFactory::_getSlotDisplay(const BuildArmaturePa
         case DisplayType::Armature:
         {
             auto& armatureDisplayData = static_cast<ArmatureDisplayData&>(displayData);
-            const auto childArmature = buildArmature(armatureDisplayData.name, dataName, "", dataPackage != nullptr ? dataPackage->textureAtlasName : "");
+            const auto childArmature = buildArmature(armatureDisplayData.path, dataName, "", dataPackage != nullptr ? dataPackage->textureAtlasName : "");
             if (childArmature != nullptr)
             {
                 childArmature->inheritAnimation = armatureDisplayData.inheritAnimation;
@@ -291,6 +292,9 @@ std::pair<void*, DisplayType> BaseFactory::_getSlotDisplay(const BuildArmaturePa
             display.second = DisplayType::Armature;
             break;
         }
+
+        case DisplayType::BoundingBox:
+            break;
     }
 
     return display;
@@ -308,24 +312,21 @@ void BaseFactory::_replaceSlotDisplay(const BuildArmaturePackage& dataPackage, D
         displayIndex = 0;
     }
 
+    slot.replaceDisplayData(displayData, displayIndex);
+
     auto displayList = slot.getDisplayList(); // Copy.
     if (displayList.size() <= (unsigned)displayIndex)
     {
         displayList.resize(displayIndex + 1, std::make_pair(nullptr, DisplayType::Image));
     }
 
-    if (slot._displayDatas.size() <= (unsigned)displayIndex)
-    {
-        slot._displayDatas.resize(displayIndex + 1, nullptr);
-    }
-
-    slot._displayDatas[displayIndex] = displayData;
     if (displayData != nullptr) 
     {
+        const auto rawDisplayDatas = slot.getRawDisplayDatas();
         displayList[displayIndex] = _getSlotDisplay(
             &dataPackage, 
             *displayData, 
-            ((unsigned)displayIndex < slot._rawDisplayDatas->size()) ?(*slot._rawDisplayDatas)[displayIndex] : nullptr,
+            rawDisplayDatas != nullptr && (unsigned)displayIndex < rawDisplayDatas->size() ? rawDisplayDatas->at(displayIndex) : nullptr,
             slot
         );
     }
@@ -341,7 +342,7 @@ DragonBonesData* BaseFactory::parseDragonBonesData(const char* rawData, const st
 {
     DRAGONBONES_ASSERT(rawData != nullptr, "");
 
-    DragonBonesData* dragonBonesData = nullptr;
+    DataParser* dataParser = nullptr;
 
     if (
         rawData[0] == 'D' &&
@@ -350,17 +351,19 @@ DragonBonesData* BaseFactory::parseDragonBonesData(const char* rawData, const st
         rawData[3] == 'T'
     )
     {
-        dragonBonesData = BaseFactory::_binaryParser.parseDragonBonesData(rawData, scale);
+        dataParser = &_binaryParser;
     }
     else 
     {
-        dragonBonesData = _dataParser->parseDragonBonesData(rawData, scale);
+        dataParser = _dataParser;
     }
+
+    const auto dragonBonesData = dataParser->parseDragonBonesData(rawData, scale);
 
     while (true) 
     {
         const auto textureAtlasData = _buildTextureAtlasData(nullptr, nullptr);
-        if (_dataParser->parseTextureAtlasData(nullptr, *textureAtlasData, scale))
+        if (dataParser->parseTextureAtlasData(nullptr, *textureAtlasData, scale))
         {
             addTextureAtlasData(textureAtlasData, name);
         }
@@ -399,8 +402,8 @@ void BaseFactory::addDragonBonesData(DragonBonesData* data, const std::string& n
             return;
         }
 
-        DRAGONBONES_ASSERT(false, "Replace data: " + name);
-        _dragonBonesDataMap[name]->returnToPool();
+        DRAGONBONES_ASSERT(false, "Can not add same name data: " + name);
+        return;
     }
 
     _dragonBonesDataMap[mapName] = data;
@@ -485,7 +488,7 @@ Armature * BaseFactory::buildArmature(const std::string& armatureName, const std
     BuildArmaturePackage dataPackage;
     if (!_fillBuildArmaturePackage(dataPackage, dragonBonesName, armatureName, skinName, textureAtlasName))
     {
-        DRAGONBONES_ASSERT(false, "No armature data. " + armatureName + ", " + (!dragonBonesName.empty() ? dragonBonesName : ""));
+        DRAGONBONES_ASSERT(false, "No armature data: " + armatureName + ", " + (!dragonBonesName.empty() ? dragonBonesName : ""));
         return nullptr;
     }
 
@@ -500,7 +503,7 @@ Armature * BaseFactory::buildArmature(const std::string& armatureName, const std
 
 void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, const std::string& displayName, Slot* slot, int displayIndex) const
 {
-    DRAGONBONES_ASSERT(slot, "");
+    DRAGONBONES_ASSERT(slot, "Arguments error.");
 
     BuildArmaturePackage dataPackage;
     if (!_fillBuildArmaturePackage(dataPackage, dragonBonesName, armatureName, "", "") || dataPackage.skin == nullptr)
@@ -525,7 +528,7 @@ void BaseFactory::replaceSlotDisplay(const std::string& dragonBonesName, const s
 
 void BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, Slot* slot) const
 {
-    DRAGONBONES_ASSERT(slot, "");
+    DRAGONBONES_ASSERT(slot, "Arguments error.");
 
     BuildArmaturePackage dataPackage;
     if (!_fillBuildArmaturePackage(dataPackage, dragonBonesName, armatureName, "", "") || dataPackage.skin == nullptr)
@@ -548,21 +551,26 @@ void BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, con
 
 void BaseFactory::changeSkin(Armature* armature, SkinData* skin, const std::vector<std::string>* exclude) const
 {
-    DRAGONBONES_ASSERT(armature && skin, "");
+    DRAGONBONES_ASSERT(armature && skin, "Arguments error.");
 
     for (const auto slot : armature->getSlots()) 
     {
-        if (skin->displays.find(slot->name) == skin->displays.cend() || std::find(exclude->cbegin(), exclude->cend(), slot->name) != exclude->cend()) 
+        if (std::find(exclude->cbegin(), exclude->cend(), slot->name) != exclude->cend()) 
         {
             continue;
         }
 
-        auto& displays = skin->displays[slot->name];
-        auto displayList = slot->getDisplayList(); // Copy.
-        displayList.resize(displays.size(), std::make_pair(nullptr, DisplayType::Image));
-        for (std::size_t i = 0, l = displays.size(); i < l; ++i) 
+        auto displays = skin->getDisplays(slot->name);
+        if (displays == nullptr)
         {
-            const auto displayData = displays[i];
+            continue;
+        }
+
+        auto& displayList = slot->getDisplayList(); // Copy.
+        displayList.resize(displays->size(), std::make_pair(nullptr, DisplayType::Image));
+        for (std::size_t i = 0, l = displays->size(); i < l; ++i) 
+        {
+            const auto displayData = displays->at(i);
             if (displayData != nullptr) 
             {
                 displayList[i] = _getSlotDisplay(nullptr, *displayData, nullptr, *slot);
@@ -572,13 +580,7 @@ void BaseFactory::changeSkin(Armature* armature, SkinData* skin, const std::vect
             }
         }
 
-        slot->_rawDisplayDatas = &displays;
-        slot->_displayDatas.resize(displays.size(), nullptr);
-        for (std::size_t i = 0, l = displays.size(); i < l; ++i)
-        {
-            slot->_displayDatas[i] = displays[i];
-        }
-
+        slot->setRawDisplayDatas(displays);
         slot->setDisplayList(displayList);
     }
 }
