@@ -167,14 +167,14 @@ void CCSlot::_updateFrame()
             else // Normal texture.
             {
                 // Modify pivot y.
-                const auto frame = currentTextureData->frame;
+                /*const auto frame = currentTextureData->frame;
                 const auto& rect = frame != nullptr ? *frame : currentTextureData->region;
                 float height = rect.height;
                 if (currentTextureData->rotated && frame == nullptr)
                 {
                     height = rect.width;
-                }
-
+                }*/
+                float height = currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height;
                 _textureScale = currentTextureData->parent->scale;
                 _pivotY -= height * _textureScale;
                 frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
