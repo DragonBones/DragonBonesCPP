@@ -217,7 +217,7 @@ void BaseFactory::_buildSlots(const BuildArmaturePackage& dataPackage, Armature&
 
 std::pair<void*, DisplayType> BaseFactory::_getSlotDisplay(const BuildArmaturePackage* dataPackage, DisplayData& displayData, DisplayData* rawDisplayData, const Slot& slot) const
 {
-    const auto& dataName = dataPackage != nullptr ? dataPackage->dataName : displayData.parent->parent->name;
+    const auto& dataName = dataPackage != nullptr ? dataPackage->dataName : displayData.parent->parent->parent->name;
     std::pair<void*, DisplayType> display(nullptr, DisplayType::Image);
     switch (displayData.type)
     {
