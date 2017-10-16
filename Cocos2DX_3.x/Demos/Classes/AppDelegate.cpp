@@ -51,11 +51,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // create a scene. it's an autorelease object
     // auto scene = HelloDragonBones::createScene();
     // auto scene = ReplaceSlotDisplay::createScene();
-    // auto scene = CoreElementGame::createScene();
+    auto scene = CoreElementGame::createScene();
 
     // auto scene = PerformanceTest::createScene();
     // auto scene = AnimationBaseTest::createScene();
-    auto scene = DragonBonesTest::createScene();
+    // auto scene = DragonBonesTest::createScene();
 
     // run
     director->runWithScene(scene);
