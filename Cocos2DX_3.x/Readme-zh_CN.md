@@ -1,7 +1,9 @@
 # DragonBones Cocos2d-x Library
 
 <p align="center">
-[English](./Readme.md) 中文 
+
+# [English](./Readme.md) 中文 
+
 </p>
 
 ## [示例](./Demos/)
