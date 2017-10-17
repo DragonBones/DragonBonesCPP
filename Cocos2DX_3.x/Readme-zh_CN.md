@@ -14,11 +14,11 @@
 4. 复制[3rdParty source code](../3rdParty/)中的rapidjson目录到项目的Classes目录下。
 5. 然后运行就行了。
 
-## Notice
-* In Xcode: Add Files To "project" > Options > Added folders: Create groups > Add to targets: "all"
+## 注意事项
+* 在Xcode中: Add Files To "project" > Options > Added folders: Create groups > Add to targets: "all"
 * Use [rapidjson/msinttypes](../3rdParty/rapidjson/msinttypes) headers only with Microsoft Visual C++ compilers.
-* Cocos2dx also include rapidjson, if you use the cocos2dx related json function, make sure only include rapidjson once time.
-* If compiler can not find headers, add Classes to project Header Search Paths, make sure project structure like this:
+* Cocos2dx 也包含 rapidjson，if you use the cocos2dx related json function, make sure only include rapidjson once time.
+* 如果编译器找不到 headers，添加 Classes 到项目 Header 的搜索路径, 确保项目结构如下：
 ```
 Classes (Include Path)
     |-- rapidjson
