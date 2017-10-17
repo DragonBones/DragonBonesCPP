@@ -1,5 +1,9 @@
 # DragonBones Cocos2d-x Library
 
+<p align="center">
+<h2 align="center">English         <a href="Readme-zh_CN.md">中文版</a></h2>
+</p>
+
 ## [Demos](./Demos/)
 
 ## How to use
