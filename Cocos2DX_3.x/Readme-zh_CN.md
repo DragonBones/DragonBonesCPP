@@ -1,7 +1,7 @@
 # DragonBones Cocos2d-x Library
 
 <p align="center">
-<a href="./README.md">English</a>     中文
+<font size="12"><a href="./README.md">English</a>          中文版</font>
 </p>
 
 ## [示例](./Demos/)
