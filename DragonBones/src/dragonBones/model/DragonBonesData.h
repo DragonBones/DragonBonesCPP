@@ -132,10 +132,12 @@ public: // For WebAssembly.
     std::vector<unsigned>* getFrameIndices() { return &frameIndices; }
     const std::vector<std::string>& getArmatureNames() const { return armatureNames; }
 
+#if EGRET_WASM
     unsigned getBinary() const
     {
         return (unsigned)binary;
     }
+#endif // EGRET_WASM
 
     const UserData* getUserData() const { return userData; }
     void setUserData(UserData* value) { userData = value; }

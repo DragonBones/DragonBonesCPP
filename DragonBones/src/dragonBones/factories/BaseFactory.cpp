@@ -566,7 +566,7 @@ void BaseFactory::changeSkin(Armature* armature, SkinData* skin, const std::vect
             continue;
         }
 
-        auto& displayList = slot->getDisplayList(); // Copy.
+        auto displayList = slot->getDisplayList(); // Copy.
         displayList.resize(displays->size(), std::make_pair(nullptr, DisplayType::Image));
         for (std::size_t i = 0, l = displays->size(); i < l; ++i) 
         {
