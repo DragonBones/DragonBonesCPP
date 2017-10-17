@@ -15,9 +15,9 @@
 5. 然后运行就行了。
 
 ## 注意事项
-* 在Xcode中: Add Files To "project" > Options > Added folders: Create groups > Add to targets: "all"
-* Use [rapidjson/msinttypes](../3rdParty/rapidjson/msinttypes) headers only with Microsoft Visual C++ compilers.
-* Cocos2dx 也包含 rapidjson，if you use the cocos2dx related json function, make sure only include rapidjson once time.
+* 在Xcode中，如果运行出错执行以下操作: Add Files To "project" > Options > Added folders: Create groups > Add to targets: "all"。
+* [rapidjson/msinttypes](../3rdParty/rapidjson/msinttypes) 的 headers 只在 Microsoft Visual C++ 编译器中有效。
+* Cocos2dx 也包含 rapidjson，使用3rdParty中的或者Cocos2dx的，两者不能同时使用。
 * 如果编译器找不到 headers，添加 Classes 到项目 Header 的搜索路径, 确保项目结构如下：
 ```
 Classes (Include Path)
