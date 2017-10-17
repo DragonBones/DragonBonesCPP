@@ -2,6 +2,7 @@
 #define DRAGONBONES_H
 
 #include <cmath>
+#include <cstdint>
 #include <string>
 #include <algorithm>
 #include <vector>
