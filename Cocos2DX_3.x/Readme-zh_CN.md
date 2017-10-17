@@ -2,7 +2,7 @@
 
 <p align="center">
 
-# [English](./Readme.md) 中文 
+[English](./README.md) 中文 
 
 </p>
 
