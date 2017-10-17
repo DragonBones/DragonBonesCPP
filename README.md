@@ -6,7 +6,7 @@
 * [Cocos2d-x](http://cocos2d-x.org/) - [How to use](./Cocos2DX_3.x/) [使用方法](./Cocos2DX_3.x/Readme-zh_CN.md)
 
 ## To learn more about
-* [DragonBones Offical WebSite 龙骨官网] (http://www.dragonbones.com/)
+* [DragonBones Offical WebSite 龙骨官网](http://www.dragonbones.com/)
 * [Demos 示例](http://www.dragonbones.com/demo/index.html)
 
 ## Release Notes
