@@ -339,11 +339,12 @@ void BoneAllTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr) 
     {
+        const auto scale = _armature->armatureData->scale;
         const auto frameFloatArray = _frameFloatArray;
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 6; // ...(timeline value offset)|xxxxxx|xxxxxx|(Value offset)xxxxx|(Next offset)xxxxx|xxxxxx|xxxxxx|...
 
-        bonePose->current.x = frameFloatArray[valueOffset++];
-        bonePose->current.y = frameFloatArray[valueOffset++];
+        bonePose->current.x = frameFloatArray[valueOffset++] * scale;
+        bonePose->current.y = frameFloatArray[valueOffset++] * scale;
         bonePose->current.rotation = frameFloatArray[valueOffset++];
         bonePose->current.skew = frameFloatArray[valueOffset++];
         bonePose->current.scaleX = frameFloatArray[valueOffset++];
@@ -356,8 +357,8 @@ void BoneAllTimelineState::_onArriveAtFrame()
                 valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }
 
-            bonePose->delta.x = frameFloatArray[valueOffset++] - bonePose->current.x;
-            bonePose->delta.y = frameFloatArray[valueOffset++] - bonePose->current.y;
+            bonePose->delta.x = frameFloatArray[valueOffset++] * scale - bonePose->current.x;
+            bonePose->delta.y = frameFloatArray[valueOffset++] * scale - bonePose->current.y;
             bonePose->delta.rotation = frameFloatArray[valueOffset++] - bonePose->current.rotation;
             bonePose->delta.skew = frameFloatArray[valueOffset++] - bonePose->current.skew;
             bonePose->delta.scaleX = frameFloatArray[valueOffset++] - bonePose->current.scaleX;
@@ -405,11 +406,12 @@ void BoneTranslateTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr)
     {
+        const auto scale = _armature->armatureData->scale;
         const auto frameFloatArray = _frameFloatArray;
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
 
-        bonePose->current.x = frameFloatArray[valueOffset++];
-        bonePose->current.y = frameFloatArray[valueOffset++];
+        bonePose->current.x = frameFloatArray[valueOffset++] * scale;
+        bonePose->current.y = frameFloatArray[valueOffset++] * scale;
 
         if (_tweenState == TweenState::Always)
         {
@@ -418,8 +420,8 @@ void BoneTranslateTimelineState::_onArriveAtFrame()
                 valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }
 
-            bonePose->delta.x = frameFloatArray[valueOffset++] - bonePose->current.x;
-            bonePose->delta.y = frameFloatArray[valueOffset++] - bonePose->current.y;
+            bonePose->delta.x = frameFloatArray[valueOffset++] * scale - bonePose->current.x;
+            bonePose->delta.y = frameFloatArray[valueOffset++] * scale - bonePose->current.y;
         }
     }
     else
@@ -725,6 +727,7 @@ void SlotFFDTimelineState::_onArriveAtFrame()
     if (_timelineData != nullptr) 
     {
         const auto isTween = _tweenState == TweenState::Always;
+        const auto scale = _armature->armatureData->scale;
         const auto frameFloatArray = _frameFloatArray;
         const auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * _valueCount;
 
@@ -738,14 +741,14 @@ void SlotFFDTimelineState::_onArriveAtFrame()
 
             for (std::size_t i = 0; i < _valueCount; ++i)
             {
-                _delta[i] = frameFloatArray[nextValueOffset + i] - (_current[i] = frameFloatArray[valueOffset + i]);
+                _delta[i] = frameFloatArray[nextValueOffset + i] * scale - (_current[i] = frameFloatArray[valueOffset + i] * scale);
             }
         }
         else 
         {
             for (std::size_t i = 0; i < _valueCount; ++i)
             {
-                _current[i] = frameFloatArray[valueOffset + i];
+                _current[i] = frameFloatArray[valueOffset + i] * scale;
             }
         }
     }

@@ -136,7 +136,7 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual TextureAtlasData* parseTextureAtlasData(const char* rawData, void* textureAtlas, const std::string& name = "", float scale = 0.0f);
+    virtual TextureAtlasData* parseTextureAtlasData(const char* rawData, void* textureAtlas, const std::string& name = "", float scale = 1.0f);
     /**
     * 获取指定名称的龙骨数据。
     * @param name 数据名称。

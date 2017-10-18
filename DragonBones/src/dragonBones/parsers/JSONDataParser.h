@@ -255,12 +255,12 @@ protected:
     virtual void _parseTransform(const rapidjson::Value& rawData, Transform& transform, float scale);
     virtual void _parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color);
     virtual void _parseArray(const rapidjson::Value& rawData);
-    virtual DragonBonesData* _parseDragonBonesData(const rapidjson::Value& rawData, float scale = 1.f);
-    virtual void _parseTextureAtlasData(const rapidjson::Value& rawData, TextureAtlasData& textureAtlasData, float scale = 0.f);
+    virtual DragonBonesData* _parseDragonBonesData(const rapidjson::Value& rawData, float scale = 1.0f);
+    virtual void _parseTextureAtlasData(const rapidjson::Value& rawData, TextureAtlasData& textureAtlasData, float scale = 1.0f);
 
 public:
-    virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.f) override;
-    virtual bool parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale = 0.f) override;
+    virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.0f) override;
+    virtual bool parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale = 1.0f) override;
 };
 
 DRAGONBONES_NAMESPACE_END

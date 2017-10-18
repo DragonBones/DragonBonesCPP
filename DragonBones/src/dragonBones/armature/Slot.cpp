@@ -156,7 +156,7 @@ void Slot::_updateDisplayData()
         else if (_textureData != nullptr) 
         {
             const auto imageDisplayData = static_cast<ImageDisplayData*>(_displayData);
-            const auto scale = _textureData->parent->scale;
+            const auto scale = _textureData->parent->scale * _armature->armatureData->scale;
             const auto frame = _textureData->frame;
 
             _pivotX = imageDisplayData->pivot.x;

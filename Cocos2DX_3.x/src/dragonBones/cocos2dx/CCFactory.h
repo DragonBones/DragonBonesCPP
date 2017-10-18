@@ -100,7 +100,7 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual TextureAtlasData* loadTextureAtlasData(const std::string& filePath, const std::string& name = "", float scale = 0.0f);
+    virtual TextureAtlasData* loadTextureAtlasData(const std::string& filePath, const std::string& name = "", float scale = 1.0f);
     /**
     * 创建一个指定名称的骨架。
     * @param armatureName 骨架名称。

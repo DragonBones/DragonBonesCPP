@@ -152,11 +152,11 @@ public:
     /**
     * @private
     */
-    virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.f) = 0;
+    virtual DragonBonesData* parseDragonBonesData(const char* rawData, float scale = 1.0f) = 0;
     /**
     * @private
     */
-    virtual bool parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale = 0.f) = 0;
+    virtual bool parseTextureAtlasData(const char* rawData, TextureAtlasData& textureAtlasData, float scale = 1.0f) = 0;
 };
 
 DRAGONBONES_NAMESPACE_END

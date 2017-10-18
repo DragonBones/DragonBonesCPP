@@ -175,8 +175,8 @@ void CCSlot::_updateFrame()
                     height = rect.width;
                 }*/
                 float height = currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height;
-                _textureScale = currentTextureData->parent->scale;
-                _pivotY -= height * _textureScale;
+                _textureScale = currentTextureData->parent->scale ;
+                _pivotY -= height * _textureScale * _armature->armatureData->scale;
                 frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
             }
 
@@ -197,6 +197,7 @@ void CCSlot::_updateFrame()
 void CCSlot::_updateMesh() 
 {
     const auto hasFFD = !_ffdVertices.empty();
+    const auto scale = _armature->armatureData->scale;
     const auto textureData = static_cast<CCTextureData*>(_textureData);
     const auto meshData = _meshData;
     const auto weightData = meshData->weight;
@@ -238,8 +239,8 @@ void CCSlot::_updateMesh()
                 {
                     const auto& matrix = bone->globalTransformMatrix;
                     const auto weight = floatArray[iV++];
-                    auto xL = floatArray[iV++];
-                    auto yL = floatArray[iV++];
+                    auto xL = floatArray[iV++] * scale;
+                    auto yL = floatArray[iV++] * scale;
 
                     if (hasFFD) 
                     {
@@ -294,8 +295,8 @@ void CCSlot::_updateMesh()
         for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
         {
             const auto iH = i / 2;
-            const auto xG = floatArray[vertexOffset + i] + _ffdVertices[i];
-            const auto yG = floatArray[vertexOffset + i + 1] + _ffdVertices[i + 1];
+            const auto xG = floatArray[vertexOffset + i] * scale + _ffdVertices[i];
+            const auto yG = floatArray[vertexOffset + i + 1] * scale + _ffdVertices[i + 1];
 
             auto& vertex = vertices[iH];
             auto& vertexPosition = vertex.vertices;
