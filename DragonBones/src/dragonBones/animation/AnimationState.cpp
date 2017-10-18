@@ -465,9 +465,11 @@ void AnimationState::updateTimelines()
                 {
                     for (const auto displayData : *(slot->getRawDisplayDatas()))
                     {
-                        if (displayData != nullptr && displayData->type == DisplayType::Mesh && std::find(ffdFlags.cbegin(), ffdFlags.cend(), static_cast<MeshDisplayData*>(displayData)->offset) == ffdFlags.cend())
+                        const auto meshOffset = static_cast<MeshDisplayData*>(displayData)->offset;
+                        if (displayData != nullptr && displayData->type == DisplayType::Mesh && std::find(ffdFlags.cbegin(), ffdFlags.cend(), meshOffset) == ffdFlags.cend())
                         {
                             const auto timeline = BaseObject::borrowObject<SlotFFDTimelineState>();
+                            timeline->meshOffset = meshOffset;
                             timeline->slot = slot;
                             timeline->init(_armature, this, nullptr);
                             _slotTimelines.push_back(timeline);

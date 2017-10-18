@@ -538,8 +538,14 @@ DisplayData* JSONDataParser::_parseDisplay(const rapidjson::Value& rawData)
 
             if (!shareName.empty())
             {
-                const auto& skinName = _getString(rawData, SKIN, "");
+                auto skinName = _getString(rawData, SKIN, "");
                 const auto& slotName = _slot->name;
+
+                if (skinName.empty())
+                {
+                    skinName = DEFAULT_NAME;
+                }
+
                 auto& slots = _cacheMeshs[skinName];
                 auto& meshs = slots[slotName];
                 meshs[shareName].push_back(meshDisplay);
@@ -820,7 +826,7 @@ AnimationData* JSONDataParser::_parseAnimation(const rapidjson::Value& rawData)
     }
 
     animation->frameIntOffset = _frameIntArray.size();
-    animation->frameFloatOffset = _frameIntArray.size();
+    animation->frameFloatOffset = _frameFloatArray.size();
     animation->frameOffset = _frameArray.size();
 
     _animation = animation;
@@ -873,9 +879,14 @@ AnimationData* JSONDataParser::_parseAnimation(const rapidjson::Value& rawData)
         for (std::size_t i = 0, l = rawTimelines.Size(); i < l; ++i)
         {
             const auto& rawTimeline = rawTimelines[i];
-            const auto& skinName = _getString(rawTimeline, SKIN, "");
+            auto skinName = _getString(rawTimeline, SKIN, "");
             const auto& slotName = _getString(rawTimeline, SLOT, "");
             const auto& displayName = _getString(rawTimeline, NAME, "");
+
+            if (skinName.empty())
+            {
+                skinName = DEFAULT_NAME;
+            }
 
             _skin = _armature->getSkin(skinName);
             if (_skin == nullptr)

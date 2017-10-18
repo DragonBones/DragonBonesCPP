@@ -805,7 +805,7 @@ void SlotFFDTimelineState::fadeOut()
 
 void SlotFFDTimelineState::update(float passedTime)
 {
-    if (slot->_meshData == nullptr || (_timelineData == nullptr || slot->_meshData->offset != meshOffset)) 
+    if (slot->_meshData == nullptr || slot->_meshData->offset != meshOffset) 
     {
         return;
     }
