@@ -168,15 +168,13 @@ private:
     dragonBones::CCArmatureDisplay* _armatureDisplay;
     std::vector<dragonBones::DragonBonesData*> _allDragonBonesData;
 
-    bool _mouseDownHandler(cocos2d::EventMouse* event)
+    void _mouseDownHandler(cocos2d::EventMouse* event)
     {
         _isTouched = true;
 
         _prevArmatureScale = _armatureDisplay->getScale();
         _prevAnimationScale = _armatureDisplay->getAnimation()->timeScale;
         _startPoint.setPoint(event->getCursorX(), event->getCursorY());
-
-        return true;
     }
 
     void _mouseUpHandler(cocos2d::EventMouse* event)
