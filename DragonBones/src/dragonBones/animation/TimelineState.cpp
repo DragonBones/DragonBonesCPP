@@ -339,16 +339,18 @@ void BoneAllTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr) 
     {
+        auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 6; // ...(timeline value offset)|xxxxxx|xxxxxx|(Value offset)xxxxx|(Next offset)xxxxx|xxxxxx|xxxxxx|...
         const auto scale = _armature->armatureData->scale;
         const auto frameFloatArray = _frameFloatArray;
-        auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 6; // ...(timeline value offset)|xxxxxx|xxxxxx|(Value offset)xxxxx|(Next offset)xxxxx|xxxxxx|xxxxxx|...
+        auto& current = bonePose->current;
+        auto& delta = bonePose->delta;
 
-        bonePose->current.x = frameFloatArray[valueOffset++] * scale;
-        bonePose->current.y = frameFloatArray[valueOffset++] * scale;
-        bonePose->current.rotation = frameFloatArray[valueOffset++];
-        bonePose->current.skew = frameFloatArray[valueOffset++];
-        bonePose->current.scaleX = frameFloatArray[valueOffset++];
-        bonePose->current.scaleY = frameFloatArray[valueOffset++];
+        current.x = frameFloatArray[valueOffset++] * scale;
+        current.y = frameFloatArray[valueOffset++] * scale;
+        current.rotation = frameFloatArray[valueOffset++];
+        current.skew = frameFloatArray[valueOffset++];
+        current.scaleX = frameFloatArray[valueOffset++];
+        current.scaleY = frameFloatArray[valueOffset++];
 
         if (_tweenState == TweenState::Always) 
         {
@@ -357,22 +359,23 @@ void BoneAllTimelineState::_onArriveAtFrame()
                 valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }
 
-            bonePose->delta.x = frameFloatArray[valueOffset++] * scale - bonePose->current.x;
-            bonePose->delta.y = frameFloatArray[valueOffset++] * scale - bonePose->current.y;
-            bonePose->delta.rotation = frameFloatArray[valueOffset++] - bonePose->current.rotation;
-            bonePose->delta.skew = frameFloatArray[valueOffset++] - bonePose->current.skew;
-            bonePose->delta.scaleX = frameFloatArray[valueOffset++] - bonePose->current.scaleX;
-            bonePose->delta.scaleY = frameFloatArray[valueOffset++] - bonePose->current.scaleY;
+            delta.x = frameFloatArray[valueOffset++] * scale - current.x;
+            delta.y = frameFloatArray[valueOffset++] * scale - current.y;
+            delta.rotation = frameFloatArray[valueOffset++] - current.rotation;
+            delta.skew = frameFloatArray[valueOffset++] - current.skew;
+            delta.scaleX = frameFloatArray[valueOffset++] - current.scaleX;
+            delta.scaleY = frameFloatArray[valueOffset++] - current.scaleY;
         }
     }
     else
     {
-        bonePose->current.x = 0.0f;
-        bonePose->current.y = 0.0f;
-        bonePose->current.rotation = 0.0f;
-        bonePose->current.skew = 0.0f;
-        bonePose->current.scaleX = 1.0f;
-        bonePose->current.scaleY = 1.0f;
+        auto& current = bonePose->current;
+        current.x = 0.0f;
+        current.y = 0.0f;
+        current.rotation = 0.0f;
+        current.skew = 0.0f;
+        current.scaleX = 1.0f;
+        current.scaleY = 1.0f;
     }
 }
 
@@ -380,24 +383,29 @@ void BoneAllTimelineState::_onUpdateFrame()
 {
     BoneTimelineState::_onUpdateFrame();
 
+    auto& current = bonePose->current;
+    auto& delta = bonePose->delta;
+    auto& result = bonePose->result;
+
     bone->_transformDirty = true;
     if (_tweenState != TweenState::Always) 
     {
         _tweenState = TweenState::None;
     }
 
-    bonePose->result.x = bonePose->current.x + bonePose->delta.x * _tweenProgress;
-    bonePose->result.y = bonePose->current.y + bonePose->delta.y * _tweenProgress;
-    bonePose->result.rotation = bonePose->current.rotation + bonePose->delta.rotation * _tweenProgress;
-    bonePose->result.skew = bonePose->current.skew + bonePose->delta.skew * _tweenProgress;
-    bonePose->result.scaleX = bonePose->current.scaleX + bonePose->delta.scaleX * _tweenProgress;
-    bonePose->result.scaleY = bonePose->current.scaleY + bonePose->delta.scaleY * _tweenProgress;
+    result.x = current.x + delta.x * _tweenProgress;
+    result.y = current.y + delta.y * _tweenProgress;
+    result.rotation = current.rotation + delta.rotation * _tweenProgress;
+    result.skew = current.skew + delta.skew * _tweenProgress;
+    result.scaleX = current.scaleX + delta.scaleX * _tweenProgress;
+    result.scaleY = current.scaleY + delta.scaleY * _tweenProgress;
 }
 
 void BoneAllTimelineState::fadeOut()
 {
-    bonePose->result.rotation = Transform::normalizeRadian(bonePose->result.rotation);
-    bonePose->result.skew = Transform::normalizeRadian(bonePose->result.skew);
+    auto& result = bonePose->result;
+    result.rotation = Transform::normalizeRadian(result.rotation);
+    result.skew = Transform::normalizeRadian(result.skew);
 }
 
 void BoneTranslateTimelineState::_onArriveAtFrame()
@@ -406,12 +414,14 @@ void BoneTranslateTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr)
     {
+        auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
         const auto scale = _armature->armatureData->scale;
         const auto frameFloatArray = _frameFloatArray;
-        auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
+        auto& current = bonePose->current;
+        auto& delta = bonePose->delta;
 
-        bonePose->current.x = frameFloatArray[valueOffset++] * scale;
-        bonePose->current.y = frameFloatArray[valueOffset++] * scale;
+        current.x = frameFloatArray[valueOffset++] * scale;
+        current.y = frameFloatArray[valueOffset++] * scale;
 
         if (_tweenState == TweenState::Always)
         {
@@ -420,14 +430,15 @@ void BoneTranslateTimelineState::_onArriveAtFrame()
                 valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }
 
-            bonePose->delta.x = frameFloatArray[valueOffset++] * scale - bonePose->current.x;
-            bonePose->delta.y = frameFloatArray[valueOffset++] * scale - bonePose->current.y;
+            delta.x = frameFloatArray[valueOffset++] * scale - current.x;
+            delta.y = frameFloatArray[valueOffset++] * scale - current.y;
         }
     }
     else
     {
-        bonePose->current.x = 0.0f;
-        bonePose->current.y = 0.0f;
+        auto& current = bonePose->current;
+        current.x = 0.0f;
+        current.y = 0.0f;
     }
 }
 
@@ -435,14 +446,18 @@ void BoneTranslateTimelineState::_onUpdateFrame()
 {
     BoneTimelineState::_onUpdateFrame();
 
+    auto& current = bonePose->current;
+    auto& delta = bonePose->delta;
+    auto& result = bonePose->result;
+
     bone->_transformDirty = true;
     if (_tweenState != TweenState::Always)
     {
         _tweenState = TweenState::None;
     }
 
-    bonePose->result.x = bonePose->current.x + bonePose->delta.x * _tweenProgress;
-    bonePose->result.y = bonePose->current.y + bonePose->delta.y * _tweenProgress;
+    result.x = current.x + delta.x * _tweenProgress;
+    result.y = current.y + delta.y * _tweenProgress;
 }
 
 void BoneRotateTimelineState::_onArriveAtFrame()
@@ -451,11 +466,13 @@ void BoneRotateTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr)
     {
-        const auto frameFloatArray = _frameFloatArray;
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
+        const auto frameFloatArray = _frameFloatArray;
+        auto& current = bonePose->current;
+        auto& delta = bonePose->delta;
 
-        bonePose->current.rotation = frameFloatArray[valueOffset++];
-        bonePose->current.skew = frameFloatArray[valueOffset++];
+        current.rotation = frameFloatArray[valueOffset++];
+        current.skew = frameFloatArray[valueOffset++];
 
         if (_tweenState == TweenState::Always)
         {
@@ -464,14 +481,15 @@ void BoneRotateTimelineState::_onArriveAtFrame()
                 valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }
 
-            bonePose->delta.rotation = frameFloatArray[valueOffset++] - bonePose->current.rotation;
-            bonePose->delta.skew = frameFloatArray[valueOffset++] - bonePose->current.skew;
+            delta.rotation = frameFloatArray[valueOffset++] - current.rotation;
+            delta.skew = frameFloatArray[valueOffset++] - current.skew;
         }
     }
     else
     {
-        bonePose->current.rotation = 0.0f;
-        bonePose->current.skew = 0.0f;
+        auto& current = bonePose->current;
+        current.rotation = 0.0f;
+        current.skew = 0.0f;
     }
 }
 
@@ -479,20 +497,25 @@ void BoneRotateTimelineState::_onUpdateFrame()
 {
     BoneTimelineState::_onUpdateFrame();
 
+    auto& current = bonePose->current;
+    auto& delta = bonePose->delta;
+    auto& result = bonePose->result;
+
     bone->_transformDirty = true;
     if (_tweenState != TweenState::Always)
     {
         _tweenState = TweenState::None;
     }
 
-    bonePose->result.rotation = bonePose->current.rotation + bonePose->delta.rotation * _tweenProgress;
-    bonePose->result.skew = bonePose->current.skew + bonePose->delta.skew * _tweenProgress;
+    result.rotation = current.rotation + delta.rotation * _tweenProgress;
+    result.skew = current.skew + delta.skew * _tweenProgress;
 }
 
 void BoneRotateTimelineState::fadeOut()
 {
-    bonePose->result.rotation = Transform::normalizeRadian(bonePose->result.rotation);
-    bonePose->result.skew = Transform::normalizeRadian(bonePose->result.skew);
+    auto& result = bonePose->result;
+    result.rotation = Transform::normalizeRadian(result.rotation);
+    result.skew = Transform::normalizeRadian(result.skew);
 }
 
 void BoneScaleTimelineState::_onArriveAtFrame()
@@ -501,10 +524,13 @@ void BoneScaleTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr)
     {
-        const auto frameFloatArray = _frameFloatArray;
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
-        bonePose->current.scaleX = frameFloatArray[valueOffset++];
-        bonePose->current.scaleY = frameFloatArray[valueOffset++];
+        const auto frameFloatArray = _frameFloatArray;
+        auto& current = bonePose->current;
+        auto& delta = bonePose->delta;
+
+        current.scaleX = frameFloatArray[valueOffset++];
+        current.scaleY = frameFloatArray[valueOffset++];
 
         if (_tweenState == TweenState::Always)
         {
@@ -513,14 +539,15 @@ void BoneScaleTimelineState::_onArriveAtFrame()
                 valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
             }
 
-            bonePose->delta.scaleX = frameFloatArray[valueOffset++] - bonePose->current.scaleX;
-            bonePose->delta.scaleY = frameFloatArray[valueOffset++] - bonePose->current.scaleY;
+            delta.scaleX = frameFloatArray[valueOffset++] - current.scaleX;
+            delta.scaleY = frameFloatArray[valueOffset++] - current.scaleY;
         }
     }
     else
     {
-        bonePose->current.scaleX = 1.0f;
-        bonePose->current.scaleY = 1.0f;
+        auto& current = bonePose->current;
+        current.scaleX = 1.0f;
+        current.scaleY = 1.0f;
     }
 }
 
@@ -528,14 +555,18 @@ void BoneScaleTimelineState::_onUpdateFrame()
 {
     BoneTimelineState::_onUpdateFrame();
 
+    auto& current = bonePose->current;
+    auto& delta = bonePose->delta;
+    auto& result = bonePose->result;
+
     bone->_transformDirty = true;
     if (_tweenState != TweenState::Always)
     {
         _tweenState = TweenState::None;
     }
 
-    bonePose->result.scaleX = bonePose->current.scaleX + bonePose->delta.scaleX * _tweenProgress;
-    bonePose->result.scaleY = bonePose->current.scaleY + bonePose->delta.scaleY * _tweenProgress;
+    result.scaleX = current.scaleX + delta.scaleX * _tweenProgress;
+    result.scaleY = current.scaleY + delta.scaleY * _tweenProgress;
 }
 
 void SlotDislayIndexTimelineState::_onArriveAtFrame()

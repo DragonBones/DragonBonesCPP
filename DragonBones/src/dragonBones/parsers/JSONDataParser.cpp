@@ -1927,7 +1927,7 @@ void JSONDataParser::_parseTextureAtlasData(const rapidjson::Value& rawData, Tex
     textureAtlasData.format = _getTextureFormat(_getString(rawData, FORMAT, ""));
     textureAtlasData.width = _getNumber(rawData, WIDTH, (unsigned)0);
     textureAtlasData.height = _getNumber(rawData, WIDTH, (unsigned)0);
-    textureAtlasData.scale = 1.0f / _getNumber(rawData, SCALE, 1.0f) * scale;
+    textureAtlasData.scale = scale == 1.0f ? 1.0f / _getNumber(rawData, SCALE, 1.0f) : scale;
     textureAtlasData.name = _getString(rawData, NAME, "");
     textureAtlasData.imagePath = _getString(rawData, IMAGE_PATH, "");
 

@@ -37,7 +37,6 @@ public:
 
         // Enabled cocos2d Event
         _armatureDisplay->getEventDispatcher()->setEnabled(true);
-
         // Test animation event
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::START, std::bind(&AnimationBaseTest::_animationEventHandler, this, std::placeholders::_1));
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::LOOP_COMPLETE, std::bind(&AnimationBaseTest::_animationEventHandler, this, std::placeholders::_1));
@@ -46,9 +45,8 @@ public:
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FADE_IN_COMPLETE, std::bind(&AnimationBaseTest::_animationEventHandler, this, std::placeholders::_1));
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FADE_OUT, std::bind(&AnimationBaseTest::_animationEventHandler, this, std::placeholders::_1));
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FADE_OUT_COMPLETE, std::bind(&AnimationBaseTest::_animationEventHandler, this, std::placeholders::_1));
-
-        // Test frame event
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FRAME_EVENT, std::bind(&AnimationBaseTest::_animationEventHandler, this, std::placeholders::_1));
+        _armatureDisplay->getAnimation()->play("idle", 1);
 
         // Test animation config.
         // const auto animaitonConfig = _armatureDisplay->getAnimation()->getAnimationConfig();
@@ -65,8 +63,6 @@ public:
         // animaitonConfig->position = 1.0f; // Goto and play.
         // animaitonConfig->duration = 3.0f; // Interval play.
         // _armatureDisplay->getAnimation()->playConfig(animaitonConfig);
-
-        _armatureDisplay->getAnimation()->play("idle", 1);
 
         const auto listener = cocos2d::EventListenerMouse::create();
         listener->onMouseDown = CC_CALLBACK_1(AnimationBaseTest::_mouseDownHandler, this);
@@ -86,20 +82,10 @@ public:
 private:
     dragonBones::CCArmatureDisplay* _armatureDisplay;
 
-    bool _mouseDownHandler(cocos2d::EventMouse* event)
+    void _mouseDownHandler(cocos2d::EventMouse* event)
     {
         const auto progress = std::min(std::max((event->getCursorX() - _armatureDisplay->getPosition().x + 300.0f) / 600.0f, 0.0f), 1.0f);
-
-        // _armatureDisplay->getAnimation()->gotoAndPlayByTime("idle", 0.5f, 1);
-        // _armatureDisplay->getAnimation()->gotoAndStopByTime("idle", 1);
-
-        // _armatureDisplay->getAnimation().gotoAndPlayByFrame("idle", 25, 2);
-        // _armatureDisplay->getAnimation().gotoAndStopByFrame("idle", 50);
-
-        // _armatureDisplay->getAnimation()->gotoAndPlayByProgress("idle", progress, 3);
         _armatureDisplay->getAnimation()->gotoAndStopByProgress("idle", progress);
-
-        return true;
     }
 
     void _mouseUpHandler(cocos2d::EventMouse* event)
@@ -109,7 +95,7 @@ private:
 
     void _mouseMovedHandler(cocos2d::EventMouse* event)
     {
-        if (event->getMouseButton() != 0)
+        if (event->getMouseButton() == 0)
         {
             const auto progress = std::min(std::max((event->getCursorX() - _armatureDisplay->getPosition().x + 300.0f) / 600.0f, 0.0f), 1.0f);
             const auto animationState = _armatureDisplay->getAnimation()->getState("idle");

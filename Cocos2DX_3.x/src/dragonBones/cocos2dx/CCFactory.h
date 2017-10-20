@@ -91,7 +91,7 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual DragonBonesData* loadDragonBonesData(const std::string& filePath, const std::string& name = "");
+    virtual DragonBonesData* loadDragonBonesData(const std::string& filePath, const std::string& name = "", float scale = 1.0f);
     /**
     * 加载并解析 Cocos 本地贴图数据。
     * @param filePath 文件路径。

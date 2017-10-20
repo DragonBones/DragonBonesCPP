@@ -117,7 +117,7 @@ Slot* CCFactory::_buildSlot(const BuildArmaturePackage& dataPackage, SlotData* s
     return slot;
 }
 
-DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, const std::string& name)
+DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, const std::string& name, float scale)
 {
     if (!name.empty())
     {
@@ -131,14 +131,13 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
     const auto fullpath = cocos2d::FileUtils::getInstance()->fullPathForFilename(filePath);
     if (cocos2d::FileUtils::getInstance()->isFileExist(filePath)) 
     {
-        const auto scale = cocos2d::Director::getInstance()->getContentScaleFactor();
         const auto pos = fullpath.find(".json");
 
         if (pos != std::string::npos)
         {
             const auto data = cocos2d::FileUtils::getInstance()->getStringFromFile(filePath);
 
-            return parseDragonBonesData(data.c_str(), name, 1.0f / scale);
+            return parseDragonBonesData(data.c_str(), name, scale);
         }
         else
         {
@@ -150,7 +149,7 @@ DragonBonesData* CCFactory::loadDragonBonesData(const std::string& filePath, con
 #endif
             const auto binary = (unsigned char*)malloc(sizeof(unsigned char)* cocos2dData.getSize());
             memcpy(binary, cocos2dData.getBytes(), cocos2dData.getSize());
-            const auto data = parseDragonBonesData((char*)binary, name, 1.0f / scale);
+            const auto data = parseDragonBonesData((char*)binary, name, scale);
 
             return data;
         }

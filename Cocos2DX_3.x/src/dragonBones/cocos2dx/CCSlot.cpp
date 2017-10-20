@@ -166,17 +166,10 @@ void CCSlot::_updateFrame()
             }
             else // Normal texture.
             {
-                // Modify pivot y.
-                /*const auto frame = currentTextureData->frame;
-                const auto& rect = frame != nullptr ? *frame : currentTextureData->region;
-                float height = rect.height;
-                if (currentTextureData->rotated && frame == nullptr)
-                {
-                    height = rect.width;
-                }*/
-                float height = currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height;
-                _textureScale = currentTextureData->parent->scale ;
-                _pivotY -= height * _textureScale * _armature->armatureData->scale;
+                const auto scale = currentTextureData->parent->scale * _armature->armatureData->scale;
+                const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
+                _pivotY -= height;
+                _textureScale = scale * cocos2d::Director::getInstance()->getContentScaleFactor();
                 frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
             }
 
@@ -355,23 +348,21 @@ void CCSlot::_updateTransform(bool isSkinnedMesh)
     }
     else
     {
-        if (_textureScale == 1.0f)
-        {
-            transform.m[0] = globalTransformMatrix.a;
-            transform.m[1] = globalTransformMatrix.b;
-            transform.m[4] = -globalTransformMatrix.c;
-            transform.m[5] = -globalTransformMatrix.d;
-        }
-        else 
-        {
-            transform.m[0] = globalTransformMatrix.a * _textureScale;
-            transform.m[1] = globalTransformMatrix.b * _textureScale;
-            transform.m[4] = -globalTransformMatrix.c * _textureScale;
-            transform.m[5] = -globalTransformMatrix.d * _textureScale;
-        }
+        transform.m[0] = globalTransformMatrix.a;
+        transform.m[1] = globalTransformMatrix.b;
+        transform.m[4] = -globalTransformMatrix.c;
+        transform.m[5] = -globalTransformMatrix.d;
 
         if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
         {
+            if (_textureScale != 1.0f)
+            {
+                transform.m[0] *= _textureScale;
+                transform.m[1] *= _textureScale;
+                transform.m[4] *= _textureScale;
+                transform.m[5] *= _textureScale;
+            }
+
             transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
             transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
         }
