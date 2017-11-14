@@ -23,12 +23,6 @@ public:
      * @language zh_CN
      */
     float timeScale;
-
-public:
-    /**
-     * @private
-     */
-    bool _timelineDirty;
     
 private:
     bool _animationDirty;

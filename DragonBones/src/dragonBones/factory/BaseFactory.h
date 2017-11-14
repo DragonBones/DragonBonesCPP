@@ -1,8 +1,8 @@
 #ifndef DRAGONBONES_BASE_FACTORY_H
 #define DRAGONBONES_BASE_FACTORY_H
 
-#include "../parsers/JSONDataParser.h"
-#include "../parsers/BinaryDataParser.h"
+#include "../parser/JSONDataParser.h"
+#include "../parser/BinaryDataParser.h"
 #include "../armature/Armature.h"
 #include "../armature/Bone.h"
 #include "../armature/Slot.h"
@@ -10,29 +10,6 @@
 #include "../animation/Animation.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-/**
-* @private
-*/
-class BuildArmaturePackage
-{
-    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(BuildArmaturePackage)
-
-public:
-    std::string dataName;
-    std::string textureAtlasName;
-    DragonBonesData* data;
-    ArmatureData* armature;
-    SkinData* skin;
-
-    BuildArmaturePackage() :
-        dataName(),
-        textureAtlasName(),
-        data(nullptr),
-        armature(nullptr),
-        skin(nullptr)
-    {}
-    ~BuildArmaturePackage() {}
-};
 /**
 * 创建骨架的基础工厂。 (通常只需要一个全局工厂实例)
 * @see dragonBones.DragonBonesData
@@ -99,14 +76,13 @@ protected:
         BuildArmaturePackage& dataPackage,
         const std::string& dragonBonesName, const std::string& armatureName, const std::string& skinName, const std::string& textureAtlasName
     ) const;
-    virtual void _buildBones(const BuildArmaturePackage& dataPackage, Armature& armature) const;
-    virtual void _buildSlots(const BuildArmaturePackage& dataPackage, Armature& armature) const;
-    virtual std::pair<void*, DisplayType> _getSlotDisplay(const BuildArmaturePackage* dataPackage, DisplayData& displayData, DisplayData* rawDisplayData, const Slot& slot) const;
-    virtual void _replaceSlotDisplay(const BuildArmaturePackage& dataPackage, DisplayData* displayData, Slot& slot, int displayIndex) const;
-
+    virtual void _buildBones(const BuildArmaturePackage& dataPackage, Armature* armature) const;
+    virtual void _buildSlots(const BuildArmaturePackage& dataPackage, Armature* armature) const;
+    virtual Armature* _buildChildArmature(const BuildArmaturePackage* dataPackage, Slot* slot, DisplayData* displayData) const;
+    virtual std::pair<void*, DisplayType> _getSlotDisplay(const BuildArmaturePackage* dataPackage, DisplayData* displayData, DisplayData* rawDisplayData, Slot* slot)const;
     virtual TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const = 0;
     virtual Armature* _buildArmature(const BuildArmaturePackage& dataPackage) const = 0;
-    virtual Slot* _buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature& armature) const = 0;
+    virtual Slot* _buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature* armature) const = 0;
 
 public:
     /**
@@ -244,77 +220,57 @@ public:
     * @language zh_CN
     */
     virtual Armature* buildArmature(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string & textureAtlasName = "") const;
-    /**
-    * 用指定资源替换指定插槽的显示对象。(用 "dragonBonesName/armatureName/slotName/displayName" 的资源替换 "slot" 的显示对象)
-    * @param dragonBonesName 指定的龙骨数据名称。
-    * @param armatureName 指定的骨架名称。
-    * @param slotName 指定的插槽名称。
-    * @param displayName 指定的显示对象名称。
-    * @param slot 指定的插槽实例。
-    * @param displayIndex 要替换的显示对象的索引，如果未设置，则替换当前正在显示的显示对象。
-    * @version DragonBones 4.5
-    * @language zh_CN
-    */
-    virtual void replaceSlotDisplay(
+    virtual void replaceDisplay(Slot* slot, DisplayData* displayData, int displayIndex) const;
+    virtual bool replaceSlotDisplay(
         const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName, const std::string& displayName,
         Slot* slot, int displayIndex = -1
     ) const;
-    /**
-    * 用指定资源列表替换插槽的显示对象列表。
-    * @param dragonBonesName 指定的 DragonBonesData 名称。
-    * @param armatureName 指定的骨架名称。
-    * @param slotName 指定的插槽名称。
-    * @param slot 指定的插槽实例。
-    * @version DragonBones 4.5
-    * @language zh_CN
-    */
-    virtual void replaceSlotDisplayList(
+    virtual bool replaceSlotDisplayList(
         const std::string& dragonBonesName, const std::string& armatureName, const std::string& slotName,
         Slot* slot
     ) const;
-    /**
-    * 更换骨架皮肤。
-    * @param armature 骨架。
-    * @param skin 皮肤数据。
-    * @param exclude 不需要更新的插槽。
-    * @see dragonBones.Armature
-    * @see dragonBones.SkinData
-    * @version DragonBones 5.1
-    * @language zh_CN
-    */
-    virtual void changeSkin(Armature* armature, SkinData* skin, const std::vector<std::string>* exclude = nullptr) const;
-    /**
-    * 将骨架的动画替换成其他骨架的动画。 (通常这些骨架应该具有相同的骨架结构)
-    * @param toArmature 指定的骨架。
-    * @param fromArmatreName 其他骨架的名称。
-    * @param fromSkinName 其他骨架的皮肤名称，如果未设置，则使用默认皮肤。
-    * @param fromDragonBonesDataName 其他骨架属于的龙骨数据名称，如果未设置，则检索所有的龙骨数据。
-    * @param replaceOriginalAnimation 是否替换原有的同名动画。
-    * @returns 是否替换成功。
-    * @see dragonBones.Armature
-    * @see dragonBones.ArmatureData
-    * @version DragonBones 4.5
-    * @language zh_CN
-    */
-    virtual bool copyAnimationsToArmature(
-        Armature& toArmature,
-        const std::string& fromArmatreName, const std::string& fromSkinName = "", const std::string& fromDragonBonesDataName = "",
-        bool replaceOriginalAnimation = true
-    ) const;
-    /**
-    * @private
-    */
-    inline const std::map<std::string, DragonBonesData*>& getAllDragonBonesData() const
-    {
-        return _dragonBonesDataMap;
-    }
-    /**
-    * @private
-    */
+    virtual bool replaceSkin(Armature* armature, SkinData* skin, const std::vector<std::string>* exclude = nullptr) const;
+    virtual bool replaceAnimation(Armature* armature, ArmatureData* armatureData, bool isReplaceAll = true) const;
     inline const std::map<std::string, std::vector<TextureAtlasData*>>& getAllTextureAtlasData() const
     {
         return _textureAtlasDataMap;
     }
+    inline const std::map<std::string, DragonBonesData*>& getAllDragonBonesData() const
+    {
+        return _dragonBonesDataMap;
+    }
+    inline WorldClock* getClock() const 
+    {
+        return _dragonBones->getClock();
+    }
+
+    inline bool changeSkin(Armature* armature, SkinData* skin, const std::vector<std::string>* exclude = nullptr) const
+    {
+        return replaceSkin(armature, skin, exclude);
+    }
+};
+/**
+* @private
+*/
+class BuildArmaturePackage
+{
+    DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(BuildArmaturePackage)
+
+public:
+    std::string dataName;
+    std::string textureAtlasName;
+    DragonBonesData* data;
+    ArmatureData* armature;
+    SkinData* skin;
+
+    BuildArmaturePackage() :
+        dataName(),
+        textureAtlasName(),
+        data(nullptr),
+        armature(nullptr),
+        skin(nullptr)
+    {}
+    ~BuildArmaturePackage() {}
 };
 
 DRAGONBONES_NAMESPACE_END

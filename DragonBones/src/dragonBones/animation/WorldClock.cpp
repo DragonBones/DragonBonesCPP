@@ -72,7 +72,17 @@ void WorldClock::advanceTime(float passedTime)
 
 bool WorldClock::contains(const IAnimatable* value) const
 {
-    return std::find(_animatebles.cbegin(), _animatebles.cend(), value) != _animatebles.cend();
+    if (value == this) {
+        return false;
+    }
+
+    auto ancestor = value;
+    while (ancestor != this && ancestor != nullptr) 
+    {
+        ancestor = ancestor->getClock();
+    }
+
+    return ancestor == this;
 }
 
 void WorldClock::add(IAnimatable* value)

@@ -2,7 +2,7 @@
 DRAGONBONES_NAMESPACE_BEGIN
 
 unsigned BaseObject::_hashCode = 0;
-unsigned BaseObject::_defaultMaxCount = 2000;
+unsigned BaseObject::_defaultMaxCount = 3000;
 std::map<std::size_t, unsigned> BaseObject::_maxCountMap;
 std::map<std::size_t, std::vector<BaseObject*>> BaseObject::_poolsMap;
 
@@ -21,7 +21,7 @@ void BaseObject::_returnObject(BaseObject* object)
         }
         else
         {
-            DRAGONBONES_ASSERT(false, "The object is  already in the pool.");
+            DRAGONBONES_ASSERT(false, "The object is already in the pool.");
         }
     }
     else

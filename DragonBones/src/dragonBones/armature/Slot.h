@@ -5,6 +5,7 @@
 
 #include "../geom/ColorTransform.h"
 #include "../geom/Rectangle.h"
+#include "../model/ArmatureData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
@@ -31,10 +32,6 @@ public:
     * @language zh_CN
     */
     std::string displayController;
-    /**
-    * @readonly
-    */
-    SlotData* slotData;
 
 public:
     bool _colorDirty;
@@ -47,6 +44,7 @@ public:
     ColorTransform _colorTransform;
     std::vector<float> _ffdVertices;
     std::vector<DisplayData*> _displayDatas;
+    SlotData* _slotData;
     MeshDisplayData* _meshData;
     void* _rawDisplay;
     void* _meshDisplay;
@@ -165,6 +163,11 @@ public:
         _displayDirty = true;
         _transformDirty = true;
     }
+    inline bool getVisible() const
+    {
+        return _visible;
+    }
+    void setVisible(bool value);
     /**
     * 此时显示的显示对象在显示列表中的索引。
     * @version DragonBones 4.5
@@ -175,6 +178,11 @@ public:
         return _displayIndex;
     }
     void setDisplayIndex(int value);
+
+    inline const std::string& getName() const
+    {
+        return _slotData->name;
+    }
     /**
     * 包含显示对象或子骨架的显示列表。
     * @version DragonBones 3.0
@@ -193,6 +201,10 @@ public:
         return _rawDisplayDatas;
     }
     void setRawDisplayDatas(std::vector<DisplayData*>* value);
+    const SlotData* getSlotData() const
+    {
+        return _slotData;
+    }
     /**
     * @language zh_CN
     * 插槽此时的自定义包围盒数据。
@@ -238,9 +250,6 @@ public:
         return _childArmature;
     }
     void setChildArmature(Armature* value);
-
-public: // For WebAssembly.
-    const SlotData* getSlotData() const { return slotData; }
 };
 
 DRAGONBONES_NAMESPACE_END

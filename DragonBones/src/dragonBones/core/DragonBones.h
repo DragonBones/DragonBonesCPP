@@ -188,6 +188,8 @@ enum class TimelineType {
     SlotColor = 21,
     SlotFFD = 22,
 
+    IKConstraint = 30,
+
     AnimationTime = 40,
     AnimationWeight = 41
 };
@@ -255,11 +257,12 @@ class Point;
 class Rectangle;
 
 class BaseObject;
+
 class UserData;
 class ActionData;
 class DragonBonesData;
-class CanvasData;
 class ArmatureData;
+class CanvasData;
 class BoneData;
 class SlotData;
 class SkinData;
@@ -270,11 +273,11 @@ class ImageDisplayData;
 class ArmatureDisplayData;
 class MeshDisplayData;
 class BoundingBoxDisplayData;
-class WeightData;
 class BoundingBoxData;
 class RectangleBoundingBoxData;
 class EllipseBoundingBoxData;
 class PolygonBoundingBoxData;
+class WeightData;
 class AnimationData;
 class TimelineData;
 class AnimationConfig;
@@ -298,12 +301,14 @@ class TimelineState;
 class TweenTimelineState;
 class BoneTimelineState;
 class SlotTimelineState;
+class ConstraintTimelineState;
 class ActionTimelineState;
 class ZOrderTimelineState;
 class BoneAllTimelineState;
-class SlotDislayIndexTimelineState;
+class SlotDislayTimelineState;
 class SlotColorTimelineState;
 class SlotFFDTimelineState;
+class IKConstraintTimelineState;
 
 class IEventDispatcher;
 class EventObject;

@@ -4,6 +4,7 @@
 #include "../model/DragonBonesData.h"
 #include "../model/UserData.h"
 #include "../model/ArmatureData.h"
+#include "../model/ConstraintData.h"
 #include "../model/DisplayData.h"
 #include "../model/AnimationData.h"
 #include "../events/EventObject.h"
@@ -11,6 +12,7 @@
 #include "../armature/Armature.h"
 #include "../armature/Bone.h"
 #include "../armature/Slot.h"
+#include "../armature/Constraint.h"
 #include "AnimationState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -24,10 +26,12 @@ void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
         const auto frameOffset = _animationData->frameOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + frameIndex];
         const unsigned actionCount = _frameArray[frameOffset + 1];
         const auto& actions = _animationData->parent->actions; // May be the animaton data not belong to this armature data.
+
         for (std::size_t i = 0; i < actionCount; ++i)
         {
             const auto actionIndex = _frameArray[frameOffset + 2 + i];
             const auto action = actions[actionIndex];
+
             if (action->type == ActionType::Play)
             {
                 if (action->slot != nullptr) 
@@ -47,7 +51,7 @@ void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
                     for (const auto slot : _armature->getSlots())
                     {
                         const auto childArmature = slot->getChildArmature();
-                        if (childArmature != nullptr && slot->getParent()->boneData == action->bone) 
+                        if (childArmature != nullptr && slot->getParent()->_boneData == action->bone) 
                         {
                             childArmature->_bufferAction(action, true);
                         }
@@ -61,7 +65,7 @@ void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
             else
             {
                 const auto eventType = action->type == ActionType::Frame ? EventObject::FRAME_EVENT : EventObject::SOUND_EVENT;
-                if (action->type == ActionType::Sound || eventDispatcher->hasEvent(eventType))
+                if (action->type == ActionType::Sound || eventDispatcher->hasDBEventListener(eventType))
                 {
                     const auto eventObject = BaseObject::borrowObject<EventObject>();
                     eventObject->time = (float)_frameArray[frameOffset] / _frameRate;
@@ -94,7 +98,7 @@ void ActionTimelineState::update(float passedTime)
     auto prevPlayTimes = currentPlayTimes;
     auto prevTime = currentTime;
 
-    if (playState <= 0 && _setCurrentTime(passedTime)) 
+    if (_setCurrentTime(passedTime)) 
     {
         const auto eventDispatcher = _armature->getProxy();
         if (prevState < 0) 
@@ -108,7 +112,7 @@ void ActionTimelineState::update(float passedTime)
 
                 prevPlayTimes = currentPlayTimes;
 
-                if (eventDispatcher->hasEvent(EventObject::START))
+                if (eventDispatcher->hasDBEventListener(EventObject::START))
                 {
                     const auto eventObject = BaseObject::borrowObject<EventObject>();
                     eventObject->type = EventObject::START;
@@ -126,9 +130,10 @@ void ActionTimelineState::update(float passedTime)
         const auto isReverse = _animationState->timeScale < 0.0f;
         EventObject* loopCompleteEvent = nullptr;
         EventObject* completeEvent = nullptr;
+
         if (currentPlayTimes != prevPlayTimes) 
         {
-            if (eventDispatcher->hasEvent(EventObject::LOOP_COMPLETE))
+            if (eventDispatcher->hasDBEventListener(EventObject::LOOP_COMPLETE))
             {
                 loopCompleteEvent = BaseObject::borrowObject<EventObject>();
                 loopCompleteEvent->type = EventObject::LOOP_COMPLETE;
@@ -138,7 +143,7 @@ void ActionTimelineState::update(float passedTime)
 
             if (playState > 0) 
             {
-                if (eventDispatcher->hasEvent(EventObject::COMPLETE))
+                if (eventDispatcher->hasDBEventListener(EventObject::COMPLETE))
                 {
                     completeEvent = BaseObject::borrowObject<EventObject>();
                     completeEvent->type = EventObject::COMPLETE;
@@ -153,19 +158,23 @@ void ActionTimelineState::update(float passedTime)
             const auto timelineData = _timelineData;
             const auto timelineFrameIndex = (unsigned)(currentTime * _frameRate); // uint
             const auto frameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + timelineFrameIndex];
+
             if ((unsigned)_frameIndex != frameIndex) // Arrive at frame.  
             {
                 auto crossedFrameIndex = _frameIndex;
                 _frameIndex = frameIndex;
+
                 if (_timelineArray != nullptr)
                 {
                     _frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + _frameIndex];
+
                     if (isReverse) 
                     {
                         if (crossedFrameIndex < 0) 
                         {
                             const auto prevFrameIndex = (unsigned)(prevTime * _frameRate);
                             crossedFrameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + prevFrameIndex];
+
                             if (currentPlayTimes == prevPlayTimes) // Start.
                             {
                                 if ((unsigned)crossedFrameIndex == frameIndex) // Uncrossed.
@@ -179,6 +188,7 @@ void ActionTimelineState::update(float passedTime)
                         {
                             const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
                             const auto framePosition = (float)_frameArray[frameOffset] / _frameRate;
+
                             if (
                                 _position <= framePosition &&
                                 framePosition <= _position + _duration
@@ -216,6 +226,7 @@ void ActionTimelineState::update(float passedTime)
                             crossedFrameIndex = (*_frameIndices)[timelineData->frameIndicesOffset + prevFrameIndex];
                             const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
                             const auto framePosition = (float)_frameArray[frameOffset] / _frameRate;
+
                             if (currentPlayTimes == prevPlayTimes) // Start.
                             { 
                                 if (prevTime <= framePosition) // Crossed.
@@ -249,6 +260,7 @@ void ActionTimelineState::update(float passedTime)
 
                             const auto frameOffset = _animationData->frameOffset + _timelineArray[timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset + crossedFrameIndex];
                             const auto framePosition = (float)_frameArray[frameOffset] / _frameRate;
+
                             if (
                                 _position <= framePosition &&
                                 framePosition <= _position + _duration
@@ -280,6 +292,7 @@ void ActionTimelineState::update(float passedTime)
                 _frameOffset = _animationData->frameOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameOffset];
                 // Arrive at frame.
                 const auto framePosition = (float)_frameArray[_frameOffset] / _frameRate;
+
                 if (currentPlayTimes == prevPlayTimes) // Start.
                 {
                     if (prevTime <= framePosition) 
@@ -340,11 +353,11 @@ void BoneAllTimelineState::_onArriveAtFrame()
     if (_timelineData != nullptr) 
     {
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 6; // ...(timeline value offset)|xxxxxx|xxxxxx|(Value offset)xxxxx|(Next offset)xxxxx|xxxxxx|xxxxxx|...
-        const auto scale = _armature->armatureData->scale;
+        const auto scale = _armature->_armatureData->scale;
         const auto frameFloatArray = _frameFloatArray;
         auto& current = bonePose->current;
         auto& delta = bonePose->delta;
-
+        //
         current.x = frameFloatArray[valueOffset++] * scale;
         current.y = frameFloatArray[valueOffset++] * scale;
         current.rotation = frameFloatArray[valueOffset++];
@@ -366,16 +379,32 @@ void BoneAllTimelineState::_onArriveAtFrame()
             delta.scaleX = frameFloatArray[valueOffset++] - current.scaleX;
             delta.scaleY = frameFloatArray[valueOffset++] - current.scaleY;
         }
+        else 
+        {
+            delta.x = 0.0f;
+            delta.y = 0.0f;
+            delta.rotation = 0.0f;
+            delta.skew = 0.0f;
+            delta.scaleX = 0.0f;
+            delta.scaleY = 0.0f;
+        }
     }
     else
     {
         auto& current = bonePose->current;
+        auto& delta = bonePose->delta;
         current.x = 0.0f;
         current.y = 0.0f;
         current.rotation = 0.0f;
         current.skew = 0.0f;
         current.scaleX = 1.0f;
         current.scaleY = 1.0f;
+        delta.x = 0.0f;
+        delta.y = 0.0f;
+        delta.rotation = 0.0f;
+        delta.skew = 0.0f;
+        delta.scaleX = 0.0f;
+        delta.scaleY = 0.0f;
     }
 }
 
@@ -415,7 +444,7 @@ void BoneTranslateTimelineState::_onArriveAtFrame()
     if (_timelineData != nullptr)
     {
         auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * 2;
-        const auto scale = _armature->armatureData->scale;
+        const auto scale = _armature->_armatureData->scale;
         const auto frameFloatArray = _frameFloatArray;
         auto& current = bonePose->current;
         auto& delta = bonePose->delta;
@@ -427,18 +456,26 @@ void BoneTranslateTimelineState::_onArriveAtFrame()
         {
             if ((unsigned)_frameIndex == _frameCount - 1)
             {
-                valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
+                valueOffset = _animationData->frameFloatOffset + _frameValueOffset; // + 0 * 2
             }
 
             delta.x = frameFloatArray[valueOffset++] * scale - current.x;
             delta.y = frameFloatArray[valueOffset++] * scale - current.y;
         }
+        else 
+        {
+            delta.x = 0.0f;
+            delta.y = 0.0f;
+        }
     }
     else
     {
         auto& current = bonePose->current;
+        auto& delta = bonePose->delta;
         current.x = 0.0f;
         current.y = 0.0f;
+        delta.x = 0.0f;
+        delta.y = 0.0f;
     }
 }
 
@@ -478,18 +515,26 @@ void BoneRotateTimelineState::_onArriveAtFrame()
         {
             if ((unsigned)_frameIndex == _frameCount - 1)
             {
-                valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
+                valueOffset = _animationData->frameFloatOffset + _frameValueOffset; // + 0 * 2
             }
 
             delta.rotation = frameFloatArray[valueOffset++] - current.rotation;
             delta.skew = frameFloatArray[valueOffset++] - current.skew;
         }
+        else 
+        {
+            delta.rotation = 0.0f;
+            delta.skew = 0.0f;
+        }
     }
     else
     {
         auto& current = bonePose->current;
+        auto& delta = bonePose->delta;
         current.rotation = 0.0f;
         current.skew = 0.0f;
+        delta.rotation = 0.0f;
+        delta.skew = 0.0f;
     }
 }
 
@@ -536,18 +581,26 @@ void BoneScaleTimelineState::_onArriveAtFrame()
         {
             if ((unsigned)_frameIndex == _frameCount - 1)
             {
-                valueOffset = _animationData->frameFloatOffset + _frameValueOffset;
+                valueOffset = _animationData->frameFloatOffset + _frameValueOffset; // + 0 * 2
             }
 
             delta.scaleX = frameFloatArray[valueOffset++] - current.scaleX;
             delta.scaleY = frameFloatArray[valueOffset++] - current.scaleY;
         }
+        else 
+        {
+            delta.scaleX = 0.0f;
+            delta.scaleY = 0.0f;
+        }
     }
     else
     {
         auto& current = bonePose->current;
+        auto& delta = bonePose->delta;
         current.scaleX = 1.0f;
         current.scaleY = 1.0f;
+        delta.scaleX = 0.0f;
+        delta.scaleY = 0.0f;
     }
 }
 
@@ -569,11 +622,11 @@ void BoneScaleTimelineState::_onUpdateFrame()
     result.scaleY = current.scaleY + delta.scaleY * _tweenProgress;
 }
 
-void SlotDislayIndexTimelineState::_onArriveAtFrame()
+void SlotDislayTimelineState::_onArriveAtFrame()
 {
     if (playState >= 0) 
     {
-        const auto displayIndex = _timelineData != nullptr ? _frameArray[_frameOffset + 1] : slot->slotData->displayIndex;
+        const auto displayIndex = _timelineData != nullptr ? _frameArray[_frameOffset + 1] : slot->_slotData->displayIndex;
         if (slot->getDisplayIndex() != displayIndex) 
         {
             slot->_setDisplayIndex(displayIndex, true);
@@ -631,7 +684,7 @@ void SlotColorTimelineState::_onArriveAtFrame()
     }
     else 
     {
-        const auto color = slot->slotData->color;
+        const auto color = slot->_slotData->color;
 
         _current[0] = color->alphaMultiplier * 100.0f;
         _current[1] = color->redMultiplier * 100.0f;
@@ -757,12 +810,11 @@ void SlotFFDTimelineState::_onArriveAtFrame()
 
     if (_timelineData != nullptr) 
     {
-        const auto isTween = _tweenState == TweenState::Always;
-        const auto scale = _armature->armatureData->scale;
-        const auto frameFloatArray = _frameFloatArray;
         const auto valueOffset = _animationData->frameFloatOffset + _frameValueOffset + _frameIndex * _valueCount;
+        const auto scale = _armature->_armatureData->scale;
+        const auto frameFloatArray = _frameFloatArray;
 
-        if (isTween) 
+        if (_tweenState == TweenState::Always)
         {
             auto nextValueOffset = valueOffset + _valueCount;
             if ((unsigned)_frameIndex == _frameCount - 1)
@@ -921,5 +973,67 @@ void SlotFFDTimelineState::update(float passedTime)
         }
     }
 }
+
+void IKConstraintTimelineState::_onClear()
+{
+    _current = 0.0f;
+    _delta = 0.0f;
+}
+
+void IKConstraintTimelineState::_onArriveAtFrame()
+{
+    ConstraintTimelineState::_onArriveAtFrame();
+
+    const auto ikConstraint = static_cast<IKConstraint*>(constraint);
+
+    if (_timelineData != nullptr)
+    {
+        auto valueOffset = _animationData->frameIntOffset + _frameValueOffset + _frameIndex * 2;
+        const auto frameIntArray = _frameIntArray;
+
+        const auto bendPositive = frameIntArray[valueOffset++] != 0;
+        _current = frameIntArray[valueOffset++] * 0.01f;
+
+        if (_tweenState == TweenState::Always) 
+        {
+            if (_frameIndex == _frameCount - 1) 
+            {
+                valueOffset = _animationData->frameIntOffset + _frameValueOffset; // + 0 * 2
+            }
+
+            _delta = frameIntArray[valueOffset + 1] * 0.01f - _current;
+        }
+        else 
+        {
+            _delta = 0.0f;
+        }
+
+        ikConstraint->_bendPositive = bendPositive;
+    }
+    else 
+    {
+        const auto ikConstraintData = static_cast<IKConstraintData*>(ikConstraint->_constraintData);
+        _current = ikConstraintData->weight;
+        _delta = 0.0f;
+        ikConstraint->_bendPositive = ikConstraintData->bendPositive;
+    }
+
+    ikConstraint->invalidUpdate();
+}
+
+void IKConstraintTimelineState::_onUpdateFrame()
+{
+    ConstraintTimelineState::_onUpdateFrame();
+
+    if (_tweenState != TweenState::Always) 
+    {
+        _tweenState = TweenState::None;
+    }
+
+    const auto ikConstraint = static_cast<IKConstraint*>(constraint);
+    ikConstraint->_weight = _current + _delta * _tweenProgress;
+    ikConstraint->invalidUpdate();
+}
+
 
 DRAGONBONES_NAMESPACE_END

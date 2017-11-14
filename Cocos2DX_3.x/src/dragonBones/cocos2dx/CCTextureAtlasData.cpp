@@ -1,18 +1,6 @@
 #include "CCTextureAtlasData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-void CCTextureData::_onClear()
-{
-    TextureData::_onClear();
-
-    if (spriteFrame != nullptr)
-    {
-        spriteFrame->release();
-        spriteFrame = nullptr;
-    }
-}
-
 void CCTextureAtlasData::_onClear()
 {
     TextureAtlasData::_onClear();
@@ -75,4 +63,14 @@ void CCTextureAtlasData::setRenderTexture(cocos2d::Texture2D* value)
     }
 }
 
+void CCTextureData::_onClear()
+{
+    TextureData::_onClear();
+
+    if (spriteFrame != nullptr)
+    {
+        spriteFrame->release();
+        spriteFrame = nullptr;
+    }
+}
 DRAGONBONES_NAMESPACE_END

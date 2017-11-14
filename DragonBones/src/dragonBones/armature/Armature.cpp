@@ -3,7 +3,7 @@
 #include "../model/UserData.h"
 #include "../animation/WorldClock.h"
 #include "../animation/Animation.h"
-#include "../events/EventObject.h"
+#include "../event/EventObject.h"
 #include "IArmatureProxy.h"
 #include "Bone.h"
 #include "Slot.h"
@@ -28,6 +28,11 @@ void Armature::_onClear()
         bone->returnToPool();
     }
 
+    for (const auto constraint : _constraints)
+    {
+        constraint->returnToPool();
+    }
+
     for (const auto slot : _slots)
     {
         slot->returnToPool();
@@ -49,7 +54,6 @@ void Armature::_onClear()
     }
 
     inheritAnimation = true;
-    armatureData = nullptr;
     userData = nullptr;
 
     _debugDraw = false;
@@ -62,7 +66,9 @@ void Armature::_onClear()
     _cacheFrameIndex = -1;
     _bones.clear();
     _slots.clear();
+    _constraints.clear();
     _actions.clear();
+    _armatureData = nullptr;
     _dragonBones = nullptr;
     _animation = nullptr;
     _proxy = nullptr;
@@ -100,12 +106,12 @@ void Armature::_sortBones()
             continue;
         }
 
-        if (bone->constraints.size() > 0) // Wait constraint.
+        if (bone->_hasConstraint) // Wait constraint.
         {
             auto flag = false;
-            for (const auto constraint : bone->constraints) 
+            for (const auto constraint : _constraints) 
             {
-                if (std::find(_bones.cbegin(), _bones.cend(), constraint->target) == _bones.cend()) 
+                if (constraint->_bone == bone && std::find(_bones.cbegin(), _bones.cend(), constraint->_target) == _bones.cend())
                 {
                     flag = true;
                     break;
@@ -135,7 +141,7 @@ void Armature::_sortSlots()
 
 void Armature::_sortZOrder(const int16_t* slotIndices, unsigned offset)
 {
-    const auto& slotDatas = armatureData->sortedSlots;
+    const auto& slotDatas = _armatureData->sortedSlots;
     const auto isOriginal = slotIndices == nullptr;
 
     if (_zOrderDirty || !isOriginal) 
@@ -167,7 +173,6 @@ void Armature::_addBoneToBoneList(Bone* value)
     {
         _bonesDirty = true;
         _bones.push_back(value);
-        _animation->_timelineDirty = true;
     }
 }
 
@@ -177,7 +182,6 @@ void Armature::_removeBoneFromBoneList(Bone* value)
     if (iterator != _bones.end())
     {
         _bones.erase(iterator);
-        _animation->_timelineDirty = true;
     }
 }
 
@@ -187,7 +191,6 @@ void Armature::_addSlotToSlotList(Slot* value)
     {
         _slotsDirty = true;
         _slots.push_back(value);
-        _animation->_timelineDirty = true;
     }
 }
 
@@ -197,7 +200,6 @@ void Armature::_removeSlotFromSlotList(Slot* value)
     if (iterator != _slots.end())
     {
         _slots.erase(iterator);
-        _animation->_timelineDirty = true;
     }
 }
 
@@ -218,28 +220,28 @@ void Armature::_bufferAction(ActionData* action, bool append)
 
 void Armature::dispose()
 {
-    if (armatureData != nullptr) 
+    if (_armatureData != nullptr) 
     {
         _lockUpdate = true;
         _dragonBones->bufferObject(this);
     }
 }
 
-void Armature::init(ArmatureData *armatureData_, IArmatureProxy* proxy, void* display, DragonBones* dragonBones)
+void Armature::init(ArmatureData *armatureData, IArmatureProxy* proxy, void* display, DragonBones* dragonBones)
 {
-    if (armatureData != nullptr)
+    if (_armatureData != nullptr)
     {
         return;
     }
 
-    armatureData = armatureData_;
+    _armatureData = armatureData;
     _animation = BaseObject::borrowObject<Animation>();
     _proxy = proxy;
     _display = display;
     _dragonBones = dragonBones;
 
     _animation->init(this);
-    _animation->setAnimations(armatureData->animations);
+    _animation->setAnimations(_armatureData->animations);
 
     _proxy->dbInit(this);
 }
@@ -251,12 +253,12 @@ void Armature::advanceTime(float passedTime)
         return;
     }
 
-    if (armatureData == nullptr)
+    if (_armatureData == nullptr)
     {
         DRAGONBONES_ASSERT(false, "The armature has been disposed.");
         return;
     }
-    else if(armatureData->parent == nullptr)
+    else if(_armatureData->parent == nullptr)
     {
         DRAGONBONES_ASSERT(false, "The armature data has been disposed.\nPlease make sure dispose armature before call factory.clear().");
         return;
@@ -295,6 +297,7 @@ void Armature::advanceTime(float passedTime)
     if (!_actions.empty()) 
     {
         _lockUpdate = true;
+
         for (const auto action : _actions)
         {
             if (action->type == ActionType::Play) 
@@ -310,7 +313,7 @@ void Armature::advanceTime(float passedTime)
     _proxy->dbUpdate();
 }
 
-void Armature::invalidUpdate(const std::string& boneName, bool updateSlotDisplay)
+void Armature::invalidUpdate(const std::string& boneName, bool updateSlot)
 {
     if (!boneName.empty())
     {
@@ -319,7 +322,7 @@ void Armature::invalidUpdate(const std::string& boneName, bool updateSlotDisplay
         {
             bone->invalidUpdate();
 
-            if (updateSlotDisplay)
+            if (updateSlot)
             {
                 for (const auto slot : _slots)
                 {
@@ -338,7 +341,7 @@ void Armature::invalidUpdate(const std::string& boneName, bool updateSlotDisplay
             bone->invalidUpdate();
         }
 
-        if (updateSlotDisplay)
+        if (updateSlot)
         {
             for (const auto slot : _slots)
             {
@@ -466,7 +469,7 @@ Bone* Armature::getBone(const std::string& name) const
 {
     for (const auto& bone : _bones)
     {
-        if (bone->name == name)
+        if (bone->getName() == name)
         {
             return bone;
         }
@@ -486,7 +489,7 @@ Slot* Armature::getSlot(const std::string& name) const
 {
     for (const auto slot : _slots)
     {
-        if (slot->name == name)
+        if (slot->getName() == name)
         {
             return slot;
         }
@@ -519,14 +522,6 @@ void Armature::addBone(Bone* value, const std::string& parentName)
     value->_setParent(parentName.empty() ? nullptr : getBone(parentName));
 }
 
-void Armature::removeBone(Bone* value)
-{
-    DRAGONBONES_ASSERT(value != nullptr && value->getArmature() == this, "removeBone argument error");
-
-    value->_setParent(nullptr);
-    value->_setArmature(nullptr);
-}
-
 void Armature::addSlot(Slot* value, const std::string& boneName)
 {
     const auto bone = getBone(boneName);
@@ -535,6 +530,22 @@ void Armature::addSlot(Slot* value, const std::string& boneName)
 
     value->_setArmature(this);
     value->_setParent(bone);
+}
+
+void Armature::addConstraint(Constraint* value)
+{
+    if (std::find(_constraints.cbegin(), _constraints.cend(), value) == _constraints.cend())
+    {
+        _constraints.push_back(value);
+    }
+}
+
+void Armature::removeBone(Bone* value)
+{
+    DRAGONBONES_ASSERT(value != nullptr && value->getArmature() == this, "removeBone argument error");
+
+    value->_setParent(nullptr);
+    value->_setArmature(nullptr);
 }
 
 void Armature::removeSlot(Slot* value)
@@ -547,9 +558,9 @@ void Armature::removeSlot(Slot* value)
 
 void Armature::setCacheFrameRate(unsigned value)
 {
-    if (armatureData->cacheFrameRate != value)
+    if (_armatureData->cacheFrameRate != value)
     {
-        armatureData->cacheFrames(value);
+        _armatureData->cacheFrames(value);
 
         for (const auto & slot : _slots)
         {

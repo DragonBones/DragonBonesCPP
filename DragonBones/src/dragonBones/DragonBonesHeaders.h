@@ -18,6 +18,8 @@
 #include "model/DragonBonesData.h"
 #include "model/ArmatureData.h"
 #include "model/ConstraintData.h"
+#include "model/CanvasData.h"
+#include "model/SkinData.h"
 #include "model/DisplayData.h"
 #include "model/BoundingBoxData.h"
 #include "model/AnimationData.h"
@@ -40,18 +42,18 @@
 #include "animation/TimelineState.h"
 
 // event
-#include "events/EventObject.h"
-#include "events/IEventDispatcher.h"
+#include "event/EventObject.h"
+#include "event/IEventDispatcher.h"
 
 #ifndef EGRET_WASM
 
 // parser
-#include "parsers/DataParser.h"
-#include "parsers/JSONDataParser.h"
-#include "parsers/BinaryDataParser.h"
+#include "parser/DataParser.h"
+#include "parser/JSONDataParser.h"
+#include "parser/BinaryDataParser.h"
 
 // factory
-#include "factories/BaseFactory.h"
+#include "factory/BaseFactory.h"
 #endif // EGRET_WASM
 
 #endif // DRAGONBONES_HEADERS_H

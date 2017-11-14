@@ -125,6 +125,13 @@ public:
     */
     float timeScale;
     /**
+    * 混合权重。
+    * @default 1
+    * @version DragonBones 5.0
+    * @language zh_CN
+    */
+    float weight;
+    /**
     * 淡入时间。 [-1: 使用动画数据默认值, [0~N]: 淡入时间] (以秒为单位)
     * @default -1
     * @version DragonBones 5.0
@@ -138,13 +145,6 @@ public:
     * @language zh_CN
     */
     float autoFadeOutTime;
-    /**
-    * 混合权重。
-    * @default 1
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
-    float weight;
     /**
     * 动画状态名。
     * @version DragonBones 5.0

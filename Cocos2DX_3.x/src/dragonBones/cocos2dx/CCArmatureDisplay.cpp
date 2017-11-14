@@ -29,7 +29,7 @@ void CCArmatureDisplay::dbClear()
 
     _armature = nullptr;
     CC_SAFE_RELEASE(_dispatcher);
-    this->release();
+    release();
 }
 
 void CCArmatureDisplay::dispose(bool disposeProxy)
@@ -58,12 +58,7 @@ void CCArmatureDisplay::dbUpdate()
     }
 }
 
-void CCArmatureDisplay::_dispatchEvent(const std::string& type, EventObject* value)
-{
-    _dispatcher->dispatchCustomEvent(type, value);
-}
-
-void CCArmatureDisplay::addEvent(const std::string& type, const std::function<void(EventObject*)>& callback)
+void CCArmatureDisplay::addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& callback)
 {
     auto lambda = [callback](cocos2d::EventCustom* event) -> void 
     {
@@ -72,7 +67,12 @@ void CCArmatureDisplay::addEvent(const std::string& type, const std::function<vo
     _dispatcher->addCustomEventListener(type, lambda);
 }
 
-void CCArmatureDisplay::removeEvent(const std::string& type, const std::function<void(EventObject*)>& callback)
+void CCArmatureDisplay::dispatchDBEvent(const std::string& type, EventObject* value)
+{
+    _dispatcher->dispatchCustomEvent(type, value);
+}
+
+void CCArmatureDisplay::removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& callback)
 {
     // TODO
     _dispatcher->removeCustomEventListeners(type);
@@ -132,9 +132,9 @@ void DBCCSprite::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transfor
 {
 #if CC_USE_CULLING
 #if COCOS2D_VERSION >= 0x00031400
-    const auto& rect = this->_polyInfo.getRect();
+    const auto& rect = _polyInfo.getRect();
 #else
-    const auto& rect = this->_polyInfo.rect;
+    const auto& rect = _polyInfo.rect;
 #endif
     
     // Don't do calculate the culling if the transform was not updated
@@ -180,7 +180,7 @@ void DBCCSprite::draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& transfor
 
 cocos2d::PolygonInfo& DBCCSprite::getPolygonInfoModify()
 {
-    return this->_polyInfo;
+    return _polyInfo;
 }
 
 DRAGONBONES_NAMESPACE_END

@@ -163,6 +163,28 @@ AnimationData* BinaryDataParser::_parseAnimation(const rapidjson::Value& rawData
         }
     }
 
+    if (rawData.HasMember(CONSTRAINT))
+    {
+        const auto& rawTimeliness = rawData[CONSTRAINT];
+        for (auto iterator = rawTimeliness.MemberBegin(); iterator != rawTimeliness.MemberEnd(); ++iterator)
+        {
+            const auto constraint = _armature->getConstraint(iterator->name.GetString());
+            if (constraint == nullptr)
+            {
+                continue;
+            }
+
+            const auto& rawTimelines = *&(iterator->value);
+            for (std::size_t i = 0, l = rawTimelines.Size(); i < l; i += 2)
+            {
+                const auto timelineType = (TimelineType)rawTimelines[i].GetInt();
+                const auto timelineOffset = rawTimelines[i + 1].GetUint();
+                const auto timeline = _parseBinaryTimeline(timelineType, timelineOffset);
+                _animation->addConstraintTimeline(constraint, timeline);
+            }
+        }
+    }
+
     _animation = nullptr;
 
     return animation;
@@ -173,12 +195,12 @@ void BinaryDataParser::_parseArray(const rapidjson::Value& rawData)
     const auto& offsets = rawData[OFFSET];
 
 	_data->binary = _binary;
-    _data->intArray = _intArray = (int16_t*)(_binary + offsets[0].GetUint());
-    _data->floatArray = _floatArray = (float*)(_binary + offsets[2].GetUint());
-    _data->frameIntArray = _frameIntArray = (int16_t*)(_binary + offsets[4].GetUint());
-    _data->frameFloatArray = _frameFloatArray = (float*)(_binary + offsets[6].GetUint());
-    _data->frameArray = _frameArray = (int16_t*)(_binary + offsets[8].GetUint());
-    _data->timelineArray = _timelineArray = (uint16_t*)(_binary + offsets[10].GetUint());
+    _data->intArray = _intArray = (int16_t*)(_binary + _binaryOffset + offsets[0].GetUint());
+    _data->floatArray = _floatArray = (float*)(_binary + _binaryOffset + offsets[2].GetUint());
+    _data->frameIntArray = _frameIntArray = (int16_t*)(_binary + _binaryOffset + offsets[4].GetUint());
+    _data->frameFloatArray = _frameFloatArray = (float*)(_binary + _binaryOffset + offsets[6].GetUint());
+    _data->frameArray = _frameArray = (int16_t*)(_binary + _binaryOffset + offsets[8].GetUint());
+    _data->timelineArray = _timelineArray = (uint16_t*)(_binary + _binaryOffset + offsets[10].GetUint());
 }
 
 DragonBonesData* BinaryDataParser::parseDragonBonesData(const char* rawData, float scale)
@@ -201,7 +223,8 @@ DragonBonesData* BinaryDataParser::parseDragonBonesData(const char* rawData, flo
     rapidjson::Document document;
     document.Parse(headerBytes, headerLength);
 
-    _binary = rawData + 8 + 4 + headerLength;
+    _binaryOffset = 8 + 4 + headerLength;
+    _binary = rawData;
 
     return JSONDataParser::_parseDragonBonesData(document, scale);
 }

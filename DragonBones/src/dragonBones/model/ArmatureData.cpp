@@ -2,17 +2,12 @@
 #include "UserData.h"
 #include "DragonBonesData.h"
 #include "ConstraintData.h"
+#include "CanvasData.h"
+#include "SkinData.h"
 #include "DisplayData.h"
 #include "AnimationData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
-
-void CanvasData::_onClear()
-{
-    hasBackground = false;
-    color = 0x000000;
-    aabb.clear();
-}
 
 void ArmatureData::_onClear()
 {
@@ -32,6 +27,11 @@ void ArmatureData::_onClear()
     }
 
     for (const auto& pair : slots)
+    {
+        pair.second->returnToPool();
+    }
+
+    for (const auto& pair : constraints)
     {
         pair.second->returnToPool();
     }
@@ -69,6 +69,7 @@ void ArmatureData::_onClear()
     actions.clear();
     bones.clear();
     slots.clear();
+    constraints.clear();
     skins.clear();
     animations.clear();
     parent = nullptr;
@@ -103,22 +104,20 @@ void ArmatureData::sortBones()
             continue;
         }
 
-        if(!bone->constraints.empty())
+        auto flag = false;
+        for(const auto& pair : constraints)
         {
-            auto flag = false;
-            for(const auto constrait : bone->constraints)
+            const auto constrait = pair.second;
+            if(constrait->bone == bone && std::find(sortedBones.cbegin(), sortedBones.cend(), constrait->target) == sortedBones.cend())
             {
-                if(std::find(sortedBones.cbegin(), sortedBones.cend(), constrait->target) == sortedBones.cend())
-                {
-                    flag = true;
-                     break;
-                }
+                flag = true;
+                break;
             }
+        }
 
-            if(flag)
-            {
-                continue;
-            }
+        if(flag)
+        {
+            continue;
         }
 
         if (bone->parent != nullptr && std::find(sortedBones.cbegin(), sortedBones.cend(), bone->parent) == sortedBones.cend())
@@ -186,8 +185,8 @@ void ArmatureData::addBone(BoneData* value)
 {
     if (bones.find(value->name) != bones.cend()) 
     {
-        DRAGONBONES_ASSERT(false, "Replace bone: " + value->name);
-        bones[value->name]->returnToPool();
+        DRAGONBONES_ASSERT(false, "Same bone: " + value->name);
+        return;
     }
 
     bones[value->name] = value;
@@ -198,20 +197,31 @@ void ArmatureData::addSlot(SlotData* value)
 {
     if (slots.find(value->name) != slots.cend())
     {
-        DRAGONBONES_ASSERT(false, "Replace slot: " + value->name);
-        slots[value->name]->returnToPool();
+        DRAGONBONES_ASSERT(false, "Same slot: " + value->name);
+        return;
     }
 
     slots[value->name] = value;
     sortedSlots.push_back(value);
 }
 
+void ArmatureData::addConstraint(ConstraintData * value)
+{
+    if (constraints.find(value->name) != constraints.cend())
+    {
+        DRAGONBONES_ASSERT(false, "Same constaint: " + value->name);
+        return;
+    }
+
+    constraints[value->name] = value;
+}
+
 void ArmatureData::addSkin(SkinData* value)
 {
     if (skins.find(value->name) != skins.cend())
     {
-        DRAGONBONES_ASSERT(false, "Replace skin: " + value->name);
-        skins[value->name]->returnToPool();
+        DRAGONBONES_ASSERT(false, "Same skin: " + value->name);
+        return;
     }
 
     value->parent = this;
@@ -227,8 +237,8 @@ void ArmatureData::addAnimation(AnimationData* value)
 {
     if (animations.find(value->name) != animations.cend())
     {
-        DRAGONBONES_ASSERT(false, "Replace animation: " + value->name);
-        animations[value->name]->returnToPool();
+        DRAGONBONES_ASSERT(false, "Same animation: " + value->name);
+        return;
     }
 
     value->parent = this;
@@ -254,11 +264,6 @@ void ArmatureData::addAction(ActionData* value, bool isDefault)
 
 void BoneData::_onClear()
 {
-    for (const auto constraint : constraints)
-    {
-        constraint->returnToPool();
-    }
-
     if (userData != nullptr)
     {
         userData->returnToPool();
@@ -271,14 +276,8 @@ void BoneData::_onClear()
     length = 0.0f;
     name = "";
     transform.identity();
-    constraints.clear();
     parent = nullptr;
     userData = nullptr;
-}
-
-void BoneData::addConstraint(ConstraintData* value)
-{
-    constraints.push_back(value);
 }
 
 ColorTransform SlotData::DEFAULT_COLOR;
@@ -306,51 +305,6 @@ void SlotData::_onClear()
     parent = nullptr;
     color = nullptr;
     userData = nullptr;
-}
-
-void SkinData::_onClear()
-{
-    for (const auto& pair : displays)
-    {
-        for (const auto display : pair.second)
-        {
-            if (display != nullptr) 
-            {
-                display->returnToPool();
-            }
-        }
-    }
-
-    name = "";
-    displays.clear();
-    parent = nullptr;
-}
-
-void SkinData::addDisplay(const std::string& slotName, DisplayData* value)
-{
-    if (value != nullptr)
-    {
-        value->parent = this;
-    }
-
-    displays[slotName].push_back(value); // TODO clear prev
-}
-
-DisplayData* SkinData::getDisplay(const std::string& slotName, const std::string& displayName)
-{
-    const auto slotDisplays = getDisplays(slotName);
-    if (slotDisplays != nullptr) 
-    {
-        for (const auto display : *slotDisplays)
-        {
-            if (display != nullptr && display->name == displayName)
-            {
-                return display;
-            }
-        }
-    }
-
-    return nullptr;
 }
 
 DRAGONBONES_NAMESPACE_END

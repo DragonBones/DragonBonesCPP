@@ -12,7 +12,6 @@ Point TransformObject::_helpPoint;
 
 void TransformObject::_onClear()
 {
-    name = "";
     globalTransformMatrix.identity();
     global.identity();
     offset.identity();

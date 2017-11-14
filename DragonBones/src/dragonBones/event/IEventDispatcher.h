@@ -15,16 +15,16 @@ class IEventDispatcher
 
 public:
     /**
-    * @private
-    */
-    virtual void _dispatchEvent(const std::string& type, EventObject* value) = 0;
-    /**
     * 是否包含指定类型的事件。
     * @param type 事件类型。
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual bool hasEvent(const std::string& type) const = 0;
+    virtual bool hasDBEventListener(const std::string& type) const = 0;
+    /**
+    * @private
+    */
+    virtual void dispatchDBEvent(const std::string& type, EventObject* value) = 0;
     /**
     * 添加事件。
     * @param type 事件类型。
@@ -32,7 +32,7 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual void addEvent(const std::string& type, const std::function<void(EventObject*)> & listener) = 0; //TODO lsc
+    virtual void addDBEventListener(const std::string& type, const std::function<void(EventObject*)> & listener) = 0; //TODO lsc
     /**
     * 移除事件。
     * @param type 事件类型。
@@ -40,7 +40,7 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual void removeEvent(const std::string& type, const std::function<void(EventObject*)>& listener) = 0; //TODO lsc
+    virtual void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) = 0; //TODO lsc
 };
 
 DRAGONBONES_NAMESPACE_END

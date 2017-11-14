@@ -166,7 +166,7 @@ void CCSlot::_updateFrame()
             }
             else // Normal texture.
             {
-                const auto scale = currentTextureData->parent->scale * _armature->armatureData->scale;
+                const auto scale = currentTextureData->parent->scale * _armature->_armatureData->scale;
                 const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
                 _pivotY -= height;
                 _textureScale = scale * cocos2d::Director::getInstance()->getContentScaleFactor();
@@ -190,7 +190,7 @@ void CCSlot::_updateFrame()
 void CCSlot::_updateMesh() 
 {
     const auto hasFFD = !_ffdVertices.empty();
-    const auto scale = _armature->armatureData->scale;
+    const auto scale = _armature->_armatureData->scale;
     const auto textureData = static_cast<CCTextureData*>(_textureData);
     const auto meshData = _meshData;
     const auto weightData = meshData->weight;

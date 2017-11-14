@@ -150,6 +150,19 @@ public:
 protected:
     virtual void _onClear() override;
 };
+/**
+* @private
+*/
+class ConstraintTimelineState : public TweenTimelineState
+{
+    ABSTRACT_CLASS(ConstraintTimelineState)
+
+public:
+    Constraint* constraint;
+
+protected:
+    virtual void _onClear() override;
+};
 
 DRAGONBONES_NAMESPACE_END
 #endif // DRAGONBONES_BASE_TIMELINE_STATE_H

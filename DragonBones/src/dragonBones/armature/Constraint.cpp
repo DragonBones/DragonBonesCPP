@@ -3,7 +3,7 @@
 //
 
 #include "Constraint.h"
-#include "../model/ArmatureData.h"
+#include "Armature.h"
 #include "Bone.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -14,93 +14,79 @@ Point Constraint::_helpPoint;
 
 void Constraint::_onClear()
 {
-    target = nullptr;
-    bone = nullptr;
-    root = nullptr;
-}
-
-void IKConstraint::update()
-{
-    if (root == nullptr) 
-    {
-        bone->updateByConstraint();
-        _computeA();
-    }
-    else 
-    {
-        root->updateByConstraint();
-        bone->updateByConstraint();
-        _computeB();
-    }
+    _constraintData = nullptr;
+    _armature = nullptr;
+    _target = nullptr;
+    _bone = nullptr;
+    _root = nullptr;
 }
 
 void IKConstraint::_onClear()
 {
     Constraint::_onClear();
 
-    bendPositive = false;
-    scaleEnabled = false;
-    weight = 1.0f;
+    _scaleEnabled = false;
+    _bendPositive = false;
+    _weight = 1.0f;
 }
 
 void IKConstraint::_computeA()
 {
-    const auto& ikGlobal = target->global;
-    auto& global = bone->global;
-    auto& globalTransformMatrix = bone->globalTransformMatrix;
-    // const boneLength = bone.boneData.length; TODO
-    // const x = globalTransformMatrix.a * boneLength;
+    const auto& ikGlobal = _target->global;
+    auto& global = _bone->global;
+    auto& globalTransformMatrix = _bone->globalTransformMatrix;
 
-    float ikRadian = atan2(ikGlobal.y - global.y, ikGlobal.x - global.x);
+    auto radian = std::atan2(ikGlobal.y - global.y, ikGlobal.x - global.x);
     if (global.scaleX < 0.0f)
     {
-        ikRadian += Transform::PI;
+        radian += Transform::PI;
     }
 
-    global.rotation += (ikRadian - global.rotation) * weight;
+    global.rotation += (radian - global.rotation) * _weight;
     global.toMatrix(globalTransformMatrix);
 }
 
 void IKConstraint::_computeB()
 {
-    const auto boneLength = bone->boneData->length;
-    const auto parent = root;
-    const auto& ikGlobal = target->global;
+    const auto boneLength = _bone->_boneData->length;
+    const auto parent = _root;
+    const auto& ikGlobal = _target->global;
     auto& parentGlobal = parent->global;
-    auto& global = bone->global;
-    auto& globalTransformMatrix = bone->globalTransformMatrix;
+    auto& global = _bone->global;
+    auto& globalTransformMatrix = _bone->globalTransformMatrix;
 
     const auto x = globalTransformMatrix.a * boneLength;
     const auto y = globalTransformMatrix.b * boneLength;
-
     const auto lLL = x * x + y * y;
     const auto lL = sqrt(lLL);
-
-    float dX = global.x - parentGlobal.x;
-    float dY = global.y - parentGlobal.y;
+    auto dX = global.x - parentGlobal.x;
+    auto dY = global.y - parentGlobal.y;
     const auto lPP = dX * dX + dY * dY;
     const auto lP = sqrt(lPP);
-    const auto rawRadianA = atan2(dY, dX);
+    const auto rawRadian = global.rotation;
+    const auto rawParentRadian = parentGlobal.rotation;
+    const auto rawRadianA = std::atan2(dY, dX);
 
     dX = ikGlobal.x - parentGlobal.x;
     dY = ikGlobal.y - parentGlobal.y;
     const auto lTT = dX * dX + dY * dY;
     const auto lT = sqrt(lTT);
 
-    auto ikRadianA = 0.0f;
+    auto radianA = 0.0f;
     if (lL + lP <= lT || lT + lL <= lP || lT + lP <= lL) 
     {
-        ikRadianA = atan2(ikGlobal.y - parentGlobal.y, ikGlobal.x - parentGlobal.x);
+        radianA = std::atan2(ikGlobal.y - parentGlobal.y, ikGlobal.x - parentGlobal.x);
         if (lL + lP <= lT) 
         {
         }
         else if (lP < lL) 
         {
-            ikRadianA += Transform::PI;
+            radianA += Transform::PI;
         }
     }
-    else {
-        const auto h = (lPP - lLL + lTT) / (2.0 * lTT);
+    else 
+    {
+        const auto h = (lPP - lLL + lTT) / (2.0f * lTT);
         const auto r = sqrt(lPP - h * h * lTT) / lT;
         const auto hX = parentGlobal.x + (dX * h);
         const auto hY = parentGlobal.y + (dY * h);
@@ -114,7 +100,7 @@ void IKConstraint::_computeB()
             isPPR = parentParentMatrix.a * parentParentMatrix.d - parentParentMatrix.b * parentParentMatrix.c < 0.0f;
         }
 
-        if (isPPR != bendPositive) 
+        if (isPPR != _bendPositive) 
         {
             global.x = hX - rX;
             global.y = hY - rY;
@@ -125,25 +111,75 @@ void IKConstraint::_computeB()
             global.y = hY + rY;
         }
 
-        ikRadianA = atan2(global.y - parentGlobal.y, global.x - parentGlobal.x);
+        radianA = std::atan2(global.y - parentGlobal.y, global.x - parentGlobal.x);
     }
 
-    float dR = (ikRadianA - rawRadianA) * weight;
-    parentGlobal.rotation += dR;
+    const auto dR = Transform::normalizeRadian(radianA - rawRadianA);
+    parentGlobal.rotation = rawParentRadian + dR * _weight;
     parentGlobal.toMatrix(parent->globalTransformMatrix);
-
-    const auto parentRadian = rawRadianA + dR;
-    global.x = parentGlobal.x + cos(parentRadian) * lP;
-    global.y = parentGlobal.y + sin(parentRadian) * lP;
-
-    float ikRadianB = atan2(ikGlobal.y - global.y, ikGlobal.x - global.x);
+    //
+    const auto currentRadianA = rawRadianA + dR * _weight;
+    global.x = parentGlobal.x + cos(currentRadianA) * lP;
+    global.y = parentGlobal.y + sin(currentRadianA) * lP;
+    //
+    auto radianB = std::atan2(ikGlobal.y - global.y, ikGlobal.x - global.x);
     if (global.scaleX < 0.0f) {
-        ikRadianB += Transform::PI;
+        radianB += Transform::PI;
     }
 
-    dR = (ikRadianB - global.rotation) * weight;
-    global.rotation += dR;
+    global.rotation = parentGlobal.rotation + rawRadian - rawParentRadian + Transform::normalizeRadian(radianB - dR - rawRadian) * _weight;
     global.toMatrix(globalTransformMatrix);
+}
+
+void IKConstraint::init(ConstraintData* constraintData, Armature* armature)
+{
+    if (_constraintData != nullptr)
+    {
+        return;
+    }
+
+    _constraintData = constraintData;
+    _armature = armature;
+    _target = _armature->getBone(_constraintData->target->name);
+    _bone = _armature->getBone(_constraintData->bone->name);
+    _root = _constraintData->root != nullptr ? _armature->getBone(_constraintData->root->name) : nullptr;
+
+    {
+        const auto ikConstraintData = static_cast<IKConstraintData*>(_constraintData);
+        _scaleEnabled = ikConstraintData->scaleEnabled;
+        _bendPositive = ikConstraintData->bendPositive;
+        _weight = ikConstraintData->weight;
+    }
+
+    _bone->_hasConstraint = true;
+}
+
+void IKConstraint::update()
+{
+    if (_root == nullptr)
+    {
+        _bone->updateByConstraint();
+        _computeA();
+    }
+    else
+    {
+        _root->updateByConstraint();
+        _bone->updateByConstraint();
+        _computeB();
+    }
+}
+
+void IKConstraint::invalidUpdate()
+{
+    if (_root == nullptr)
+    {
+        _bone->invalidUpdate();
+    }
+    else
+    {
+        _root->invalidUpdate();
+        _bone->invalidUpdate();
+    }
 }
 
 DRAGONBONES_NAMESPACE_END

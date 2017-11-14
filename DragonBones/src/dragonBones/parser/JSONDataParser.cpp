@@ -235,7 +235,11 @@ ArmatureData* JSONDataParser::_parseArmature(const rapidjson::Value& rawData, fl
         const auto& rawIKS = rawData[IK];
         for (std::size_t i = 0, l = rawIKS.Size(); i < l; ++i)
         {
-            _parseIKConstraint(rawIKS[i]);
+            const auto constraint = _parseIKConstraint(rawIKS[i]);
+            if (constraint)
+            {
+                armature->addConstraint(constraint);
+            }
         }
     }
 
@@ -355,23 +359,23 @@ BoneData* JSONDataParser::_parseBone(const rapidjson::Value& rawData)
     return bone;
 }
 
-void JSONDataParser::_parseIKConstraint(const rapidjson::Value& rawData)
+ConstraintData* JSONDataParser::_parseIKConstraint(const rapidjson::Value& rawData)
 {
     const auto bone = _armature->getBone(_getString(rawData, BONE, ""));
     if (bone == nullptr)
     {
-        return;
+        return nullptr;
     }
 
     const auto target = _armature->getBone(_getString(rawData, TARGET, ""));
     if (target == nullptr)
     {
-        return;
+        return nullptr;
     }
 
     const auto constraint = BaseObject::borrowObject<IKConstraintData>();
-    constraint->bendPositive = _getBoolean(rawData, BEND_POSITIVE, true);
     constraint->scaleEnabled = _getBoolean(rawData, SCALE, false);
+    constraint->bendPositive = _getBoolean(rawData, BEND_POSITIVE, true);
     constraint->weight = _getNumber(rawData, WEIGHT, 1.0f);
     constraint->name = _getString(rawData, NAME, "");
     constraint->bone = bone;
@@ -383,7 +387,7 @@ void JSONDataParser::_parseIKConstraint(const rapidjson::Value& rawData)
         constraint->root = bone->parent;
     }
 
-    bone->addConstraint(constraint);
+    return constraint;
 }
 
 SlotData* JSONDataParser::_parseSlot(const rapidjson::Value& rawData, int zOrder)
@@ -917,6 +921,32 @@ AnimationData* JSONDataParser::_parseAnimation(const rapidjson::Value& rawData)
         }
     }
 
+    if (rawData.HasMember(IK))
+    {
+        const auto& rawTimelines = rawData[IK];
+        for (std::size_t i = 0, l = rawTimelines.Size(); i < l; ++i)
+        {
+            const auto& rawTimeline = rawTimelines[i];
+            const auto& constraintName = _getString(rawTimeline, NAME, "");
+            const auto constraint = _armature->getConstraint(constraintName);
+            if (constraint == nullptr)
+            {
+                continue;
+            }
+
+            const auto timeline = _parseTimeline(
+                rawTimeline, FRAME, TimelineType::IKConstraint, 
+                true, false, 2,
+                std::bind(&JSONDataParser::_parseIKConstraintFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+            );
+
+            if (timeline != nullptr)
+            {
+                _animation->addConstraintTimeline(constraint, timeline);
+            }
+        }
+    }
+
     if (_actionFrames.size() > 0)
     {
         std::sort(_actionFrames.begin(), _actionFrames.end());
@@ -1147,7 +1177,7 @@ void JSONDataParser::_parseSlotTimeline(const rapidjson::Value& rawData)
         displayTimeline = _parseTimeline(
             rawData, DISPLAY_FRAME, TimelineType::SlotDisplayIndex,
             false, false, 0,
-            std::bind(&JSONDataParser::_parseSlotDisplayIndexFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+            std::bind(&JSONDataParser::_parseSlotDisplayFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
         );
     }
     else
@@ -1155,7 +1185,7 @@ void JSONDataParser::_parseSlotTimeline(const rapidjson::Value& rawData)
         displayTimeline = _parseTimeline(
             rawData, FRAME, TimelineType::SlotDisplayIndex,
             false, false, 0,
-            std::bind(&JSONDataParser::_parseSlotDisplayIndexFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+            std::bind(&JSONDataParser::_parseSlotDisplayFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
         );
     }
 
@@ -1450,7 +1480,7 @@ unsigned JSONDataParser::_parseBoneScaleFrame(const rapidjson::Value& rawData, u
     return frameOffset;
 }
 
-unsigned JSONDataParser::_parseSlotDisplayIndexFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)
+unsigned JSONDataParser::_parseSlotDisplayFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)
 {
     const auto frameOffset = _parseFrame(rawData, frameStart, frameCount);
 
@@ -1636,6 +1666,18 @@ unsigned JSONDataParser::_parseSlotFFDFrame(const rapidjson::Value& rawData, uns
         _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFloatOffset] = frameFloatOffset;
         _timelineArray[_timeline->offset + (unsigned)BinaryOffset::TimelineFrameValueCount] = frameIntOffset - _animation->frameIntOffset;
     }
+
+    return frameOffset;
+}
+
+unsigned JSONDataParser::_parseIKConstraintFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount)
+{
+    const auto frameOffset = _parseTweenFrame(rawData, frameStart, frameCount);
+
+    auto frameIntOffset = _frameIntArray.size();
+    _frameIntArray.resize(_frameIntArray.size() + 2);
+    _frameIntArray[frameIntOffset++] = _getBoolean(rawData, BEND_POSITIVE, true) ? 1 : 0;
+    _frameIntArray[frameIntOffset++] = std::round(_getNumber(rawData, WEIGHT, 1.0f) * 100.0f);
 
     return frameOffset;
 }

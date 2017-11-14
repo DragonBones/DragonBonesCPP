@@ -6,16 +6,17 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
-* @inheritDoc
-*/
+ * @inheritDoc
+ */
 class CCArmatureDisplay : public cocos2d::Node, public virtual IArmatureProxy
 {
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(CCArmatureDisplay)
 
 public:
     /**
-    * @private
-    */
+     * @internal
+     * @private
+     */
     static CCArmatureDisplay* create();
 
 protected:
@@ -23,88 +24,86 @@ protected:
     Armature* _armature;
     cocos2d::EventDispatcher* _dispatcher;
 
-protected:
+public:
     CCArmatureDisplay() :
         _debugDraw(false),
         _armature(nullptr),
         _dispatcher(nullptr)
     {
         _dispatcher = new cocos2d::EventDispatcher();
-        this->setEventDispatcher(_dispatcher);
+        setEventDispatcher(_dispatcher);
         // _dispatcher->setEnabled(true);
     }
     virtual ~CCArmatureDisplay() {}
 
 public:
     /**
-    * @inheritDoc
-    */
+     * @inheritDoc
+     */
     virtual void dbInit(Armature* armature) override;
     /**
-    * @inheritDoc
-    */
+     * @inheritDoc
+     */
     virtual void dbClear() override;
     /**
-    * @inheritDoc
-    */
+     * @inheritDoc
+     */
     virtual void dbUpdate() override;
     /**
-    * @inheritDoc
-    */
+     * @inheritDoc
+     */
     virtual void dispose(bool disposeProxy = true) override;
     /**
-    * @inheritDoc
-    */
-    virtual void _dispatchEvent(const std::string& type, EventObject* value) override;
-    /**
-    * @inheritDoc
-    */
-    inline virtual bool hasEvent(const std::string& type) const override
+     * @inheritDoc
+     */
+    inline virtual bool hasDBEventListener(const std::string& type) const override
     {
         return _dispatcher->isEnabled();
     }
     /**
-    * @inheritDoc
-    */
-    virtual void addEvent(const std::string& type, const std::function<void(EventObject*)>& listener) override;
+     * @inheritDoc
+     */
+    virtual void dispatchDBEvent(const std::string& type, EventObject* value) override;
     /**
-    * @inheritDoc
-    */
-    virtual void removeEvent(const std::string& type, const std::function<void(EventObject*)>& listener) override;
+     * @inheritDoc
+     */
+    virtual void addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
     /**
-    * @inheritDoc
-    */
+     * @inheritDoc
+     */
+    virtual void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
+    /**
+     * @inheritDoc
+     */
     inline virtual Armature* getArmature() const override
     {
         return _armature;
     }
     /**
-    * @inheritDoc
-    */
+     * @inheritDoc
+     */
     inline virtual Animation* getAnimation() const override
     {
         return _armature->getAnimation();
     }
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class DBCCSprite : public cocos2d::Sprite
 {
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(DBCCSprite)
 
 public:
-    /**
-    * @private
-    */
     static DBCCSprite* create();
 
 protected:
     DBCCSprite() {}
     virtual ~DBCCSprite() {}
     /**
-    * Modify for polyInfo rect
-    */
+     * Modify for polyInfo rect
+     */
     bool _checkVisibility(const cocos2d::Mat4& transform, const cocos2d::Size& size, const cocos2d::Rect& rect);
 
 public:

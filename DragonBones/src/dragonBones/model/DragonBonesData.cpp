@@ -44,8 +44,8 @@ void DragonBonesData::addArmature(ArmatureData* value)
 {
     if (armatures.find(value->name) != armatures.end()) 
     {
-        DRAGONBONES_ASSERT(false, "Replace armature: " + value->name);
-        armatures[value->name]->returnToPool();
+        DRAGONBONES_ASSERT(false, "Same armature: " + value->name);
+        return;
     }
 
     value->parent = this;

@@ -2,6 +2,7 @@
 #define DRAGONBONES_BONE_H
 
 #include "TransformObject.h"
+#include "../model/ArmatureData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
@@ -29,14 +30,6 @@ public:
     /**
     * @private
     */
-    std::vector<Constraint*> constraints;
-    /**
-    * @readonly
-    */
-    BoneData* boneData;
-    /**
-    * @private
-    */
     bool _transformDirty;
     /**
     * @private
@@ -46,6 +39,7 @@ public:
     * @private
     */
     bool _blendDirty;
+    bool _hasConstraint;
     /**
     * @private
     */
@@ -59,6 +53,10 @@ public:
     */
     float _blendLayerWeight;
     /**
+    * @readonly
+    */
+    BoneData* _boneData;
+    /**
     * @private
     */
     std::vector<int>* _cachedFrameIndices;
@@ -67,8 +65,6 @@ private:
     bool _localDirty;
     bool _visible;
     int _cachedFrameIndex;
-    mutable std::vector<Bone*> _bones;
-    mutable std::vector<Slot*> _slots;
     void _updateGlobalTransformMatrix(bool isCache);
 
 protected:
@@ -94,10 +90,6 @@ public:
     */
     void updateByConstraint();
     /**
-    * @private
-    */
-    void addConstraint(Constraint* constraint);
-    /**
     * 下一帧更新变换。 (当骨骼没有动画状态或动画状态播放完成时，骨骼将不在更新)
     * @version DragonBones 3.0
     * @language zh_CN
@@ -113,20 +105,11 @@ public:
     * @version DragonBones 3.0
     * @language zh_CN
     */
-    bool contains(const TransformObject* child) const;
-    /**
-    * 所有的子骨骼。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
-    const std::vector<Bone*>& getBones() const;
-    /**
-    * 所有的插槽。
-    * @see dragonBones.Slot
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
-    const std::vector<Slot*>& getSlots() const;
+    bool contains(const TransformObject* value) const;
+    inline const BoneData* getBoneData() const
+    {
+        return _boneData;
+    }
     /**
     * 控制此骨骼所有插槽的可见。
     * @default true
@@ -139,11 +122,17 @@ public:
         return _visible;
     }
     void setVisible(bool value);
+    inline const std::string& getName() const
+    {
+        return _boneData->name;
+    }
+
+    const std::vector<Bone*> getBones() const;
+    const std::vector<Slot*> getSlots() const;
 
 public: // For WebAssembly.
     inline int getOffsetMode() const { return (int)offsetMode; }
     inline void setOffsetMode(int value) { offsetMode = (OffsetMode)value; }
-    inline const BoneData* getBoneData() const { return boneData; }
 };
 
 DRAGONBONES_NAMESPACE_END

@@ -10,6 +10,7 @@ class BinaryDataParser : public JSONDataParser
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(BinaryDataParser)
 
 private:
+    unsigned _binaryOffset;
     const char* _binary;
 	const int16_t* _intArray;
 	const float* _floatArray;
@@ -27,6 +28,7 @@ protected:
 
 public:
     BinaryDataParser() :
+        _binaryOffset(0),
         _binary(nullptr),
         _intArray(nullptr),
         _floatArray(nullptr),

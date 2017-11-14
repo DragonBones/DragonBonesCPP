@@ -341,7 +341,7 @@ void Mecha::switchSkin()
     const auto skinName = SKINS[_skinIndex];
     const auto skinData = dragonBones::CCFactory::getFactory()->getArmatureData(skinName)->defaultSkin;
     const std::vector<std::string> exclude = {"weapon_l", "weapon_r" };
-    dragonBones::CCFactory::getFactory()->changeSkin(_armatureDisplay->getArmature(), skinData, &exclude);
+    dragonBones::CCFactory::getFactory()->replaceSkin(_armatureDisplay->getArmature(), skinData, &exclude);
 }
 
 void Mecha::aim(const cocos2d::Vec2& target)

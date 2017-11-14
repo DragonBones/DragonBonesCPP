@@ -19,8 +19,8 @@ void IKConstraintData::_onClear()
 {
     ConstraintData::_onClear();
 
-    bendPositive = false;
     scaleEnabled = false;
+    bendPositive = false;
     weight = 1.0f;
 }
 

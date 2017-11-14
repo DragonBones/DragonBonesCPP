@@ -140,7 +140,7 @@ void TimelineState::init(Armature* armature, AnimationState* animationState, Tim
         _actionTimeline = nullptr; //
     }
 
-    _animationData = _animationState->animationData;
+    _animationData = _animationState->_animationData;
 
     _frameRate = _animationData->parent->frameRate;
     _frameRateR = 1.0f / _frameRate;
@@ -165,7 +165,7 @@ void TimelineState::init(Armature* armature, AnimationState* animationState, Tim
 
 void TimelineState::update(float passedTime)
 {
-    if (playState <= 0 && _setCurrentTime(passedTime))
+    if (_setCurrentTime(passedTime))
     {
         if (_frameCount > 1) 
         {
@@ -293,5 +293,12 @@ void SlotTimelineState::_onClear()
     TweenTimelineState::_onClear();
 
     slot = nullptr;
+}
+
+void ConstraintTimelineState::_onClear()
+{
+    TweenTimelineState::_onClear();
+
+    constraint = nullptr;
 }
 DRAGONBONES_NAMESPACE_END

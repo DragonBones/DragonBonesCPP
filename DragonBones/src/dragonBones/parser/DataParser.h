@@ -5,7 +5,9 @@
 #include "../model/UserData.h"
 #include "../model/DragonBonesData.h"
 #include "../model/ArmatureData.h"
+#include "../model/CanvasData.h"
 #include "../model/ConstraintData.h"
+#include "../model/SkinData.h"
 #include "../model/DisplayData.h"
 #include "../model/BoundingBoxData.h"
 #include "../model/AnimationData.h"
@@ -46,8 +48,9 @@ protected:
     static const char* USER_DATA;
     static const char* ARMATURE;
     static const char* BONE;
-    static const char* IK;
     static const char* SLOT;
+    static const char* CONSTRAINT;
+    static const char* IK;
     static const char* SKIN;
     static const char* DISPLAY;
     static const char* ANIMATION;

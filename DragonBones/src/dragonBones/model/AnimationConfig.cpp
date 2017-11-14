@@ -22,9 +22,9 @@ void AnimationConfig::_onClear()
     position = 0.0f;
     duration = -1.0f;
     timeScale = -100.0f;
+    weight = 1.0f;
     fadeInTime = -1.0f;
     autoFadeOutTime = -1.0f;
-    weight = 1.0f;
     name = "";
     animation = "";
     group = "";
@@ -53,10 +53,10 @@ void AnimationConfig::copyFrom(AnimationConfig* value)
     position = value->position;
     duration = value->duration;
     timeScale = value->timeScale;
+    weight = value->weight;
     fadeInTime = value->fadeInTime;
     fadeOutTime = value->fadeOutTime;
     fadeInTweenType = value->fadeInTweenType;
-    weight = value->weight;
     name = value->name;
     animation = value->animation;
     group = value->group;
@@ -85,9 +85,9 @@ void AnimationConfig::addBoneMask(Armature* armature, const std::string& name, b
     {
         for (const auto bone : armature->getBones()) 
         {
-            if (std::find(boneMask.cbegin(), boneMask.cend(), bone->name) == boneMask.cend() && currentBone->contains(bone))
+            if (std::find(boneMask.cbegin(), boneMask.cend(), bone->getName()) == boneMask.cend() && currentBone->contains(bone))
             {
-                boneMask.push_back(bone->name);
+                boneMask.push_back(bone->getName());
             }
         }
     }
@@ -110,7 +110,7 @@ void AnimationConfig::removeBoneMask(Armature* armature, const std::string& name
             {
                 for (const auto bone : armature->getBones())
                 {
-                    auto iterator = std::find(boneMask.begin(), boneMask.end(), bone->name);
+                    auto iterator = std::find(boneMask.begin(), boneMask.end(), bone->getName());
                     if (iterator != boneMask.end() && currentBone->contains(bone)) 
                     {
                         boneMask.erase(iterator);
@@ -128,7 +128,7 @@ void AnimationConfig::removeBoneMask(Armature* armature, const std::string& name
 
                     if (!currentBone->contains(bone)) 
                     {
-                        boneMask.push_back(bone->name);
+                        boneMask.push_back(bone->getName());
                     }
                 }
             }

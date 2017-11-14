@@ -85,9 +85,9 @@ protected:
 /**
 * @private
 */
-class SlotDislayIndexTimelineState : public SlotTimelineState
+class SlotDislayTimelineState : public SlotTimelineState
 {
-    BIND_CLASS_TYPE_A(SlotDislayIndexTimelineState);
+    BIND_CLASS_TYPE_A(SlotDislayTimelineState);
 
 protected:
     virtual void _onArriveAtFrame() override;
@@ -160,6 +160,20 @@ public:
     virtual void init(Armature* armature, AnimationState* animationState, TimelineData* timelineData) override;
     virtual void fadeOut() override;
     virtual void update(float passedTime) override;
+};
+
+class IKConstraintTimelineState : public ConstraintTimelineState 
+{
+    BIND_CLASS_TYPE_A(IKConstraintTimelineState);
+
+private:
+    float _current;
+    float _delta;
+
+protected:
+    virtual void _onClear() override;
+    virtual void _onArriveAtFrame() override;
+    virtual void _onUpdateFrame() override;
 };
 
 DRAGONBONES_NAMESPACE_END

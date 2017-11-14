@@ -48,8 +48,8 @@ void TextureAtlasData::addTexture(TextureData* value)
 {
     if (textures.find(value->name) != textures.cend()) 
     {
-        DRAGONBONES_ASSERT(false, "Replace texture: " + value->name);
-        textures[value->name]->returnToPool();
+        DRAGONBONES_ASSERT(false, "Same texture: " + value->name);
+        return;
     }
 
     textures[value->name] = value;

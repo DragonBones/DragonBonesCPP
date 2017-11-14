@@ -9,6 +9,8 @@
 #include "../geom/Matrix.h"
 #include "../geom/Transform.h"
 #include "../geom/Point.h"
+#include "../model/ArmatureData.h"
+#include "../model/ConstraintData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
@@ -24,24 +26,26 @@ protected:
     static Point _helpPoint;
 
 public:
-    Bone* target;
-    Bone* bone;
-    Bone* root;
-
-    virtual void update() = 0;
+    ConstraintData* _constraintData;
+    Bone* _target;
+    Bone* _bone;
 
 protected:
+    Armature* _armature;
+    Bone* _root;
+
     virtual void _onClear() override;
 
 public:
-    // For WebAssembly.
-    const Bone* getTarget() const { return target; }
-    const Bone* getBone() const { return bone; }
-    const Bone* getRoot() const { return root; }
+    virtual void init(ConstraintData* constraintData, Armature* armature) = 0;
+    virtual void update() = 0;
+    virtual void invalidUpdate() = 0;
 
-    void setTarget(Bone* value) { target = value; }
-    void setBone(Bone* value) { bone = value; }
-    void setRoot(Bone* value) { root = value; }
+    inline const std::string& getName() 
+    {
+        return _constraintData->name;
+    }
+
 };
 /**
 * @private
@@ -51,11 +55,11 @@ class IKConstraint : public Constraint
     BIND_CLASS_TYPE_A(IKConstraint);
 
 public:
-    bool bendPositive;
-    bool scaleEnabled; // TODO support
-    float weight;
-
-    virtual void update() override;
+    bool _bendPositive;
+    float _weight;
+    
+private:
+    bool _scaleEnabled; // TODO
 
 protected:
     virtual void _onClear() override;
@@ -63,6 +67,11 @@ protected:
 private:
     void _computeA();
     void _computeB();
+
+public:
+    virtual void init(ConstraintData* constraintData, Armature* armature) override;
+    virtual void update() override;
+    virtual void invalidUpdate() override;
 };
 
 DRAGONBONES_NAMESPACE_END

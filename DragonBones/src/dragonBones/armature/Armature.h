@@ -32,14 +32,6 @@ public:
      */
     bool inheritAnimation;
     /**
-     * 获取骨架数据。
-     * @see dragonBones.ArmatureData
-     * @version DragonBones 4.5
-     * @readonly
-     * @language zh_CN
-     */
-    ArmatureData* armatureData;
-    /**
      * 用于存储临时数据。
      * @version DragonBones 3.0
      * @language zh_CN
@@ -47,22 +39,12 @@ public:
     void* userData;
 
 public:
-    /**
-     * @private
-     */
     int _cacheFrameIndex;
-    /**
-    * @private
-    */
+    ArmatureData* _armatureData;
     DragonBones* _dragonBones;
-    /**
-     * @private
-     */
     Slot* _parent;
-    /**
-     * @private
-     */
     TextureAtlasData* _replaceTextureAtlasData;
+    std::vector<Constraint*> _constraints;
 
 protected:
     bool _debugDraw;
@@ -155,7 +137,7 @@ public:
     * @version DragonBones 3.0
     * @language zh_CN
     */
-    void invalidUpdate(const std::string& boneName = "", bool updateSlotDisplay = false);
+    void invalidUpdate(const std::string& boneName = "", bool updateSlot = false);
     /**
     * 判断点是否在所有插槽的自定义包围盒内。
     * @param x 点的水平坐标。（骨架内坐标系）
@@ -222,19 +204,20 @@ public:
     /**
     * @deprecated
     */
-    void addSlot(Slot* value, const std::string& boneName);
-    /**
-    * @deprecated
-    */
-    void removeSlot(Slot* value);
-    /**
-    * @deprecated
-    */
     void addBone(Bone* value, const std::string& parentName);
     /**
     * @deprecated
     */
+    void addSlot(Slot* value, const std::string& boneName);
+    void addConstraint(Constraint* value);
+    /**
+    * @deprecated
+    */
     void removeBone(Bone* value);
+    /**
+    * @deprecated
+    */
+    void removeSlot(Slot* value);
     /**
     * 获取所有骨骼。
     * @see dragonBones.Bone
@@ -287,7 +270,7 @@ public:
     */
     inline unsigned getCacheFrameRate() const
     {
-        return armatureData->cacheFrameRate;
+        return _armatureData->cacheFrameRate;
     }
     void setCacheFrameRate(unsigned value);
     /**
@@ -298,7 +281,11 @@ public:
     */
     inline const std::string& getName() const
     {
-        return armatureData->name;
+        return _armatureData->name;
+    }
+    inline const ArmatureData* getArmatureData() const
+    {
+        return _armatureData;
     }
     /**
     * 获得动画控制器。
@@ -356,7 +343,6 @@ public:
     void setReplacedTexture(void* value);
 
 public: // For WebAssembly.
-    const ArmatureData* getArmatureData() const { return armatureData; }
     IAnimatable* getAnimatable() const { return (IAnimatable*)this; }
 };
 

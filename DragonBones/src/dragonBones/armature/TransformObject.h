@@ -22,12 +22,6 @@ protected:
 
 public:
     /**
-    * 对象的名称。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
-    std::string name;
-    /**
     * 相对于骨架坐标系的矩阵。
     * @version DragonBones 3.0
     * @language zh_CN

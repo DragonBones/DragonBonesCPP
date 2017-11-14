@@ -79,6 +79,10 @@ public:
     /**
     * @private
     */
+    std::map<std::string, std::vector<TimelineData*>> constraintTimelines;
+    /**
+    * @private
+    */
     std::map<std::string, std::vector<int>> boneCachedFrameIndices;
     /**
     * @private
@@ -129,6 +133,10 @@ public:
     /**
     * @private
     */
+    void addConstraintTimeline(ConstraintData* constraint, TimelineData* value);
+    /**
+    * @private
+    */
     std::vector<TimelineData*>* getBoneTimelines(const std::string& name)
     {
         return mapFindB(boneTimelines, name);
@@ -136,9 +144,16 @@ public:
     /**
     * @private
     */
-    inline std::vector<TimelineData*>* getSlotTimeline(const std::string& name)
+    inline std::vector<TimelineData*>* getSlotTimelines(const std::string& name)
     {
         return mapFindB(slotTimelines, name);
+    }
+    /**
+    * @private
+    */
+    inline std::vector<TimelineData*>* getConstraintTimelines(const std::string& name)
+    {
+        return mapFindB(constraintTimelines, name);
     }
     /**
     * @private

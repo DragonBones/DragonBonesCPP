@@ -1,5 +1,6 @@
 #include "AnimationData.h"
 #include "ArmatureData.h"
+#include "ConstraintData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -14,6 +15,14 @@ void AnimationData::_onClear()
     }
 
     for (const auto& pair : slotTimelines)
+    {
+        for (const auto timeline : pair.second)
+        {
+            timeline->returnToPool();
+        }
+    }
+
+    for (const auto& pair : constraintTimelines)
     {
         for (const auto timeline : pair.second)
         {
@@ -44,6 +53,7 @@ void AnimationData::_onClear()
     cachedFrames.clear();
     boneTimelines.clear();
     slotTimelines.clear();
+    constraintTimelines.clear();
     boneCachedFrameIndices.clear();
     slotCachedFrameIndices.clear();
     parent = nullptr;
@@ -86,6 +96,15 @@ void AnimationData::addBoneTimeline(BoneData* bone, TimelineData* value)
 void AnimationData::addSlotTimeline(SlotData* slot, TimelineData* value)
 {
     auto& timelines = slotTimelines[slot->name];
+    if (std::find(timelines.cbegin(), timelines.cend(), value) == timelines.cend())
+    {
+        timelines.push_back(value);
+    }
+}
+
+void AnimationData::addConstraintTimeline(ConstraintData* constraint, TimelineData* value)
+{
+    auto& timelines = constraintTimelines[constraint->name];
     if (std::find(timelines.cbegin(), timelines.cend(), value) == timelines.cend())
     {
         timelines.push_back(value);

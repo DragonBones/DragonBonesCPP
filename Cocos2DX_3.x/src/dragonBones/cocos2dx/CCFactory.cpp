@@ -98,7 +98,7 @@ Armature* CCFactory::_buildArmature(const BuildArmaturePackage& dataPackage) con
     return armature;
 }
 
-Slot* CCFactory::_buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature& armature) const
+Slot* CCFactory::_buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature* armature) const
 {
     const auto slot = BaseObject::borrowObject<CCSlot>();
     const auto rawDisplay = DBCCSprite::create();

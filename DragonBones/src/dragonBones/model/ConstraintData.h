@@ -43,8 +43,8 @@ class IKConstraintData : public ConstraintData
     BIND_CLASS_TYPE_A(IKConstraintData);
 
 public:
-    bool bendPositive;
     bool scaleEnabled;
+    bool bendPositive;
     float weight;
 
 protected:

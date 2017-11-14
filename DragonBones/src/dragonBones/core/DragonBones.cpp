@@ -2,8 +2,8 @@
 #include "../armature/Armature.h"
 #include "../animation/WorldClock.h"
 #include "../animation/Animation.h"
-#include "../events/EventObject.h"
-#include "../events/IEventDispatcher.h"
+#include "../event/EventObject.h"
+#include "../event/IEventDispatcher.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -11,7 +11,7 @@ bool DragonBones::yDown = true;
 bool DragonBones::debug = false;
 bool DragonBones::debugDraw = false;
 bool DragonBones::webAssembly = false;
-const std::string DragonBones::version = "5.5.1";
+const std::string DragonBones::version = "5.6.0";
 
 DragonBones::DragonBones(IEventDispatcher* eventManager) :
     _events(),
@@ -53,12 +53,12 @@ void DragonBones::advanceTime(float passedTime)
         {
             const auto eventObject = _events[i];
             const auto armature = eventObject->armature;
-            if (armature->armatureData != nullptr)
+            if (armature->_armatureData != nullptr)
             {
-                armature->getProxy()->_dispatchEvent(eventObject->type, eventObject);
+                armature->getProxy()->dispatchDBEvent(eventObject->type, eventObject);
                 if (eventObject->type == EventObject::SOUND_EVENT)
                 {
-                    _eventManager->_dispatchEvent(eventObject->type, eventObject);
+                    _eventManager->dispatchDBEvent(eventObject->type, eventObject);
                 }
             }
 

@@ -224,7 +224,7 @@ private:
 protected:
     virtual ArmatureData* _parseArmature(const rapidjson::Value& rawData, float scale);
     virtual BoneData* _parseBone(const rapidjson::Value& rawData);
-    virtual void _parseIKConstraint(const rapidjson::Value& rawData);
+    virtual ConstraintData* _parseIKConstraint(const rapidjson::Value& rawData);
     virtual SlotData* _parseSlot(const rapidjson::Value& rawData, int zOrder);
     virtual SkinData* _parseSkin(const rapidjson::Value& rawData);
     virtual DisplayData* _parseDisplay(const rapidjson::Value& rawData);
@@ -248,9 +248,10 @@ protected:
     virtual unsigned _parseBoneTranslateFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseBoneRotateFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseBoneScaleFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
-    virtual unsigned _parseSlotDisplayIndexFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual unsigned _parseSlotDisplayFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseSlotColorFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual unsigned _parseSlotFFDFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
+    virtual unsigned _parseIKConstraintFrame(const rapidjson::Value& rawData, unsigned frameStart, unsigned frameCount);
     virtual const std::vector<ActionData*>& _parseActionData(const rapidjson::Value& rawData, ActionType type, BoneData* bone, SlotData* slot);
     virtual void _parseTransform(const rapidjson::Value& rawData, Transform& transform, float scale);
     virtual void _parseColorTransform(const rapidjson::Value& rawData, ColorTransform& color);

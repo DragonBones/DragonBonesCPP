@@ -3,6 +3,7 @@
 #include "../model/DragonBonesData.h"
 #include "../model/UserData.h"
 #include "../model/ArmatureData.h"
+#include "../model/SkinData.h"
 #include "../model/DisplayData.h"
 #include "../model/BoundingBoxData.h"
 #include "../model/TextureAtlasData.h"
@@ -50,7 +51,6 @@ void Slot::_onClear()
     }
 
     displayController = "";
-    slotData = nullptr;
 
     _displayDirty = false;
     _zOrderDirty = false;
@@ -72,6 +72,7 @@ void Slot::_onClear()
     _displayList.clear();
     _displayDatas.clear();
     _meshBones.clear();
+    _slotData = nullptr;
     _rawDisplayDatas = nullptr; //
     _displayData = nullptr;
     _textureData = nullptr;
@@ -156,7 +157,7 @@ void Slot::_updateDisplayData()
         else if (_textureData != nullptr) 
         {
             const auto imageDisplayData = static_cast<ImageDisplayData*>(_displayData);
-            const auto scale = _textureData->parent->scale * _armature->armatureData->scale;
+            const auto scale = _textureData->parent->scale * _armature->_armatureData->scale;
             const auto frame = _textureData->frame;
 
             _pivotX = imageDisplayData->pivot.x;
@@ -502,25 +503,24 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
     return _displayDirty;
 }
 
-void Slot::init(SlotData* slotData_, std::vector<DisplayData*>* displayDatas, void* rawDisplay, void* meshDisplay)
+void Slot::init(SlotData* slotData, std::vector<DisplayData*>* displayDatas, void* rawDisplay, void* meshDisplay)
 {
-    if (slotData != nullptr)
+    if (_slotData != nullptr)
     {
         return;
     }
 
-    slotData = slotData_;
-    name = slotData->name;
-
+    _slotData = slotData;
+    //
     _visibleDirty = true;
     _blendModeDirty = true;
     _colorDirty = true;
-    _blendMode = slotData->blendMode;
-    _zOrder = slotData->zOrder;
-    _colorTransform = *(slotData->color);
+    _blendMode = _slotData->blendMode;
+    _zOrder = _slotData->zOrder;
+    _colorTransform = *(_slotData->color);
     _rawDisplay = rawDisplay;
     _meshDisplay = meshDisplay;
-
+    //
     setRawDisplayDatas(displayDatas);
 }
 
@@ -642,12 +642,12 @@ void Slot::update(int cacheFrameIndex)
 
             if (isCache && _cachedFrameIndices != nullptr)
             {
-                _cachedFrameIndex = (*_cachedFrameIndices)[cacheFrameIndex] = _armature->armatureData->setCacheFrame(globalTransformMatrix, global);
+                _cachedFrameIndex = (*_cachedFrameIndices)[cacheFrameIndex] = _armature->_armatureData->setCacheFrame(globalTransformMatrix, global);
             }
         }
         else
         {
-            _armature->armatureData->getCacheFrame(globalTransformMatrix, global, _cachedFrameIndex);
+            _armature->_armatureData->getCacheFrame(globalTransformMatrix, global, _cachedFrameIndex);
         }
 
         _updateTransform(false);
@@ -677,7 +677,7 @@ void Slot::replaceDisplayData(DisplayData *displayData, int displayIndex)
         }
     }
 
-    if (_displayDatas.size() <= displayIndex) {
+    if (_displayDatas.size() <= (unsigned)displayIndex) {
         _displayDatas.resize(displayIndex + 1, nullptr);
     }
 
@@ -765,6 +765,17 @@ int Slot::intersectsSegment(
     }
 
     return intersectionCount;
+}
+
+void Slot::setVisible(bool value)
+{
+    if (_visible == value) 
+    {
+        return;
+    }
+
+    _visible = value;
+    _updateVisible();
 }
 
 void Slot::setDisplayIndex(int value)

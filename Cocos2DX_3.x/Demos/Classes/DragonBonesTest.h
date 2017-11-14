@@ -265,7 +265,7 @@ private:
 
         if (armatureNames.empty()) 
         {
-            CCLOG("No armature in data. %s", dragonBonesData->name);
+            CCLOG("No armature in data. %s", dragonBonesData->name.c_str());
         }
 
         if (_armatureIndex + dir < 0)
@@ -344,7 +344,7 @@ private:
         if (animationNames.empty())
         {
             _text->setString(
-                "DragonBones: " + _armatureDisplay->getArmature()->armatureData->parent->name +
+                "DragonBones: " + _armatureDisplay->getArmature()->_armatureData->parent->name +
                 "    Armature: " + _armatureDisplay->getArmature()->getName() +
                 "\nTouch screen left / right to change prev / next armature.\nTouch center to play next animation."
             );
@@ -365,7 +365,7 @@ private:
 
         // Infomation.
         _text->setString(
-            "DragonBones: " + _armatureDisplay->getArmature()->armatureData->parent->name +
+            "DragonBones: " + _armatureDisplay->getArmature()->_armatureData->parent->name +
             "    Armature: " + _armatureDisplay->getArmature()->getName() +
             "    Animation: " + _armatureDisplay->getArmature()->getAnimation()->getLastAnimationName() +
             "\nTouch screen left/right to change prev/next armature.\nTouch center to play next animation."

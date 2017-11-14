@@ -9,21 +9,6 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
-* @private
-*/
-class CanvasData : public BaseObject
-{
-    BIND_CLASS_TYPE_A(CanvasData);
-
-public:
-    bool hasBackground;
-    unsigned color;
-    Rectangle aabb;
-
-protected:
-    virtual void _onClear() override;
-};
-/**
  * 骨架数据。
  * @version DragonBones 3.0
  * @language zh_CN
@@ -98,6 +83,7 @@ public:
     * @language zh_CN
     */
     std::map<std::string, SlotData*> slots;
+    std::map<std::string, ConstraintData*> constraints;
     /**
     * 所有皮肤数据。
     * @see dragonBones.SkinData
@@ -183,6 +169,10 @@ public:
     /**
     * @private
     */
+    void addConstraint(ConstraintData* value);
+    /**
+    * @private
+    */
     void addSkin(SkinData* value);
     /**
     * @private
@@ -213,6 +203,10 @@ public:
     inline SlotData* getSlot(const std::string& name) const
     {
         return mapFind<SlotData>(slots, name);
+    }
+    inline ConstraintData* getConstraint(const std::string& name) const
+    {
+        return mapFind<ConstraintData>(constraints, name);
     }
     /**
     * 获取皮肤数据。
@@ -303,10 +297,6 @@ public:
     /**
     * @private
     */
-    std::vector<ConstraintData*> constraints;
-    /**
-    * @private
-    */
     UserData* userData;
     /**
     * 所属的父骨骼数据。
@@ -330,15 +320,8 @@ public:
 protected:
     virtual void _onClear() override;
 
-public:
-    /**
-    * @private
-    */
-    void addConstraint(ConstraintData* value);
-
 public: // For WebAssembly.
     Transform* getTransfrom() { return &transform; }
-    const std::vector<ConstraintData*>& getConstraints() const { return constraints; }
 
     const UserData* getUserData() const { return userData; }
     void setUserData(UserData* value) { userData = value; }
@@ -431,54 +414,6 @@ public: // For WebAssembly.
 
     const UserData* getUserData() const { return userData; }
     void setUserData(UserData* value) { userData = value; }
-};
-/**
-* 皮肤数据。（通常一个骨架数据至少包含一个皮肤数据）
-* @version DragonBones 3.0
-* @language zh_CN
-*/
-class SkinData : public BaseObject
-{
-    BIND_CLASS_TYPE_A(SkinData);
-
-public:
-    /**
-    * 数据名称。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
-    std::string name;
-    /**
-    * @private
-    */
-    std::map<std::string, std::vector<DisplayData*>> displays;
-    /**
-    * @private
-    */
-    ArmatureData* parent;
-
-protected:
-    virtual void _onClear() override;
-
-public:
-    /**
-    * @private
-    */
-    void addDisplay(const std::string& slotName, DisplayData* value);
-    /**
-    * @private
-    */
-    DisplayData* getDisplay(const std::string& slotName, const std::string& displayName);
-    /**
-    * @private
-    */
-    std::vector<DisplayData*>* getDisplays(const std::string& slotName)
-    {
-        return mapFindB(displays, slotName);
-    }
-
-public: // For WebAssembly. TODO parent
-    const std::map<std::string, std::vector<DisplayData*>>& getSlotDisplays() const { return displays; }
 };
 
 DRAGONBONES_NAMESPACE_END

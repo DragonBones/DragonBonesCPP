@@ -23,7 +23,6 @@ void Animation::_onClear()
     timeScale = 1.0f;
 
     _animationDirty = false;
-    _timelineDirty = false;
     _inheritTimeScale = 1.0f;
     _animations.clear();
     _animationNames.clear();
@@ -125,7 +124,7 @@ void Animation::advanceTime(float passedTime)
         }
         else
         {
-            const auto animationData = animationState->animationData;
+            const auto animationData = animationState->_animationData;
             const auto cacheFrameRate = animationData->cacheFrameRate;
             if (_animationDirty && cacheFrameRate > 0.0f) // Update cachedFrameIndices.
             {
@@ -133,18 +132,13 @@ void Animation::advanceTime(float passedTime)
 
                 for (const auto bone : _armature->getBones())
                 {
-                    bone->_cachedFrameIndices = animationData->getBoneCachedFrameIndices(bone->name);
+                    bone->_cachedFrameIndices = animationData->getBoneCachedFrameIndices(bone->getName());
                 }
 
                 for (const auto slot : _armature->getSlots())
                 {
-                    slot->_cachedFrameIndices = animationData->getSlotCachedFrameIndices(slot->name);
+                    slot->_cachedFrameIndices = animationData->getSlotCachedFrameIndices(slot->getName());
                 }
-            }
-
-            if (_timelineDirty)
-            {
-                animationState->updateTimelines();
             }
 
             animationState->advanceTime(passedTime, cacheFrameRate);
@@ -172,11 +166,6 @@ void Animation::advanceTime(float passedTime)
                     _animationStates[i - r] = animationState;
                 }
 
-                if (_timelineDirty)
-                {
-                    animationState->updateTimelines();
-                }
-
                 animationState->advanceTime(passedTime, 0.0f);
             }
 
@@ -196,8 +185,6 @@ void Animation::advanceTime(float passedTime)
     {
         _armature->_cacheFrameIndex = -1;
     }
-
-    _timelineDirty = false;
 }
 
 void Animation::reset()
@@ -208,7 +195,6 @@ void Animation::reset()
     }
 
     _animationDirty = false;
-    _timelineDirty = false;
     _animationConfig->clear();
     _animationStates.clear();
     _lastAnimationState = nullptr;
@@ -254,7 +240,7 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
     {
         for (const auto animationState : _animationStates) 
         {
-            if (animationState->animationData == animationData) 
+            if (animationState->_animationData == animationData) 
             {
                 return animationState;
             }
@@ -394,7 +380,7 @@ AnimationState* Animation::play(const std::string& animationName, int playTimes)
     }
     else if (_lastAnimationState == nullptr)
     {
-        const auto defaultAnimation = _armature->armatureData->defaultAnimation;
+        const auto defaultAnimation = _armature->_armatureData->defaultAnimation;
         if (defaultAnimation != nullptr)
         {
             _animationConfig->animation = defaultAnimation->name;
@@ -578,11 +564,12 @@ void Animation::setAnimations(const std::map<std::string, AnimationData*>& value
     }
 
     _animationNames.clear();
+    _animations.clear();
 
     for (const auto& pair : value)
     {
-        _animations[pair.first] = pair.second;
         _animationNames.push_back(pair.first);
+        _animations[pair.first] = pair.second;
     }
 }
 

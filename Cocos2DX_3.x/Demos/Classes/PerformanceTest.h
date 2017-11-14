@@ -169,7 +169,6 @@ private:
     void _updateText()
     {
         _text->setString("Count: " + dragonBones::to_string(_armatures.size()) + " \nTouch screen left to decrease count / right to increase count.");
-        addChild(_text);
     }
 };
 
