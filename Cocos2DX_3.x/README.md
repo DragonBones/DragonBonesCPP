@@ -1,6 +1,7 @@
 # DragonBones Cocos2d-x Library
 [中文 README](./README-zh_CN.md)
 ## [Demos](./Demos/)
+* [Hello DragonBones](./Demos/Classes/HelloDragonBones.h)
 
 ## How to use
 1. Create a Cocos2d-x C++ project.
@@ -13,14 +14,23 @@
     * Check for additional legacy source folders and file residues that cause redefinition and recommend that you delete all old source folders and files before upgrading.
     * Check and update all compilation paths in you compilation config file.
     * Check other compilation errors that may result from folders or files name change.
-* In Xcode: Add Files To "project" > Options > Added folders: Create groups > Add to targets: "all"
+* In Xcode:
+    * Add Files To "project" > Options > Added folders: Create groups > Add to targets: "all"
 * Use [rapidjson/msinttypes](../3rdParty/rapidjson/msinttypes) headers only with Microsoft Visual C++ compilers.
 * Cocos2dx also include rapidjson, if you use the cocos2dx related json function, make sure only include rapidjson once time.
-* If compiler can not find headers, add Classes to project Header Search Paths, make sure project structure like this:
+* If compiler can not find headers, add Classes to project Header Search Paths.
+* Make sure project structure like this:
 ```
-Classes (Include Path)
-    |-- rapidjson
-        |-- ...
-    |-- dragonBones
+Your project
+    |-- Classes
+        |-- rapidjson
+            |-- ...
+        |-- dragonBones
+            |-- animation
+            |-- armature
+            |-- ...
+            |-- cocos2dx
+            |-- ...
+    |-- Resources
         |-- ...
 ```

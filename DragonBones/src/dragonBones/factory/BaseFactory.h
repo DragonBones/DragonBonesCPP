@@ -79,7 +79,7 @@ protected:
     virtual void _buildBones(const BuildArmaturePackage& dataPackage, Armature* armature) const;
     virtual void _buildSlots(const BuildArmaturePackage& dataPackage, Armature* armature) const;
     virtual Armature* _buildChildArmature(const BuildArmaturePackage* dataPackage, Slot* slot, DisplayData* displayData) const;
-    virtual std::pair<void*, DisplayType> _getSlotDisplay(const BuildArmaturePackage* dataPackage, DisplayData* displayData, DisplayData* rawDisplayData, Slot* slot)const;
+    virtual std::pair<void*, DisplayType> _getSlotDisplay(const BuildArmaturePackage* dataPackage, DisplayData* displayData, DisplayData* rawDisplayData, Slot* slot) const;
     virtual TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const = 0;
     virtual Armature* _buildArmature(const BuildArmaturePackage& dataPackage) const = 0;
     virtual Slot* _buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature* armature) const = 0;

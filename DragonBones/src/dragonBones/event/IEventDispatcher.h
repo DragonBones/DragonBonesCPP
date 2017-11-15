@@ -32,7 +32,7 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual void addDBEventListener(const std::string& type, const std::function<void(EventObject*)> & listener) = 0; //TODO lsc
+    virtual void addDBEventListener(const std::string& type, const std::function<void(EventObject*)> & listener) = 0;
     /**
     * 移除事件。
     * @param type 事件类型。
@@ -40,7 +40,7 @@ public:
     * @version DragonBones 4.5
     * @language zh_CN
     */
-    virtual void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) = 0; //TODO lsc
+    virtual void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) = 0;
 };
 
 DRAGONBONES_NAMESPACE_END

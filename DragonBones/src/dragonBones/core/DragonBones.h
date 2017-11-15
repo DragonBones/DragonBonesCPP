@@ -184,7 +184,7 @@ enum class TimelineType {
     BoneRotate = 12,
     BoneScale = 13,
 
-    SlotDisplayIndex = 20,
+    SlotDisplay = 20,
     SlotColor = 21,
     SlotFFD = 22,
 
@@ -328,11 +328,12 @@ class DragonBones
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(DragonBones)
 
 public:
+    static const std::string VEISION;
+
     static bool yDown;
     static bool debug;
     static bool debugDraw;
     static bool webAssembly;
-    static const std::string version;
 
 private:
     std::vector<BaseObject*> _objects;

@@ -7,7 +7,7 @@
 * [Cocos2d-x](http://cocos2d-x.org/) - [How to use DragoBones in Cocos2d-x](./Cocos2DX_3.x/)
 
 ## To learn more about
-* [DragonBones offical webSite](http://www.dragonbones.com/)
+* [DragonBones offical website](http://www.dragonbones.com/)
 * [Online demos](http://www.dragonbones.com/demo/index.html)
 
 Copyright 2012-2017 The DragonBones Team.

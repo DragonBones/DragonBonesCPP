@@ -59,7 +59,7 @@ public:
     float _weight;
     
 private:
-    bool _scaleEnabled; // TODO
+    bool _scaleEnabled;
 
 protected:
     virtual void _onClear() override;

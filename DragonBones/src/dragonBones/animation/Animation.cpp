@@ -77,7 +77,6 @@ void Animation::_fadeOut(AnimationConfig* animationConfig)
         case AnimationFadeOutMode::Single:
         default:
             break;
-
     }
 }
 

@@ -305,6 +305,13 @@ public:
         return _proxy;
     }
     /**
+    * @pivate
+    */
+    inline IEventDispatcher* getEventDispatcher() const
+    {
+        return _proxy;
+    }
+    /**
     * 获取显示容器，插槽的显示对象都会以此显示容器为父级，根据渲染平台的不同，类型会不同，通常是 DisplayObjectContainer 类型。
     * @version DragonBones 3.0
     * @language zh_CN

@@ -381,11 +381,16 @@ void Bone::update(int cacheFrameIndex)
 
 void Bone::updateByConstraint()
 {
-    if (_localDirty && (_transformDirty || (_parent != nullptr && _parent->_childrenTransformDirty)))
+    if (_localDirty) 
     {
         _localDirty = false;
+
+        if (_transformDirty || (_parent != nullptr && _parent->_childrenTransformDirty)) 
+        {
+            _updateGlobalTransformMatrix(true);
+        }
+
         _transformDirty = true;
-        _updateGlobalTransformMatrix(true);
     }
 }
 
