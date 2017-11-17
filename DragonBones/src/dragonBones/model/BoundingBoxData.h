@@ -1,3 +1,25 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2016 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #ifndef DRAGONBONESCPP_BOUNDINGBOXDATA_H
 #define DRAGONBONESCPP_BOUNDINGBOXDATA_H
@@ -7,58 +29,78 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
-* 边界框数据基类。
-* @see dragonBones.RectangleData
-* @see dragonBones.EllipseData
-* @see dragonBones.PolygonData
-* @version DragonBones 5.0
-* @language zh_CN
-*/
+ * - The base class of bounding box data.
+ * @see dragonBones.RectangleData
+ * @see dragonBones.EllipseData
+ * @see dragonBones.PolygonData
+ * @version DragonBones 5.0
+ * @language en_US
+ */
+/**
+ * - 边界框数据基类。
+ * @see dragonBones.RectangleData
+ * @see dragonBones.EllipseData
+ * @see dragonBones.PolygonData
+ * @version DragonBones 5.0
+ * @language zh_CN
+ */
 class BoundingBoxData : public BaseObject 
 {
     ABSTRACT_CLASS(BoundingBoxData);
 
 public:
     /**
-    * 边界框类型。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - The bounding box type.
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 边界框类型。
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     BoundingBoxType type;
     /**
-    * 边界框颜色。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * @private
+     */
     unsigned color;
     /**
-    * 边界框宽。（本地坐标系）
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * @private
+     */
     float width;
     /**
-    * 边界框高。（本地坐标系）
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * @private
+     */
     float height;
 
 protected:
+    /**
+     * @private
+     */
     virtual void _onClear() override;
 
 public:
     /**
-    * 是否包含点。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - Check whether the bounding box contains a specific point. (Local coordinate system)
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 检查边界框是否包含特定点。（本地坐标系）
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     virtual bool containsPoint(float pX, float pY) = 0;
     /**
-    * 是否与线段相交。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - Check whether the bounding box intersects a specific segment. (Local coordinate system)
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 检查边界框是否与特定线段相交。（本地坐标系）
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     virtual int intersectsSegment(
         float xA, float yA, float xB, float yB,
         Point* intersectionPointA = nullptr,
@@ -71,25 +113,20 @@ public: // For WebAssembly.
     void setType(int value) { type = (BoundingBoxType)value; }
 };
 /**
-* 矩形边界框。
-* @version DragonBones 5.1
-* @language zh_CN
-*/
+ * - The rectangle bounding box data.
+ * @version DragonBones 5.1
+ * @language en_US
+ */
+/**
+ * - 矩形边界框数据。
+ * @version DragonBones 5.1
+ * @language zh_CN
+ */
 class RectangleBoundingBoxData : public BoundingBoxData
 {
     BIND_CLASS_TYPE_A(RectangleBoundingBoxData);
 
 private:
-    /**
-    * Cohen–Sutherland algorithm https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
-    * ----------------------
-    * | 0101 | 0100 | 0110 |
-    * ----------------------
-    * | 0001 | 0000 | 0010 |
-    * ----------------------
-    * | 1001 | 1000 | 1010 |
-    * ----------------------
-    */
     enum OutCode {
         InSide = 0, // 0000
         Left = 1,   // 0001
@@ -98,14 +135,14 @@ private:
         Bottom = 8  // 1000
     };
     /**
-    * Compute the bit code for a point (x, y) using the clip rectangle
-    */
+     * - Compute the bit code for a point (x, y) using the clip rectangle
+     */
     static int _computeOutCode(float x, float y, float xMin, float yMin, float xMax, float yMax);
 
 public:
     /**
-    * @private
-    */
+     * @private
+     */
     static int rectangleIntersectsSegment(
         float xA, float yA, float xB, float yB,
         float xMin, float yMin, float xMax, float yMax,
@@ -114,12 +151,12 @@ public:
         Point* normalRadians = nullptr
     );
     /**
-    * @inherDoc
-    */
+     * @inheritDoc
+     */
     virtual bool containsPoint(float pX, float pY) override;
     /**
-    * @inherDoc
-    */
+     * @inheritDoc
+     */
     virtual int intersectsSegment(
         float xA, float yA, float xB, float yB,
         Point* intersectionPointA = nullptr,
@@ -128,21 +165,30 @@ public:
     ) override;
 
 protected:
+    /**
+     * @inheritDoc
+     * @private
+     */
     virtual void _onClear() override;
 };
 /**
-* 椭圆边界框。
-* @version DragonBones 5.1
-* @language zh_CN
-*/
+ * - The ellipse bounding box data.
+ * @version DragonBones 5.1
+ * @language en_US
+ */
+/**
+ * - 椭圆边界框数据。
+ * @version DragonBones 5.1
+ * @language zh_CN
+ */
 class EllipseBoundingBoxData : public BoundingBoxData
 {
     BIND_CLASS_TYPE_A(EllipseBoundingBoxData);
 
 public:
     /**
-    * @private
-    */
+     * @private
+     */
     static int ellipseIntersectsSegment(
         float xA, float yA, float xB, float yB,
         float xC, float yC, float widthH, float heightH,
@@ -151,12 +197,12 @@ public:
         Point* normalRadians = nullptr
     );
     /**
-    * @inherDoc
-    */
+     * @inheritDoc
+     */
     virtual bool containsPoint(float pX, float pY) override;
     /**
-    * @inherDoc
-    */
+     * @inheritDoc
+     */
     virtual int intersectsSegment(
         float xA, float yA, float xB, float yB,
         Point* intersectionPointA = nullptr,
@@ -165,21 +211,30 @@ public:
     ) override;
 
 protected:
+    /**
+     * @inheritDoc
+     * @private
+     */
     virtual void _onClear() override;
 };
 /**
-* 多边形边界框。
-* @version DragonBones 5.1
-* @language zh_CN
-*/
+ * - The polygon bounding box data.
+ * @version DragonBones 5.1
+ * @language en_US
+ */
+/**
+ * - 多边形边界框数据。
+ * @version DragonBones 5.1
+ * @language zh_CN
+ */
 class PolygonBoundingBoxData : public BoundingBoxData
 {
     BIND_CLASS_TYPE_B(PolygonBoundingBoxData);
 
 public:
     /**
-    * @private
-    */
+     * @private
+     */
     static int polygonIntersectsSegment(
         float xA, float yA, float xB, float yB,
         const std::vector<float>& vertices,
@@ -188,30 +243,35 @@ public:
         Point* normalRadians = nullptr
     );
     /**
-    * @private
-    */
+     * @private
+     */
     float x;
     /**
-    * @private
-    */
+     * @private
+     */
     float y;
     /**
-    * 多边形顶点。
-    * @version DragonBones 5.1
-    * @language zh_CN
-    */
+     * - The polygon vertices.
+     * @version DragonBones 5.1
+     * @language en_US
+     */
+    /**
+     * - 多边形顶点。
+     * @version DragonBones 5.1
+     * @language zh_CN
+     */
     std::vector<float> vertices;
     /**
-    * @private
-    */
+     * @private
+     */
     WeightData* weight;
     /**
-    * @inherDoc
-    */
+     * @inheritDoc
+     */
     virtual bool containsPoint(float pX, float pY) override;
     /**
-    * @inherDoc
-    */
+     * @inheritDoc
+     */
     virtual int intersectsSegment(
         float xA, float yA, float xB, float yB,
         Point* intersectionPointA = nullptr,
@@ -230,6 +290,10 @@ public:
     }
 
 protected:
+    /**
+     * @inheritDoc
+     * @private
+     */
     virtual void _onClear() override;
 
 public: // For WebAssembly.

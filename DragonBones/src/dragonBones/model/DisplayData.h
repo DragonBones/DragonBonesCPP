@@ -1,3 +1,25 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2016 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #ifndef DRAGONBONESCPP_DISPLAYDATA_H
 #define DRAGONBONESCPP_DISPLAYDATA_H
@@ -8,6 +30,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
+ * @internal
  * @private
  */
 class DisplayData : public BaseObject
@@ -34,8 +57,9 @@ public: // For WebAssembly.
     void setParent(SkinData* value) { parent = value; }
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class ImageDisplayData : public DisplayData
 {
     BIND_CLASS_TYPE_A(ImageDisplayData);
@@ -54,8 +78,9 @@ public: // For WebAssembly.
     void setTexture(TextureData* value) { texture = value; }
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class ArmatureDisplayData : public DisplayData
 {
     BIND_CLASS_TYPE_A(ArmatureDisplayData);
@@ -70,8 +95,8 @@ protected:
 
 public:
     /**
-    * @private
-    */
+     * @private
+     */
     void addAction(ActionData* value);
 
 public: // For WebAssembly.
@@ -81,8 +106,9 @@ public: // For WebAssembly.
     void setArmature(ArmatureData* value) { armature = value; }
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class MeshDisplayData : public ImageDisplayData
 {
     BIND_CLASS_TYPE_B(MeshDisplayData);
@@ -110,8 +136,9 @@ public: // For WebAssembly.
     void setWeight(WeightData* value) { weight = value; }
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class BoundingBoxDisplayData : public DisplayData
 {
     BIND_CLASS_TYPE_B(BoundingBoxDisplayData);
@@ -137,8 +164,9 @@ public: // For WebAssembly.
     void setBoundingBox(BoundingBoxData* value) { boundingBox = value; }
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class WeightData : public BaseObject
 {
     BIND_CLASS_TYPE_A(WeightData);

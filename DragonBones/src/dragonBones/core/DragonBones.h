@@ -1,3 +1,25 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2016 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 #ifndef DRAGONBONES_H
 #define DRAGONBONES_H
 
@@ -11,7 +33,6 @@
 #include <functional>
 #include <sstream>
 #include <assert.h>
-
 // dragonBones assert
 #define DRAGONBONES_ASSERT(cond, msg) \
 do { \
@@ -82,6 +103,10 @@ private:\
 
 DRAGONBONES_NAMESPACE_BEGIN
 
+/**
+ * @internal
+ * @private
+ */
 enum class BinaryOffset
 {
     WeigthBoneCount = 0,
@@ -113,6 +138,10 @@ enum class BinaryOffset
     FFDTimelineFloatOffset = 4
 };
 
+/**
+ * @internal
+ * @private
+ */
 enum class ArmatureType
 {
     Armature = 0,
@@ -120,12 +149,25 @@ enum class ArmatureType
     Stage = 2
 };
 
+/**
+ * - Offset mode.
+ * @version DragonBones 5.5
+ * @language en_US
+ */
+/**
+ * - 偏移模式。
+ * @version DragonBones 5.5
+ * @language zh_CN
+ */
 enum class OffsetMode {
     None,
     Additive,
     Override
 };
 
+/**
+ * @private
+ */
 enum class DisplayType 
 {
     Image = 0, 
@@ -134,6 +176,16 @@ enum class DisplayType
     BoundingBox = 3
 };
 
+/**
+ * - Bounding box type.
+ * @version DragonBones 5.0
+ * @language en_US
+ */
+/**
+ * - 边界框类型。
+ * @version DragonBones 5.0
+ * @language zh_CN
+ */
 enum class BoundingBoxType
 {
     Rectangle = 0,
@@ -141,12 +193,20 @@ enum class BoundingBoxType
     Polygon = 2
 };
 
+/**
+ * @internal
+ * @private
+ */
 enum class ActionType {
     Play = 0,
     Frame = 10,
     Sound = 11
 };
 
+/**
+ * @internal
+ * @private
+ */
 enum class BlendMode 
 {
     Normal = 0,
@@ -165,6 +225,10 @@ enum class BlendMode
     Subtract = 13
 };
 
+/**
+ * @internal
+ * @private
+ */
 enum class TweenType {
     None = 0,
     Line = 1,
@@ -174,6 +238,10 @@ enum class TweenType {
     QuadInOut = 5
 };
 
+/**
+ * @internal
+ * @private
+ */
 enum class TimelineType {
     Action = 0,
     ZOrder = 1,
@@ -194,12 +262,70 @@ enum class TimelineType {
     AnimationWeight = 41
 };
 
+/**
+ * - Animation fade out mode.
+ * @version DragonBones 4.5
+ * @language en_US
+ */
+/**
+ * - 动画淡出模式。
+ * @version DragonBones 4.5
+ * @language zh_CN
+ */
 enum class AnimationFadeOutMode {
+    /**
+     * - Do not fade out of any animation states.
+     * @language en_US
+     */
+    /**
+     * - 不淡出任何的动画状态。
+     * @language zh_CN
+     */
     None,
+    /**
+     * - Fade out the animation states of the same layer.
+     * @language en_US
+     */
+    /**
+     * - 淡出同层的动画状态。
+     * @language zh_CN
+     */
     SameLayer,
+    /**
+     * - Fade out the animation states of the same group.
+     * @language en_US
+     */
+    /**
+     * - 淡出同组的动画状态。
+     * @language zh_CN
+     */
     SameGroup,
+    /**
+     * - Fade out the animation states of the same layer and group.
+     * @language en_US
+     */
+    /**
+     * - 淡出同层并且同组的动画状态。
+     * @language zh_CN
+     */
     SameLayerAndGroup,
+    /**
+     * - Fade out of all animation states.
+     * @language en_US
+     */
+    /**
+     * - 淡出所有的动画状态。
+     * @language zh_CN
+     */
     All,
+    /**
+     * - Does not replace the animation state with the same name.
+     * @language en_US
+     */
+    /**
+     * - 不替换同名的动画状态。
+     * @language zh_CN
+     */
     Single
 };
 
@@ -321,8 +447,8 @@ class BaseFactory;
 class BuildArmaturePackage;
 
 /**
-* @private
-*/
+ * @private
+ */
 class DragonBones 
 {
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(DragonBones)

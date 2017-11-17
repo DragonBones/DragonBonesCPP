@@ -1,3 +1,25 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2016 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 #ifndef DRAGONBONES_TIMELINE_STATE_H
 #define DRAGONBONES_TIMELINE_STATE_H
 
@@ -5,8 +27,9 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class ActionTimelineState : public TimelineState
 {
     BIND_CLASS_TYPE_A(ActionTimelineState);
@@ -22,8 +45,9 @@ public:
     void setCurrentTime(float value);
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class ZOrderTimelineState : public TimelineState 
 {
     BIND_CLASS_TYPE_A(ZOrderTimelineState);
@@ -33,8 +57,9 @@ protected:
     virtual void _onUpdateFrame() override {}
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class BoneAllTimelineState : public BoneTimelineState
 {
     BIND_CLASS_TYPE_A(BoneAllTimelineState);
@@ -47,8 +72,9 @@ public:
     virtual void fadeOut() override;
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class BoneTranslateTimelineState : public BoneTimelineState
 {
     BIND_CLASS_TYPE_A(BoneTranslateTimelineState);
@@ -58,8 +84,9 @@ protected:
     virtual void _onUpdateFrame() override;
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class BoneRotateTimelineState : public BoneTimelineState
 {
     BIND_CLASS_TYPE_A(BoneRotateTimelineState);
@@ -72,8 +99,9 @@ public:
     virtual void fadeOut() override;
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class BoneScaleTimelineState : public BoneTimelineState
 {
     BIND_CLASS_TYPE_A(BoneScaleTimelineState);
@@ -83,8 +111,9 @@ protected:
     virtual void _onUpdateFrame() override;
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class SlotDislayTimelineState : public SlotTimelineState
 {
     BIND_CLASS_TYPE_A(SlotDislayTimelineState);
@@ -93,8 +122,9 @@ protected:
     virtual void _onArriveAtFrame() override;
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class SlotColorTimelineState : public SlotTimelineState
 {
     BIND_CLASS_TYPE_B(SlotColorTimelineState);
@@ -132,8 +162,9 @@ public:
     void update(float passedTime) override;
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class SlotFFDTimelineState : public SlotTimelineState
 {
     BIND_CLASS_TYPE_A(SlotFFDTimelineState);
@@ -162,6 +193,10 @@ public:
     virtual void update(float passedTime) override;
 };
 
+/**
+ * @internal
+ * @private
+ */
 class IKConstraintTimelineState : public ConstraintTimelineState 
 {
     BIND_CLASS_TYPE_A(IKConstraintTimelineState);

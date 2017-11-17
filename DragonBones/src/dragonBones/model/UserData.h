@@ -1,3 +1,25 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2016 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 #ifndef DRAGONBONES_USER_DATA_H
 #define DRAGONBONES_USER_DATA_H
 
@@ -5,67 +27,108 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
-* 自定义数据。
-* @version DragonBones 5.0
-* @language zh_CN
-*/
+ * - The user custom data.
+ * @version DragonBones 5.0
+ * @language en_US
+ */
+/**
+ * - 用户自定义数据。
+ * @version DragonBones 5.0
+ * @language zh_CN
+ */
 class UserData : public BaseObject
 {
     BIND_CLASS_TYPE_A(UserData);
 
 public:
     /**
-    * 自定义整数。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - The custom int numbers.
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 自定义整数。
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     std::vector<int> ints;
     /**
-    * 自定义浮点数。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - The custom float numbers.
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 自定义浮点数。
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     std::vector<float> floats;
     /**
-    * 自定义字符串。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - The custom strings.
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 自定义字符串。
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     std::vector<std::string> strings;
 
 protected:
+    /**
+     * @inheritDoc
+     */
     virtual void _onClear() override;
 
 public:
     /**
-    * @private
-    */
+     * @internal
+     * @private
+     */
     void addInt(int value);
     /**
-    * @private
-    */
+     * @internal
+     * @private
+     */
     void addFloat(float value);
     /**
-    * @private
-    */
+     * @internal
+     * @private
+     */
     void addString(std::string value);
     /**
-    * 获取自定义整数。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - Get the custom int number.
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 获取自定义整数。
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     int getInt(unsigned index) const;
     /**
-    * 获取自定义浮点数。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - Get the custom float number.
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 获取自定义浮点数。
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     float getFloat(unsigned index) const;
     /**
-    * 获取自定义字符串。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * - Get the custom string.
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 获取自定义字符串。
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     std::string getString(unsigned index) const;
 
 public: // For WebAssembly.
@@ -74,8 +137,9 @@ public: // For WebAssembly.
     const std::vector<std::string>& getStrings() const { return strings; }
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class ActionData : public BaseObject
 {
     BIND_CLASS_TYPE_B(ActionData);
@@ -84,8 +148,8 @@ public:
     ActionType type;
     std::string name;
     const BoneData* bone;
-	const SlotData* slot;
-	UserData* data;
+    const SlotData* slot;
+    UserData* data;
 
     ActionData() :
         data(nullptr)

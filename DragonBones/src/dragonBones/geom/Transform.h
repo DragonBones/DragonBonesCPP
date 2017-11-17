@@ -1,3 +1,25 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2016 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 #ifndef DRAGONBONES_TRANSFORM_H
 #define DRAGONBONES_TRANSFORM_H
 
@@ -6,20 +28,43 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
-* 2D 变换。
-* @version DragonBones 3.0
-* @language zh_CN
-*/
+ * - 2D Transform.
+ * @version DragonBones 3.0
+ * @language en_US
+ */
+/**
+ * - 2D 变换。
+ * @version DragonBones 3.0
+ * @language zh_CN
+ */
 class Transform final
 {
 public:
     static const float PI;
+    /**
+     * @private
+     */
     static const float PI_D;
+    /**
+     * @private
+     */
     static const float PI_H;
+    /**
+     * @private
+     */
     static const float PI_Q;
+    /**
+     * @private
+     */
     static const float DEG_RAD;
+    /**
+     * @private
+     */
     static const float RAD_DEG;
 
+    /**
+     * @private
+     */
     static float normalizeRadian(float value)
     {
         value = fmod(value + Transform::PI, Transform::PI * 2.0f);
@@ -30,40 +75,70 @@ public:
 
 public:
     /**
-    * 水平位移。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - Horizontal translate.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 水平位移。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     float x;
     /**
-    * 垂直位移。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - Vertical translate.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 垂直位移。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     float y;
     /**
-    * 倾斜。 (以弧度为单位)
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - Skew. (In radians)
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 倾斜。 （以弧度为单位）
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     float skew;
     /**
-    * 旋转。 (以弧度为单位)
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - rotation. (In radians)
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 旋转。 （以弧度为单位）
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     float rotation;
     /**
-    * 水平缩放。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - Horizontal Scaling.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 水平缩放。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     float scaleX;
     /**
-    * 垂直缩放。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - Vertical scaling.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 垂直缩放。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     float scaleY;
 
     Transform():
@@ -74,6 +149,9 @@ public:
         scaleX(1.0f),
         scaleY(1.0f)
     {}
+    /**
+     * @private
+     */
     Transform(const Transform& value)
     {
         operator=(value);
@@ -90,8 +168,8 @@ public:
         scaleY = value.scaleY;
     }
     /**
-    * @private
-    */
+     * @private
+     */
     inline Transform& identity()
     {
         x = y = skew = rotation = 0.0f;
@@ -100,8 +178,8 @@ public:
         return *this;
     }
     /**
-    * @private
-    */
+     * @private
+     */
     inline Transform& add(const Transform& value)
     {
         x += value.x;
@@ -114,8 +192,8 @@ public:
         return *this;
     }
     /**
-    * @private
-    */
+     * @private
+     */
     inline Transform& minus(const Transform& value)
     {
         x -= value.x;
@@ -128,11 +206,8 @@ public:
         return *this;
     }
     /**
-    * 矩阵转换为变换。
-    * @param matrix 矩阵。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * @private
+     */
     inline Transform& fromMatrix(const Matrix& matrix)
     {
         const auto backupScaleX = scaleX, backupScaleY = scaleY;
@@ -163,11 +238,8 @@ public:
         return *this;
     }
     /**
-    * 转换为矩阵。
-    * @param matrix 矩阵。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * @private
+     */
     inline Transform& toMatrix(Matrix& matrix)
     {
         if (skew != 0.0f || rotation != 0.0f) 

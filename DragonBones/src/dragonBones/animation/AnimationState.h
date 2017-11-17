@@ -1,3 +1,25 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2016 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 #ifndef DRAGONBONES_ANIMATION_STATE_H
 #define DRAGONBONES_ANIMATION_STATE_H
 
@@ -6,7 +28,14 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
- * 动画状态，播放动画时产生，可以对每个播放的动画进行更细致的控制和调节。
+ * - The animation state is generated when the animation data is played.
+ * @see dragonBones.Animation
+ * @see dragonBones.AnimationData
+ * @version DragonBones 3.0
+ * @language en_US
+ */
+/**
+ * - 动画状态由播放动画数据时产生。
  * @see dragonBones.Animation
  * @see dragonBones.AnimationData
  * @version DragonBones 3.0
@@ -25,59 +54,115 @@ private:
 
 public:
     /**
-    * 是否能触发行为。
-    * @version DragonBones 5.0
-    * @language zh_CN
-    */
+     * @private
+     */
     bool actionEnabled;
     /**
-    * 是否对插槽的显示对象有控制权。
-    * @see dragonBones.Slot#displayController
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * @private
+     */
     bool additiveBlending;
     /**
-    * 是否以增加的方式混合。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - Whether the animation state has control over the display object properties of the slots.
+     * Sometimes blend a animation state does not want it to control the display object properties of the slots,
+     * especially if other animation state are controlling the display object properties of the slots.
+     * @default true
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 动画状态是否对插槽的显示对象属性有控制权。
+     * 有时混合一个动画状态并不希望其控制插槽的显示对象属性，
+     * 尤其是其他动画状态正在控制这些插槽的显示对象属性时。
+     * @default true
+     * @version DragonBones 5.0
+     * @language zh_CN
+     */
     bool displayControl;
     /**
-     * 是否将骨架的骨骼和插槽重置为绑定姿势（如果骨骼和插槽在这个动画状态中没有动画）。
+     * - Whether to reset the objects without animation to the armature pose when the animation state is start to play.
+     * This property should usually be set to false when blend multiple animation states.
+     * @default true
+     * @version DragonBones 5.1
+     * @language en_US
+     */
+    /**
+     * - 开始播放动画状态时是否将没有动画的对象重置为骨架初始值。
+     * 通常在混合多个动画状态时应该将该属性设置为 false。
+     * @default true
      * @version DragonBones 5.1
      * @language zh_CN
      */
     bool resetToPose;
     /**
-    * 播放次数。 [0: 无限循环播放, [1~N]: 循环播放 N 次]
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - The play times. [0: Loop play, [1~N]: Play N times]
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 播放次数。 [0: 无限循环播放, [1~N]: 循环播放 N 次]
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     unsigned playTimes;
     /**
-     * 混合图层。
-     * @version DragonBones 3.0
+     * - The blend layer.
+     * High layer animation state will get the blend weight first.
+     * When the blend weight is assigned more than 1, the remaining animation states will no longer get the weight assigned.
      * @readonly
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 混合图层。
+     * 图层高的动画状态会优先获取混合权重。
+     * 当混合权重分配超过 1 时，剩余的动画状态将不再获得权重分配。
+     * @readonly
+     * @version DragonBones 5.0
      * @language zh_CN
      */
     unsigned layer;
     /**
-     * 播放速度。 [(-N~0): 倒转播放, 0: 停止播放, (0~1): 慢速播放, 1: 正常播放, (1~N): 快速播放]
+     * - The play speed.
+     * The value is an overlay relationship with {@link dragonBones.Animation#timeScale}.
+     * [(-N~0): Reverse play, 0: Stop play, (0~1): Slow play, 1: Normal play, (1~N): Fast play]
+     * @default 1.0
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 播放速度。
+     * 该值与 {@link dragonBones.Animation#timeScale} 是叠加关系。
+     * [(-N~0): 倒转播放, 0: 停止播放, (0~1): 慢速播放, 1: 正常播放, (1~N): 快速播放]
+     * @default 1.0
      * @version DragonBones 3.0
      * @language zh_CN
      */
     float timeScale;
     /**
-     * 混合权重。
-     * @version DragonBones 3.0
+     * - The blend weight.
+     * @default 1.0
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 混合权重。
+     * @default 1.0
+     * @version DragonBones 5.0
      * @language zh_CN
      */
     float weight;
     /**
-     * 自动淡出时间。 [-1: 不自动淡出, [0~N]: 淡出时间] (以秒为单位)
-     * 当设置一个大于等于 0 的值，动画状态将会在播放完成后自动淡出。
-     * @version DragonBones 3.0
+     * - The auto fade out time when the animation state play completed.
+     * [-1: Do not fade out automatically, [0~N]: The fade out time] (In seconds)
+     * @default -1.0
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 动画状态播放完成后的自动淡出时间。
+     * [-1: 不自动淡出, [0~N]: 淡出时间] （以秒为单位）
+     * @default -1.0
+     * @version DragonBones 5.0
      * @language zh_CN
      */
     float autoFadeOutTime;
@@ -86,31 +171,84 @@ public:
      */
     float fadeTotalTime;
     /**
-     * 动画名称。
-     * @version DragonBones 3.0
+     * - The name of the animation state. (Can be different from the name of the animation data)
      * @readonly
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 动画状态名称。 （可以不同于动画数据）
+     * @readonly
+     * @version DragonBones 5.0
      * @language zh_CN
      */
     std::string name;
     /**
-     * 混合组。
-     * @version DragonBones 3.0
+     * - The blend group name of the animation state.
+     * This property is typically used to specify the substitution of multiple animation states blend.
      * @readonly
+     * @version DragonBones 5.0
+     * @language en_US
+     */
+    /**
+     * - 混合组名称。
+     * 该属性通常用来指定多个动画状态混合时的相互替换关系。
+     * @readonly
+     * @version DragonBones 5.0
      * @language zh_CN
      */
     std::string group;
 
 public:
+    /**
+     * - xx: Play Enabled, Fade Play Enabled
+     * @internal
+     * @private
+     */
     int _playheadState;
+    /**
+     * -1: Fade in, 0: Fade complete, 1: Fade out;
+     * @internal
+     * @private
+     */
     int _fadeState;
+    /**
+     * -1: Fade start, 0: Fading, 1: Fade complete;
+     * @internal
+     * @private
+     */
     int _subFadeState;
+    /**
+     * @internal
+     * @private
+     */
     float _position;
+    /**
+     * @internal
+     * @private
+     */
     float _duration;
+    /**
+     * @internal
+     * @private
+     */
     float _fadeProgress;
+    /**
+     * @internal
+     * @private
+     */
     AnimationData* _animationData;
+    /**
+     * @internal
+     * @private
+     */
     ActionTimelineState* _actionTimeline;
 
 private:
+    /**
+     * @internal
+     * @private
+     */
     bool _timelineDirty;
     float _fadeTime;
     float _time;
@@ -137,6 +275,9 @@ public:
     }
 
 protected:
+    /**
+     * @private
+     */
     virtual void _onClear() override;
 
 private:
@@ -146,64 +287,113 @@ private:
 
 public:
     /**
+     * @internal
      * @private
      */
     void init(Armature* armature, AnimationData* animationData, AnimationConfig* animationConfig);
     /**
+     * @internal
      * @private
      */
     void advanceTime(float passedTime, float cacheFrameRate);
     /**
-     * 继续播放。
+     * - Continue play.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 继续播放。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     void play();
     /**
-     * 暂停播放。
+     * - Stop play.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 暂停播放。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     void stop();
     /**
-     * 淡出动画。
-     * @param fadeOutTime 淡出时间。 (以秒为单位)
-     * @param pausePlayhead 淡出时是否暂停动画。
+     * - Fade out the animation state.
+     * @param fadeOutTime - The fade out time. (In seconds).
+     * @param pausePlayhead - Whether to pause the animation playing when fade out.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 淡出动画状态。
+     * @param fadeOutTime - 淡出时间。 （以秒为单位）。
+     * @param pausePlayhead - 淡出时是否暂停播放。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     void fadeOut(float fadeOutTime, bool pausePlayhead = true);
     /**
-     * 是否包含骨骼遮罩。
-     * @param name 指定的骨骼名称。
+     * - Check if a specific bone mask is included.
+     * @param name - The bone name.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 检查是否包含特定骨骼遮罩。
+     * @param name - 骨骼名称。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     bool containsBoneMask(const std::string& name) const;
     /**
-     * 添加骨骼遮罩。
-     * @param name 指定的骨骼名称。
-     * @param recursive 是否为该骨骼的子骨骼添加遮罩。
+     * - Add a specific bone mask.
+     * @param name - The bone name.
+     * @param recursive - Whether or not to add a mask to the bone's sub-bone.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 添加特定的骨骼遮罩。
+     * @param name - 骨骼名称。
+     * @param recursive - 是否为该骨骼的子骨骼添加遮罩。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     void addBoneMask(const std::string& name, bool recursive = true);
     /**
-     * 删除骨骼遮罩。
-     * @param name 指定的骨骼名称。
-     * @param recursive 是否删除该骨骼的子骨骼遮罩。
+     * - Remove the mask of a specific bone.
+     * @param name - The bone name.
+     * @param recursive - Whether to remove the bone's sub-bone mask.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 删除特定骨骼的遮罩。
+     * @param name - 骨骼名称。
+     * @param recursive - 是否删除该骨骼的子骨骼遮罩。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     void removeBoneMask(const std::string& name, bool recursive = true);
     /**
-     * 删除所有骨骼遮罩。
+     * - Remove all bone masks.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 删除所有骨骼遮罩。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     void removeAllBoneMask();
     /**
-     * 是否正在淡入。
+     * - Whether the animation state is fading in.
+     * @version DragonBones 5.1
+     * @language en_US
+     */
+    /**
+     * - 是否正在淡入。
      * @version DragonBones 5.1
      * @language zh_CN
      */
@@ -212,7 +402,12 @@ public:
         return _fadeState < 0;
     }
     /**
-     * 是否正在淡出。
+     * - Whether the animation state is fading out.
+     * @version DragonBones 5.1
+     * @language en_US
+     */
+    /**
+     * - 是否正在淡出。
      * @version DragonBones 5.1
      * @language zh_CN
      */
@@ -221,7 +416,12 @@ public:
         return _fadeState > 0;
     }
     /**
-     * 是否淡入完毕。
+     * - Whether the animation state is fade completed.
+     * @version DragonBones 5.1
+     * @language en_US
+     */
+    /**
+     * - 是否淡入或淡出完毕。
      * @version DragonBones 5.1
      * @language zh_CN
      */
@@ -230,25 +430,45 @@ public:
         return _fadeState == 0;
     }
     /**
-     * 是否正在播放。
+     * - Whether the animation state is playing.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 是否正在播放。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     bool isPlaying() const;
     /**
-     * 是否播放完毕。
+     * - Whether the animation state is play completed.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 是否播放完毕。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     bool isCompleted() const;
     /**
-     * 当前播放次数。
+     * - The times has been played.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 已经循环播放的次数。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     unsigned getCurrentPlayTimes() const;
     /**
-     * 总时间。 (以秒为单位)
+     * - The total time. (In seconds)
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 总播放时间。 （以秒为单位）
      * @version DragonBones 3.0
      * @language zh_CN
      */
@@ -257,30 +477,43 @@ public:
         return _duration;
     }
     /**
-     * 当前播放的时间。 (以秒为单位)
+     * - The time is currently playing. (In seconds)
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 当前播放的时间。 （以秒为单位）
      * @version DragonBones 3.0
      * @language zh_CN
      */
     float getCurrentTime() const;
     void setCurrentTime(float value);
-    /**
-    * 动画名称。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
     inline const std::string& getName() const
     {
         return name;
     }
 
+    /**
+     * - The animation data.
+     * @see dragonBones.AnimationData
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 动画数据。
+     * @see dragonBones.AnimationData
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     inline const AnimationData* getAnimationData() const
     { 
         return _animationData; 
     }
 };
 /**
-* @private
-*/
+ * @internal
+ * @private
+ */
 class BonePose : public BaseObject
 {
     BIND_CLASS_TYPE_A(BonePose);

@@ -1,3 +1,25 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2016 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 #ifndef DRAGONBONES_DRAGONBONES_DATA_H
 #define DRAGONBONES_DRAGONBONES_DATA_H
 
@@ -6,99 +28,127 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
-* 龙骨数据。
-* 一个龙骨数据包含多个骨架数据。
-* @see dragonBones.ArmatureData
-* @version DragonBones 3.0
-* @language zh_CN
-*/
+ * - The DragonBones data.
+ * A DragonBones data contains multiple armature data.
+ * @see dragonBones.ArmatureData
+ * @version DragonBones 3.0
+ * @language en_US
+ */
+/**
+ * - 龙骨数据。
+ * 一个龙骨数据包含多个骨架数据。
+ * @see dragonBones.ArmatureData
+ * @version DragonBones 3.0
+ * @language zh_CN
+ */
 class DragonBonesData : public BaseObject
 {
     BIND_CLASS_TYPE_B(DragonBonesData);
 
 public:
     /**
-    * 是否开启共享搜索。
-    * @default false
-    * @version DragonBones 4.5
-    * @language zh_CN
-    */
+     * @private
+     */
     bool autoSearch;
     /**
-    * 动画帧频。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - The animation frame rate.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 动画帧频。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     unsigned frameRate;
     /**
-    * 数据版本。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - The data version.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 数据版本。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     std::string version;
     /**
-    * 数据名称。(该名称与龙骨项目名保持一致)
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - The DragonBones data name.
+     * The name is consistent with the DragonBones project name.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 龙骨数据名称。
+     * 该名称与龙骨项目名保持一致。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     std::string name;
     /**
-    * @private
-    */
+     * @internal
+     * @private
+     */
     std::vector<unsigned> frameIndices;
     /**
-    * @private
-    */
+     * @internal
+     * @private
+     */
     std::vector<float> cachedFrames;
     /**
-    * 所有骨架数据名称。
-    * @see #armatures
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - All armature data names.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 所有的骨架数据名称。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     std::vector<std::string> armatureNames;
     /**
-    * 所有骨架数据。
-    * @see dragonBones.ArmatureData
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * @private
+     */
     std::map<std::string, ArmatureData*> armatures;
     /**
-    * @private
-    */
+     * @internal
+     * @private
+     */
     const char* binary;
     /**
-    * @private
-    */
-	const int16_t* intArray;
+     * @internal
+     * @private
+     */
+    const int16_t* intArray;
     /**
-    * @private
-    */
-	const float* floatArray;
+     * @internal
+     * @private
+     */
+    const float* floatArray;
     /**
-    * @private
-    */
-	const int16_t* frameIntArray;
+     * @internal
+     * @private
+     */
+    const int16_t* frameIntArray;
     /**
-    * @private
-    */
-	const float* frameFloatArray;
+     * @internal
+     * @private
+     */
+    const float* frameFloatArray;
     /**
-    * @private
-    */
-	const int16_t* frameArray;
+     * @internal
+     * @private
+     */
+    const int16_t* frameArray;
     /**
-    * @private
-    */
-	const uint16_t* timelineArray;
+     * @internal
+     * @private
+     */
+    const uint16_t* timelineArray;
     /**
-    * @private
-    */
+     * @private
+     */
     UserData* userData;
-    /**
-    * @private
-    */
     DragonBonesData() :
         binary(nullptr),
         userData(nullptr)
@@ -110,22 +160,31 @@ public:
         _onClear();
     }
     /**
-    * @private
-    */
+     * @internal
+     * @private
+     */
     void addArmature(ArmatureData* value);
     /**
-    * 获取骨架数据。
-    * @param name 骨架数据名称。
-    * @see dragonBones.ArmatureData
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - Get a specific armature data.
+     * @param name - The armature data name.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 获取特定的骨架数据。
+     * @param name - 骨架数据名称。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     inline ArmatureData* getArmature(const std::string& name) const
     {
         return mapFind<ArmatureData>(armatures, name);
     }
 
 protected:
+    /**
+     * @inheritDoc
+     */
     virtual void _onClear() override;
 
 public: // For WebAssembly.
