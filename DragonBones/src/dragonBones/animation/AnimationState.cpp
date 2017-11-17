@@ -215,7 +215,7 @@ void AnimationState::_updateTimelines()
                     {
                         switch (timelineData->type)
                         {
-                        case TimelineType::SlotDisplayIndex:
+                        case TimelineType::SlotDisplay:
                         {
                             const auto timeline = BaseObject::borrowObject<SlotDislayTimelineState>();
                             timeline->slot = slot;

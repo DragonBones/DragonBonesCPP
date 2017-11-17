@@ -1175,7 +1175,7 @@ void JSONDataParser::_parseSlotTimeline(const rapidjson::Value& rawData)
     if (rawData.HasMember(DISPLAY_FRAME))
     {
         displayTimeline = _parseTimeline(
-            rawData, DISPLAY_FRAME, TimelineType::SlotDisplayIndex,
+            rawData, DISPLAY_FRAME, TimelineType::SlotDisplay,
             false, false, 0,
             std::bind(&JSONDataParser::_parseSlotDisplayFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
         );
@@ -1183,7 +1183,7 @@ void JSONDataParser::_parseSlotTimeline(const rapidjson::Value& rawData)
     else
     {
         displayTimeline = _parseTimeline(
-            rawData, FRAME, TimelineType::SlotDisplayIndex,
+            rawData, FRAME, TimelineType::SlotDisplay,
             false, false, 0,
             std::bind(&JSONDataParser::_parseSlotDisplayFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
         );

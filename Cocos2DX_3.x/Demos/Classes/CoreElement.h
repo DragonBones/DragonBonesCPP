@@ -1,5 +1,5 @@
-#ifndef __CORE_ELEMENT_H__
-#define __CORE_ELEMENT_H__
+#ifndef CORE_ELEMENT_H
+#define CORE_ELEMENT_H
 
 #include "cocos2d.h"
 #include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
@@ -121,4 +121,4 @@ public:
     void addBullet(CoreElementBullet* bullet);
 };
 
-#endif // __CORE_ELEMENT_H__
+#endif // CORE_ELEMENT_H

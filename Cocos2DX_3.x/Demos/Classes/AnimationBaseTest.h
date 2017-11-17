@@ -1,5 +1,5 @@
-#ifndef __ANIMATION_BASE_TEST_H__
-#define __ANIMATION_BASE_TEST_H__
+#ifndef ANIMATION_BASE_TEST_H
+#define ANIMATION_BASE_TEST_H
 
 #include "cocos2d.h"
 #include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
@@ -110,4 +110,4 @@ private:
     }
 };
 
-#endif // __ANIMATION_BASE_TEST_H__
+#endif // ANIMATION_BASE_TEST_H

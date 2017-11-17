@@ -1,5 +1,5 @@
-#ifndef __PERFORMANCE_TEST_H__
-#define __PERFORMANCE_TEST_H__
+#ifndef PERFORMANCE_TEST_H
+#define PERFORMANCE_TEST_H
 
 #include "cocos2d.h"
 #include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
@@ -172,4 +172,4 @@ private:
     }
 };
 
-#endif // __PERFORMANCE_TEST_H__
+#endif // PERFORMANCE_TEST_H
