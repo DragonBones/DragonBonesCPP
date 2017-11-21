@@ -50,14 +50,14 @@ private:
 public:
     /**
      * - Set the maximum cache count of the specify object pool.
-     * @param objectConstructor - The specify class. (Set all object pools max cache count if not set).
+     * @param objectConstructor - The specify class. (Set all object pools max cache count if not set)
      * @param maxCount - Max count.
      * @version DragonBones 4.5
      * @language en_US
      */
     /**
      * - 设置特定对象池的最大缓存数量。
-     * @param objectConstructor - 特定的类。 (不设置则设置所有对象池的最大缓存数量)。
+     * @param objectConstructor - 特定的类。 (不设置则设置所有对象池的最大缓存数量)
      * @param maxCount - 最大缓存数量。
      * @version DragonBones 4.5
      * @language zh_CN
@@ -65,13 +65,13 @@ public:
     static void setMaxCount(std::size_t classTypeIndex, unsigned maxCount);
     /**
      * - Clear the cached instances of a specify object pool.
-     * @param objectConstructor - Specify class. (Clear all cached instances if not set).
+     * @param objectConstructor - Specify class. (Clear all cached instances if not set)
      * @version DragonBones 4.5
      * @language en_US
      */
     /**
      * - 清除特定对象池的缓存实例。
-     * @param objectConstructor - 特定的类。 (不设置则清除所有缓存的实例)。
+     * @param objectConstructor - 特定的类。 (不设置则清除所有缓存的实例)
      * @version DragonBones 4.5
      * @language zh_CN
      */

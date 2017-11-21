@@ -534,7 +534,7 @@ bool BaseFactory::replaceSlotDisplayList(const std::string& dragonBonesName, con
     return true;
 }
 
-bool BaseFactory::replaceSkin(Armature* armature, SkinData* skin, const std::vector<std::string>* exclude) const
+bool BaseFactory::replaceSkin(Armature* armature, SkinData* skin, bool isOverride, const std::vector<std::string>* exclude) const
 {
     DRAGONBONES_ASSERT(armature && skin, "Arguments error.");
 
@@ -550,6 +550,12 @@ bool BaseFactory::replaceSkin(Armature* armature, SkinData* skin, const std::vec
         auto displays = skin->getDisplays(slot->getName());
         if (displays == nullptr)
         {
+            if (isOverride)
+            {
+                std::vector<std::pair<void*, DisplayType>> displayList;
+                slot->setRawDisplayDatas(nullptr);
+                slot->setDisplayList(displayList);
+            }
             continue;
         }
 
@@ -562,7 +568,8 @@ bool BaseFactory::replaceSkin(Armature* armature, SkinData* skin, const std::vec
             {
                 displayList[i] = _getSlotDisplay(nullptr, displayData, nullptr, slot);
             }
-            else {
+            else 
+            {
                 displayList[i] = std::make_pair(nullptr, DisplayType::Image);
             }
         }

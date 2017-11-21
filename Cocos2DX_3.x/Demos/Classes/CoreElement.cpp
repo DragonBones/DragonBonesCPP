@@ -341,7 +341,7 @@ void Mecha::switchSkin()
     const auto skinName = SKINS[_skinIndex];
     const auto skinData = dragonBones::CCFactory::getFactory()->getArmatureData(skinName)->defaultSkin;
     const std::vector<std::string> exclude = {"weapon_l", "weapon_r" };
-    dragonBones::CCFactory::getFactory()->replaceSkin(_armatureDisplay->getArmature(), skinData, &exclude);
+    dragonBones::CCFactory::getFactory()->replaceSkin(_armatureDisplay->getArmature(), skinData, false, &exclude);
 }
 
 void Mecha::aim(const cocos2d::Vec2& target)
@@ -647,6 +647,7 @@ CoreElementBullet::CoreElementBullet(const std::string& armatureName, const std:
 CoreElementBullet::~CoreElementBullet()
 {
 }
+
 bool CoreElementBullet::update()
 {
     const auto& position = _armatureDisplay->getPosition();

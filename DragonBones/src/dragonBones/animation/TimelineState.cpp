@@ -650,7 +650,11 @@ void SlotColorTimelineState::_onArriveAtFrame()
         const auto intArray = _dragonBonesData->intArray;
         const auto frameIntArray = _frameIntArray;
         const auto valueOffset = _animationData->frameIntOffset + _frameValueOffset + _frameIndex * 1; // ...(timeline value offset)|x|x|(Value offset)|(Next offset)|x|x|...
-        unsigned colorOffset = frameIntArray[valueOffset];
+        int colorOffset = frameIntArray[valueOffset];
+        if (colorOffset < 0)
+        {
+            colorOffset += 32767; // Fixed out of bouds bug. 
+        }
 
         _current[0] = intArray[colorOffset++];
         _current[1] = intArray[colorOffset++];
@@ -670,6 +674,11 @@ void SlotColorTimelineState::_onArriveAtFrame()
             else 
             {
                 colorOffset = frameIntArray[valueOffset + 1 * 1];
+            }
+
+            if (colorOffset < 0)
+            {
+                colorOffset += 32767; // Fixed out of bouds bug. 
             }
 
             _delta[0] = intArray[colorOffset++] - _current[0];

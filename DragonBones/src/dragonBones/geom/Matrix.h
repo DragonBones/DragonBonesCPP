@@ -254,7 +254,6 @@ public:
             result.y += ty;
         }
     }
-
     /**
      * @private
      */

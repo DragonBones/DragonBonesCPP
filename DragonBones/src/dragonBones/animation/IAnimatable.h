@@ -49,13 +49,13 @@ class IAnimatable
 public:
     /**
      * - Advance time.
-     * @param passedTime - Passed time. (In seconds).
+     * @param passedTime - Passed time. (In seconds)
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 更新时间。
-     * @param passedTime - 前进的时间。 （以秒为单位）。
+     * @param passedTime - 前进的时间。 （以秒为单位）
      * @version DragonBones 3.0
      * @language zh_CN
      */
