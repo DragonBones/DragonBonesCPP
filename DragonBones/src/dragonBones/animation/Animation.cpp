@@ -326,7 +326,7 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
             {
                 added = true;
                 auto parentInerator = std::find(_animationStates.begin(), _animationStates.end(), _animationStates[i]);
-                _animationStates.insert(parentInerator + 1, animationState);
+                _animationStates.insert(parentInerator, animationState);
                 break;
             }
         }

@@ -17,8 +17,8 @@ void Constraint::_onClear()
     _constraintData = nullptr;
     _armature = nullptr;
     _target = nullptr;
-    _bone = nullptr;
     _root = nullptr;
+    _bone = nullptr;
 }
 
 void IKConstraint::_onClear()
@@ -33,8 +33,8 @@ void IKConstraint::_onClear()
 void IKConstraint::_computeA()
 {
     const auto& ikGlobal = _target->global;
-    auto& global = _bone->global;
-    auto& globalTransformMatrix = _bone->globalTransformMatrix;
+    auto& global = _root->global;
+    auto& globalTransformMatrix = _root->globalTransformMatrix;
 
     auto radian = std::atan2(ikGlobal.y - global.y, ikGlobal.x - global.x);
     if (global.scaleX < 0.0f)
@@ -94,9 +94,9 @@ void IKConstraint::_computeB()
         const auto rY = dX * r;
 
         bool isPPR = false;
-        if (parent->getParent() != nullptr) 
+        if (parent->_parent != nullptr)
         {
-            auto parentParentMatrix = parent->getParent()->globalTransformMatrix;
+            auto parentParentMatrix = parent->_parent->globalTransformMatrix;
             isPPR = parentParentMatrix.a * parentParentMatrix.d - parentParentMatrix.b * parentParentMatrix.c < 0.0f;
         }
 
@@ -141,8 +141,8 @@ void IKConstraint::init(ConstraintData* constraintData, Armature* armature)
     _constraintData = constraintData;
     _armature = armature;
     _target = _armature->getBone(_constraintData->target->name);
-    _bone = _armature->getBone(_constraintData->bone->name);
-    _root = _constraintData->root != nullptr ? _armature->getBone(_constraintData->root->name) : nullptr;
+    _root = _armature->getBone(_constraintData->root->name);
+    _bone = _constraintData->bone != nullptr ? _armature->getBone(_constraintData->bone->name) : nullptr;
 
     {
         const auto ikConstraintData = static_cast<IKConstraintData*>(_constraintData);
@@ -151,33 +151,30 @@ void IKConstraint::init(ConstraintData* constraintData, Armature* armature)
         _weight = ikConstraintData->weight;
     }
 
-    _bone->_hasConstraint = true;
+    _root->_hasConstraint = true;
 }
 
 void IKConstraint::update()
 {
-    if (_root == nullptr)
+    _root->updateByConstraint();
+
+    if (_bone != nullptr)
     {
         _bone->updateByConstraint();
-        _computeA();
+        _computeB();
     }
     else
     {
-        _root->updateByConstraint();
-        _bone->updateByConstraint();
-        _computeB();
+        _computeA();
     }
 }
 
 void IKConstraint::invalidUpdate()
 {
-    if (_root == nullptr)
+    _root->invalidUpdate();
+
+    if (_root != nullptr)
     {
-        _bone->invalidUpdate();
-    }
-    else
-    {
-        _root->invalidUpdate();
         _bone->invalidUpdate();
     }
 }

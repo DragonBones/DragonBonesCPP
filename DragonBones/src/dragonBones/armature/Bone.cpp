@@ -303,7 +303,7 @@ void Bone::update(int cacheFrameIndex)
             {
                 for (const auto constraint : _armature->_constraints) 
                 {
-                    if (constraint->_bone == this)
+                    if (constraint->_root == this)
                     {
                         constraint->update();
                     }
@@ -333,7 +333,7 @@ void Bone::update(int cacheFrameIndex)
         {
             for (const auto constraint : _armature->_constraints)
             {
-                if (constraint->_bone == this)
+                if (constraint->_root == this)
                 {
                     constraint->update();
                 }

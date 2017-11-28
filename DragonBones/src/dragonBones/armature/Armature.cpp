@@ -111,7 +111,7 @@ void Armature::_sortBones()
             auto flag = false;
             for (const auto constraint : _constraints) 
             {
-                if (constraint->_bone == bone && std::find(_bones.cbegin(), _bones.cend(), constraint->_target) == _bones.cend())
+                if (constraint->_root == bone && std::find(_bones.cbegin(), _bones.cend(), constraint->_target) == _bones.cend())
                 {
                     flag = true;
                     break;

@@ -539,6 +539,7 @@ bool BaseFactory::replaceSkin(Armature* armature, SkinData* skin, bool isOverrid
     DRAGONBONES_ASSERT(armature && skin, "Arguments error.");
 
     auto success = false;
+    const auto defaultSkin = skin->parent->defaultSkin;
 
     for (const auto slot : armature->getSlots()) 
     {
@@ -550,6 +551,11 @@ bool BaseFactory::replaceSkin(Armature* armature, SkinData* skin, bool isOverrid
         auto displays = skin->getDisplays(slot->getName());
         if (displays == nullptr)
         {
+            if (defaultSkin != nullptr && skin != defaultSkin) 
+            {
+                displays = defaultSkin->getDisplays(slot->getName());
+            }
+
             if (isOverride)
             {
                 std::vector<std::pair<void*, DisplayType>> displayList;

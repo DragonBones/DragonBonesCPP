@@ -42,8 +42,8 @@ public:
     int order;
     std::string name;
     const BoneData* target;
-    const BoneData* bone;
     const BoneData* root;
+    const BoneData* bone;
 
 protected:
     virtual void _onClear() override;

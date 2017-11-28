@@ -11,8 +11,8 @@ void ConstraintData::_onClear()
     order = 0;
     name = "";
     target = nullptr;
-    bone = nullptr;
     root = nullptr;
+    bone = nullptr;
 }
 
 void IKConstraintData::_onClear()

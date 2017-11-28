@@ -108,7 +108,7 @@ void ArmatureData::sortBones()
         for(const auto& pair : constraints)
         {
             const auto constrait = pair.second;
-            if(constrait->bone == bone && std::find(sortedBones.cbegin(), sortedBones.cend(), constrait->target) == sortedBones.cend())
+            if(constrait->root == bone && std::find(sortedBones.cbegin(), sortedBones.cend(), constrait->target) == sortedBones.cend())
             {
                 flag = true;
                 break;

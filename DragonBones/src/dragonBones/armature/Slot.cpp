@@ -58,6 +58,7 @@ void Slot::_onClear()
     _colorDirty = false;
     _meshDirty = false;
     _transformDirty = false;
+    _skinedMeshTransformDirty = false;
     _visible = true;
     _blendMode = BlendMode::Normal;
     _displayIndex = -1;
@@ -255,6 +256,7 @@ void Slot::_updateDisplayData()
 
         _displayDirty = true;
         _transformDirty = true;
+        _skinedMeshTransformDirty = true;
     }
 }
 
@@ -621,9 +623,10 @@ void Slot::update(int cacheFrameIndex)
 
         if (isSkinned) 
         {
-            if (_transformDirty) 
+            if (_transformDirty && _skinedMeshTransformDirty) 
             {
                 _transformDirty = false;
+                _skinedMeshTransformDirty = false;
                 _updateTransform(true);
             }
 

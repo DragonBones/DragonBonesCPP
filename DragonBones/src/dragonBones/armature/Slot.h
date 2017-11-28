@@ -167,6 +167,7 @@ protected:
      * @private
      */
     bool _transformDirty;
+    bool _skinedMeshTransformDirty;
     /**
      * @private
      */

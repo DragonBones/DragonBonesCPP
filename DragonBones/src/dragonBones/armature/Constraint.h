@@ -63,11 +63,11 @@ public:
      * - For sort bones.
      * @internal
      */
-    Bone* _bone;
+    Bone* _root;
 
 protected:
     Armature* _armature;
-    Bone* _root;
+    Bone* _bone;
 
     virtual void _onClear() override;
 

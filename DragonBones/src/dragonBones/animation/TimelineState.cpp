@@ -985,6 +985,8 @@ void SlotFFDTimelineState::update(float passedTime)
 
 void IKConstraintTimelineState::_onClear()
 {
+    ConstraintTimelineState::_onClear();
+
     _current = 0.0f;
     _delta = 0.0f;
 }
@@ -999,7 +1001,6 @@ void IKConstraintTimelineState::_onArriveAtFrame()
     {
         auto valueOffset = _animationData->frameIntOffset + _frameValueOffset + _frameIndex * 2;
         const auto frameIntArray = _frameIntArray;
-
         const auto bendPositive = frameIntArray[valueOffset++] != 0;
         _current = frameIntArray[valueOffset++] * 0.01f;
 

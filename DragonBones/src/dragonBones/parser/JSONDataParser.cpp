@@ -382,9 +382,15 @@ ConstraintData* JSONDataParser::_parseIKConstraint(const rapidjson::Value& rawDa
     constraint->target = target;
 
     const auto chain = _getNumber(rawData, CHAIN, (unsigned)0);
-    if (chain > 0) 
+    if (chain > 0 && bone->parent != nullptr) 
     {
         constraint->root = bone->parent;
+        constraint->bone = bone;
+    }
+    else 
+    {
+        constraint->root = bone;
+        constraint->bone = nullptr;
     }
 
     return constraint;
