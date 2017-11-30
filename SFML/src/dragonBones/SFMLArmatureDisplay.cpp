@@ -71,14 +71,14 @@ void SFMLArmatureDisplay::draw(sf::RenderTarget& target, sf::RenderStates states
 		if (!item)
 			continue;
 
-		auto display = item->getRawDisplay();
+		auto display = static_cast<SFMLDisplay*>(item->getRawDisplay());
 
 		if (!display)
 			continue;
 
-		SFMLDisplay* wrapperDisplay = static_cast<SFMLDisplay*>(display);
+		display->position = _position;
 
-		target.draw(*wrapperDisplay, states);
+		target.draw(*display, states);
 	}
 }
 

@@ -18,23 +18,45 @@ DRAGONBONES_NAMESPACE_BEGIN
 class SFMLDisplay : public sf::Drawable
 {
 public:
-	std::unique_ptr<SFMLMesh>		_meshDisplay;
-	std::unique_ptr<sf::Sprite>		_spriteDisplay;
+	std::unique_ptr<SFMLMesh>		meshDisplay;
+	std::unique_ptr<sf::Sprite>		spriteDisplay;
 
-	sf::Transform					matrix;
 	sf::BlendMode					blendMode;
 	bool							visible;
+
+	sf::Vector2f					position;
+
+private:
+	Matrix							matrix;
+	sf::Vector2f					offset;
+	float							textureScale;
 
 public:
 	SFMLDisplay()
 	{
-		_meshDisplay = nullptr;
-		_spriteDisplay = nullptr;
+		meshDisplay = nullptr;
+		spriteDisplay = nullptr;
 
 		visible = true;
 	}
 
 	~SFMLDisplay() = default;
+
+	void setMatrix(const Matrix& matrix, const sf::Vector2f& offset, float textureScale)
+	{
+		this->matrix = matrix;
+		this->offset = offset;
+		this->textureScale = textureScale;
+	}
+
+	void setColor(const sf::Color& color)
+	{
+		if (spriteDisplay)
+			spriteDisplay->setColor(color);
+
+		if (meshDisplay)
+			meshDisplay->setColor(color);
+	}
 
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -42,13 +64,15 @@ protected:
 		if (visible)
 		{
 			states.blendMode = blendMode;
-			states.transform *= matrix;
+			states.transform *= sf::Transform(matrix.a * textureScale, matrix.c * textureScale, (offset.x + position.x) * textureScale,
+											  matrix.b * textureScale, matrix.d * textureScale, (offset.y + position.y) * textureScale,
+											  0.f, 0.f, 1.f);
 
-			if (_spriteDisplay)
-				target.draw(*_spriteDisplay, states);
+			if (spriteDisplay)
+				target.draw(*spriteDisplay, states);
 
-			if (_meshDisplay)
-				target.draw(*_meshDisplay, states);
+			if (meshDisplay)
+				target.draw(*meshDisplay, states);
 		}
 	}
 };

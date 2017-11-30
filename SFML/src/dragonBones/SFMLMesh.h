@@ -30,6 +30,14 @@ public:
 
 	~SFMLMesh() = default;
 
+	void setColor(const sf::Color& color)
+	{
+		for (auto& vert : verticesDisplay)
+		{
+			vert.color = color;
+		}
+	}
+
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{

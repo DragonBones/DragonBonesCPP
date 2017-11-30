@@ -53,7 +53,7 @@ void SFMLSlot::_updateBlendMode()
 
 void SFMLSlot::_updateColor()
 {
-	if (_display != _meshDisplay && _renderDisplay->_spriteDisplay)
+	if (_renderDisplay)
 	{
 		sf::Color helpColor;
 
@@ -62,7 +62,7 @@ void SFMLSlot::_updateColor()
 		helpColor.g = _colorTransform.greenMultiplier * 255.0f;
 		helpColor.b = _colorTransform.blueMultiplier * 255.0f;
 
-		_renderDisplay->_spriteDisplay->setColor(helpColor);
+		_renderDisplay->setColor(helpColor);
 	}
 }
 
@@ -179,7 +179,7 @@ void SFMLSlot::_updateFrame()
 				meshDisplay->verticesDisplay = std::move(verticesDisplay);
 				meshDisplay->verticesInTriagles = std::move(verticesInTriagles);
 
-				_renderDisplay->_meshDisplay = std::unique_ptr<SFMLMesh>(meshDisplay);
+				_renderDisplay->meshDisplay = std::unique_ptr<SFMLMesh>(meshDisplay);
 
 			}
 			else // Normal texture
@@ -193,7 +193,7 @@ void SFMLSlot::_updateFrame()
 				spriteDisplay->setTexture(*currentTextureData->texture);
 				spriteDisplay->setTextureRect(currentTextureData->textureRect);
 				spriteDisplay->setOrigin({ 0.f, spriteDisplay->getLocalBounds().height });
-				_renderDisplay->_spriteDisplay = std::move(spriteDisplay);
+				_renderDisplay->spriteDisplay = std::move(spriteDisplay);
 			}
 
 			_visibleDirty = true;
@@ -214,7 +214,7 @@ void SFMLSlot::_updateMesh()
 	const auto textureData = static_cast<SFMLTextureData*>(_textureData);
 	const auto meshData = _meshData;
 	const auto weightData = meshData->weight;
-	const auto meshDisplay = _renderDisplay->_meshDisplay.get();
+	const auto meshDisplay = _renderDisplay->meshDisplay.get();
 
 	if (!textureData || meshDisplay->texture != textureData->texture)
 	{
@@ -269,10 +269,7 @@ void SFMLSlot::_updateMesh()
 			for (auto vert : meshDisplay->verticesInTriagles[i])
 			{
 				auto& vertexPosition = vertsDisplay[vert].position;
-				sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
-
 				vertexPosition = { xG, yG };
-				vertexPosition += pos;
 			}
 		}
 	}
@@ -300,10 +297,7 @@ void SFMLSlot::_updateMesh()
 			for (auto vert : meshDisplay->verticesInTriagles[iH])
 			{
 				auto& vertexPosition = vertsDisplay[vert].position;
-				sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
-
 				vertexPosition = { xG, yG };
-				vertexPosition += pos;
 			}
 		}
 	}
@@ -313,11 +307,7 @@ void SFMLSlot::_updateTransform(bool isSkinnedMesh)
 {
 	if (isSkinnedMesh)
 	{
-		auto matrix = sf::Transform(1.f, 0.f, 0.f,
-									0.f, 1.f, 0.f,
-									0.f, 0.f, 1.f);
-
-		_renderDisplay->matrix = matrix;
+		_renderDisplay->setMatrix(Matrix(), sf::Vector2f(), _textureScale);
 	}
 	else
 	{
@@ -344,15 +334,7 @@ void SFMLSlot::_updateTransform(bool isSkinnedMesh)
 			pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
 		}
 
-		pos += static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
-
-		auto matrix = sf::Transform(globalTransformMatrix.a * _textureScale, -globalTransformMatrix.c * _textureScale, pos.x * _textureScale,
-									globalTransformMatrix.b * _textureScale, -globalTransformMatrix.d * _textureScale, pos.y * _textureScale,
-									0.f, 0.f, 1.f);
-					
-		matrix.scale(1.f, -1.f);
-
-		_renderDisplay->matrix = matrix;
+		_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale);
 	}
 }
 

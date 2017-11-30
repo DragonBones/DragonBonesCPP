@@ -43,6 +43,11 @@ public:
 	SFMLArmatureDisplay* buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string& textureAtlasName = "") const;
 	sf::Texture* getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName = "") const;
 
+	void addSoundEventListener(const std::function<void(EventObject*)>& listener)
+	{
+		_soundEventDispatcher->addDBEventListener(EventObject::SOUND_EVENT, listener);
+	}
+
 	void update(float lastUpdate);
 
 	std::vector<SFMLTextureData*> getTexturesData(DragonBonesData* dragonBonesData, const std::string& folderPath);

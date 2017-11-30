@@ -24,7 +24,7 @@ protected:
 	Armature*									_armature;
 	SFMLEventDispatcher							_dispatcher;
 
-	sf::Vector2f								_pos;
+	sf::Vector2f								_position;
 
 public:
 	SFMLArmatureDisplay();
@@ -44,8 +44,8 @@ public:
 	Armature* getArmature() const override { return _armature; }
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
 
-	void setPosition(const sf::Vector2f& pos) { _pos = pos; }
-	auto& getPosition() { return _pos; }
+	void setPosition(const sf::Vector2f& pos) { _position = pos; }
+	auto& getPosition() { return _position; }
 
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
