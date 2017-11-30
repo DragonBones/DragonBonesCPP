@@ -15,7 +15,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SFMLDisplay
+class SFMLDisplay : public sf::Drawable
 {
 public:
 	std::unique_ptr<SFMLMesh>		_meshDisplay;
@@ -36,7 +36,8 @@ public:
 
 	~SFMLDisplay() = default;
 
-	void render(sf::RenderTarget& window, sf::RenderStates states)
+protected:
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		if (visible)
 		{
@@ -44,10 +45,10 @@ public:
 			states.transform *= matrix;
 
 			if (_spriteDisplay)
-				window.draw(*_spriteDisplay, states);
+				target.draw(*_spriteDisplay, states);
 
 			if (_meshDisplay)
-				_meshDisplay->render(window, states);
+				target.draw(*_meshDisplay, states);
 		}
 	}
 };

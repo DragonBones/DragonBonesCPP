@@ -66,7 +66,7 @@ int main()
         factory.update(deltaTime);
 
         window.clear();
-        armatureDisplay->render(window, sf::RenderStates::Default);
+        window.draw(*armatureDisplay);
         window.display();
     }
 

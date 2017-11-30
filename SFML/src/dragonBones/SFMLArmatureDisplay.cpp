@@ -62,7 +62,7 @@ void SFMLArmatureDisplay::dispose(bool disposeProxy)
 	}
 }
 
-void SFMLArmatureDisplay::render(sf::RenderTarget& window, sf::RenderStates states)
+void SFMLArmatureDisplay::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	auto arr = _armature->getSlots();
 
@@ -78,7 +78,7 @@ void SFMLArmatureDisplay::render(sf::RenderTarget& window, sf::RenderStates stat
 
 		SFMLDisplay* wrapperDisplay = static_cast<SFMLDisplay*>(display);
 
-		wrapperDisplay->render(window, states);
+		target.draw(*wrapperDisplay, states);
 	}
 }
 

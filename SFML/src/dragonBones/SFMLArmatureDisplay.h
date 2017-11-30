@@ -12,12 +12,13 @@
 #include <dragonBones\DragonBonesHeaders.h>
 
 #include <SFML\Graphics\RenderWindow.hpp>
+#include <SFML\Graphics\Drawable.hpp>
 
 #include "SFMLEventDispatcher.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SFMLArmatureDisplay : public IArmatureProxy
+class SFMLArmatureDisplay : public IArmatureProxy, public sf::Drawable
 {
 protected:
 	Armature*									_armature;
@@ -46,7 +47,8 @@ public:
 	void setPosition(const sf::Vector2f& pos) { _pos = pos; }
 	auto& getPosition() { return _pos; }
 
-	void render(sf::RenderTarget& window, sf::RenderStates states);
+protected:
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 DRAGONBONES_NAMESPACE_END

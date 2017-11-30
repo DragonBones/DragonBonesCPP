@@ -13,7 +13,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SFMLMesh
+class SFMLMesh : public sf::Drawable
 {
 public:
 	const sf::Texture*									texture;
@@ -30,7 +30,8 @@ public:
 
 	~SFMLMesh() = default;
 
-	void render(sf::RenderTarget& target, sf::RenderStates states)
+protected:
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		if (texture != nullptr && verticesDisplay.size() > 0)
 		{
