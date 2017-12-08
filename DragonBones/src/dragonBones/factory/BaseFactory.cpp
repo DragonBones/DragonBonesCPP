@@ -543,7 +543,7 @@ bool BaseFactory::replaceSkin(Armature* armature, SkinData* skin, bool isOverrid
 
     for (const auto slot : armature->getSlots()) 
     {
-        if (std::find(exclude->cbegin(), exclude->cend(), slot->getName()) != exclude->cend()) 
+        if (exclude != nullptr && std::find(exclude->cbegin(), exclude->cend(), slot->getName()) != exclude->cend()) 
         {
             continue;
         }
