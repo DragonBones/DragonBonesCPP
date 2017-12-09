@@ -125,6 +125,9 @@ std::vector<SFMLTextureData*> SFMLFactory::getTexturesData(DragonBonesData* drag
 
 TextureAtlasData* SFMLFactory::createTextureAtlasData(std::vector<SFMLTextureData*>& texturesData, DragonBonesData* dragonBonesData)
 {
+	if (dragonBonesData == nullptr)
+		return nullptr;
+
 	auto textureAtlasData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureAtlasData>();
 	
 	textureAtlasData->name = dragonBonesData->name;
