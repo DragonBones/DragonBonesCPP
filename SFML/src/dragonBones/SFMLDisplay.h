@@ -64,8 +64,8 @@ protected:
 		if (visible)
 		{
 			states.blendMode = blendMode;
-			states.transform *= sf::Transform(matrix.a * textureScale, matrix.c * textureScale, (offset.x + position.x) * textureScale,
-											  matrix.b * textureScale, matrix.d * textureScale, (offset.y + position.y) * textureScale,
+			states.transform *= sf::Transform(matrix.a * textureScale, matrix.c * textureScale, offset.x + position.x,
+											  matrix.b * textureScale, matrix.d * textureScale, offset.y + position.y,
 											  0.f, 0.f, 1.f);
 
 			if (spriteDisplay)
