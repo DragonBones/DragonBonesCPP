@@ -4,7 +4,6 @@
 #include "Armature.h"
 #include "Slot.h"
 #include "Constraint.h"
-#include "cocos2d.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
