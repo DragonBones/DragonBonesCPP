@@ -32,12 +32,14 @@ void SFMLSlot::_updateBlendMode()
 			case BlendMode::Normal:
 				_renderDisplay->blendMode = sf::BlendMode();
 				break;
-
 			case BlendMode::Add:
 				_renderDisplay->blendMode = sf::BlendAdd;
 				break;
-
+			case BlendMode::Multiply:
+				_renderDisplay->blendMode = sf::BlendMultiply;
+				break;
 			default:
+				_renderDisplay->blendMode = sf::BlendMode();
 				break;
 		}
 	}
