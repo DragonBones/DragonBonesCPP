@@ -173,7 +173,7 @@ void IKConstraint::invalidUpdate()
 {
     _root->invalidUpdate();
 
-    if (_root != nullptr)
+    if (_bone != nullptr)
     {
         _bone->invalidUpdate();
     }
