@@ -1352,8 +1352,9 @@ unsigned JSONDataParser::_parseZOrderFrame(const rapidjson::Value& rawData, unsi
                 {
                     unchanged[unchangedIndex++] = originalIndex++;
                 }
-
-                zOrders[originalIndex + zOrderOffset] = originalIndex++;
+                
+                unsigned index = originalIndex + zOrderOffset;
+                zOrders[index] = originalIndex++;
             }
 
             while (originalIndex < slotCount) 
