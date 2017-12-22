@@ -56,7 +56,7 @@ void AnimationState::_onClear()
     name = "";
     group = "";
 
-    _timelineDirty = true;
+    _timelineDirty = 2;
     _playheadState = 0;
     _fadeState = -1;
     _subFadeState = -1;
@@ -79,6 +79,60 @@ void AnimationState::_onClear()
 }
 
 void AnimationState::_updateTimelines()
+{
+    { // Update constraint timelines.
+        std::map<std::string, std::vector<ConstraintTimelineState*>> constraintTimelines;
+        for (const auto timeline : _constraintTimelines) // Create constraint timelines map.
+        {
+            constraintTimelines[timeline->constraint->getName()].push_back(timeline);
+        }
+
+        for (const auto constraint : _armature->_constraints) 
+        {
+            const auto& timelineName = constraint->getName();
+            const auto timelineDatas = _animationData->getConstraintTimelines(timelineName);
+            const auto iterator = constraintTimelines.find(timelineName);
+
+            if (iterator != constraintTimelines.end()) // Remove constraint timeline from map.
+            {
+                constraintTimelines.erase(iterator);
+            }
+            else  // Create new constraint timeline.
+            {
+                if (timelineDatas != nullptr) 
+                {
+                    for (const auto timelineData : *timelineDatas) 
+                    {
+                        switch (timelineData->type) 
+                        {
+                            case TimelineType::IKConstraint:
+                            {
+                                const auto timeline = BaseObject::borrowObject<IKConstraintTimelineState>();
+                                timeline->constraint = constraint;
+                                timeline->init(_armature, this, timelineData);
+                                _constraintTimelines.push_back(timeline);
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+                    }
+                }
+                else if (resetToPose) // Pose timeline.
+                {
+                    const auto timeline = BaseObject::borrowObject<IKConstraintTimelineState>();
+                    timeline->constraint = constraint;
+                    timeline->init(_armature, this, nullptr);
+                    _constraintTimelines.push_back(timeline);
+                    _poseTimelines.push_back(std::make_pair(timeline, BaseTimelineType::Constraint));
+                }
+            }
+        }
+    }
+}
+
+void AnimationState::_updateBoneAndSlotTimelines()
 {
     { // Update bone timelines.
         std::map<std::string, std::vector<BoneTimelineState*>> boneTimelines;
@@ -112,49 +166,49 @@ void AnimationState::_updateTimelines()
                     {
                         switch (timelineData->type)
                         {
-                        case TimelineType::BoneAll:
-                        {
-                            const auto timeline = BaseObject::borrowObject<BoneAllTimelineState>();
-                            timeline->bone = bone;
-                            timeline->bonePose = bonePose;
-                            timeline->init(_armature, this, timelineData);
-                            _boneTimelines.push_back(timeline);
-                            break;
-                        }
+                            case TimelineType::BoneAll:
+                            {
+                                const auto timeline = BaseObject::borrowObject<BoneAllTimelineState>();
+                                timeline->bone = bone;
+                                timeline->bonePose = bonePose;
+                                timeline->init(_armature, this, timelineData);
+                                _boneTimelines.push_back(timeline);
+                                break;
+                            }
 
-                        case TimelineType::BoneTranslate:
-                        {
-                            const auto timeline = BaseObject::borrowObject<BoneTranslateTimelineState>();
-                            timeline->bone = bone;
-                            timeline->bonePose = bonePose;
-                            timeline->init(_armature, this, timelineData);
-                            _boneTimelines.push_back(timeline);
-                            break;
-                        }
+                            case TimelineType::BoneTranslate:
+                            {
+                                const auto timeline = BaseObject::borrowObject<BoneTranslateTimelineState>();
+                                timeline->bone = bone;
+                                timeline->bonePose = bonePose;
+                                timeline->init(_armature, this, timelineData);
+                                _boneTimelines.push_back(timeline);
+                                break;
+                            }
 
-                        case TimelineType::BoneRotate:
-                        {
-                            const auto timeline = BaseObject::borrowObject<BoneRotateTimelineState>();
-                            timeline->bone = bone;
-                            timeline->bonePose = bonePose;
-                            timeline->init(_armature, this, timelineData);
-                            _boneTimelines.push_back(timeline);
-                            break;
-                        }
+                            case TimelineType::BoneRotate:
+                            {
+                                const auto timeline = BaseObject::borrowObject<BoneRotateTimelineState>();
+                                timeline->bone = bone;
+                                timeline->bonePose = bonePose;
+                                timeline->init(_armature, this, timelineData);
+                                _boneTimelines.push_back(timeline);
+                                break;
+                            }
 
-                        case TimelineType::BoneScale:
-                        {
-                            const auto timeline = BaseObject::borrowObject<BoneScaleTimelineState>();
-                            timeline->bone = bone;
-                            timeline->bonePose = bonePose;
-                            timeline->init(_armature, this, timelineData);
-                            _boneTimelines.push_back(timeline);
-                            break;
-                        }
+                            case TimelineType::BoneScale:
+                            {
+                                const auto timeline = BaseObject::borrowObject<BoneScaleTimelineState>();
+                                timeline->bone = bone;
+                                timeline->bonePose = bonePose;
+                                timeline->init(_armature, this, timelineData);
+                                _boneTimelines.push_back(timeline);
+                                break;
+                            }
 
-                        default:
-                            break;
-                        }
+                            default:
+                                break;
+                            }
                     }
                 }
                 else if (resetToPose) // Pose timeline.
@@ -215,39 +269,39 @@ void AnimationState::_updateTimelines()
                     {
                         switch (timelineData->type)
                         {
-                        case TimelineType::SlotDisplay:
-                        {
-                            const auto timeline = BaseObject::borrowObject<SlotDislayTimelineState>();
-                            timeline->slot = slot;
-                            timeline->init(_armature, this, timelineData);
-                            _slotTimelines.push_back(timeline);
-                            displayIndexFlag = true;
-                            break;
-                        }
+                            case TimelineType::SlotDisplay:
+                            {
+                                const auto timeline = BaseObject::borrowObject<SlotDislayTimelineState>();
+                                timeline->slot = slot;
+                                timeline->init(_armature, this, timelineData);
+                                _slotTimelines.push_back(timeline);
+                                displayIndexFlag = true;
+                                break;
+                            }
 
-                        case TimelineType::SlotColor:
-                        {
-                            const auto timeline = BaseObject::borrowObject<SlotColorTimelineState>();
-                            timeline->slot = slot;
-                            timeline->init(_armature, this, timelineData);
-                            _slotTimelines.push_back(timeline);
-                            colorFlag = true;
-                            break;
-                        }
+                            case TimelineType::SlotColor:
+                            {
+                                const auto timeline = BaseObject::borrowObject<SlotColorTimelineState>();
+                                timeline->slot = slot;
+                                timeline->init(_armature, this, timelineData);
+                                _slotTimelines.push_back(timeline);
+                                colorFlag = true;
+                                break;
+                            }
 
-                        case TimelineType::SlotFFD:
-                        {
-                            const auto timeline = BaseObject::borrowObject<SlotFFDTimelineState>();
-                            timeline->slot = slot;
-                            timeline->init(_armature, this, timelineData);
-                            _slotTimelines.push_back(timeline);
-                            ffdFlags.push_back(timeline->meshOffset);
-                            break;
-                        }
+                            case TimelineType::SlotFFD:
+                            {
+                                const auto timeline = BaseObject::borrowObject<SlotFFDTimelineState>();
+                                timeline->slot = slot;
+                                timeline->init(_armature, this, timelineData);
+                                _slotTimelines.push_back(timeline);
+                                ffdFlags.push_back(timeline->meshOffset);
+                                break;
+                            }
 
-                        default:
-                            break;
-                        }
+                            default:
+                                break;
+                            }
                     }
                 }
 
@@ -300,57 +354,6 @@ void AnimationState::_updateTimelines()
             {
                 _slotTimelines.erase(std::find(_slotTimelines.begin(), _slotTimelines.end(), timeline));
                 timeline->returnToPool();
-            }
-        }
-    }
-
-    { // Update constraint timelines.
-        std::map<std::string, std::vector<ConstraintTimelineState*>> constraintTimelines;
-        for (const auto timeline : _constraintTimelines) // Create constraint timelines map.
-        {
-            constraintTimelines[timeline->constraint->getName()].push_back(timeline);
-        }
-
-        for (const auto constraint : _armature->_constraints) 
-        {
-            const auto& timelineName = constraint->getName();
-            const auto timelineDatas = _animationData->getConstraintTimelines(timelineName);
-            const auto iterator = constraintTimelines.find(timelineName);
-
-            if (iterator != constraintTimelines.end()) // Remove constraint timeline from map.
-            {
-                constraintTimelines.erase(iterator);
-            }
-            else  // Create new constraint timeline.
-            {
-                if (timelineDatas != nullptr) 
-                {
-                    for (const auto timelineData : *timelineDatas) 
-                    {
-                        switch (timelineData->type) 
-                        {
-                            case TimelineType::IKConstraint:
-                            {
-                                const auto timeline = BaseObject::borrowObject<IKConstraintTimelineState>();
-                                timeline->constraint = constraint;
-                                timeline->init(_armature, this, timelineData);
-                                _constraintTimelines.push_back(timeline);
-                                break;
-                            }
-
-                            default:
-                                break;
-                        }
-                    }
-                }
-                else if (resetToPose) // Pose timeline.
-                {
-                    const auto timeline = BaseObject::borrowObject<IKConstraintTimelineState>();
-                    timeline->constraint = constraint;
-                    timeline->init(_armature, this, nullptr);
-                    _constraintTimelines.push_back(timeline);
-                    _poseTimelines.push_back(std::make_pair(timeline, BaseTimelineType::Constraint));
-                }
             }
         }
     }
@@ -413,46 +416,6 @@ void AnimationState::_advanceFadeTime(float passedTime)
             eventObject->animationState = this;
             _armature->_dragonBones->bufferEvent(eventObject);
         }
-    }
-}
-
-void AnimationState::_blendBoneTimline(BoneTimelineState * timeline) const
-{
-    auto boneWeight = _weightResult > 0.0f ? _weightResult : -_weightResult;
-    const auto bone = timeline->bone;
-    const auto bonePose = &(timeline->bonePose->result);
-    const auto animationPose = &(bone->animationPose);
-
-    if (!bone->_blendDirty) 
-    {
-        bone->_blendDirty = true;
-        bone->_blendLayer = layer;
-        bone->_blendLayerWeight = boneWeight;
-        bone->_blendLeftWeight = 1.0f;
-        //
-        animationPose->x = bonePose->x * boneWeight;
-        animationPose->y = bonePose->y * boneWeight;
-        animationPose->rotation = bonePose->rotation * boneWeight;
-        animationPose->skew = bonePose->skew * boneWeight;
-        animationPose->scaleX = (bonePose->scaleX - 1.0f) * boneWeight + 1.0f;
-        animationPose->scaleY = (bonePose->scaleY - 1.0f) * boneWeight + 1.0f;
-    }
-    else 
-    {
-        boneWeight *= bone->_blendLeftWeight;
-        bone->_blendLayerWeight += boneWeight;
-        //
-        animationPose->x += bonePose->x * boneWeight;
-        animationPose->y += bonePose->y * boneWeight;
-        animationPose->rotation += bonePose->rotation * boneWeight;
-        animationPose->skew += bonePose->skew * boneWeight;
-        animationPose->scaleX += (bonePose->scaleX - 1.0f) * boneWeight;
-        animationPose->scaleY += (bonePose->scaleY - 1.0f) * boneWeight;
-    }
-
-    if (_fadeState != 0 || _subFadeState != 0)
-    {
-        bone->_transformDirty = true;
     }
 }
 
@@ -567,10 +530,15 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
         _time += passedTime;
     }
 
-    if (_timelineDirty) 
+    if (_timelineDirty != 0) 
     {
-        _timelineDirty = false;
-        _updateTimelines();
+        if (_timelineDirty == 2) 
+        {
+            _updateTimelines();
+        }
+
+        _timelineDirty = 0;
+        _updateBoneAndSlotTimelines();
     }
 
     if (weight == 0.0f) 
@@ -626,59 +594,21 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
     {
         if (isUpdateBoneTimeline) // Update bone timelines.
         {
-            Bone* bone = nullptr;
-            BoneTimelineState* prevTimeline = nullptr;
-
             for (std::size_t i = 0, l = _boneTimelines.size(); i < l; ++i) 
             {
                 const auto timeline = _boneTimelines[i];
-                if (bone != timeline->bone) // Blend bone pose.
-                { 
-                    if (bone != nullptr) 
-                    {
-                        _blendBoneTimline(prevTimeline);
-                        if (bone->_blendDirty)
-                        {
-                            if (bone->_blendLeftWeight > 0.0f) 
-                            {
-                                if ((unsigned)bone->_blendLayer != layer)
-                                {
-                                    if (bone->_blendLayerWeight >= bone->_blendLeftWeight) {
-                                        bone->_blendLeftWeight = 0.0f;
-                                        bone = nullptr;
-                                    }
-                                    else 
-                                    {
-                                        bone->_blendLayer = layer;
-                                        bone->_blendLeftWeight -= bone->_blendLayerWeight;
-                                        bone->_blendLayerWeight = 0.0f;
-                                    }
-                                }
-                            }
-                            else 
-                            {
-                                bone = nullptr;
-                            }
-                        }
-                    }
 
-                    bone = timeline->bone;
+                if (timeline->playState <= 0) 
+                {
+                    timeline->update(time);
                 }
 
-                if (bone != nullptr)
+                if (i == l - 1 || timeline->bone != _boneTimelines[i + 1]->bone) 
                 {
-                    if (timeline->playState <= 0)
+                    const auto state = timeline->bone->_blendState.update(_weightResult, layer);
+                    if (state != 0) 
                     {
-                        timeline->update(time);
-                    }
-
-                    if (i == l - 1)
-                    {
-                        _blendBoneTimline(timeline);
-                    }
-                    else 
-                    {
-                        prevTimeline = timeline;
+                        timeline->blend(state);
                     }
                 }
             }
@@ -695,7 +625,7 @@ void AnimationState::advanceTime(float passedTime, float cacheFrameRate)
                     displayController.empty() ||
                     displayController == name ||
                     displayController == group
-                    )
+                )
                 {
                     if (timeline->playState <= 0)
                     {
@@ -840,7 +770,7 @@ void AnimationState::addBoneMask(const std::string& name, bool recursive)
         }
     }
 
-    _timelineDirty = true;
+    _timelineDirty = 1;
 }
 
 void AnimationState::removeBoneMask(const std::string& name, bool recursive)
@@ -886,13 +816,13 @@ void AnimationState::removeBoneMask(const std::string& name, bool recursive)
         }
     }
 
-    _timelineDirty = true;
+    _timelineDirty = 1;
 }
 
 void AnimationState::removeAllBoneMask()
 {
     _boneMask.clear();
-    _timelineDirty = true;
+    _timelineDirty = 1;
 }
 
 bool AnimationState::isPlaying() const
@@ -955,4 +885,58 @@ void BonePose::_onClear()
     result.identity();
 }
 
+int BlendState::update(float weight, int p_layer)
+{
+    if (dirty)
+    {
+        if (leftWeight > 0.0f)
+        {
+            if (layer != p_layer) 
+            {
+                if (layerWeight >= leftWeight) 
+                {
+                    leftWeight = 0.0f;
+
+                    return 0;
+                }
+                else 
+                {
+                    layer = p_layer;
+                    leftWeight -= layerWeight;
+                    layerWeight = 0.0f;
+                }
+            }
+        }
+        else 
+        {
+            return 0;
+        }
+
+        weight *= leftWeight;
+        layerWeight += weight;
+        blendWeight = weight;
+
+        return 2;
+    }
+
+    dirty = true;
+    layer = p_layer;
+    layerWeight = weight;
+    leftWeight = 1.0f;
+    blendWeight = weight;
+
+    return 1;
+}
+
+void BlendState::clear()
+{
+    dirty = false;
+    layer = 0;
+    leftWeight = 0.0f;
+    layerWeight = 0.0f;
+    blendWeight = 0.0f;
+}
+
+
 DRAGONBONES_NAMESPACE_END
+

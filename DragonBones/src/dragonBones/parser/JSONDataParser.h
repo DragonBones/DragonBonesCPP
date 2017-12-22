@@ -162,11 +162,12 @@ private:
     std::vector<float> _frameFloatArray;
     std::vector<std::int16_t> _frameArray;
     std::vector<std::uint16_t> _timelineArray;
+    std::vector<const rapidjson::Value*> _cacheRawMeshes;
+    std::vector<MeshDisplayData*> _cacheMeshes;
     std::vector<ActionFrame> _actionFrames;
     std::map<std::string, const rapidjson::Value*> _weightSlotPose;
     std::map<std::string, const rapidjson::Value*> _weightBonePoses;
     std::map<std::string, std::vector<BoneData*>> _cacheBones;
-    std::map<std::string, std::map<std::string, std::map<std::string, std::vector<MeshDisplayData*>>>> _cacheMeshs;
     std::map<std::string, std::vector<ActionData*>> _slotChildActions;
 
 public:
@@ -198,11 +199,12 @@ public:
         _frameFloatArray(),
         _frameArray(),
         _timelineArray(),
+        _cacheMeshes(),
+        _cacheRawMeshes(),
         _actionFrames(),
         _weightSlotPose(),
         _weightBonePoses(),
         _cacheBones(),
-        _cacheMeshs(),
         _slotChildActions()
     {
     }

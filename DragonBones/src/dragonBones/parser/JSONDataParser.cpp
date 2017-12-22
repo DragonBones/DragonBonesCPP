@@ -264,31 +264,28 @@ ArmatureData* JSONDataParser::_parseArmature(const rapidjson::Value& rawData, fl
         }
     }
 
-    for (const auto& skinsPair : _cacheMeshs)
-    {
-        const auto skin = armature->getSkin(skinsPair.first);
-        if (skin == nullptr) 
-        {
+    for (std::size_t i = 0, l = _cacheRawMeshes.size(); i < l; ++i) // Link mesh.
+    { 
+        const auto rawData = _cacheRawMeshes[i];
+        const auto& shareName = _getString(*rawData, SHARE, "");
+        if (shareName.empty()) {
             continue;
         }
 
-        for (const auto& slotsPair : skinsPair.second)
+        auto& skinName = _getString(*rawData, SKIN, DEFAULT_NAME);
+        if (skinName.empty()) //
         {
-            for (const auto& meshsPair : slotsPair.second)
-            {
-                const auto shareMesh = static_cast<MeshDisplayData*>(skin->getDisplay(slotsPair.first, meshsPair.first));
-                if (shareMesh == nullptr)
-                {
-                    continue;
-                }
-
-                for (const auto meshDisplay : meshsPair.second) 
-                {
-                    meshDisplay->offset = shareMesh->offset;
-                    meshDisplay->weight = shareMesh->weight;
-                }
-            }
+            skinName = DEFAULT_NAME;
         }
+
+        const auto shareMesh = armature->getMesh(skinName, "", shareName); // TODO slot;
+        if (shareMesh == nullptr) {
+            continue; // Error.
+        }
+
+        const auto mesh = _cacheMeshes[i];
+        mesh->offset = shareMesh->offset;
+        mesh->weight = shareMesh->weight;
     }
 
     if (rawData.HasMember(ANIMATION))
@@ -330,12 +327,13 @@ ArmatureData* JSONDataParser::_parseArmature(const rapidjson::Value& rawData, fl
 
     // Clear helper.
     _rawBones.clear();
+    _cacheRawMeshes.clear();
+    _cacheMeshes.clear();
     _armature = nullptr;
 
     _weightSlotPose.clear();
     _weightBonePoses.clear();
     _cacheBones.clear();
-    _cacheMeshs.clear();
     _slotChildActions.clear();
 
     return armature;
@@ -460,7 +458,14 @@ SkinData * JSONDataParser::_parseSkin(const rapidjson::Value& rawData)
                     for (std::size_t j = 0, lJ = rawDisplays.Size(); j < lJ; ++j)
                     {
                         const auto& rawDisplay = rawDisplays[j];
-                        skin->addDisplay(slotName, _parseDisplay(rawDisplay));
+                        if (!rawDisplay.IsNull()) 
+                        {
+                            skin->addDisplay(slotName, _parseDisplay(rawDisplay));
+                        }
+                        else 
+                        {
+                            skin->addDisplay(slotName, nullptr);
+                        }
                     }
                 }
 
@@ -539,26 +544,15 @@ DisplayData* JSONDataParser::_parseDisplay(const rapidjson::Value& rawData)
 
         case dragonBones::DisplayType::Mesh:
         {
-            const auto& shareName = _getString(rawData, SHARE, "");
             const auto meshDisplay = BaseObject::borrowObject<MeshDisplayData>();
+            meshDisplay->inheritDeform = _getBoolean(rawData, INHERIT_DEFORM, true);
             meshDisplay->name = name;
             meshDisplay->path = !path.empty() ? path : name;
-            meshDisplay->inheritAnimation = _getBoolean(rawData, INHERIT_FFD, true);
-            _parsePivot(rawData, *meshDisplay);
 
-            if (!shareName.empty())
+            if (rawData.HasMember(SHARE))
             {
-                auto skinName = _getString(rawData, SKIN, "");
-                const auto& slotName = _slot->name;
-
-                if (skinName.empty())
-                {
-                    skinName = DEFAULT_NAME;
-                }
-
-                auto& slots = _cacheMeshs[skinName];
-                auto& meshs = slots[slotName];
-                meshs[shareName].push_back(meshDisplay);
+                _cacheRawMeshes.push_back(&rawData);
+                _cacheMeshes.push_back(meshDisplay);
             }
             else
             {
@@ -585,12 +579,9 @@ DisplayData* JSONDataParser::_parseDisplay(const rapidjson::Value& rawData)
         }
     }
 
-    if (display != nullptr)
+    if (display != nullptr && rawData.HasMember(TRANSFORM))
     {
-        if (rawData.HasMember(TRANSFORM))
-        {
-            _parseTransform(rawData[TRANSFORM], display->transform, _armature->scale);
-        }
+        _parseTransform(rawData[TRANSFORM], display->transform, _armature->scale);
     }
 
     return display;
@@ -889,11 +880,11 @@ AnimationData* JSONDataParser::_parseAnimation(const rapidjson::Value& rawData)
         for (std::size_t i = 0, l = rawTimelines.Size(); i < l; ++i)
         {
             const auto& rawTimeline = rawTimelines[i];
-            auto skinName = _getString(rawTimeline, SKIN, "");
+            auto skinName = _getString(rawTimeline, SKIN, DEFAULT_NAME);
             const auto& slotName = _getString(rawTimeline, SLOT, "");
             const auto& displayName = _getString(rawTimeline, NAME, "");
 
-            if (skinName.empty())
+            if (skinName.empty()) //
             {
                 skinName = DEFAULT_NAME;
             }
@@ -1666,11 +1657,11 @@ unsigned JSONDataParser::_parseSlotFFDFrame(const rapidjson::Value& rawData, uns
     {
         const auto frameIntOffset = _frameIntArray.size();
         _frameIntArray.resize(_frameIntArray.size() + 1 + 1 + 1 + 1 + 1);
-        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineMeshOffset] = _mesh->offset;
-        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFFDCount] = _frameFloatArray.size() - frameFloatOffset;
-        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueCount] = _frameFloatArray.size() - frameFloatOffset;
-        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueOffset] = 0;
-        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFloatOffset] = frameFloatOffset;
+        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformMeshOffset] = _mesh->offset;
+        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformCount] = _frameFloatArray.size() - frameFloatOffset;
+        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformValueCount] = _frameFloatArray.size() - frameFloatOffset;
+        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformValueOffset] = 0;
+        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformFloatOffset] = frameFloatOffset;
         _timelineArray[_timeline->offset + (unsigned)BinaryOffset::TimelineFrameValueCount] = frameIntOffset - _animation->frameIntOffset;
     }
 

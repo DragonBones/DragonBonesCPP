@@ -146,8 +146,8 @@ void IKConstraint::init(ConstraintData* constraintData, Armature* armature)
 
     {
         const auto ikConstraintData = static_cast<IKConstraintData*>(_constraintData);
-        _scaleEnabled = ikConstraintData->scaleEnabled;
         _bendPositive = ikConstraintData->bendPositive;
+        _scaleEnabled = ikConstraintData->scaleEnabled;
         _weight = ikConstraintData->weight;
     }
 

@@ -288,6 +288,10 @@ public:
         return mapFind(skins, name);
     }
     /**
+     * @private
+     */
+    MeshDisplayData* getMesh(const std::string& skinName, const std::string& slotName, const std::string& meshName) const;
+    /**
      * - Get a specific animation data.
      * @param name - The animation name.
      * @version DragonBones 3.0

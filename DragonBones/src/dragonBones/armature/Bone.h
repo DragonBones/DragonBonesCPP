@@ -25,6 +25,7 @@
 
 #include "TransformObject.h"
 #include "../model/ArmatureData.h"
+#include "../animation/AnimationState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
@@ -83,27 +84,12 @@ public:
      * @internal
      * @private
      */
-    bool _blendDirty;
-    /**
-     * @internal
-     * @private
-     */
     bool _hasConstraint;
     /**
-     * @internal
-     * @private
-     */
-    int _blendLayer;
-    /**
-     * @internal
-     * @private
-     */
-    float _blendLeftWeight;
-    /**
-     * @internal
-     * @private
-     */
-    float _blendLayerWeight;
+    * @internal
+    * @private
+    */
+    BlendState _blendState;
     /**
      * @internal
      * @private

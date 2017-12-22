@@ -117,7 +117,7 @@ protected:
     static const char* INHERIT_SCALE;
     static const char* INHERIT_REFLECTION;
     static const char* INHERIT_ANIMATION;
-    static const char* INHERIT_FFD;
+    static const char* INHERIT_DEFORM;
     static const char* BEND_POSITIVE;
     static const char* CHAIN;
     static const char* WEIGHT;

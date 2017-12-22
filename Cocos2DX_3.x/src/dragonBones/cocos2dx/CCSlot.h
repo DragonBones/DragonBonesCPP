@@ -105,7 +105,11 @@ protected:
     /**
      * @inheritDoc
      */
-    virtual void _updateTransform(bool isSkinnedMesh) override;
+    virtual void _updateTransform() override;
+    /**
+    * @inheritDoc
+    */
+    virtual void _identityTransform() override;
 
 public:
     /**

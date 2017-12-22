@@ -242,40 +242,37 @@ public:
      */
     inline Transform& toMatrix(Matrix& matrix)
     {
-        if (skew != 0.0f || rotation != 0.0f) 
+        if (rotation == 0.0f)
         {
-            matrix.a = std::cos(rotation);
-            matrix.b = std::sin(rotation);
-
-            if (skew == 0.0f) 
-            {
-                matrix.c = -matrix.b;
-                matrix.d = matrix.a;
-            }
-            else 
-            {
-                matrix.c = -std::sin(skew + rotation);
-                matrix.d = std::cos(skew + rotation);
-            }
-
-            if (scaleX != 1.0f) 
-            {
-                matrix.a *= scaleX;
-                matrix.b *= scaleX;
-            }
-
-            if (scaleY != 1.0f) 
-            {
-                matrix.c *= scaleY;
-                matrix.d *= scaleY;
-            }
+            matrix.a = 1.0f;
+            matrix.b = 0.0f;
         }
         else 
         {
-            matrix.a = scaleX;
-            matrix.b = 0.0f;
-            matrix.c = 0.0f;
-            matrix.d = scaleY;
+            matrix.a = std::cos(rotation);
+            matrix.b = std::sin(rotation);
+        }
+
+        if (skew == 0.0f) 
+        {
+            matrix.c = -matrix.b;
+            matrix.d = matrix.a;
+        }
+        else {
+            matrix.c = -std::sin(skew + rotation);
+            matrix.d = std::cos(skew + rotation);
+        }
+
+        if (scaleX != 1.0f) 
+        {
+            matrix.a *= scaleX;
+            matrix.b *= scaleX;
+        }
+
+        if (scaleY != 1.0f) 
+        {
+            matrix.c *= scaleY;
+            matrix.d *= scaleY;
         }
 
         matrix.tx = x;

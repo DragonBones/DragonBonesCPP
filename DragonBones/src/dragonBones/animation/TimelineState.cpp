@@ -651,9 +651,10 @@ void SlotColorTimelineState::_onArriveAtFrame()
         const auto frameIntArray = _frameIntArray;
         const auto valueOffset = _animationData->frameIntOffset + _frameValueOffset + _frameIndex * 1; // ...(timeline value offset)|x|x|(Value offset)|(Next offset)|x|x|...
         int colorOffset = frameIntArray[valueOffset];
+
         if (colorOffset < 0)
         {
-            colorOffset += 32767; // Fixed out of bouds bug. 
+            colorOffset += 65536; // Fixed out of bouds bug. 
         }
 
         _current[0] = intArray[colorOffset++];
@@ -678,7 +679,7 @@ void SlotColorTimelineState::_onArriveAtFrame()
 
             if (colorOffset < 0)
             {
-                colorOffset += 32767; // Fixed out of bouds bug. 
+                colorOffset += 65536; // Fixed out of bouds bug. 
             }
 
             _delta[0] = intArray[colorOffset++] - _current[0];
@@ -805,7 +806,7 @@ void SlotFFDTimelineState::_onClear()
 
     _dirty = false;
     _frameFloatOffset = 0;
-    _ffdCount = 0;
+    _deformCount = 0;
     _valueCount = 0;
     _valueOffset = 0;
     _current.clear();
@@ -876,15 +877,24 @@ void SlotFFDTimelineState::init(Armature* armature, AnimationState* animationSta
     if (_timelineData != nullptr) 
     {
         const auto frameIntOffset = _animationData->frameIntOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameValueCount];
-        meshOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineMeshOffset];
-        _ffdCount = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFFDCount];
-        _valueCount = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueCount];
-        _valueOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineValueOffset];
-        _frameFloatOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::FFDTimelineFloatOffset] + _animationData->frameFloatOffset;
+        meshOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformMeshOffset];
+
+        if (meshOffset < 0) 
+        {
+            meshOffset += 65536; // Fixed out of bouds bug. 
+        }
+
+        _deformCount = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformCount];
+        _valueCount = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformValueCount];
+        _valueOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformValueOffset];
+        _frameFloatOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformFloatOffset] + _animationData->frameFloatOffset;
     }
     else 
     {
-        _valueCount = 0;
+        _deformCount = slot->_deformVertices.size();
+        _valueCount = _deformCount;
+        _valueOffset = 0;
+        _frameFloatOffset = 0;
     }
 
     _current.resize(_valueCount);
@@ -907,78 +917,54 @@ void SlotFFDTimelineState::update(float passedTime)
 
     SlotTimelineState::update(passedTime);
 
+    // Fade animation.
     if (_tweenState != TweenState::None || _dirty) 
     {
-        auto& result = slot->_ffdVertices;
-        if (_timelineData != nullptr)
+        auto& result = slot->_deformVertices;
+
+        if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0)
         {
-            if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0)
+            const auto fadeProgress = pow(_animationState->_fadeProgress, 2);
+
+            for (std::size_t i = 0; i < _deformCount; ++i) 
             {
-                const auto fadeProgress = pow(_animationState->_fadeProgress, 2);
-                for (std::size_t i = 0; i < _ffdCount; ++i) 
+                if (i < _valueOffset) 
                 {
-                    if (i < _valueOffset) 
-                    {
-                        result[i] += (_frameFloatArray[_frameFloatOffset + i] - result[i]) * fadeProgress;
-                    }
-                    else if (i < _valueOffset + _valueCount)
-                    {
-                        result[i] += (_result[i - _valueOffset] - result[i]) * fadeProgress;
-                    }
-                    else 
-                    {
-                        result[i] += (_frameFloatArray[_frameFloatOffset + i - _valueCount] - result[i]) * fadeProgress;
-                    }
+                    result[i] += (_frameFloatArray[_frameFloatOffset + i] - result[i]) * fadeProgress;
                 }
-
-                slot->_meshDirty = true;
-            }
-            else if (_dirty) 
-            {
-                _dirty = false;
-
-                for (std::size_t i = 0; i < _ffdCount; ++i) 
+                else if (i < _valueOffset + _valueCount)
                 {
-                    if (i < _valueOffset) 
-                    {
-                        result[i] = _frameFloatArray[_frameFloatOffset + i];
-                    }
-                    else if (i < _valueOffset + _valueCount)
-                    {
-                        result[i] = _result[i - _valueOffset];
-                    }
-                    else 
-                    {
-                        result[i] = _frameFloatArray[_frameFloatOffset + i - _valueCount];
-                    }
+                    result[i] += (_result[i - _valueOffset] - result[i]) * fadeProgress;
                 }
-
-                slot->_meshDirty = true;
+                else 
+                {
+                    result[i] += (_frameFloatArray[_frameFloatOffset + i - _valueCount] - result[i]) * fadeProgress;
+                }
             }
+
+            slot->_meshDirty = true;
         }
-        else 
+        else if (_dirty) 
         {
-            _ffdCount = result.size(); //
-            if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0) 
-            {
-                const auto fadeProgress = pow(_animationState->_fadeProgress, 4);
-                for (std::size_t i = 0; i < _ffdCount; ++i) {
-                    result[i] += (0.0f - result[i]) * fadeProgress;
-                }
+            _dirty = false;
 
-                slot->_meshDirty = true;
-            }
-            else if (_dirty) 
+            for (std::size_t i = 0; i < _deformCount; ++i) 
             {
-                _dirty = false;
-
-                for (std::size_t i = 0; i < _ffdCount; ++i) 
+                if (i < _valueOffset) 
                 {
-                    result[i] = 0.0f;
+                    result[i] = _frameFloatArray[_frameFloatOffset + i];
                 }
-
-                slot->_meshDirty = true;
+                else if (i < _valueOffset + _valueCount)
+                {
+                    result[i] = _result[i - _valueOffset];
+                }
+                else 
+                {
+                    result[i] = _frameFloatArray[_frameFloatOffset + i - _valueCount];
+                }
             }
+
+            slot->_meshDirty = true;
         }
     }
 }

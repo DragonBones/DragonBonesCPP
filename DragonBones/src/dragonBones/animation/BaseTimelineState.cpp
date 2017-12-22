@@ -288,6 +288,46 @@ void BoneTimelineState::_onClear()
     bonePose = nullptr;
 }
 
+void BoneTimelineState::blend(int state)
+{
+    const auto blendWeight = bone->_blendState.blendWeight;
+    auto& animationPose = bone->animationPose;
+    const auto& result = bonePose->result;
+
+    if (state == 2) 
+    {
+        animationPose.x += result.x * blendWeight;
+        animationPose.y += result.y * blendWeight;
+        animationPose.rotation += result.rotation * blendWeight;
+        animationPose.skew += result.skew * blendWeight;
+        animationPose.scaleX += (result.scaleX - 1.0f) * blendWeight;
+        animationPose.scaleY += (result.scaleY - 1.0f) * blendWeight;
+    }
+    else if (blendWeight != 1.0f) 
+    {
+        animationPose.x = result.x * blendWeight;
+        animationPose.y = result.y * blendWeight;
+        animationPose.rotation = result.rotation * blendWeight;
+        animationPose.skew = result.skew * blendWeight;
+        animationPose.scaleX = (result.scaleX - 1.0f) * blendWeight + 1.0f;
+        animationPose.scaleY = (result.scaleY - 1.0f) * blendWeight + 1.0f;
+    }
+    else 
+    {
+        animationPose.x = result.x;
+        animationPose.y = result.y;
+        animationPose.rotation = result.rotation;
+        animationPose.skew = result.skew;
+        animationPose.scaleX = result.scaleX;
+        animationPose.scaleY = result.scaleY;
+    }
+
+    if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0)
+    {
+        bone->_transformDirty = true;
+    }
+}
+
 void SlotTimelineState::_onClear() 
 {
     TweenTimelineState::_onClear();

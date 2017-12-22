@@ -108,14 +108,15 @@ public: // For WebAssembly.
  * @internal
  * @private
  */
-class MeshDisplayData : public ImageDisplayData
+class MeshDisplayData : public DisplayData
 {
     BIND_CLASS_TYPE_B(MeshDisplayData);
 
 public:
-    bool inheritAnimation;
+    bool inheritDeform;
     unsigned offset;
     WeightData* weight;
+    TextureData* texture;
 
     MeshDisplayData() :
         weight(nullptr)

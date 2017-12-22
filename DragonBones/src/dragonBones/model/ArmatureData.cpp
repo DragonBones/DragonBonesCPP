@@ -262,6 +262,16 @@ void ArmatureData::addAction(ActionData* value, bool isDefault)
     }
 }
 
+MeshDisplayData* ArmatureData::getMesh(const std::string& skinName, const std::string& slotName, const std::string& meshName) const
+{
+    const auto skin = getSkin(skinName);
+    if (skin == nullptr) {
+        return nullptr;
+    }
+
+    return static_cast<MeshDisplayData*>(skin->getDisplay(slotName, meshName));
+}
+
 void BoneData::_onClear()
 {
     if (userData != nullptr)

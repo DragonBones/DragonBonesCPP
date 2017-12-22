@@ -161,8 +161,17 @@ void CCSlot::_updateFrame()
                 polygonInfo.rect = boundsRect; // Copy
                 frameDisplay->setContentSize(boundsRect.size);
 #endif
-                frameDisplay->setNodeToParentTransform(transform);
                 frameDisplay->setPolygonInfo(polygonInfo);
+
+                const auto isSkinned = _meshData->weight != nullptr;
+                if (isSkinned) 
+                {
+                    _identityTransform();
+                }
+                else 
+                {
+                    frameDisplay->setNodeToParentTransform(transform);
+                }
             }
             else // Normal texture.
             {
@@ -189,7 +198,7 @@ void CCSlot::_updateFrame()
 
 void CCSlot::_updateMesh() 
 {
-    const auto hasFFD = !_ffdVertices.empty();
+    const auto hasFFD = !_deformVertices.empty();
     const auto scale = _armature->_armatureData->scale;
     const auto textureData = static_cast<CCTextureData*>(_textureData);
     const auto meshData = _meshData;
@@ -237,8 +246,8 @@ void CCSlot::_updateMesh()
 
                     if (hasFFD) 
                     {
-                        xL += _ffdVertices[iF++];
-                        yL += _ffdVertices[iF++];
+                        xL += _deformVertices[iF++];
+                        yL += _deformVertices[iF++];
                     }
 
                     xG += (matrix.a * xL + matrix.c * yL + matrix.tx) * weight;
@@ -288,8 +297,8 @@ void CCSlot::_updateMesh()
         for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
         {
             const auto iH = i / 2;
-            const auto xG = floatArray[vertexOffset + i] * scale + _ffdVertices[i];
-            const auto yG = floatArray[vertexOffset + i + 1] * scale + _ffdVertices[i + 1];
+            const auto xG = floatArray[vertexOffset + i] * scale + _deformVertices[i];
+            const auto yG = floatArray[vertexOffset + i + 1] * scale + _deformVertices[i + 1];
 
             auto& vertex = vertices[iH];
             auto& vertexPosition = vertex.vertices;
@@ -334,50 +343,51 @@ void CCSlot::_updateMesh()
     meshDisplay->setNodeToParentTransform(transform);
 }
 
-void CCSlot::_updateTransform(bool isSkinnedMesh)
+void CCSlot::_updateTransform()
 {
     static cocos2d::Mat4 transform; 
-    if (isSkinnedMesh) // Identity transform.
-    {
-        transform.m[0] = 1.0f;
-        transform.m[1] = 0.0f;
-        transform.m[4] = 0.0f;
-        transform.m[5] = -1.0f;
-        transform.m[12] = 0.0f;
-        transform.m[13] = 0.0f;
-    }
-    else
-    {
-        transform.m[0] = globalTransformMatrix.a;
-        transform.m[1] = globalTransformMatrix.b;
-        transform.m[4] = -globalTransformMatrix.c;
-        transform.m[5] = -globalTransformMatrix.d;
+    transform.m[0] = globalTransformMatrix.a;
+    transform.m[1] = globalTransformMatrix.b;
+    transform.m[4] = -globalTransformMatrix.c;
+    transform.m[5] = -globalTransformMatrix.d;
 
-        if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
+    if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
+    {
+        if (_textureScale != 1.0f)
         {
-            if (_textureScale != 1.0f)
-            {
-                transform.m[0] *= _textureScale;
-                transform.m[1] *= _textureScale;
-                transform.m[4] *= _textureScale;
-                transform.m[5] *= _textureScale;
-            }
+            transform.m[0] *= _textureScale;
+            transform.m[1] *= _textureScale;
+            transform.m[4] *= _textureScale;
+            transform.m[5] *= _textureScale;
+        }
 
-            transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
-            transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
-        }
-        else if (_childArmature)
-        {
-            transform.m[12] = globalTransformMatrix.tx;
-            transform.m[13] = globalTransformMatrix.ty;
-        }
-        else 
-        {
-            const auto& anchorPoint = _renderDisplay->getAnchorPointInPoints(); // Why anchor point do not work?
-            transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
-            transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
-        }
+        transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
+        transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
     }
+    else if (_childArmature)
+    {
+        transform.m[12] = globalTransformMatrix.tx;
+        transform.m[13] = globalTransformMatrix.ty;
+    }
+    else 
+    {
+        const auto& anchorPoint = _renderDisplay->getAnchorPointInPoints(); // Why anchor point do not work?
+        transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
+        transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
+    }
+
+    _renderDisplay->setNodeToParentTransform(transform);
+}
+
+void CCSlot::_identityTransform()
+{
+    static cocos2d::Mat4 transform;
+    transform.m[0] = 1.0f;
+    transform.m[1] = 0.0f;
+    transform.m[4] = 0.0f;
+    transform.m[5] = -1.0f;
+    transform.m[12] = 0.0f;
+    transform.m[13] = 0.0f;
 
     _renderDisplay->setNodeToParentTransform(transform);
 }

@@ -117,7 +117,7 @@ public:
      * @internal
      * @private
      */
-    std::vector<float> _ffdVertices;
+    std::vector<float> _deformVertices;
     /**
      * @private
      */
@@ -167,10 +167,6 @@ protected:
      * @private
      */
     bool _transformDirty;
-    /**
-     * @private
-     */
-    bool _skinedMeshTransformDirty;
     /**
      * @private
      */
@@ -276,12 +272,19 @@ protected:
     /**
      * @private
      */
-    virtual void _updateTransform(bool isSkinnedMesh) = 0;
-
+    virtual void _updateTransform() = 0;
+    /**
+    * @private
+    */
+    virtual void _identityTransform() = 0;
     /**
      * @private
      */
     bool _isMeshBonesUpdate() const;
+    /**
+    * @private
+    */
+    DisplayData* _getDefaultRawDisplayData(unsigned displayIndex) const;
     /**
      * @private
      */

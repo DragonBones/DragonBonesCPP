@@ -165,6 +165,9 @@ public:
 
 protected:
     virtual void _onClear() override;
+
+public:
+    void blend(int state);
 };
 /**
  * @internal

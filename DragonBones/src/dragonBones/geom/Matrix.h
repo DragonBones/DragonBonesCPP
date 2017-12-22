@@ -279,7 +279,7 @@ public:
         auto y2 = b * xMax + d * yMax + ty;
         auto x3 = a * x + c * yMax + tx;
         auto y3 = b * x + d * yMax + ty;
-        auto tmp = 0;
+        auto tmp = 0.0f;
 
         if (x0 > x1) 
         {

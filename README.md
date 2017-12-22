@@ -5,6 +5,7 @@
 
 ## Supported engines
 * [Cocos2d-x](http://cocos2d-x.org/) - [How to use DragoBones in Cocos2d-x](./Cocos2DX_3.x/)
+* [SFML](https://www.sfml-dev.org/) - [How to use DragoBones in SFML](./SFML/)
 
 ## To learn more about
 * [DragonBones offical website](http://www.dragonbones.com/)

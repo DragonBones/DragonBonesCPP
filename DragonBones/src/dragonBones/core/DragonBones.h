@@ -131,11 +131,11 @@ enum class BinaryOffset
     FrameTweenEasingOrCurveSampleCount = 2,
     FrameCurveSamples = 3,
 
-    FFDTimelineMeshOffset = 0,
-    FFDTimelineFFDCount = 1,
-    FFDTimelineValueCount = 2,
-    FFDTimelineValueOffset = 3,
-    FFDTimelineFloatOffset = 4
+    DeformMeshOffset = 0,
+    DeformCount = 1,
+    DeformValueCount = 2,
+    DeformValueOffset = 3,
+    DeformFloatOffset = 4
 };
 
 /**
@@ -421,8 +421,9 @@ class IKConstraint;
 class IAnimatable;
 class WorldClock;
 class Animation;
-class BonePose;
 class AnimationState;
+class BonePose;
+class BlendState;
 class TimelineState;
 class TweenTimelineState;
 class BoneTimelineState;

@@ -234,6 +234,11 @@ public:
      */
     float _fadeProgress;
     /**
+    * @internal
+    * @private
+    */
+    float _weightResult;
+    /**
      * @internal
      * @private
      */
@@ -245,14 +250,9 @@ public:
     ActionTimelineState* _actionTimeline;
 
 private:
-    /**
-     * @internal
-     * @private
-     */
-    bool _timelineDirty;
+    unsigned _timelineDirty;
     float _fadeTime;
     float _time;
-    float _weightResult;
     std::vector<std::string> _boneMask;
     std::vector<BoneTimelineState*> _boneTimelines;
     std::vector<SlotTimelineState*> _slotTimelines;
@@ -282,8 +282,8 @@ protected:
 
 private:
     void _updateTimelines();
+    void _updateBoneAndSlotTimelines();
     void _advanceFadeTime(float passedTime);
-    void _blendBoneTimline(BoneTimelineState* timeline) const;
 
 public:
     /**
@@ -525,6 +525,22 @@ public:
 
 protected:
     virtual void _onClear() override;
+};
+/**
+* @internal
+* @private
+*/
+class BlendState
+{
+public:
+    bool dirty;
+    int layer;
+    float leftWeight;
+    float layerWeight;
+    float blendWeight;
+
+    int update(float weight, int p_layer);
+    void clear();
 };
 
 DRAGONBONES_NAMESPACE_END

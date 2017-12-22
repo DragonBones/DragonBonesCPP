@@ -58,7 +58,6 @@ void Slot::_onClear()
     _colorDirty = false;
     _meshDirty = false;
     _transformDirty = false;
-    _skinedMeshTransformDirty = false;
     _visible = true;
     _blendMode = BlendMode::Normal;
     _displayIndex = -1;
@@ -69,7 +68,7 @@ void Slot::_onClear()
     _pivotY = 0.0f;
     _localMatrix.identity();
     _colorTransform.identity();
-    _ffdVertices.clear();
+    _deformVertices.clear();
     _displayList.clear();
     _displayDatas.clear();
     _meshBones.clear();
@@ -86,19 +85,61 @@ void Slot::_onClear()
     _cachedFrameIndices = nullptr;
 }
 
+bool Slot::_isMeshBonesUpdate() const
+{
+    for (const auto bone : _meshBones)
+    {
+        if (bone != nullptr && bone->_childrenTransformDirty)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+DisplayData* Slot::_getDefaultRawDisplayData(unsigned displayIndex) const
+{
+    const auto defaultSkin = _armature->_armatureData->defaultSkin;
+    if (defaultSkin != nullptr) 
+    {
+        const auto defaultRawDisplayDatas = defaultSkin->getDisplays(_slotData->name);
+        if (defaultRawDisplayDatas != nullptr) 
+        {
+            return displayIndex < defaultRawDisplayDatas->size() ? (*defaultRawDisplayDatas)[displayIndex] : nullptr;
+        }
+    }
+
+    return nullptr;
+}
+
 void Slot::_updateDisplayData()
 {
     const auto prevDisplayData = _displayData;
     const auto prevTextureData = _textureData;
     const auto prevMeshData = _meshData;
-    const auto rawDisplayData = _displayIndex >= 0 && _rawDisplayDatas != nullptr && (unsigned)_displayIndex < _rawDisplayDatas->size() ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
+    DisplayData* rawDisplayData = nullptr;
 
-    if (_displayIndex >= 0 && (unsigned)_displayIndex < _displayDatas.size())
+    if (_displayIndex >= 0)
     {
-        _displayData = _displayDatas[_displayIndex];
+        if (_rawDisplayDatas != nullptr) 
+        {
+            rawDisplayData = (unsigned)_displayIndex < _rawDisplayDatas->size() ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
+        }
+
+        if (rawDisplayData == nullptr)
+        {
+            rawDisplayData = _getDefaultRawDisplayData(_displayIndex);
+        }
+
+        if ((unsigned)_displayIndex < _displayDatas.size())
+        {
+            _displayData = _displayDatas[_displayIndex];
+        }
     }
     else
     {
+        rawDisplayData = nullptr;
         _displayData = nullptr;
     }
 
@@ -107,17 +148,19 @@ void Slot::_updateDisplayData()
     {
         if (_displayData->type == DisplayType::Image || _displayData->type == DisplayType::Mesh)
         {
-            _textureData = static_cast<ImageDisplayData*>(_displayData)->texture;
             if (_displayData->type == DisplayType::Mesh)
             {
+                _textureData = static_cast<MeshDisplayData*>(_displayData)->texture;
                 _meshData = static_cast<MeshDisplayData*>(_displayData);
             }
             else if (rawDisplayData != nullptr && rawDisplayData->type == DisplayType::Mesh)
             {
+                _textureData = static_cast<MeshDisplayData*>(_displayData)->texture;
                 _meshData = static_cast<MeshDisplayData*>(rawDisplayData);
             }
             else
             {
+                _textureData = static_cast<ImageDisplayData*>(_displayData)->texture;
                 _meshData = nullptr;
             }
         }
@@ -155,7 +198,7 @@ void Slot::_updateDisplayData()
             _pivotX = 0.0f;
             _pivotY = 0.0f;
         }
-        else if (_textureData != nullptr) 
+        else if (_textureData != nullptr) // TODO
         {
             const auto imageDisplayData = static_cast<ImageDisplayData*>(_displayData);
             const auto scale = _textureData->parent->scale * _armature->_armatureData->scale;
@@ -189,46 +232,7 @@ void Slot::_updateDisplayData()
             _pivotY = 0.0f;
         }
 
-        // Update mesh bones and ffd vertices.
-        if (_meshData != prevMeshData)
-        {
-            if (_meshData != nullptr)
-            {
-                if (_meshData->weight != nullptr)
-                {
-                    _ffdVertices.resize(_meshData->weight->count * 2);
-                    _meshBones.resize(_meshData->weight->bones.size());
-
-                    for (std::size_t i = 0, l = _meshBones.size(); i < l; ++i)
-                    {
-                        _meshBones[i] = _armature->getBone(_meshData->weight->bones[i]->name);
-                    }
-                }
-                else
-                {
-                    const auto vertexCount = (_meshData->parent->parent->parent->intArray)[_meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-                    _ffdVertices.resize(vertexCount * 2);
-                    _meshBones.resize(0);
-                }
-
-                for (std::size_t i = 0, l = _ffdVertices.size(); i < l; ++i)
-                {
-                    _ffdVertices[i] = 0.0f;
-                }
-
-                _meshDirty = true;
-            }
-            else
-            {
-                _ffdVertices.resize(0);
-                _meshBones.resize(0);
-            }
-        }
-        else if (_meshData != nullptr && _textureData != prevTextureData) // Update mesh after update frame.
-        {
-            _meshDirty = true;
-        }
-
+        // Update replace pivot.
         if (_displayData != nullptr && rawDisplayData != nullptr && _displayData != rawDisplayData && _meshData == nullptr)
         {
             rawDisplayData->transform.toMatrix(_helpMatrix);
@@ -253,10 +257,53 @@ void Slot::_updateDisplayData()
         {
             origin = &_displayData->transform;
         }
+        else
+        {
+            origin = nullptr;
+        }
+
+        // Update mesh bones and ffd vertices.
+        if (_meshData != prevMeshData)
+        {
+            if (_meshData != nullptr)
+            {
+                if (_meshData->weight != nullptr)
+                {
+                    _deformVertices.resize(_meshData->weight->count * 2);
+                    _meshBones.resize(_meshData->weight->bones.size());
+
+                    for (std::size_t i = 0, l = _meshBones.size(); i < l; ++i)
+                    {
+                        _meshBones[i] = _armature->getBone(_meshData->weight->bones[i]->name);
+                    }
+                }
+                else
+                {
+                    const auto vertexCount = (_meshData->parent->parent->parent->intArray)[_meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+                    _deformVertices.resize(vertexCount * 2);
+                    _meshBones.resize(0);
+                }
+
+                for (std::size_t i = 0, l = _deformVertices.size(); i < l; ++i)
+                {
+                    _deformVertices[i] = 0.0f;
+                }
+
+                _meshDirty = true;
+            }
+            else
+            {
+                _deformVertices.resize(0);
+                _meshBones.resize(0);
+            }
+        }
+        else if (_meshData != nullptr && _textureData != prevTextureData) // Update mesh after update frame.
+        {
+            _meshDirty = true;
+        }
 
         _displayDirty = true;
         _transformDirty = true;
-        _skinedMeshTransformDirty = true;
     }
 }
 
@@ -333,12 +380,19 @@ void Slot::_updateDisplay()
 
                 // Child armature action.
                 std::vector<ActionData*>* actions = nullptr;
-                if (_displayData != nullptr && _displayData->type == DisplayType::Armature) {
+                if (_displayData != nullptr && _displayData->type == DisplayType::Armature) 
+                {
                     actions = &(static_cast<ArmatureDisplayData*>(_displayData)->actions);
                 }
-                else 
+                else if(_displayIndex >= 0 && _rawDisplayDatas != nullptr)
                 {
-                    const auto rawDisplayData = ( _displayIndex >= 0 && _rawDisplayDatas != nullptr && (unsigned)_displayIndex < _rawDisplayDatas->size()) ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
+                    auto rawDisplayData = (unsigned)_displayIndex < _rawDisplayDatas->size() ? (*_rawDisplayDatas)[_displayIndex] : nullptr;
+
+                    if (rawDisplayData == nullptr)
+                    {
+                        rawDisplayData = _getDefaultRawDisplayData(_displayIndex);
+                    }
+
                     if (rawDisplayData != nullptr && rawDisplayData->type == DisplayType::Armature) 
                     {
                         actions = &(static_cast<ArmatureDisplayData*>(rawDisplayData)->actions);
@@ -349,7 +403,7 @@ void Slot::_updateDisplay()
                 {
                     for (const auto action : *actions)
                     {
-                        _childArmature->_bufferAction(action, false);
+                        _childArmature->_bufferAction(action, false); // Make sure default action at the beginning.
                     }
                 }
                 else
@@ -363,8 +417,10 @@ void Slot::_updateDisplay()
 
 void Slot::_updateGlobalTransformMatrix(bool isCache)
 {
+    const auto& parentMatrix = _parent->globalTransformMatrix;
     globalTransformMatrix = _localMatrix; // Copy.
-    globalTransformMatrix.concat(_parent->globalTransformMatrix);
+    globalTransformMatrix.concat(parentMatrix);
+
     if (isCache)
     {
         global.fromMatrix(globalTransformMatrix);
@@ -373,19 +429,6 @@ void Slot::_updateGlobalTransformMatrix(bool isCache)
     {
         _globalDirty = true;
     }
-}
-
-bool Slot::_isMeshBonesUpdate() const
-{
-    for (const auto bone : _meshBones)
-    {
-        if (bone != nullptr && bone->_childrenTransformDirty)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 void Slot::_setArmature(Armature* value)
@@ -533,16 +576,17 @@ void Slot::update(int cacheFrameIndex)
         _displayDirty = false;
         _updateDisplay();
 
+        // TODO remove slot offset.
         if (_transformDirty) // Update local matrix. (Only updated when both display and transform are dirty.)
         {
             if (origin != nullptr) 
             {
-                global = *origin;
+                global = *origin; // Copy.
                 global.add(offset).toMatrix(_localMatrix);
             }
             else 
             {
-                global = offset;
+                global = offset; // Copy.
                 global.toMatrix(_localMatrix);
             }
         }
@@ -615,7 +659,10 @@ void Slot::update(int cacheFrameIndex)
     if (_meshData != nullptr && _display == _meshDisplay)
     {
         const auto isSkinned = _meshData->weight != nullptr;
-        if (_meshDirty || (isSkinned && _isMeshBonesUpdate())) 
+        if (
+            _meshDirty || 
+            (isSkinned && _isMeshBonesUpdate())
+        )
         {
             _meshDirty = false;
             _updateMesh();
@@ -623,13 +670,6 @@ void Slot::update(int cacheFrameIndex)
 
         if (isSkinned) 
         {
-            if (_transformDirty && _skinedMeshTransformDirty) 
-            {
-                _transformDirty = false;
-                _skinedMeshTransformDirty = false;
-                _updateTransform(true);
-            }
-
             return;
         }
     }
@@ -653,7 +693,7 @@ void Slot::update(int cacheFrameIndex)
             _armature->_armatureData->getCacheFrame(globalTransformMatrix, global, _cachedFrameIndex);
         }
 
-        _updateTransform(false);
+        _updateTransform();
     }
 }
 
@@ -836,12 +876,20 @@ void Slot::setRawDisplayDatas(std::vector<DisplayData*>* value)
     _displayDirty = true;
     _rawDisplayDatas = value;
 
-    if (_rawDisplayDatas)
+    if (_rawDisplayDatas != nullptr)
     {
         _displayDatas.resize(_rawDisplayDatas->size());
+
         for (std::size_t i = 0, l = _displayDatas.size(); i < l; ++i)
         {
-            _displayDatas[i] = (*_rawDisplayDatas)[i];
+            auto rawDisplayData = (*_rawDisplayDatas)[i];
+
+            if (rawDisplayData == nullptr)
+            {
+                rawDisplayData = _getDefaultRawDisplayData(i);
+            }
+
+            _displayDatas[i] = rawDisplayData;
         }
     }
     else 

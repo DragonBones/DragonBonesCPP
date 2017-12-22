@@ -4,6 +4,7 @@
 #include "Armature.h"
 #include "Slot.h"
 #include "Constraint.h"
+#include "../animation/AnimationState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -16,14 +17,11 @@ void Bone::_onClear()
 
     _transformDirty = false;
     _childrenTransformDirty = false;
-    _blendDirty = false;
     _localDirty = true;
     _hasConstraint = false;
     _visible = true;
     _cachedFrameIndex = -1;
-    _blendLayer = 0;
-    _blendLeftWeight = 1.0f;
-    _blendLayerWeight = 0.0f;
+    _blendState.clear();
     _boneData = nullptr;
     _cachedFrameIndices = nullptr;
 }
@@ -37,18 +35,34 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
 
     if (offsetMode == OffsetMode::Additive) 
     {
-        // global.copyFrom(origin).add(offset).add(animationPose);
-        global.x = origin->x + offset.x + animationPose.x;
-        global.y = origin->y + offset.y + animationPose.y;
-        global.skew = origin->skew + offset.skew + animationPose.skew;
-        global.rotation = origin->rotation + offset.rotation + animationPose.rotation;
-        global.scaleX = origin->scaleX * offset.scaleX * animationPose.scaleX;
-        global.scaleY = origin->scaleY * offset.scaleY * animationPose.scaleY;
+        if (origin != nullptr)
+        {
+            // global = *origin; // Copy.
+            // global.add(offset).add(animationPose);
+            global.x = origin->x + offset.x + animationPose.x;
+            global.y = origin->y + offset.y + animationPose.y;
+            global.skew = origin->skew + offset.skew + animationPose.skew;
+            global.rotation = origin->rotation + offset.rotation + animationPose.rotation;
+            global.scaleX = origin->scaleX * offset.scaleX * animationPose.scaleX;
+            global.scaleY = origin->scaleY * offset.scaleY * animationPose.scaleY;
+        }
+        else 
+        {
+            global = offset; // Copy.
+            global.add(animationPose);
+        }
     }
     else if (offsetMode == OffsetMode::None) 
     {
-        global = *origin;
-        global.add(animationPose);
+        if (origin != nullptr)
+        {
+            global = *origin;
+            global.add(animationPose);
+        }
+        else
+        {
+            global = animationPose;
+        }
     }
     else 
     {
@@ -115,7 +129,7 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
                 const auto x = global.x;
                 const auto y = global.y;
                 global.x = parentMatrix.a * x + parentMatrix.c * y + parentMatrix.tx;
-                global.y = parentMatrix.d * y + parentMatrix.b * x + parentMatrix.ty;
+                global.y = parentMatrix.b * x + parentMatrix.d * y + parentMatrix.ty;
             }
             else 
             {
@@ -282,7 +296,7 @@ void Bone::init(BoneData* boneData)
 
 void Bone::update(int cacheFrameIndex)
 {
-    _blendDirty = false;
+    _blendState.dirty = false;
 
     if (cacheFrameIndex >= 0 && _cachedFrameIndices != nullptr) 
     {
@@ -351,7 +365,7 @@ void Bone::update(int cacheFrameIndex)
     {
         _transformDirty = false;
         _childrenTransformDirty = true;
-
+        //
         if (_cachedFrameIndex < 0) 
         {
             const auto isCache = cacheFrameIndex >= 0;
@@ -369,6 +383,7 @@ void Bone::update(int cacheFrameIndex)
         {
             _armature->_armatureData->getCacheFrame(globalTransformMatrix, global, _cachedFrameIndex);
         }
+        //
     }
     else if (_childrenTransformDirty) 
     {

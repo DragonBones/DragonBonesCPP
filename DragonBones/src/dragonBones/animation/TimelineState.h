@@ -175,7 +175,7 @@ public:
 private:
     bool _dirty;
     unsigned _frameFloatOffset;
-    unsigned _ffdCount;
+    unsigned _deformCount;
     unsigned _valueCount;
     unsigned _valueOffset;
     std::vector<float> _current;

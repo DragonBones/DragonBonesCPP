@@ -80,7 +80,6 @@ public:
     {
         return _constraintData->name;
     }
-
 };
 /**
  * @internal

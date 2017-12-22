@@ -47,7 +47,7 @@ void ArmatureDisplayData::addAction(ActionData* value)
 
 void MeshDisplayData::_onClear()
 {
-    ImageDisplayData::_onClear();
+    DisplayData::_onClear();
 
     if(weight != nullptr)
     {
@@ -55,9 +55,10 @@ void MeshDisplayData::_onClear()
     }
 
     type = DisplayType::Mesh;
-    inheritAnimation = false;
+    inheritDeform = false;
     offset = 0;
     weight = nullptr;
+    texture = nullptr;
 }
 
 void BoundingBoxDisplayData::_onClear()
