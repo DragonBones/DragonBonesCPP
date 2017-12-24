@@ -183,6 +183,7 @@ void SFMLSlot::_updateFrame()
 
 				_renderDisplay->meshDisplay = std::unique_ptr<SFMLMesh>(meshDisplay);
 
+				_identityTransform();
 			}
 			else // Normal texture
 			{
@@ -211,7 +212,7 @@ void SFMLSlot::_updateFrame()
 
 void SFMLSlot::_updateMesh()
 {
-	const auto hasFFD = !_ffdVertices.empty();
+	const auto hasFFD = !_deformVertices.empty();
 	const auto scale = _armature->_armatureData->scale;
 	const auto textureData = static_cast<SFMLTextureData*>(_textureData);
 	const auto meshData = _meshData;
@@ -257,8 +258,8 @@ void SFMLSlot::_updateMesh()
 
 					if (hasFFD)
 					{
-						xL += _ffdVertices[iF++];
-						yL += _ffdVertices[iF++];
+						xL += _deformVertices[iF++];
+						yL += _deformVertices[iF++];
 					}
 
 					xG += (matrix.a * xL + matrix.c * yL + matrix.tx) * weight;
@@ -291,8 +292,8 @@ void SFMLSlot::_updateMesh()
 		for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
 		{
 			const auto iH = i / 2;
-			const auto xG = floatArray[vertexOffset + i] * scale + _ffdVertices[i];
-			const auto yG = floatArray[vertexOffset + i + 1] * scale + _ffdVertices[i + 1];
+			const auto xG = floatArray[vertexOffset + i] * scale + _deformVertices[i];
+			const auto yG = floatArray[vertexOffset + i + 1] * scale + _deformVertices[i + 1];
 
 			auto& vertsDisplay = meshDisplay->verticesDisplay;
 
@@ -305,39 +306,33 @@ void SFMLSlot::_updateMesh()
 	}
 }
 
-void SFMLSlot::_updateTransform(bool isSkinnedMesh)
+void SFMLSlot::_identityTransform()
 {
-	if (isSkinnedMesh)
+	_renderDisplay->setMatrix(Matrix(), sf::Vector2f(), _textureScale);
+}
+
+void SFMLSlot::_updateTransform()
+{
+	sf::Vector2f pos;
+
+	if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
 	{
-		_renderDisplay->setMatrix(Matrix(), sf::Vector2f(), _textureScale);
+		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
+		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
+	}
+	else if (_childArmature)
+	{
+		pos.x = globalTransformMatrix.tx;
+		pos.y = globalTransformMatrix.ty;
 	}
 	else
 	{
-		sf::Vector2f pos;
-
-		if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
-		{
-			globalTransformMatrix.ty = globalTransformMatrix.ty;
-
-			pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
-			pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
-		}
-		else if (_childArmature)
-		{
-			globalTransformMatrix.ty = globalTransformMatrix.ty;
-
-			pos.x = globalTransformMatrix.tx;
-			pos.y = globalTransformMatrix.ty;
-		}
-		else
-		{
-			sf::Vector2f anchorPoint = { 1.f, 1.f };
-			pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
-			pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
-		}
-
-		_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale);
+		sf::Vector2f anchorPoint = { 1.f, 1.f };
+		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
+		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
 	}
+
+	_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale);
 }
 
 void SFMLSlot::_onClear()
