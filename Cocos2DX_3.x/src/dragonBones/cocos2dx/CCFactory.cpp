@@ -103,7 +103,6 @@ Slot* CCFactory::_buildSlot(const BuildArmaturePackage& dataPackage, SlotData* s
     const auto slot = BaseObject::borrowObject<CCSlot>();
     const auto rawDisplay = DBCCSprite::create();
 
-    rawDisplay->retain();
     rawDisplay->setCascadeOpacityEnabled(true);
     rawDisplay->setCascadeColorEnabled(true);
     rawDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);

@@ -12,13 +12,13 @@ void CCSlot::_onClear()
     _renderDisplay = nullptr;
 }
 
-void CCSlot::_initDisplay(void* value)
+void CCSlot::_initDisplay(void* value, bool isRetain)
 {
     const auto renderDisplay = static_cast<cocos2d::Node*>(value);
     renderDisplay->retain();
 }
 
-void CCSlot::_disposeDisplay(void* value)
+void CCSlot::_disposeDisplay(void* value, bool isRelease)
 {
     const auto renderDisplay = static_cast<cocos2d::Node*>(value);
     renderDisplay->release();
@@ -176,8 +176,6 @@ void CCSlot::_updateFrame()
             else // Normal texture.
             {
                 const auto scale = currentTextureData->parent->scale * _armature->_armatureData->scale;
-                const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
-                _pivotY -= height;
                 _textureScale = scale * cocos2d::Director::getInstance()->getContentScaleFactor();
                 frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
             }
@@ -371,7 +369,7 @@ void CCSlot::_updateTransform()
     }
     else 
     {
-        const auto& anchorPoint = _renderDisplay->getAnchorPointInPoints(); // Why anchor point do not work?
+        const auto& anchorPoint = _renderDisplay->getAnchorPoint();
         transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
         transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
     }
@@ -405,7 +403,7 @@ void CCSlot::_updateBlendMode()
         switch (_blendMode)
         {
         case BlendMode::Normal:
-            //spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
+            // spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
             break;
 
         case BlendMode::Add:
@@ -427,7 +425,7 @@ void CCSlot::_updateBlendMode()
             break;
         }
     }
-    else if (_childArmature)
+    else if (_childArmature != nullptr)
     {
         for (const auto slot : _childArmature->getSlots())
         {

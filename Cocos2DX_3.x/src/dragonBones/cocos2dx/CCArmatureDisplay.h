@@ -40,6 +40,8 @@ public:
      * @private
      */
     static CCArmatureDisplay* create();
+public:
+    bool debugDraw;
 
 protected:
     bool _debugDraw;
@@ -48,6 +50,8 @@ protected:
 
 public:
     CCArmatureDisplay() :
+        debugDraw(false),
+
         _debugDraw(false),
         _armature(nullptr),
         _dispatcher(nullptr)
