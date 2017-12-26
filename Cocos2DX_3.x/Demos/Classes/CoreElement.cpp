@@ -1,63 +1,45 @@
 #include "CoreElement.h"
 
 USING_NS_CC;
-int CoreElementGame::STAGE_WIDTH;
-int CoreElementGame::STAGE_HEIGHT;
-int CoreElementGame::GROUND = 150;
+int CoreElementGame::GROUND;
 const float CoreElementGame::G = -0.6f;
 CoreElementGame* CoreElementGame::instance = nullptr;
 
-bool CoreElementGame::init()
+void CoreElementGame::_onStart()
 {
-    if (!LayerColor::initWithColor(cocos2d::Color4B(105, 105, 105, 255)))
-    {
-        return false;
-    }
-
-    const auto& stageSize = cocos2d::Director::getInstance()->getVisibleSize();
-    CoreElementGame::STAGE_WIDTH = stageSize.width;
-    CoreElementGame::STAGE_HEIGHT = stageSize.height;
+    CoreElementGame::GROUND = -getStageHeight() * 0.5f + 150.0f;
     CoreElementGame::instance = this;
 
     _left = false;
     _right = false;
-    _player = nullptr;
 
-    // Load DragonBones Data.
+    //
     const auto factory = dragonBones::CCFactory::getFactory();
-    factory->loadDragonBonesData("core_element/mecha_1502b_ske.json");
-    factory->loadTextureAtlasData("core_element/mecha_1502b_tex.json");
-    factory->loadDragonBonesData("core_element/skin_1502b_ske.json");
-    factory->loadTextureAtlasData("core_element/skin_1502b_tex.json");
-    factory->loadDragonBonesData("core_element/weapon_1000_ske.json");
-    factory->loadTextureAtlasData("core_element/weapon_1000_tex.json");
+    factory->loadDragonBonesData("mecha_1502b/mecha_1502b_ske.json");
+    factory->loadTextureAtlasData("mecha_1502b/mecha_1502b_tex.json");
+    factory->loadDragonBonesData("skin_1502b/skin_1502b_ske.json");
+    factory->loadTextureAtlasData("skin_1502b/skin_1502b_tex.json");
+    factory->loadDragonBonesData("weapon_1000/weapon_1000_ske.json");
+    factory->loadTextureAtlasData("weapon_1000/weapon_1000_tex.json");
     _player = new Mecha();
-
-    // Listener.
+    //
     const auto keyboardListener = cocos2d::EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = CC_CALLBACK_2(CoreElementGame::_keyBoardPressedHandler, this);
     keyboardListener->onKeyReleased = CC_CALLBACK_2(CoreElementGame::_keyBoardReleasedHandler, this);
-    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     const auto touchListener = cocos2d::EventListenerMouse::create();
     touchListener->onMouseDown = CC_CALLBACK_1(CoreElementGame::_mouseDownHandler, this);
     touchListener->onMouseUp = CC_CALLBACK_1(CoreElementGame::_mouseUpHandler, this);
     touchListener->onMouseMove = CC_CALLBACK_1(CoreElementGame::_mouseMovedHandler, this);
-    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
+    getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
 
     cocos2d::Director::getInstance()->getScheduler()->schedule(
         schedule_selector(CoreElementGame::_enterFrameHandler),
-        this, 0.f, false
+        this, 0.0f, false
     );
-
-    // Info.
-    const auto text = cocos2d::Label::create();
-    text->setPosition(stageSize.width * 0.5f, 60.f);
-    text->setString("Press W/A/S/D to move. Press Q/E to switch weapons. Press SPACE to switch skin.\nMouse Move to aim. Click to fire.");
-    text->setAlignment(cocos2d::TextHAlignment::CENTER);
-    addChild(text);
-
-    return true;
+    //
+    createText("Press W/A/S/D to move. Press Q/E/SPACE to switch weapons and skin. Touch to aim and fire.");
 }
 
 void CoreElementGame::_keyBoardPressedHandler(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
@@ -139,8 +121,8 @@ void CoreElementGame::_mouseUpHandler(cocos2d::EventMouse* event)
 void CoreElementGame::_mouseMovedHandler(cocos2d::EventMouse* event)
 {
     cocos2d::Vec2 target;
-    target.x = event->getCursorX();
-    target.y = event->getCursorY();
+    target.x = event->getCursorX() - getPositionX();
+    target.y = event->getCursorY() - getPositionY();
     _player->aim(target);
 }
 
@@ -220,7 +202,7 @@ Mecha::Mecha() :
     _target()
 {
     _armatureDisplay = dragonBones::CCFactory::getFactory()->buildArmatureDisplay("mecha_1502b");
-    _armatureDisplay->setPosition(CoreElementGame::STAGE_WIDTH * 0.5f, CoreElementGame::GROUND);
+    _armatureDisplay->setPosition(0.0f, CoreElementGame::GROUND);
     _armatureDisplay->getEventDispatcher()->setEnabled(true);
     _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FADE_IN_COMPLETE, std::bind(&Mecha::_animationEventHandler, this, std::placeholders::_1));
     _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::FADE_OUT_COMPLETE, std::bind(&Mecha::_animationEventHandler, this, std::placeholders::_1));
@@ -418,7 +400,7 @@ void Mecha::_frameEventHandler(cocos2d::EventCustom* event)
         cocos2d::Vec3 localPoint(eventObject->bone->global.x, eventObject->bone->global.y, 0.0f);
         cocos2d::Vec2 globalPoint;
         transform.transformPoint(&localPoint);
-        globalPoint.set(localPoint.x, localPoint.y);
+        globalPoint.set(localPoint.x - CoreElementGame::instance->getPosition().x, localPoint.y - CoreElementGame::instance->getPosition().y);
 
         _fire(globalPoint);
     }
@@ -496,13 +478,13 @@ void Mecha::_updatePosition()
     if (_speedX != 0.0f)
     {
         _armatureDisplay->setPosition(position.x + _speedX, position.y);
-        if (position.x < 0.0f)
+        if (position.x < -CoreElementGame::instance->getStageWidth() * 0.5f - 100.0f)
         {
-            _armatureDisplay->setPosition(0.0f, position.y);
+            _armatureDisplay->setPosition(-CoreElementGame::instance->getStageWidth() * 0.5f - 100.0f, position.y);
         }
-        else if (position.x > CoreElementGame::STAGE_WIDTH)
+        else if (position.x > CoreElementGame::instance->getStageWidth() * 0.5f + 100.0f)
         {
-            _armatureDisplay->setPosition(CoreElementGame::STAGE_WIDTH, position.y);
+            _armatureDisplay->setPosition(CoreElementGame::instance->getStageWidth() * 0.5f + 100.0f, position.y);
         }
     }
 
@@ -606,7 +588,7 @@ void Mecha::_updateAttack()
 
     _isAttackingB = true;
     _attackState = _armatureDisplay->getAnimation()->fadeIn(
-        "attack_01", -1.f, -1,
+        "attack_01", -1.0f, -1,
         0, ATTACK_ANIMATION_GROUP
     );
 
@@ -654,8 +636,8 @@ bool CoreElementBullet::update()
     _armatureDisplay->setPosition(position.x + _speedX, position.y + _speedY);
 
     if (
-        position.x < -100.0f || position.x >= CoreElementGame::STAGE_WIDTH + 100.0f ||
-        position.y < -100.0f || position.y >= CoreElementGame::STAGE_HEIGHT + 100.0f
+        position.x < -CoreElementGame::instance->getStageWidth() * 0.5f - 100.0f || position.x >= CoreElementGame::instance->getStageWidth() * 0.5f + 100.0f ||
+        position.y < -CoreElementGame::instance->getStageHeight() * 0.5f - 100.0f || position.y >= CoreElementGame::instance->getStageHeight() * 0.5f + 100.0f
     )
     {
         CoreElementGame::instance->removeChild(_armatureDisplay);

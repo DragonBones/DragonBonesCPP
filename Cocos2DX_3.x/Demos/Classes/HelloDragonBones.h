@@ -1,8 +1,4 @@
-#ifndef HELLO_DRAGONBONES_H
-#define HELLO_DRAGONBONES_H
-
-#include "cocos2d.h"
-#include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
+#include "BaseDemo.h"
 /**
  * How to use
  * 1. Load data.
@@ -18,10 +14,11 @@
  * 4. Add armature to stage.
  *    addChild(armatureDisplay);
  */
-class HelloDragonBones : public cocos2d::LayerColor
+class HelloDragonBones : BaseDemo
 {
 public:
     CREATE_FUNC(HelloDragonBones);
+
     static cocos2d::Scene* createScene()
     {
         auto scene = cocos2d::Scene::create();
@@ -31,27 +28,17 @@ public:
         return scene;
     }
 
-    virtual bool init()
+protected:
+    virtual void _onStart()
     {
-        if (!LayerColor::initWithColor(cocos2d::Color4B(105, 105, 105, 255)))
-        {
-            return false;
-        }
-
-        const auto& stageSize = cocos2d::Director::getInstance()->getVisibleSize();
-
         const auto factory = dragonBones::CCFactory::getFactory();
-        factory->loadDragonBonesData("dragon_boy_ske.json");
-        // factory->loadDragonBonesData("dragon_boy_ske.dbbin");
-        factory->loadTextureAtlasData("dragon_boy_tex.json");
-        const auto armatureDisplay = factory->buildArmatureDisplay("DragonBoy");
-        armatureDisplay->getAnimation()->play("walk");
+        //factory->loadDragonBonesData("mecha_1002_101d_show/mecha_1002_101d_show_ske.json");
+        factory->loadDragonBonesData("mecha_1002_101d_show/mecha_1002_101d_show_ske.dbbin");
+        factory->loadTextureAtlasData("mecha_1002_101d_show/mecha_1002_101d_show_tex.json");
+        const auto armatureDisplay = factory->buildArmatureDisplay("mecha_1002_101d", "mecha_1002_101d_show");
+        armatureDisplay->getAnimation()->play("idle");
 
+        armatureDisplay->setPosition(0.0f, -200.0f);
         addChild(armatureDisplay);
-        armatureDisplay->setPosition(stageSize.width * 0.5f, stageSize.height * 0.5f);
-
-        return true;
     }
 };
-
-#endif // HELLO_DRAGONBONES_H

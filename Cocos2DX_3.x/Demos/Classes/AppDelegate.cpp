@@ -1,11 +1,18 @@
 #include "AppDelegate.h"
 
 #include "HelloDragonBones.h"
+#include "AnimationBase.h"
+#include "DragonBonesEvent.h"
+#include "AnimationLayer.h"
+#include "BoneOffset.h"
+#include "InverseKinematics.h"
+#include "BoundingBox.h"
 #include "ReplaceSlotDisplay.h"
+#include "ReplaceSkin.h"
+#include "ReplaceAnimation.h"
 #include "CoreElement.h"
 #include "PerformanceTest.h"
-#include "AnimationBaseTest.h"
-#include "DragonBonesTest.h"
+// #include "DragonBonesTest.h"
 
 USING_NS_CC;
 
@@ -43,18 +50,23 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.f / 60.f);
-
+    director->setAnimationInterval(1.0f / 60.f);
     FileUtils::getInstance()->addSearchPath("assets");
-    FileUtils::getInstance()->addSearchPath("temp");
 
     // create a scene. it's an autorelease object
-    // auto scene = HelloDragonBones::createScene();
+    auto scene = HelloDragonBones::createScene();
+    // auto scene = AnimationBase::createScene();
+    // auto scene = DragonBonesEvent::createScene();
+    // auto scene = AnimationLayer::createScene();
+    // auto scene = BoneOffset::createScene();
+    // auto scene = InverseKinematics::createScene();
+    // auto scene = BoundingBox::createScene();
     // auto scene = ReplaceSlotDisplay::createScene();
-    auto scene = CoreElementGame::createScene();
-
+    // auto scene = ReplaceSkin::createScene();
+    // auto scene = ReplaceAnimation::createScene();
+    // auto scene = CoreElementGame::createScene();
     // auto scene = PerformanceTest::createScene();
-    // auto scene = AnimationBaseTest::createScene();
+
     // auto scene = DragonBonesTest::createScene();
 
     // run

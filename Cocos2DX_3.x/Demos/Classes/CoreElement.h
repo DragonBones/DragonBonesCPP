@@ -1,8 +1,4 @@
-#ifndef CORE_ELEMENT_H
-#define CORE_ELEMENT_H
-
-#include "cocos2d.h"
-#include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
+#include "BaseDemo.h"
 
 class CoreElementBullet
 {
@@ -81,10 +77,11 @@ private:
     void _updateAttack();
 };
 
-class CoreElementGame : public cocos2d::LayerColor
+class CoreElementGame : public BaseDemo
 {
 public:
     CREATE_FUNC(CoreElementGame);
+
     static cocos2d::Scene* createScene()
     {
         auto scene = cocos2d::Scene::create();
@@ -94,14 +91,14 @@ public:
         return scene;
     }
 
-    virtual bool init();
-
-public:
     static int STAGE_WIDTH;
     static int STAGE_HEIGHT;
     static int GROUND;
     static const float G;
     static CoreElementGame* instance;
+
+protected:
+    virtual void _onStart();
 
 private:
     bool _left;
@@ -120,5 +117,3 @@ private:
 public:
     void addBullet(CoreElementBullet* bullet);
 };
-
-#endif // CORE_ELEMENT_H

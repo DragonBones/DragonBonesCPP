@@ -1,13 +1,10 @@
-#ifndef REPLACE_SLOT_DISPLAY_H
-#define REPLACE_SLOT_DISPLAY_H
+#include "BaseDemo.h"
 
-#include "cocos2d.h"
-#include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
-
-class ReplaceSlotDisplay : public cocos2d::LayerColor
+class ReplaceSlotDisplay : BaseDemo
 {
 public:
     CREATE_FUNC(ReplaceSlotDisplay);
+
     static cocos2d::Scene* createScene()
     {
         auto scene = cocos2d::Scene::create();
@@ -17,131 +14,93 @@ public:
         return scene;
     }
 
-    virtual bool init()
+protected:
+    unsigned _leftWeaponIndex;
+    unsigned _rightWeaponIndex;
+    std::vector<std::string> _weaponDisplayNames;
+    dragonBones::CCFactory* _factory;
+    dragonBones::CCArmatureDisplay* _armatureDisplay;
+    cocos2d::Label* _logoText;
+
+    virtual void _onStart()
     {
-        if (!LayerColor::initWithColor(cocos2d::Color4B(105, 105, 105, 255)))
-        {
-            return false;
-        }
-
-        _replaceDisplays = {
-            // Replace normal display.
-            "display0002", "display0003", "display0004", "display0005", "display0006", "display0007", "display0008", "display0009", "display0010",
-            // Replace mesh display.
-            "meshA", "meshB", "meshC"
-        };
-
-        _displayIndex = 0;
-        const auto& stageSize = cocos2d::Director::getInstance()->getVisibleSize();
-
+        _leftWeaponIndex = 0;
+        _rightWeaponIndex = 0;
+        _weaponDisplayNames = { "weapon_1004_r", "weapon_1004b_r", "weapon_1004c_r", "weapon_1004d_r", "weapon_1004e_r"};
+        _logoText = nullptr;
+        //
         _factory = dragonBones::CCFactory::getFactory();
-        _factory->loadDragonBonesData("replace_slot_display/main_ske.json");
-        _factory->loadTextureAtlasData("replace_slot_display/main_tex.json");
-        _factory->loadDragonBonesData("replace_slot_display/replace_ske.json");
-        _factory->loadTextureAtlasData("replace_slot_display/replace_tex.json");
-
-        _armatureDisplay = _factory->buildArmatureDisplay("MyArmature");
-        _armatureDisplay->getAnimation()->timeScale = 0.1f;
+        _factory->loadDragonBonesData("mecha_1004d_show/mecha_1004d_show_ske.json");
+        _factory->loadTextureAtlasData("mecha_1004d_show/mecha_1004d_show_tex.json");
+        _factory->loadDragonBonesData("weapon_1004_show/weapon_1004_show_ske.json");
+        _factory->loadTextureAtlasData("weapon_1004_show/weapon_1004_show_tex.json");
+        //
+        _armatureDisplay = _factory->buildArmatureDisplay("mecha_1004d");
         _armatureDisplay->getAnimation()->play();
-        _armatureDisplay->setPosition(
-            stageSize.width * 0.5,
-            stageSize.height * 0.5
-        );
+        //
+        _armatureDisplay->setPosition(100.0f, -200.0f);
         addChild(_armatureDisplay);
-
-        const auto listener = cocos2d::EventListenerTouchOneByOne::create();
-        listener->onTouchBegan = CC_CALLBACK_2(ReplaceSlotDisplay::_touchBeganHandler, this);
+        //
+        const auto listener = cocos2d::EventListenerMouse::create();
+        listener->onMouseDown = CC_CALLBACK_1(ReplaceSlotDisplay::_mouseDownHandler, this);
         getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
-
-        return true;
+        //
+        createText("Touch screen left / center / right to relace slot display.");
     }
 
 private:
-    unsigned _displayIndex;
-    std::vector<std::string> _replaceDisplays;
-
-    dragonBones::CCFactory* _factory;
-    dragonBones::CCArmatureDisplay* _armatureDisplay;
-
-    bool _touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event)
+    void _mouseDownHandler(cocos2d::EventMouse* event)
     {
-        _replaceDisplay();
-
-        return true;
-    }
-
-    void _replaceDisplay()
-    {
-        _displayIndex = fmod(_displayIndex + 1, _replaceDisplays.size());
-
-        const auto replaceDisplayName = _replaceDisplays[_displayIndex];
-
-        if (replaceDisplayName.find("mesh") != std::string::npos) // Replace mesh display.
+        const auto localX = event->getLocation().x - getPosition().x;
+        if (localX < -150.0f) 
         {
-            if (replaceDisplayName == "meshA")
-            {
-                // Normal to mesh.
-                _factory->replaceSlotDisplay(
-                    "replace",
-                    "MyMesh",
-                    "meshA",
-                    "weapon_1004_1",
-                    _armatureDisplay->getArmature()->getSlot("weapon")
-                );
-            }
-            else if (replaceDisplayName == "meshB")
-            {
-                // Normal to mesh.
-                _factory->replaceSlotDisplay(
-                    "replace",
-                    "MyMesh",
-                    "meshB",
-                    "weapon_1004_1",
-                    _armatureDisplay->getArmature()->getSlot("weapon")
-                );
-
-                // Replace mesh texture. 
-                _factory->replaceSlotDisplay(
-                    "replace",
-                    "MyDisplay",
-                    "ball",
-                    "display0003",
-                    _armatureDisplay->getArmature()->getSlot("mesh")
-                );
-            }
-            else if (replaceDisplayName == "meshC")
-            {
-                // Back to normal.
-                _factory->replaceSlotDisplay(
-                    "replace",
-                    "MyMesh",
-                    "mesh",
-                    "weapon_1004_1",
-                    _armatureDisplay->getArmature()->getSlot("weapon")
-                );
-
-                // Replace mesh texture. 
-                _factory->replaceSlotDisplay(
-                    "replace",
-                    "MyDisplay",
-                    "ball",
-                    "display0005",
-                    _armatureDisplay->getArmature()->getSlot("mesh")
-                );
-            }
+            _replaceDisplay(-1);
+        }
+        else if (localX > 150.0f) 
+        {
+            _replaceDisplay(1);
         }
         else 
         {
-            // Replace normal display.
-            _factory->replaceSlotDisplay(
-                "replace",
-                "MyDisplay",
-                "ball",
-                replaceDisplayName,
-                _armatureDisplay->getArmature()->getSlot("ball")
-            );
+            _replaceDisplay(0);
+        }
+    }
+
+    void _replaceDisplay(int type)
+    {
+
+        if (type == -1)
+        {
+            _rightWeaponIndex++;
+            _rightWeaponIndex %= _weaponDisplayNames.size();
+            const auto displayName = _weaponDisplayNames[_rightWeaponIndex];
+            _factory->replaceSlotDisplay("weapon_1004_show", "weapon", "weapon_r", displayName, _armatureDisplay->getArmature()->getSlot("weapon_hand_r"));
+        }
+        else if (type == 1)
+        {
+            _leftWeaponIndex++;
+            _leftWeaponIndex %= 5;
+            _armatureDisplay->getArmature()->getSlot("weapon_hand_l")->setDisplayIndex(_leftWeaponIndex);
+        }
+        else
+        {
+            const auto logoSlot = _armatureDisplay->getArmature()->getSlot("logo");
+            if (logoSlot->getDisplay() == _logoText) 
+            {
+                logoSlot->setDisplay(logoSlot->getRawDisplay(), dragonBones::DisplayType::Image);
+            }
+            else 
+            {
+                if (!_logoText) 
+                {
+                    _logoText = cocos2d::Label::create();
+                    _logoText->retain();
+                    _logoText->setString("Core Element");
+                    _logoText->setAlignment(cocos2d::TextHAlignment::CENTER);
+                }
+
+                logoSlot->setDisplay(_logoText, dragonBones::DisplayType::Image);
+            }
         }
     }
 };
-
-#endif // REPLACE_SLOT_DISPLAY_H
