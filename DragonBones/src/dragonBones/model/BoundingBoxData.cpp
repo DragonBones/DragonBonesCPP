@@ -630,7 +630,7 @@ int PolygonBoundingBoxData::intersectsSegment(
 )
 {
     auto intersectionCount = 0;
-    if (RectangleBoundingBoxData::rectangleIntersectsSegment(xA, yA, xB, yB, x, y, width, height, nullptr, nullptr, nullptr) != 0) {
+    if (RectangleBoundingBoxData::rectangleIntersectsSegment(xA, yA, xB, yB, x, y, x + width, y + height, nullptr, nullptr, nullptr) != 0) {
         intersectionCount = PolygonBoundingBoxData::polygonIntersectsSegment(
             xA, yA, xB, yB,
             vertices,

@@ -37,17 +37,17 @@ void Slot::_onClear()
         }
         else
         {
-            _disposeDisplay(pair.first);
+            _disposeDisplay(pair.first, true);
         }
     }
 
     if (_meshDisplay && _meshDisplay != _rawDisplay) 
     {
-        _disposeDisplay(_meshDisplay);
+        _disposeDisplay(_meshDisplay, false);
     }
 
     if (_rawDisplay) {
-        _disposeDisplay(_rawDisplay);
+        _disposeDisplay(_rawDisplay, false);
     }
 
     displayController = "";
@@ -224,6 +224,11 @@ void Slot::_updateDisplayData()
             {
                 _pivotX += frame->x * scale;
                 _pivotY += frame->y * scale;
+            }
+
+            if (!DragonBones::yDown)
+            {
+                _pivotY -= (_textureData->rotated ? _textureData->region.width : _textureData->region.height) * scale;
             }
         }
         else
@@ -522,7 +527,7 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
                 std::find(_displayList.cbegin(), _displayList.cend(), eachPair) == _displayList.cend()
             )
             {
-                _initDisplay(eachPair.first);
+                _initDisplay(eachPair.first, true);
             }
 
             _displayList[i].first = eachPair.first;
@@ -567,6 +572,12 @@ void Slot::init(SlotData* slotData, std::vector<DisplayData*>* displayDatas, voi
     _meshDisplay = meshDisplay;
     //
     setRawDisplayDatas(displayDatas);
+    //
+    _initDisplay(_rawDisplay, false);
+    if (_rawDisplay != _meshDisplay) 
+    {
+        _initDisplay(_meshDisplay, false);
+    }
 }
 
 void Slot::update(int cacheFrameIndex)
@@ -861,7 +872,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
         }
         else
         {
-            _disposeDisplay(pair.first);
+            _disposeDisplay(pair.first, true);
         }
     }
 }

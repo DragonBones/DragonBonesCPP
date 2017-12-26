@@ -802,6 +802,9 @@ PolygonBoundingBoxData* JSONDataParser::_parsePolygonBoundingBox(const rapidjson
                 }
             }
         }
+
+        polygonBoundingBox->width -= polygonBoundingBox->x;
+        polygonBoundingBox->height -= polygonBoundingBox->y;
     }
     else 
     {
@@ -889,30 +892,23 @@ AnimationData* JSONDataParser::_parseAnimation(const rapidjson::Value& rawData)
                 skinName = DEFAULT_NAME;
             }
 
-            _skin = _armature->getSkin(skinName);
-            if (_skin == nullptr)
-            {
-                continue;
-            }
-
             _slot = _armature->getSlot(slotName);
-            _mesh = static_cast<MeshDisplayData*>(_skin->getDisplay(slotName, displayName));
+            _mesh = _armature->getMesh(skinName, slotName, displayName);
             if (_slot == nullptr || _mesh == nullptr)
             {
                 continue;
             }
 
-            const auto timelineFFD = _parseTimeline(
+            const auto timeline = _parseTimeline(
                 rawTimeline, FRAME, TimelineType::SlotFFD, 
                 false, true, 0, 
                 std::bind(&JSONDataParser::_parseSlotFFDFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
             );
-            if (timelineFFD != nullptr)
+            if (timeline != nullptr)
             {
-                _animation->addSlotTimeline(_slot, timelineFFD);
+                _animation->addSlotTimeline(_slot, timeline);
             }
 
-            _skin = nullptr;
             _slot = nullptr;
             _mesh = nullptr;
         }
@@ -1564,7 +1560,7 @@ unsigned JSONDataParser::_parseSlotFFDFrame(const rapidjson::Value& rawData, uns
     const auto frameOffset = _parseTweenFrame(rawData, frameStart, frameCount);
     const auto offset = _getNumber(rawData, OFFSET, (unsigned)0);
     const auto vertexCount = (unsigned)_intArray[_mesh->offset + (unsigned)BinaryOffset::MeshVertexCount];
-    const auto meshName = _skin->name + "_" + _slot->name + "_" + _mesh->name;
+    const auto meshName = _mesh->parent->name + "_" + _slot->name + "_" + _mesh->name;
 
     auto x = 0.0f;
     auto y = 0.0f;

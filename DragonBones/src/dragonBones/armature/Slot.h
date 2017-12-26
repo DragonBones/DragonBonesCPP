@@ -236,11 +236,11 @@ protected:
     /**
      * @private
      */
-    virtual void _initDisplay(void* value) = 0;
+    virtual void _initDisplay(void* value, bool isRetain) = 0;
     /**
      * @private
      */
-    virtual void _disposeDisplay(void* value) = 0;
+    virtual void _disposeDisplay(void* value, bool isRelease) = 0;
     /**
      * @private
      */

@@ -851,19 +851,27 @@ void AnimationState::setCurrentTime(float value)
     if (value < 0.0f || _duration < value) 
     {
         value = fmod(value, _duration) + currentPlayTimes * _duration;
-        if (value < 0.0f) {
+        if (value < 0.0f) 
+        {
             value += _duration;
         }
     }
 
-    if (_time == value) {
+    if (playTimes > 0 && currentPlayTimes == playTimes - 1 && value == _duration) 
+    {
+        value = _duration - 0.000001f;
+    }
+
+    if (_time == value) 
+    {
         return;
     }
 
     _time = value;
     _actionTimeline->setCurrentTime(_time);
 
-    if (_zOrderTimeline != nullptr) {
+    if (_zOrderTimeline != nullptr) 
+    {
         _zOrderTimeline->playState = -1;
     }
 

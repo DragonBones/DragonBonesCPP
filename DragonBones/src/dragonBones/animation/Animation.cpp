@@ -252,7 +252,8 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
         {
             animationConfig->fadeInTime = 0.0f;
         }
-        else {
+        else 
+        {
             animationConfig->fadeInTime = animationData->fadeInTime;
         }
     }
@@ -278,7 +279,8 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
         {
             animationConfig->position -= 0.000001f; // Play a little time before end.
         }
-        else if (animationConfig->position > animationData->duration) {
+        else if (animationConfig->position > animationData->duration) 
+        {
             animationConfig->position = fmod(animationConfig->position, animationData->duration);
         }
 
@@ -319,14 +321,18 @@ AnimationState* Animation::playConfig(AnimationConfig* animationConfig)
         auto added = false;
         for (std::size_t i = 0, l = _animationStates.size(); i < l; ++i) 
         {
-            if (animationState->layer >= _animationStates[i]->layer) 
-            {
-            }
-            else 
+            if (animationState->layer > _animationStates[i]->layer) 
             {
                 added = true;
                 auto parentInerator = std::find(_animationStates.begin(), _animationStates.end(), _animationStates[i]);
                 _animationStates.insert(parentInerator, animationState);
+                break;
+            }
+            else if (i != l - 1 && animationState->layer > _animationStates[i + 1]->layer)
+            {
+                added = true;
+                auto parentInerator = std::find(_animationStates.begin(), _animationStates.end(), _animationStates[i]);
+                _animationStates.insert(parentInerator + 1, animationState);
                 break;
             }
         }

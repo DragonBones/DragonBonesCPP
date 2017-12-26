@@ -79,7 +79,7 @@ bool TimelineState::_setCurrentTime(float passedTime)
             }
             else 
             {
-                currentTime = _duration;
+                currentTime = _duration + 0.000001f; // Precision problem
             }
         }
         else 
