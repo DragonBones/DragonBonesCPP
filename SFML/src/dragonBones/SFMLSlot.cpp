@@ -68,11 +68,11 @@ void SFMLSlot::_updateColor()
 	}
 }
 
-void SFMLSlot::_initDisplay(void* value)
+void SFMLSlot::_initDisplay(void* value, bool isRetain)
 {
 }
 
-void SFMLSlot::_disposeDisplay(void* value)
+void SFMLSlot::_disposeDisplay(void* value, bool isRelease)
 {
 }
 
