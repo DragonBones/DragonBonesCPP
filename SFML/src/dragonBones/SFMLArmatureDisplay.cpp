@@ -76,9 +76,7 @@ void SFMLArmatureDisplay::draw(sf::RenderTarget& target, sf::RenderStates states
 		if (!display)
 			continue;
 
-		display->position = _position;
-
-		target.draw(*display, states);
+		display->draw(_position, target, states);
 	}
 }
 

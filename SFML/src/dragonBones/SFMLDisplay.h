@@ -3,6 +3,7 @@
 * File          : SFMLDisplay.h
 * Project		: DragonBonesSFML
 * Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
+* Thanks to		: Patryk Ludwikowski
 * License   	: MIT License
 *********************************************************************
 */
@@ -11,68 +12,64 @@
 
 #include <memory>
 
-#include "SFMLMesh.h"
+#include <SFML\Graphics.hpp>
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SFMLDisplay : public sf::Drawable
+class SFMLDisplay
 {
 public:
-	std::unique_ptr<SFMLMesh>		meshDisplay;
-	std::unique_ptr<sf::Sprite>		spriteDisplay;
+	const sf::Texture*			 	texture = nullptr;
+
+	std::vector<std::vector<int>>	verticesInTriagles;
+
+	std::vector<sf::Vertex>		 	verticesDisplay;
+
+	bool							visible = true;
 
 	sf::BlendMode					blendMode;
-	bool							visible;
 
-	sf::Vector2f					position;
+	sf::Vector2f					origin;
+
+	sf::PrimitiveType				primitiveType = sf::PrimitiveType::TriangleStrip;
 
 private:
-	Matrix							matrix;
-	sf::Vector2f					offset;
-	float							textureScale;
+	Matrix							_matrix;
+	sf::Vector2f					_offset;
+	float							_textureScale;
 
 public:
-	SFMLDisplay()
-	{
-		meshDisplay = nullptr;
-		spriteDisplay = nullptr;
-
-		visible = true;
-	}
-
+	SFMLDisplay() = default;
 	~SFMLDisplay() = default;
 
 	void setMatrix(const Matrix& matrix, const sf::Vector2f& offset, float textureScale)
 	{
-		this->matrix = matrix;
-		this->offset = offset;
-		this->textureScale = textureScale;
+		_matrix = matrix;
+		_offset = offset;
+		_textureScale = textureScale;
 	}
 
 	void setColor(const sf::Color& color)
 	{
-		if (spriteDisplay)
-			spriteDisplay->setColor(color);
-
-		if (meshDisplay)
-			meshDisplay->setColor(color);
+		for (auto& vert : verticesDisplay) {
+			vert.color = color;
+		}
 	}
 
-protected:
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const
+	void draw(const sf::Vector2f& pos, sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		if (visible)
-		{
+		if (visible) {
 			states.blendMode = blendMode;
-			states.transform *= sf::Transform(matrix.a * textureScale, matrix.c * textureScale, offset.x + position.x,
-											  matrix.b * textureScale, matrix.d * textureScale, offset.y + position.y,
+			states.texture = texture;
+			states.transform *= sf::Transform(_matrix.a * _textureScale, _matrix.c * _textureScale, _offset.x + pos.x,
+											  _matrix.b * _textureScale, _matrix.d * _textureScale, _offset.y + pos.y,
 											  0.f, 0.f, 1.f);
 
-			if (spriteDisplay)
-				target.draw(*spriteDisplay, states);
+			states.transform *= sf::Transform(1.f, 0.f, -origin.x,
+											  0.f, 1.f, -origin.y,
+											  0.f, 0.f, 1.f);
 
-			if (meshDisplay)
-				target.draw(*meshDisplay, states);
+			target.draw(&verticesDisplay[0], verticesDisplay.size(), primitiveType, states);
 		}
 	}
 };

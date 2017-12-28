@@ -11,7 +11,6 @@
 
 #include <SFML\Graphics.hpp>
 
-#include "SFMLMesh.h"
 #include "SFMLArmatureDisplay.h"
 #include "SFMLTextureAtlasData.h"
 #include "SFMLTextureData.h"
@@ -176,12 +175,10 @@ void SFMLSlot::_updateFrame()
 
 				_textureScale = 1.f;
 
-				auto meshDisplay = new SFMLMesh();
-				meshDisplay->texture = currentTextureData->texture;
-				meshDisplay->verticesDisplay = std::move(verticesDisplay);
-				meshDisplay->verticesInTriagles = std::move(verticesInTriagles);
-
-				_renderDisplay->meshDisplay = std::unique_ptr<SFMLMesh>(meshDisplay);
+				_renderDisplay->texture = currentTextureData->texture;
+				_renderDisplay->verticesDisplay = std::move(verticesDisplay);
+				_renderDisplay->verticesInTriagles = std::move(verticesInTriagles);
+				_renderDisplay->primitiveType = sf::PrimitiveType::Triangles;
 
 				_identityTransform();
 			}
@@ -192,11 +189,27 @@ void SFMLSlot::_updateFrame()
 				_pivotY -= height;
 				_textureScale = scale; 
 
-				auto spriteDisplay = std::make_unique<sf::Sprite>();
-				spriteDisplay->setTexture(*currentTextureData->texture);
-				spriteDisplay->setTextureRect(currentTextureData->textureRect);
-				spriteDisplay->setOrigin({ 0.f, spriteDisplay->getLocalBounds().height });
-				_renderDisplay->spriteDisplay = std::move(spriteDisplay);
+				auto texRect = currentTextureData->textureRect;
+
+				_renderDisplay->texture = currentTextureData->texture;
+
+				_renderDisplay->verticesDisplay.resize(4);
+				_renderDisplay->verticesDisplay[0].texCoords = sf::Vector2f(texRect.left, texRect.top);
+				_renderDisplay->verticesDisplay[1].texCoords = sf::Vector2f(texRect.left, texRect.top + texRect.height);
+				_renderDisplay->verticesDisplay[2].texCoords = sf::Vector2f(texRect.left + texRect.width, texRect.top);
+				_renderDisplay->verticesDisplay[3].texCoords = sf::Vector2f(texRect.left + texRect.width, texRect.top + texRect.height);
+
+
+				float boundsWidth = static_cast<float>(std::abs(texRect.width));
+				float boundsheight = static_cast<float>(std::abs(texRect.height));
+
+				_renderDisplay->verticesDisplay[0].position = sf::Vector2f(0.f, 0.f);
+				_renderDisplay->verticesDisplay[1].position = sf::Vector2f(0.f, boundsheight);
+				_renderDisplay->verticesDisplay[2].position = sf::Vector2f(boundsWidth, 0.f);
+				_renderDisplay->verticesDisplay[3].position = sf::Vector2f(boundsWidth, boundsheight);
+
+				_renderDisplay->setColor(sf::Color::White);
+				_renderDisplay->origin = sf::Vector2f(0.f, texRect.height);
 			}
 
 			_visibleDirty = true;
@@ -217,7 +230,7 @@ void SFMLSlot::_updateMesh()
 	const auto textureData = static_cast<SFMLTextureData*>(_textureData);
 	const auto meshData = _meshData;
 	const auto weightData = meshData->weight;
-	const auto meshDisplay = _renderDisplay->meshDisplay.get();
+	const auto meshDisplay = _renderDisplay.get();
 
 	if (!textureData || meshDisplay->texture != textureData->texture)
 	{

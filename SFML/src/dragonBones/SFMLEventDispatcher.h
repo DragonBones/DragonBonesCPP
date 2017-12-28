@@ -40,7 +40,7 @@ public:
 		}*/
 	}
 
-	virtual void dispatchDBEvent(const std::string& type, EventObject * value) override
+	virtual void dispatchDBEvent(const std::string& type, EventObject* value) override
 	{
 		for (auto& listener : _listeners[type])
 		{

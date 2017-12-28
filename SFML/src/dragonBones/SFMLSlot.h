@@ -31,8 +31,8 @@ public:
 	virtual void _updateColor() override;
 
 protected:
-    virtual void _initDisplay(void* value, bool isRetain) override;
-    virtual void _disposeDisplay(void* value, bool isRelease) override;
+	virtual void _initDisplay(void* value, bool isRetain) override;
+	virtual void _disposeDisplay(void* value, bool isRelease) override;
 	virtual void _onUpdateDisplay() override;
 	virtual void _addDisplay() override;
 	virtual void _replaceDisplay(void* value, bool isArmatureDisplay) override;
