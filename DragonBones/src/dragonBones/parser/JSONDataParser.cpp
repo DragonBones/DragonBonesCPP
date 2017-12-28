@@ -1671,7 +1671,7 @@ unsigned JSONDataParser::_parseIKConstraintFrame(const rapidjson::Value& rawData
     auto frameIntOffset = _frameIntArray.size();
     _frameIntArray.resize(_frameIntArray.size() + 2);
     _frameIntArray[frameIntOffset++] = _getBoolean(rawData, BEND_POSITIVE, true) ? 1 : 0;
-    _frameIntArray[frameIntOffset++] = std::round(_getNumber(rawData, WEIGHT, 1.0f) * 100.0f);
+    _frameIntArray[frameIntOffset++] = round(_getNumber(rawData, WEIGHT, 1.0f) * 100.0f);
 
     return frameOffset;
 }
@@ -1962,7 +1962,7 @@ void JSONDataParser::_parseTextureAtlasData(const rapidjson::Value& rawData, Tex
 {
     textureAtlasData.format = _getTextureFormat(_getString(rawData, FORMAT, ""));
     textureAtlasData.width = _getNumber(rawData, WIDTH, (unsigned)0);
-    textureAtlasData.height = _getNumber(rawData, WIDTH, (unsigned)0);
+    textureAtlasData.height = _getNumber(rawData, HEIGHT, (unsigned)0);
     textureAtlasData.scale = scale == 1.0f ? 1.0f / _getNumber(rawData, SCALE, 1.0f) : scale;
     textureAtlasData.name = _getString(rawData, NAME, "");
     textureAtlasData.imagePath = _getString(rawData, IMAGE_PATH, "");
