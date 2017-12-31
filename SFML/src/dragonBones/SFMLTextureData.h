@@ -51,8 +51,8 @@ public:
 
 		region.x = 0.f;
 		region.y = 0.f;
-		region.width = size.x;
-		region.height = size.y;
+		region.width = static_cast<float>(size.x);
+		region.height = static_cast<float>(size.y);
 
 		texture = value;
 		textureRect = { 0, 0, static_cast<int>(size.x), static_cast<int>(size.y) };

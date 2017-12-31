@@ -46,9 +46,9 @@ void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 			if (textureData->texture == nullptr)
 			{
 				sf::IntRect rect(
-					textureData->region.x, textureData->region.y,
-					textureData->rotated ? textureData->region.height : textureData->region.width,
-					textureData->rotated ? textureData->region.width : textureData->region.height
+					static_cast<int>(textureData->region.x), static_cast<int>(textureData->region.y),
+					static_cast<int>(textureData->rotated ? textureData->region.height : textureData->region.width),
+					static_cast<int>(textureData->rotated ? textureData->region.width : textureData->region.height)
 				);
 
 				textureData->texture = _renderTexture;

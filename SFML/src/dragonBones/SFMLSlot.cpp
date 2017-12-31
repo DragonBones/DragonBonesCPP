@@ -58,10 +58,10 @@ void SFMLSlot::_updateColor()
 	{
 		sf::Color helpColor;
 
-		helpColor.a = _colorTransform.alphaMultiplier * 255.0f;
-		helpColor.r = _colorTransform.redMultiplier * 255.0f;
-		helpColor.g = _colorTransform.greenMultiplier * 255.0f;
-		helpColor.b = _colorTransform.blueMultiplier * 255.0f;
+		helpColor.a = static_cast<uint8_t>(_colorTransform.alphaMultiplier * 255.f);
+		helpColor.r = static_cast<uint8_t>(_colorTransform.redMultiplier * 255.f);
+		helpColor.g = static_cast<uint8_t>(_colorTransform.greenMultiplier * 255.f);
+		helpColor.b = static_cast<uint8_t>(_colorTransform.blueMultiplier * 255.f);
 
 		_renderDisplay->setColor(helpColor);
 	}
@@ -167,7 +167,7 @@ void SFMLSlot::_updateFrame()
 				verticesInTriagles.resize(vertices.size());
 
 				// sorting
-				for (uint64_t i = 0; i < vertexIndices.size(); i++)
+				for (unsigned int i = 0; i < vertexIndices.size(); i++)
 				{
 					verticesInTriagles[vertexIndices[i]].push_back(i);
 					verticesDisplay.push_back(vertices[vertexIndices[i]]);
@@ -189,7 +189,7 @@ void SFMLSlot::_updateFrame()
 				_pivotY -= height;
 				_textureScale = scale; 
 
-				auto texRect = currentTextureData->textureRect;
+				auto texRect = sf::FloatRect(currentTextureData->textureRect);
 
 				_renderDisplay->texture = currentTextureData->texture;
 
