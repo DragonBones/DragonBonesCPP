@@ -196,44 +196,44 @@ public:
     /**
      * @private
      */
-    std::vector<TimelineData*>* getBoneTimelines(const std::string& name)
+    std::vector<TimelineData*>* getBoneTimelines(const std::string& timelineName)
     {
-        return mapFindB(boneTimelines, name);
+        return mapFindB(boneTimelines, timelineName);
     }
     /**
      * @private
      */
-    inline std::vector<TimelineData*>* getSlotTimelines(const std::string& name)
+    inline std::vector<TimelineData*>* getSlotTimelines(const std::string& timelineName)
     {
-        return mapFindB(slotTimelines, name);
+        return mapFindB(slotTimelines, timelineName);
     }
     /**
      * @private
      */
-    inline std::vector<TimelineData*>* getConstraintTimelines(const std::string& name)
+    inline std::vector<TimelineData*>* getConstraintTimelines(const std::string& timelineName)
     {
-        return mapFindB(constraintTimelines, name);
+        return mapFindB(constraintTimelines, timelineName);
     }
     /**
      * @private
      */
-    inline std::vector<int>* getBoneCachedFrameIndices(const std::string& name)
+    inline std::vector<int>* getBoneCachedFrameIndices(const std::string& boneName)
     {
-        return mapFindB(boneCachedFrameIndices, name);
+        return mapFindB(boneCachedFrameIndices, boneName);
     }
     /**
      * @private
      */
-    inline std::vector<int>* getSlotCachedFrameIndices(const std::string& name)
+    inline std::vector<int>* getSlotCachedFrameIndices(const std::string& slotName)
     {
-        return mapFindB(slotCachedFrameIndices, name);
+        return mapFindB(slotCachedFrameIndices, slotName);
     }
 
 public: // For WebAssembly.
-    TimelineData* getActionTimeline(const std::string& name) const { return actionTimeline; }
+    TimelineData* getActionTimeline() const { return actionTimeline; }
     void setActionTimeline(TimelineData* pactionTimeline) { actionTimeline = pactionTimeline; }
 
-    TimelineData* getZOrderTimeline(const std::string& name) const { return zOrderTimeline; }
+    TimelineData* getZOrderTimeline() const { return zOrderTimeline; }
     void setZOrderTimeline(TimelineData* value) { zOrderTimeline = value; }
 
     ArmatureData* getParent() const { return parent; }

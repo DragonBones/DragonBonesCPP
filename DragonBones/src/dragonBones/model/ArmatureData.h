@@ -244,9 +244,9 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    inline BoneData* getBone(const std::string& name) const
+    inline BoneData* getBone(const std::string& boneName) const
     {
-        return mapFind<BoneData>(bones, name);
+        return mapFind<BoneData>(bones, boneName);
     }
     /**
      * - Get a specific slot data.
@@ -260,16 +260,16 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    inline SlotData* getSlot(const std::string& name) const
+    inline SlotData* getSlot(const std::string& slotName) const
     {
-        return mapFind<SlotData>(slots, name);
+        return mapFind<SlotData>(slots, slotName);
     }
     /**
      * @private
      */
-    inline ConstraintData* getConstraint(const std::string& name) const
+    inline ConstraintData* getConstraint(const std::string& constraintName) const
     {
-        return mapFind<ConstraintData>(constraints, name);
+        return mapFind<ConstraintData>(constraints, constraintName);
     }
     /**
      * - Get a specific skin data.
@@ -283,9 +283,9 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    inline SkinData* getSkin(const std::string& name) const
+    inline SkinData* getSkin(const std::string& skinName) const
     {
-        return mapFind(skins, name);
+        return mapFind(skins, skinName);
     }
     /**
      * @private
@@ -303,9 +303,9 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    inline AnimationData* getAnimation(const std::string& name) const
+    inline AnimationData* getAnimation(const std::string& animationName) const
     {
-        return mapFind(animations, name);
+        return mapFind(animations, animationName);
     }
 
 public: // For WebAssembly.

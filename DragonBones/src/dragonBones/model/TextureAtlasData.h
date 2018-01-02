@@ -102,9 +102,9 @@ public:
     /**
      * @private
      */
-    inline TextureData* getTexture(const std::string& name) const
+    inline TextureData* getTexture(const std::string& textureName) const
     {
-        return mapFind(textures, name);
+        return mapFind(textures, textureName);
     }
 
 protected:

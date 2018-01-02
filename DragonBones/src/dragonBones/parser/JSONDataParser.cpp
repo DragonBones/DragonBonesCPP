@@ -266,13 +266,13 @@ ArmatureData* JSONDataParser::_parseArmature(const rapidjson::Value& rawData, fl
 
     for (std::size_t i = 0, l = _cacheRawMeshes.size(); i < l; ++i) // Link mesh.
     { 
-        const auto rawData = _cacheRawMeshes[i];
-        const auto& shareName = _getString(*rawData, SHARE, "");
+        const auto rawMeshData = _cacheRawMeshes[i];
+        const auto& shareName = _getString(*rawMeshData, SHARE, "");
         if (shareName.empty()) {
             continue;
         }
 
-        auto& skinName = _getString(*rawData, SKIN, DEFAULT_NAME);
+        auto skinName = _getString(*rawMeshData, SKIN, DEFAULT_NAME);
         if (skinName.empty()) //
         {
             skinName = DEFAULT_NAME;
@@ -655,7 +655,7 @@ void JSONDataParser::_parseMesh(const rapidjson::Value& rawData, MeshDisplayData
             const auto bone = _rawBones[rawBoneIndex];
             weight->addBone(bone);
             weightBoneIndices[i] = rawBoneIndex;
-            _intArray[weightOffset + (unsigned)BinaryOffset::WeigthBoneIndices + i] = indexOf(_armature->sortedBones, bone);
+            _intArray[weightOffset + (unsigned)BinaryOffset::WeigthBoneIndices + i] = indexOf(sortedBones, bone);
         }
 
         _floatArray.resize(_floatArray.size() + weightCount * 3);
@@ -1692,9 +1692,9 @@ const std::vector<ActionData*>& JSONDataParser::_parseActionData(const rapidjson
     }
     else if (rawData.IsArray())
     {
-        for (std::size_t i = 0, l = rawData.Size(); i < l; ++i)
+        for (std::size_t iA = 0, lA = rawData.Size(); iA < lA; ++iA)
         {
-            const auto& rawAction = rawData[i];
+            const auto& rawAction = rawData[iA];
             const auto action = BaseObject::borrowObject<ActionData>();
 
             if (rawAction.HasMember(GOTO_AND_PLAY))

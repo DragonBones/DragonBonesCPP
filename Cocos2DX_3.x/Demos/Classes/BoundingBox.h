@@ -79,8 +79,8 @@ private:
         const auto& armatureDisplayTLTG = _armatureDisplay->getNodeToWorldTransform();
         const auto& armatureDisplayTGTL = _armatureDisplay->getWorldToNodeTransform();
 
-        auto& helpPointA = _targetA->getPosition3D();
-        auto& helpPointB = _targetB->getPosition3D();
+        auto helpPointA = _targetA->getPosition3D();
+        auto helpPointB = _targetB->getPosition3D();
         boundingBoxTesterTLTG.transformPoint(&helpPointA);
         boundingBoxTesterTLTG.transformPoint(&helpPointB);
         armatureDisplayTGTL.transformPoint(&helpPointA);

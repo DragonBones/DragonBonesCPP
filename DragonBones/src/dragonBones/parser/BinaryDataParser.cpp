@@ -10,7 +10,7 @@ TimelineData* BinaryDataParser::_parseBinaryTimeline(TimelineType type, unsigned
 
     _timeline = timeline;
 
-    const auto keyFrameCount = _timelineArray[timeline->offset + (unsigned)BinaryOffset::TimelineKeyFrameCount];
+    const auto keyFrameCount = (unsigned)_timelineArray[timeline->offset + (unsigned)BinaryOffset::TimelineKeyFrameCount];
     if (keyFrameCount == 1) 
     {
         timeline->frameIndicesOffset = -1;

@@ -176,9 +176,9 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    inline ArmatureData* getArmature(const std::string& name) const
+    inline ArmatureData* getArmature(const std::string& armatureName) const
     {
-        return mapFind<ArmatureData>(armatures, name);
+        return mapFind<ArmatureData>(armatures, armatureName);
     }
 
 protected:

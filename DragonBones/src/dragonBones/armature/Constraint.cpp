@@ -42,7 +42,7 @@ void IKConstraint::_computeA()
         radian += Transform::PI;
     }
 
-    global.rotation += (radian - global.rotation) * _weight;
+    global.rotation += Transform::normalizeRadian(radian - global.rotation) * _weight;
     global.toMatrix(globalTransformMatrix);
 }
 

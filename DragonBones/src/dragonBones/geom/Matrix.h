@@ -259,26 +259,22 @@ public:
      */
     inline void transformRectangle(Rectangle& rectangle, bool delta = false) const
     {
-        const auto a = this->a;
-        const auto b = this->b;
-        const auto c = this->c;
-        const auto d = this->d;
-        const auto tx = delta ? 0.0f : this->tx;
-        const auto ty = delta ? 0.0f : this->ty;
+        const auto offsetX = delta ? 0.0f : this->tx;
+        const auto offsetY = delta ? 0.0f : this->ty;
 
         const auto x = rectangle.x;
         const auto y = rectangle.y;
         const auto xMax = x + rectangle.width;
         const auto yMax = y + rectangle.height;
 
-        auto x0 = a * x + c * y + tx;
-        auto y0 = b * x + d * y + ty;
-        auto x1 = a * xMax + c * y + tx;
-        auto y1 = b * xMax + d * y + ty;
-        auto x2 = a * xMax + c * yMax + tx;
-        auto y2 = b * xMax + d * yMax + ty;
-        auto x3 = a * x + c * yMax + tx;
-        auto y3 = b * x + d * yMax + ty;
+        auto x0 = a * x + c * y + offsetX;
+        auto y0 = b * x + d * y + offsetY;
+        auto x1 = a * xMax + c * y + offsetX;
+        auto y1 = b * xMax + d * y + offsetY;
+        auto x2 = a * xMax + c * yMax + offsetX;
+        auto y2 = b * xMax + d * yMax + offsetY;
+        auto x3 = a * x + c * yMax + offsetX;
+        auto y3 = b * x + d * yMax + offsetY;
         auto tmp = 0.0f;
 
         if (x0 > x1) 

@@ -7,7 +7,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-const std::string DragonBones::VEISION = "5.6.2";
+const std::string DragonBones::VEISION = "5.6.201";
 
 bool DragonBones::yDown = true;
 bool DragonBones::debug = false;

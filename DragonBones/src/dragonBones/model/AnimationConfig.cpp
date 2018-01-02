@@ -63,22 +63,22 @@ void AnimationConfig::copyFrom(AnimationConfig* value)
     boneMask = value->boneMask;
 }
 
-bool AnimationConfig::containsBoneMask(const std::string& name) const
+bool AnimationConfig::containsBoneMask(const std::string& boneName) const
 {
-    return boneMask.empty() || std::find(boneMask.cbegin(), boneMask.cend(), name) != boneMask.cend();
+    return boneMask.empty() || std::find(boneMask.cbegin(), boneMask.cend(), boneName) != boneMask.cend();
 }
 
-void AnimationConfig::addBoneMask(Armature* armature, const std::string& name, bool recursive)
+void AnimationConfig::addBoneMask(Armature* armature, const std::string& boneName, bool recursive)
 {
-    const auto currentBone = armature->getBone(name);
+    const auto currentBone = armature->getBone(boneName);
     if (currentBone == nullptr)
     {
         return;
     }
     
-    if (std::find(boneMask.cbegin(), boneMask.cend(), name) == boneMask.cend()) // Add mixing
+    if (std::find(boneMask.cbegin(), boneMask.cend(), boneName) == boneMask.cend()) // Add mixing
     {
-        boneMask.push_back(name);
+        boneMask.push_back(boneName);
     }
 
     if (recursive) // Add recursive mixing.
@@ -93,17 +93,19 @@ void AnimationConfig::addBoneMask(Armature* armature, const std::string& name, b
     }
 }
 
-void AnimationConfig::removeBoneMask(Armature* armature, const std::string& name, bool recursive)
+void AnimationConfig::removeBoneMask(Armature* armature, const std::string& boneName, bool recursive)
 {
-    auto iterator = std::find(boneMask.begin(), boneMask.end(), name);
-    if (iterator != boneMask.end()) // Remove mixing.
     {
-        boneMask.erase(iterator);
+        auto iterator = std::find(boneMask.begin(), boneMask.end(), boneName);
+        if (iterator != boneMask.end()) // Remove mixing.
+        {
+            boneMask.erase(iterator);
+        }
     }
 
     if (recursive) 
     {
-        const auto currentBone = armature->getBone(name);
+        const auto currentBone = armature->getBone(boneName);
         if (currentBone != nullptr)
         {
             if (!boneMask.empty()) // Remove recursive mixing.

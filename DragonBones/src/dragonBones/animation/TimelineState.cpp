@@ -992,7 +992,7 @@ void IKConstraintTimelineState::_onArriveAtFrame()
 
         if (_tweenState == TweenState::Always) 
         {
-            if (_frameIndex == _frameCount - 1) 
+            if ((unsigned)_frameIndex == _frameCount - 1)
             {
                 valueOffset = _animationData->frameIntOffset + _frameValueOffset; // + 0 * 2
             }
