@@ -26,7 +26,6 @@
 #include "TransformObject.h"
 
 #include "../geom/ColorTransform.h"
-#include "../geom/Rectangle.h"
 #include "../model/ArmatureData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -84,11 +83,6 @@ public:
      */
     bool _colorDirty;
     /**
-     * @internal
-     * @private
-     */
-    bool _meshDirty;
-    /**
      * @private
      */
     BlendMode _blendMode;
@@ -117,21 +111,15 @@ public:
      * @internal
      * @private
      */
-    std::vector<float> _deformVertices;
+    const SlotData* _slotData;
     /**
-     * @private
-     */
-    std::vector<DisplayData*> _displayDatas;
+    * @private
+    */
+    DisplayData* _displayData;
     /**
-     * @internal
-     * @private
-     */
-    SlotData* _slotData;
-    /**
-     * @internal
-     * @private
-     */
-    MeshDisplayData* _meshData;
+    * @internal
+    */
+    DeformVertices* _deformVertices;
     /**
      * @private
      */
@@ -188,29 +176,25 @@ protected:
      */
     Matrix _localMatrix;
     /**
+    * @private
+    */
+    std::vector<DisplayData*> _displayDatas;
+    /**
      * @private
      */
     std::vector<std::pair<void*, DisplayType>> _displayList;
     /**
      * @private
      */
-    std::vector<Bone*> _meshBones;
+    const std::vector<DisplayData*>* _rawDisplayDatas;
     /**
-     * @private
-     */
-    std::vector<DisplayData*>* _rawDisplayDatas;
-    /**
-     * @private
-     */
-    DisplayData* _displayData;
+    * @private
+    */
+    BoundingBoxData* _boundingBoxData;
     /**
      * @private
      */
     TextureData* _textureData;
-    /**
-     * @private
-     */
-    BoundingBoxData* _boundingBoxData;
     /**
      * @private
      */
@@ -219,9 +203,14 @@ protected:
      * @private
      */
     Armature* _childArmature;
+    /**
+    * @private
+    */
+    Bone* _parent;
 
 public:
     Slot() :
+        _deformVertices(nullptr),
         _rawDisplay(nullptr),
         _meshDisplay(nullptr)
     {}
@@ -278,10 +267,6 @@ protected:
     */
     virtual void _identityTransform() = 0;
     /**
-     * @private
-     */
-    bool _isMeshBonesUpdate() const;
-    /**
     * @private
     */
     DisplayData* _getDefaultRawDisplayData(unsigned displayIndex) const;
@@ -314,10 +299,6 @@ public:
 
 public:
     /**
-     * @inheritDoc
-     */
-    virtual void _setArmature(Armature* value) override;
-    /**
      * @internal
      * @private
      */
@@ -343,7 +324,7 @@ public:
      * @internal
      * @private
      */
-    void init(SlotData* slotData, std::vector<DisplayData*>* displayDatas, void* rawDisplay, void* meshDisplay);
+    void init(const SlotData* slotData, Armature* armatureValue, void* rawDisplay, void* meshDisplay);
     /**
      * @internal
      * @private
@@ -508,11 +489,11 @@ public:
     /**
      * @private
      */
-    inline std::vector<DisplayData*>* getRawDisplayDatas() const 
+    inline const std::vector<DisplayData*>* getRawDisplayDatas() const 
     {
         return _rawDisplayDatas;
     }
-    void setRawDisplayDatas(std::vector<DisplayData*>* value);
+    void setRawDisplayDatas(const std::vector<DisplayData*>* value);
     /**
      * - The slot data.
      * @see dragonBones.SlotData
@@ -621,6 +602,20 @@ public:
         return _childArmature;
     }
     void setChildArmature(Armature* value);
+    /**
+    * - The parent bone to which it belongs.
+    * @version DragonBones 3.0
+    * @language en_US
+    */
+    /**
+    * - 所属的父骨骼。
+    * @version DragonBones 3.0
+    * @language zh_CN
+    */
+    inline Bone* getParent() const
+    {
+        return _parent;
+    }
 };
 
 DRAGONBONES_NAMESPACE_END

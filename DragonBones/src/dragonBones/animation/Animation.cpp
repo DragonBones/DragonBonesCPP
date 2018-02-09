@@ -1,4 +1,5 @@
 #include "Animation.h"
+#include "../model/DisplayData.h"
 #include "../model/AnimationConfig.h"
 #include "../model/AnimationData.h"
 #include "../armature/Armature.h"
@@ -136,7 +137,21 @@ void Animation::advanceTime(float passedTime)
 
                 for (const auto slot : _armature->getSlots())
                 {
-                    slot->_cachedFrameIndices = animationData->getSlotCachedFrameIndices(slot->getName());
+                    const auto rawDisplayDatas = slot->getRawDisplayDatas();
+                    if (rawDisplayDatas != nullptr && !(*rawDisplayDatas).empty()) 
+                    {
+                        const auto rawDsplayData = (*rawDisplayDatas)[0];
+                        if (rawDsplayData != nullptr) 
+                        {
+                            if (rawDsplayData->parent == _armature->getArmatureData()->defaultSkin)
+                            {
+                                slot->_cachedFrameIndices = animationData->getSlotCachedFrameIndices(slot->getName());
+                                continue;
+                            }
+                        }
+                    }
+
+                    slot->_cachedFrameIndices = nullptr;
                 }
             }
 

@@ -55,19 +55,19 @@ TimelineData* BinaryDataParser::_parseBinaryTimeline(TimelineType type, unsigned
     return timeline;
 }
 
-void BinaryDataParser::_parseMesh(const rapidjson::Value& rawData, MeshDisplayData& mesh)
+void BinaryDataParser::_parseVertices(const rapidjson::Value& rawData, VerticesData& vertices)
 {
-    mesh.offset = rawData[OFFSET].GetUint();
+    vertices.offset = rawData[OFFSET].GetUint();
 
-    const auto weightOffset = _intArray[mesh.offset + (unsigned)BinaryOffset::MeshWeightOffset];
-    if (weightOffset >= 0) 
+    const auto weightOffset = _intArray[vertices.offset + (unsigned)BinaryOffset::MeshWeightOffset];
+    if (weightOffset >= 0)
     {
         const auto weight = BaseObject::borrowObject<WeightData>();
-        const auto vertexCount = _intArray[mesh.offset + (unsigned)BinaryOffset::MeshVertexCount];
+        const auto vertexCount = _intArray[vertices.offset + (unsigned)BinaryOffset::MeshVertexCount];
         const auto boneCount = (unsigned)_intArray[weightOffset + (unsigned)BinaryOffset::WeigthBoneCount];
         weight->offset = weightOffset;
 
-        for (std::size_t i = 0; i < boneCount; ++i) 
+        for (std::size_t i = 0; i < boneCount; ++i)
         {
             const auto boneIndex = _intArray[weightOffset + (unsigned)BinaryOffset::WeigthBoneIndices + i];
             weight->addBone(_rawBones[boneIndex]);
@@ -83,8 +83,13 @@ void BinaryDataParser::_parseMesh(const rapidjson::Value& rawData, MeshDisplayDa
         }
 
         weight->count = weightCount;
-        mesh.weight = weight;
+        vertices.weight = weight;
     }
+}
+
+void BinaryDataParser::_parseMesh(const rapidjson::Value& rawData, MeshDisplayData& mesh)
+{
+    _parseVertices(rawData, mesh.vertices);
 }
 
 AnimationData* BinaryDataParser::_parseAnimation(const rapidjson::Value& rawData)

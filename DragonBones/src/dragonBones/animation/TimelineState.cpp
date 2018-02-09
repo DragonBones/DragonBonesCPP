@@ -13,6 +13,7 @@
 #include "../armature/Bone.h"
 #include "../armature/Slot.h"
 #include "../armature/Constraint.h"
+#include "../armature/DeformVertices.h"
 #include "AnimationState.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -34,57 +35,23 @@ void ActionTimelineState::_onCrossFrame(unsigned frameIndex) const
 
             if (action->type == ActionType::Play)
             {
-                if (action->slot != nullptr) 
-                {
-                    const auto slot = _armature->getSlot(action->slot->name);
-                    if (slot != nullptr)
-                    {
-                        const auto childArmature = slot->getChildArmature();
-                        if (childArmature != nullptr) 
-                        {
-                            childArmature->_bufferAction(action, true);
-                        }
-                    }
-                }
-                else if (action->bone != nullptr) 
-                {
-                    for (const auto slot : _armature->getSlots())
-                    {
-                        const auto childArmature = slot->getChildArmature();
-                        if (childArmature != nullptr && slot->getParent()->_boneData == action->bone) 
-                        {
-                            childArmature->_bufferAction(action, true);
-                        }
-                    }
-                }
-                else 
-                {
-                    _armature->_bufferAction(action, true);
-                }
+                const auto eventObject = BaseObject::borrowObject<EventObject>();
+                // eventObject->time = _frameArray[frameOffset] * _frameRateR; // Precision problem
+                eventObject->time = _frameArray[frameOffset] / _frameRate;
+                eventObject->animationState = _animationState;
+                EventObject::actionDataToInstance(action, eventObject, _armature);
+                _armature->_bufferAction(eventObject, true);
             }
             else
             {
                 const auto eventType = action->type == ActionType::Frame ? EventObject::FRAME_EVENT : EventObject::SOUND_EVENT;
-                if (action->type == ActionType::Sound || eventDispatcher->hasDBEventListener(eventType))
+                if (action->type == ActionType::Sound || eventDispatcher->hasDBEventListener(eventType)) 
                 {
                     const auto eventObject = BaseObject::borrowObject<EventObject>();
-                    eventObject->time = (float)_frameArray[frameOffset] / _frameRate;
-                    eventObject->type = eventType;
-                    eventObject->name = action->name;
-                    eventObject->data = action->data;
-                    eventObject->armature = _armature;
+                    // eventObject->time = _frameArray[frameOffset] * _frameRateR; // Precision problem
+                    eventObject->time = _frameArray[frameOffset] / _frameRate;
                     eventObject->animationState = _animationState;
-
-                    if (action->bone != nullptr)
-                    {
-                        eventObject->bone = _armature->getBone(action->bone->name);
-                    }
-
-                    if (action->slot != nullptr)
-                    {
-                        eventObject->slot = _armature->getSlot(action->slot->name);
-                    }
-
+                    EventObject::actionDataToInstance(action, eventObject, _armature);
                     _armature->_dragonBones->bufferEvent(eventObject);
                 }
             }
@@ -516,9 +483,13 @@ void BoneRotateTimelineState::_onArriveAtFrame()
             if ((unsigned)_frameIndex == _frameCount - 1)
             {
                 valueOffset = _animationData->frameFloatOffset + _frameValueOffset; // + 0 * 2
+                delta.rotation = Transform::normalizeRadian(frameFloatArray[valueOffset++] - current.rotation);
+            }
+            else 
+            {
+                delta.rotation = frameFloatArray[valueOffset++] - current.rotation;
             }
 
-            delta.rotation = frameFloatArray[valueOffset++] - current.rotation;
             delta.skew = frameFloatArray[valueOffset++] - current.skew;
         }
         else 
@@ -798,11 +769,11 @@ void SlotColorTimelineState::update(float passedTime)
     }
 }
 
-void SlotFFDTimelineState::_onClear()
+void DeformTimelineState::_onClear()
 {
     SlotTimelineState::_onClear();
 
-    meshOffset = 0;
+    vertexOffset = 0;
 
     _dirty = false;
     _frameFloatOffset = 0;
@@ -814,7 +785,7 @@ void SlotFFDTimelineState::_onClear()
     _result.clear();
 }
 
-void SlotFFDTimelineState::_onArriveAtFrame()
+void DeformTimelineState::_onArriveAtFrame()
 {
     SlotTimelineState::_onArriveAtFrame();
 
@@ -854,7 +825,7 @@ void SlotFFDTimelineState::_onArriveAtFrame()
     }
 }
 
-void SlotFFDTimelineState::_onUpdateFrame()
+void DeformTimelineState::_onUpdateFrame()
 {
     SlotTimelineState::_onUpdateFrame();
 
@@ -870,18 +841,18 @@ void SlotFFDTimelineState::_onUpdateFrame()
     }
 }
 
-void SlotFFDTimelineState::init(Armature* armature, AnimationState* animationState, TimelineData* timelineData)
+void DeformTimelineState::init(Armature* armature, AnimationState* animationState, TimelineData* timelineData)
 {
     SlotTimelineState::init(armature, animationState, timelineData);
 
     if (_timelineData != nullptr) 
     {
         const auto frameIntOffset = _animationData->frameIntOffset + _timelineArray[_timelineData->offset + (unsigned)BinaryOffset::TimelineFrameValueCount];
-        meshOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformMeshOffset];
+        vertexOffset = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformVertexOffset];
 
-        if (meshOffset < 0) 
+        if (vertexOffset < 0)
         {
-            meshOffset += 65536; // Fixed out of bouds bug. 
+            vertexOffset += 65536; // Fixed out of bouds bug. 
         }
 
         _deformCount = _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformCount];
@@ -891,7 +862,8 @@ void SlotFFDTimelineState::init(Armature* armature, AnimationState* animationSta
     }
     else 
     {
-        _deformCount = slot->_deformVertices.size();
+        const auto deformVertices = slot->_deformVertices;
+        _deformCount = deformVertices != nullptr ? deformVertices->vertices.size() : 0;
         _valueCount = _deformCount;
         _valueOffset = 0;
         _frameFloatOffset = 0;
@@ -902,15 +874,16 @@ void SlotFFDTimelineState::init(Armature* armature, AnimationState* animationSta
     _result.resize(_valueCount);
 }
 
-void SlotFFDTimelineState::fadeOut()
+void DeformTimelineState::fadeOut()
 {
     _tweenState = TweenState::None;
     _dirty = false;
 }
 
-void SlotFFDTimelineState::update(float passedTime)
+void DeformTimelineState::update(float passedTime)
 {
-    if (slot->_meshData == nullptr || slot->_meshData->offset != meshOffset) 
+    const auto deformVertices = slot->_deformVertices;
+    if (deformVertices == nullptr || deformVertices->verticesData == nullptr || deformVertices->verticesData->offset != vertexOffset)
     {
         return;
     }
@@ -920,7 +893,7 @@ void SlotFFDTimelineState::update(float passedTime)
     // Fade animation.
     if (_tweenState != TweenState::None || _dirty) 
     {
-        auto& result = slot->_deformVertices;
+        auto& result = deformVertices->vertices;
 
         if (_animationState->_fadeState != 0 || _animationState->_subFadeState != 0)
         {
@@ -942,7 +915,7 @@ void SlotFFDTimelineState::update(float passedTime)
                 }
             }
 
-            slot->_meshDirty = true;
+            deformVertices->verticesDirty = true;
         }
         else if (_dirty) 
         {
@@ -964,7 +937,7 @@ void SlotFFDTimelineState::update(float passedTime)
                 }
             }
 
-            slot->_meshDirty = true;
+            deformVertices->verticesDirty = true;
         }
     }
 }

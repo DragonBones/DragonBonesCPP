@@ -142,6 +142,8 @@ public:
      */
     static const char* SOUND_EVENT;
 
+    static void actionDataToInstance(const ActionData* data, EventObject* instance, Armature* armature);
+
 public:
     /**
      * - If is a frame event, the value is used to describe the time that the event was in the animation timeline. (In seconds)
@@ -229,6 +231,10 @@ public:
      */
     AnimationState* animationState;
     /**
+     * @private
+     */
+    const ActionData* actionData;
+    /**
      * - The custom data.
      * @see dragonBones.CustomData
      * @version DragonBones 5.0
@@ -241,8 +247,6 @@ public:
      * @language zh_CN
      */
     UserData* data;
-
-    void copyFrom(const EventObject& value);
 
 protected:
     /**

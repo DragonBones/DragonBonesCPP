@@ -284,8 +284,7 @@ ArmatureData* JSONDataParser::_parseArmature(const rapidjson::Value& rawData, fl
         }
 
         const auto mesh = _cacheMeshes[i];
-        mesh->offset = shareMesh->offset;
-        mesh->weight = shareMesh->weight;
+        mesh->vertices.shareFrom(shareMesh->vertices);
     }
 
     if (rawData.HasMember(ANIMATION))
@@ -545,9 +544,10 @@ DisplayData* JSONDataParser::_parseDisplay(const rapidjson::Value& rawData)
         case dragonBones::DisplayType::Mesh:
         {
             const auto meshDisplay = BaseObject::borrowObject<MeshDisplayData>();
-            meshDisplay->inheritDeform = _getBoolean(rawData, INHERIT_DEFORM, true);
+            meshDisplay->vertices.inheritDeform = _getBoolean(rawData, INHERIT_DEFORM, true);
             meshDisplay->name = name;
             meshDisplay->path = !path.empty() ? path : name;
+            meshDisplay->vertices.data = _data;
 
             if (rawData.HasMember(SHARE))
             {
@@ -612,8 +612,9 @@ void JSONDataParser::_parseMesh(const rapidjson::Value& rawData, MeshDisplayData
     const auto vertexOffset = _floatArray.size();
     const auto uvOffset = vertexOffset + vertexCount * 2;
     const auto meshOffset = _intArray.size();
+    const auto meshName = _skin->name + "_" + _slot->name + "_" + mesh.name;  // Cache pose data.
 
-    mesh.offset = meshOffset;
+    mesh.vertices.offset = meshOffset;
     _intArray.resize(_intArray.size() + 1 + 1 + 1 + 1 + triangleCount * 3);
     _intArray[meshOffset + (unsigned)BinaryOffset::MeshVertexCount] = vertexCount;
     _intArray[meshOffset + (unsigned)BinaryOffset::MeshTriangleCount] = triangleCount;
@@ -706,9 +707,7 @@ void JSONDataParser::_parseMesh(const rapidjson::Value& rawData, MeshDisplayData
             }
         }
 
-        mesh.weight = weight;
-        // Cache pose data.
-        const auto meshName = _skin->name + "_" + _slot->name + "_" + mesh.name;
+        mesh.vertices.weight = weight;
         _weightSlotPose[meshName] = &rawSlotPose;
         _weightBonePoses[meshName] = &rawBonePoses;
     }
@@ -900,7 +899,7 @@ AnimationData* JSONDataParser::_parseAnimation(const rapidjson::Value& rawData)
             }
 
             const auto timeline = _parseTimeline(
-                rawTimeline, FRAME, TimelineType::SlotFFD, 
+                rawTimeline, FRAME, TimelineType::SlotDeform, 
                 false, true, 0, 
                 std::bind(&JSONDataParser::_parseSlotFFDFrame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
             );
@@ -1559,14 +1558,15 @@ unsigned JSONDataParser::_parseSlotFFDFrame(const rapidjson::Value& rawData, uns
     const auto frameFloatOffset = _frameFloatArray.size();
     const auto frameOffset = _parseTweenFrame(rawData, frameStart, frameCount);
     const auto offset = _getNumber(rawData, OFFSET, (unsigned)0);
-    const auto vertexCount = (unsigned)_intArray[_mesh->offset + (unsigned)BinaryOffset::MeshVertexCount];
+    const auto vertexCount = (unsigned)_intArray[_mesh->vertices.offset + (unsigned)BinaryOffset::MeshVertexCount];
     const auto meshName = _mesh->parent->name + "_" + _slot->name + "_" + _mesh->name;
+    const auto weight = _mesh->vertices.weight;
 
     auto x = 0.0f;
     auto y = 0.0f;
     unsigned iB = 0;
     unsigned iV = 0;
-    if (_mesh->weight != nullptr)
+    if (weight != nullptr)
     {
         const auto& rawSlotPose = *(_weightSlotPose[meshName]);
 
@@ -1577,8 +1577,8 @@ unsigned JSONDataParser::_parseSlotFFDFrame(const rapidjson::Value& rawData, uns
         _helpMatrixA.tx = rawSlotPose[4].GetDouble();
         _helpMatrixA.ty = rawSlotPose[5].GetDouble();
 
-        _frameFloatArray.resize(_frameFloatArray.size() + _mesh->weight->count * 2);
-        iB = _mesh->weight->offset + (unsigned)BinaryOffset::WeigthBoneIndices + _mesh->weight->bones.size();
+        _frameFloatArray.resize(_frameFloatArray.size() + weight->count * 2);
+        iB = weight->offset + (unsigned)BinaryOffset::WeigthBoneIndices + weight->bones.size();
     }
     else 
     {
@@ -1615,7 +1615,7 @@ unsigned JSONDataParser::_parseSlotFFDFrame(const rapidjson::Value& rawData, uns
             }
         }
 
-        if (_mesh->weight != nullptr) // If mesh is skinned, transform point by bone bind pose.
+        if (weight != nullptr) // If mesh is skinned, transform point by bone bind pose.
         {
             const auto& rawBonePoses = *(_weightBonePoses[meshName]);
             const unsigned vertexBoneCount = _intArray[iB++];
@@ -1653,7 +1653,7 @@ unsigned JSONDataParser::_parseSlotFFDFrame(const rapidjson::Value& rawData, uns
     {
         const auto frameIntOffset = _frameIntArray.size();
         _frameIntArray.resize(_frameIntArray.size() + 1 + 1 + 1 + 1 + 1);
-        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformMeshOffset] = _mesh->offset;
+        _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformVertexOffset] = _mesh->vertices.offset;
         _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformCount] = _frameFloatArray.size() - frameFloatOffset;
         _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformValueCount] = _frameFloatArray.size() - frameFloatOffset;
         _frameIntArray[frameIntOffset + (unsigned)BinaryOffset::DeformValueOffset] = 0;

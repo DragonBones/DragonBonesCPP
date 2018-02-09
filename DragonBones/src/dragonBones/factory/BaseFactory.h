@@ -161,7 +161,7 @@ protected:
     /**
      * @private
      */
-    virtual Slot* _buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature* armature) const = 0;
+    virtual Slot* _buildSlot(const BuildArmaturePackage& dataPackage, const SlotData* slotData, Armature* armature) const = 0;
 
 public:
     /**

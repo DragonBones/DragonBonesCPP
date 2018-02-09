@@ -23,6 +23,7 @@ void Bone::_onClear()
     _cachedFrameIndex = -1;
     _blendState.clear();
     _boneData = nullptr;
+    _parent = nullptr;
     _cachedFrameIndices = nullptr;
 }
 
@@ -148,7 +149,6 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
             {
                 _parent->updateGlobalTransform();
 
-
                 if (_parent->global.scaleX < 0.0f)
                 {
                     rotation = global.rotation + _parent->global.rotation + Transform::PI;
@@ -235,54 +235,7 @@ void Bone::_updateGlobalTransformMatrix(bool isCache)
     }
 }
 
-void Bone::_setArmature(Armature* value)
-{
-    if (_armature == value) 
-    {
-        return;
-    }
-
-    std::vector<Slot*> oldSlots;
-    std::vector<Bone*> oldBones;
-
-    if (_armature != nullptr)
-    {
-        oldSlots = getSlots();
-        oldBones = getBones();
-        _armature->_removeBoneFromBoneList(this);
-    }
-
-    _armature = value; //
-
-    if (_armature != nullptr)
-    {
-        _armature->_addBoneToBoneList(this);
-    }
-
-    if (!oldSlots.empty()) 
-    {
-        for (const auto &slot : oldSlots) 
-        {
-            if (slot->getParent()== this) 
-            {
-                slot->_setArmature(_armature);
-            }
-        }
-    }
-
-    if (!oldBones.empty()) 
-    {
-        for (const auto &bone : oldBones) 
-        {
-            if (bone->getParent() == this)  
-            {
-                bone->_setArmature(_armature);
-            }
-        }
-    }
-}
-
-void Bone::init(BoneData* boneData)
+void Bone::init(const BoneData* boneData, Armature* armatureValue)
 {
     if (_boneData != nullptr) 
     {
@@ -290,8 +243,16 @@ void Bone::init(BoneData* boneData)
     }
 
     _boneData = boneData;
+    _armature = armatureValue;
+
+    if (_boneData->parent != nullptr) 
+    {
+        _parent = _armature->getBone(_boneData->parent->name);
+    }
+
+    _armature->_addBone(this);
     //
-    origin = &_boneData->transform;
+    origin = &(_boneData->transform);
 }
 
 void Bone::update(int cacheFrameIndex)
@@ -408,7 +369,7 @@ void Bone::updateByConstraint()
     }
 }
 
-bool Bone::contains(const TransformObject* value) const
+bool Bone::contains(const Bone* value) const
 {
     if (value == this)
     {
@@ -424,36 +385,6 @@ bool Bone::contains(const TransformObject* value) const
     return ancestor == this;
 }
 
-const std::vector<Bone*> Bone::getBones() const
-{
-    std::vector<Bone*> bones;
-
-    for (const auto &bone : _armature->getBones())
-    {
-        if (bone->getParent() == this)
-        {
-            bones.push_back(bone);
-        }
-    }
-
-    return bones;
-}
-
-const std::vector<Slot*> Bone::getSlots() const
-{
-    std::vector<Slot*> slots;
-
-    for (const auto &slot : _armature->getSlots())
-    {
-        if (slot->getParent() == this)
-        {
-            slots.push_back(slot);
-        }
-    }
-
-    return slots;
-}
-
 void Bone::setVisible(bool value)
 {
     if (_visible == value)
@@ -465,7 +396,7 @@ void Bone::setVisible(bool value)
 
     for (const auto & slot : _armature->getSlots())
     {
-        if (slot->_parent == this)
+        if (slot->getParent() == this)
         {
             slot->_updateVisible();
         }

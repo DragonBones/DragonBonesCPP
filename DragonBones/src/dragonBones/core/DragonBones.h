@@ -131,7 +131,7 @@ enum class BinaryOffset
     FrameTweenEasingOrCurveSampleCount = 2,
     FrameCurveSamples = 3,
 
-    DeformMeshOffset = 0,
+    DeformVertexOffset = 0,
     DeformCount = 1,
     DeformValueCount = 2,
     DeformValueOffset = 3,
@@ -173,7 +173,8 @@ enum class DisplayType
     Image = 0, 
     Armature = 1, 
     Mesh = 2,
-    BoundingBox = 3
+    BoundingBox = 3,
+    Path = 4
 };
 
 /**
@@ -254,7 +255,7 @@ enum class TimelineType {
 
     SlotDisplay = 20,
     SlotColor = 21,
-    SlotFFD = 22,
+    SlotDeform = 22,
 
     IKConstraint = 30,
 
@@ -398,12 +399,13 @@ class DisplayData;
 class ImageDisplayData;
 class ArmatureDisplayData;
 class MeshDisplayData;
+class VerticesData;
+class WeightData;
 class BoundingBoxDisplayData;
 class BoundingBoxData;
 class RectangleBoundingBoxData;
 class EllipseBoundingBoxData;
 class PolygonBoundingBoxData;
-class WeightData;
 class AnimationData;
 class TimelineData;
 class AnimationConfig;
@@ -417,6 +419,7 @@ class Bone;
 class Slot;
 class Constraint;
 class IKConstraint;
+class DeformVertices;
 
 class IAnimatable;
 class WorldClock;
@@ -434,7 +437,7 @@ class ZOrderTimelineState;
 class BoneAllTimelineState;
 class SlotDislayTimelineState;
 class SlotColorTimelineState;
-class SlotFFDTimelineState;
+class DeformTimelineState;
 class IKConstraintTimelineState;
 
 class IEventDispatcher;

@@ -46,6 +46,7 @@ private:
     const uint16_t* _timelineArray;
 
     TimelineData* _parseBinaryTimeline(TimelineType type, unsigned offset, TimelineData* timelineData = nullptr);
+    void _parseVertices(const rapidjson::Value& rawData, VerticesData& vertices);
 
 protected:
     virtual void _parseMesh(const rapidjson::Value& rawData, MeshDisplayData& mesh) override;

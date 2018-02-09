@@ -298,15 +298,15 @@ public:
     /**
      * @private
      */
-    bool containsBoneMask(const std::string& name) const;
+    bool containsBoneMask(const std::string& boneName) const;
     /**
      * @private
      */
-    void addBoneMask(Armature* armature, const std::string& name, bool recursive);
+    void addBoneMask(Armature* armature, const std::string& boneName, bool recursive);
     /**
      * @private
      */
-    void removeBoneMask(Armature* armature, const std::string& name, bool recursive);
+    void removeBoneMask(Armature* armature, const std::string& boneName, bool recursive);
 
 public: // For WebAssembly.
     int getFadeOutMode() const { return (int)fadeOutMode; }

@@ -11,9 +11,23 @@ void WorldClock::advanceTime(float passedTime)
         passedTime = 0.0f;
     }
 
+    const auto currentTime = 0.0f;
+
+    if (passedTime < 0.0f) 
+    {
+        passedTime = currentTime - _systemTime;
+    }
+
+    _systemTime = currentTime;
+
     if (timeScale != 1.0f)
     {
         passedTime *= timeScale;
+    }
+
+    if (passedTime == 0.0f)
+    {
+        return;
     }
 
     if (passedTime < 0.0f)
@@ -23,11 +37,6 @@ void WorldClock::advanceTime(float passedTime)
     else
     {
         time += passedTime;
-    }
-
-    if (passedTime == 0.0f)
-    {
-        return;
     }
 
     std::size_t i = 0, r = 0, l = _animatebles.size();

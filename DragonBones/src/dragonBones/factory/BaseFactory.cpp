@@ -119,16 +119,7 @@ void BaseFactory::_buildBones(const BuildArmaturePackage& dataPackage, Armature*
     for (const auto boneData : dataPackage.armature->sortedBones)
     {
         const auto bone = BaseObject::borrowObject<Bone>();
-        bone->init(boneData);
-
-        if (boneData->parent != nullptr)
-        {
-            armature->addBone(bone, boneData->parent->name);
-        }
-        else
-        {
-            armature->addBone(bone, "");
-        }
+        bone->init(boneData, armature);
     }
 
     for (const auto& pair : dataPackage.armature->constraints)
@@ -136,7 +127,7 @@ void BaseFactory::_buildBones(const BuildArmaturePackage& dataPackage, Armature*
         // TODO more constraint type.
         const auto constraint = BaseObject::borrowObject<IKConstraint>();
         constraint->init(pair.second, armature);
-        armature->addConstraint(constraint);
+        armature->_addConstraint(constraint);
     }
 }
 
@@ -167,15 +158,15 @@ void BaseFactory::_buildSlots(const BuildArmaturePackage& dataPackage, Armature*
 
     for (const auto slotData : dataPackage.armature->sortedSlots) 
     {
-        const auto displays = skinSlots[slotData->name];
-        const auto slot = _buildSlot(dataPackage, slotData, displays, armature);
-        armature->addSlot(slot, slotData->parent->name);
+        const auto displayDatas = skinSlots[slotData->name];
+        const auto slot = _buildSlot(dataPackage, slotData, armature);
+        slot->setRawDisplayDatas(displayDatas);
 
-        if (displays != nullptr)
+        if (displayDatas != nullptr)
         {
             std::vector<std::pair<void*, DisplayType>> displayList;
 
-            for (const auto displayData : *displays)
+            for (const auto displayData : *displayDatas)
             {
                 if (displayData != nullptr)
                 {

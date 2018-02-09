@@ -112,6 +112,10 @@ public:
     {
         return _armature->getAnimation();
     }
+    /**
+    * @inheritDoc
+    */
+    virtual cocos2d::Rect getBoundingBox() const override;
 };
 /**
  * @internal

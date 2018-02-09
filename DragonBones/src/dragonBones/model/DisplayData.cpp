@@ -8,6 +8,27 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
+void VerticesData::clear()
+{
+    if (!isShared && weight != nullptr)
+    {
+        weight->returnToPool();
+    }
+
+    isShared = false;
+    inheritDeform = false;
+    offset = 0;
+    data = nullptr;
+    weight = nullptr;
+}
+
+void VerticesData::shareFrom(const VerticesData& value)
+{
+    isShared = true;
+    offset = value.offset;
+    weight = value.weight;
+}
+
 void DisplayData::_onClear()
 {
     name = "";
@@ -49,15 +70,8 @@ void MeshDisplayData::_onClear()
 {
     DisplayData::_onClear();
 
-    if(weight != nullptr)
-    {
-        weight->returnToPool();
-    }
-
     type = DisplayType::Mesh;
-    inheritDeform = false;
-    offset = 0;
-    weight = nullptr;
+    vertices.clear();
     texture = nullptr;
 }
 

@@ -165,12 +165,12 @@ public:
  * @internal
  * @private
  */
-class SlotFFDTimelineState : public SlotTimelineState
+class DeformTimelineState : public SlotTimelineState
 {
-    BIND_CLASS_TYPE_A(SlotFFDTimelineState);
+    BIND_CLASS_TYPE_A(DeformTimelineState);
 
 public:
-    unsigned meshOffset;
+    unsigned vertexOffset;
 
 private:
     bool _dirty;

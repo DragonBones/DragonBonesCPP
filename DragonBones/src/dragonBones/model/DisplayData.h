@@ -29,6 +29,30 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
+* @internal
+* @private
+*/
+class VerticesData
+{
+public:
+    bool isShared;
+    bool inheritDeform;
+    unsigned offset;
+    DragonBonesData* data;
+    WeightData* weight;
+
+    VerticesData() :
+        weight(nullptr)
+    {
+    }
+    ~VerticesData()
+    {
+    }
+
+    void clear();
+    void shareFrom(const VerticesData& value);
+};
+/**
  * @internal
  * @private
  */
@@ -110,30 +134,14 @@ public: // For WebAssembly.
  */
 class MeshDisplayData : public DisplayData
 {
-    BIND_CLASS_TYPE_B(MeshDisplayData);
+    BIND_CLASS_TYPE_A(MeshDisplayData);
 
 public:
-    bool inheritDeform;
-    unsigned offset;
-    WeightData* weight;
+    VerticesData vertices;
     TextureData* texture;
-
-    MeshDisplayData() :
-        weight(nullptr)
-    { 
-        _onClear(); 
-    }
-    ~MeshDisplayData()
-    {
-        _onClear();
-    }
 
 protected:
     virtual void _onClear() override;
-
-public: // For WebAssembly.
-    WeightData* getWeight() const { return weight; }
-    void setWeight(WeightData* value) { weight = value; }
 };
 /**
  * @internal
@@ -148,7 +156,7 @@ public:
 
     BoundingBoxDisplayData() : 
         boundingBox(nullptr)
-    { 
+    {
         _onClear(); 
     }
     ~BoundingBoxDisplayData()

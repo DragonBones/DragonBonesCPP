@@ -93,10 +93,11 @@ void IKConstraint::_computeB()
         const auto rX = -dY * r;
         const auto rY = dX * r;
 
-        bool isPPR = false;
-        if (parent->_parent != nullptr)
+        auto isPPR = false;
+        const auto parentParent = parent->getParent();
+        if (parentParent != nullptr)
         {
-            auto parentParentMatrix = parent->_parent->globalTransformMatrix;
+            auto parentParentMatrix = parentParent->globalTransformMatrix;
             isPPR = parentParentMatrix.a * parentParentMatrix.d - parentParentMatrix.b * parentParentMatrix.c < 0.0f;
         }
 

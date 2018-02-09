@@ -345,7 +345,7 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    bool containsBoneMask(const std::string& name) const;
+    bool containsBoneMask(const std::string& boneName) const;
     /**
      * - Add a specific bone mask.
      * @param name - The bone name.
@@ -360,7 +360,7 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    void addBoneMask(const std::string& name, bool recursive = true);
+    void addBoneMask(const std::string& boneName, bool recursive = true);
     /**
      * - Remove the mask of a specific bone.
      * @param name - The bone name.
@@ -375,7 +375,7 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    void removeBoneMask(const std::string& name, bool recursive = true);
+    void removeBoneMask(const std::string& boneName, bool recursive = true);
     /**
      * - Remove all bone masks.
      * @version DragonBones 3.0

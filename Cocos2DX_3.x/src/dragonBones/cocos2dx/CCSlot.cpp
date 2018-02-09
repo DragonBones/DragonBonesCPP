@@ -61,22 +61,22 @@ void CCSlot::_updateZOrder()
 
 void CCSlot::_updateFrame()
 {
-    const auto meshData = _display == _meshDisplay ? _meshData : nullptr;
-    auto currentTextureData = static_cast<CCTextureData*>(_textureData);
+    const auto currentVerticesData = (_deformVertices != nullptr && _display == _meshDisplay) ? _deformVertices->verticesData : nullptr;
+    const auto currentTextureData = static_cast<CCTextureData*>(_textureData);
     const auto frameDisplay = static_cast<DBCCSprite*>(_renderDisplay); // In cocos2dx render meshDisplay and frameDisplay are the same display
 
     if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
     {
         if (currentTextureData->spriteFrame != nullptr)
         {
-            if (meshData != nullptr) // Mesh.
+            if (currentVerticesData != nullptr) // Mesh.
             {
-                const auto data = meshData->parent->parent->parent;
+                const auto data = currentVerticesData->data;
                 const auto intArray = data->intArray;
                 const auto floatArray = data->floatArray;
-                const unsigned vertexCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-                const unsigned triangleCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
-                int vertexOffset = intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+                const unsigned vertexCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+                const unsigned triangleCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
+                int vertexOffset = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
 
                 if (vertexOffset < 0)
                 {
@@ -141,7 +141,7 @@ void CCSlot::_updateFrame()
 
                 for (std::size_t i = 0; i < triangleCount * 3; ++i)
                 {
-                    vertexIndices[i] = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i];
+                    vertexIndices[i] = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i];
                 }
 
                 _textureScale = 1.0f;
@@ -163,7 +163,7 @@ void CCSlot::_updateFrame()
 #endif
                 frameDisplay->setPolygonInfo(polygonInfo);
 
-                const auto isSkinned = _meshData->weight != nullptr;
+                const auto isSkinned = currentVerticesData->weight != nullptr;
                 if (isSkinned) 
                 {
                     _identityTransform();
@@ -196,11 +196,14 @@ void CCSlot::_updateFrame()
 
 void CCSlot::_updateMesh() 
 {
-    const auto hasFFD = !_deformVertices.empty();
     const auto scale = _armature->_armatureData->scale;
+    const auto& deformVertices = _deformVertices->vertices;
+    const auto& bones = _deformVertices->bones;
+    const auto verticesData = _deformVertices->verticesData;
+    const auto weightData = verticesData->weight;
+
+    const auto hasFFD = !deformVertices.empty();
     const auto textureData = static_cast<CCTextureData*>(_textureData);
-    const auto meshData = _meshData;
-    const auto weightData = meshData->weight;
     const auto meshDisplay = static_cast<DBCCSprite*>(_renderDisplay);
     const auto vertices = meshDisplay->getPolygonInfoModify().triangles.verts;
     cocos2d::Rect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
@@ -212,10 +215,10 @@ void CCSlot::_updateMesh()
 
     if (weightData != nullptr)
     {
-        const auto data = meshData->parent->parent->parent;
+        const auto data = verticesData->data;
         const auto intArray = data->intArray;
         const auto floatArray = data->floatArray;
-        const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+        const auto vertexCount = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
         int weightFloatOffset = intArray[weightData->offset + (unsigned)BinaryOffset::WeigthFloatOffset];
 
         if (weightFloatOffset < 0)
@@ -224,7 +227,7 @@ void CCSlot::_updateMesh()
         }
 
         for (
-            std::size_t i = 0, iB = weightData->offset + (unsigned)BinaryOffset::WeigthBoneIndices + weightData->bones.size(), iV = (std::size_t)weightFloatOffset, iF = 0;
+            std::size_t i = 0, iB = weightData->offset + (unsigned)BinaryOffset::WeigthBoneIndices + bones.size(), iV = (std::size_t)weightFloatOffset, iF = 0;
             i < vertexCount;
             ++i
         )
@@ -234,7 +237,7 @@ void CCSlot::_updateMesh()
             for (std::size_t j = 0; j < boneCount; ++j)
             {
                 const auto boneIndex = (unsigned)intArray[iB++];
-                const auto bone = _meshBones[boneIndex];
+                const auto bone = bones[boneIndex];
                 if (bone != nullptr) 
                 {
                     const auto& matrix = bone->globalTransformMatrix;
@@ -244,8 +247,8 @@ void CCSlot::_updateMesh()
 
                     if (hasFFD) 
                     {
-                        xL += _deformVertices[iF++];
-                        yL += _deformVertices[iF++];
+                        xL += deformVertices[iF++];
+                        yL += deformVertices[iF++];
                     }
 
                     xG += (matrix.a * xL + matrix.c * yL + matrix.tx) * weight;
@@ -281,11 +284,11 @@ void CCSlot::_updateMesh()
     }
     else if (hasFFD)
     {
-        const auto data = meshData->parent->parent->parent;
+        const auto data = verticesData->data;
         const auto intArray = data->intArray;
         const auto floatArray = data->floatArray;
-        const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-        int vertexOffset = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+        const auto vertexCount = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+        int vertexOffset = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
 
         if (vertexOffset < 0)
         {
@@ -295,8 +298,8 @@ void CCSlot::_updateMesh()
         for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
         {
             const auto iH = i / 2;
-            const auto xG = floatArray[vertexOffset + i] * scale + _deformVertices[i];
-            const auto yG = floatArray[vertexOffset + i + 1] * scale + _deformVertices[i + 1];
+            const auto xG = floatArray[vertexOffset + i] * scale + deformVertices[i];
+            const auto yG = floatArray[vertexOffset + i + 1] * scale + deformVertices[i + 1];
 
             auto& vertex = vertices[iH];
             auto& vertexPosition = vertex.vertices;
@@ -328,8 +331,8 @@ void CCSlot::_updateMesh()
     boundsRect.size.width -= boundsRect.origin.x;
     boundsRect.size.height -= boundsRect.origin.y;
 
-    auto polygonInfo = meshDisplay->getPolygonInfo();
     const auto& transform = meshDisplay->getNodeToParentTransform(); // Backup transform. (Set rect and polygon will override transform).
+    auto polygonInfo = meshDisplay->getPolygonInfo();
 
 #if COCOS2D_VERSION >= 0x00031400
     polygonInfo.setRect(boundsRect);
@@ -337,8 +340,17 @@ void CCSlot::_updateMesh()
     polygonInfo.rect = boundsRect; // Copy
     meshDisplay->setContentSize(boundsRect.size);
 #endif
+
     meshDisplay->setPolygonInfo(polygonInfo);
-    meshDisplay->setNodeToParentTransform(transform);
+
+    if (weightData != nullptr) 
+    {
+        _identityTransform(); // ?!?!?!?!?!?!?!?!?!?!?!?!?!?! WTF
+    }
+    else 
+    {
+        meshDisplay->setNodeToParentTransform(transform);
+    }
 }
 
 void CCSlot::_updateTransform()
@@ -359,8 +371,8 @@ void CCSlot::_updateTransform()
             transform.m[5] *= _textureScale;
         }
 
-        transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
-        transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
+        transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX - globalTransformMatrix.c * _pivotY);
+        transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX - globalTransformMatrix.d * _pivotY);
     }
     else if (_childArmature)
     {
@@ -382,7 +394,7 @@ void CCSlot::_identityTransform()
     static cocos2d::Mat4 transform;
     transform.m[0] = 1.0f;
     transform.m[1] = 0.0f;
-    transform.m[4] = 0.0f;
+    transform.m[4] = -0.0f;
     transform.m[5] = -1.0f;
     transform.m[12] = 0.0f;
     transform.m[13] = 0.0f;

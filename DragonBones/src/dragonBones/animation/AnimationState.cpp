@@ -289,13 +289,13 @@ void AnimationState::_updateBoneAndSlotTimelines()
                                 break;
                             }
 
-                            case TimelineType::SlotFFD:
+                            case TimelineType::SlotDeform:
                             {
-                                const auto timeline = BaseObject::borrowObject<SlotFFDTimelineState>();
+                                const auto timeline = BaseObject::borrowObject<DeformTimelineState>();
                                 timeline->slot = slot;
                                 timeline->init(_armature, this, timelineData);
                                 _slotTimelines.push_back(timeline);
-                                ffdFlags.push_back(timeline->meshOffset);
+                                ffdFlags.push_back(timeline->vertexOffset);
                                 break;
                             }
 
@@ -331,11 +331,11 @@ void AnimationState::_updateBoneAndSlotTimelines()
                         {
                             if (displayData != nullptr && displayData->type == DisplayType::Mesh)
                             {
-                                const auto meshOffset = static_cast<MeshDisplayData*>(displayData)->offset;
+                                const auto meshOffset = static_cast<MeshDisplayData*>(displayData)->vertices.offset;
                                 if (std::find(ffdFlags.cbegin(), ffdFlags.cend(), meshOffset) == ffdFlags.cend())
                                 {
-                                    const auto timeline = BaseObject::borrowObject<SlotFFDTimelineState>();
-                                    timeline->meshOffset = meshOffset;
+                                    const auto timeline = BaseObject::borrowObject<DeformTimelineState>();
+                                    timeline->vertexOffset = meshOffset;
                                     timeline->slot = slot;
                                     timeline->init(_armature, this, nullptr);
                                     _slotTimelines.push_back(timeline);

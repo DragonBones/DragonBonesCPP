@@ -110,14 +110,13 @@ public:
 protected:
     bool _debugDraw;
     bool _lockUpdate;
-    bool _bonesDirty;
     bool _slotsDirty;
     bool _zOrderDirty;
     bool _flipX;
     bool _flipY;
     std::vector<Bone*> _bones;
     std::vector<Slot*> _slots;
-    std::vector<ActionData*> _actions;
+    std::vector<EventObject*> _actions;
     Animation* _animation;
     IArmatureProxy* _proxy;
     void* _display;
@@ -145,7 +144,6 @@ protected:
     virtual void _onClear() override;
 
 private:
-    void _sortBones();
     void _sortSlots();
 
 public:
@@ -158,27 +156,22 @@ public:
      * @internal
      * @private
      */
-    void _addBoneToBoneList(Bone* value);
+    void _addBone(Bone* value);
     /**
      * @internal
      * @private
      */
-    void _removeBoneFromBoneList(Bone* value);
+    void _addSlot(Slot* value);
+    /**
+    * @internal
+    * @private
+    */
+    void _addConstraint(Constraint* value);
     /**
      * @internal
      * @private
      */
-    void _addSlotToSlotList(Slot* value);
-    /**
-     * @internal
-     * @private
-     */
-    void _removeSlotFromSlotList(Slot* value);
-    /**
-     * @internal
-     * @private
-     */
-    void _bufferAction(ActionData* action, bool append);
+    void _bufferAction(EventObject* action, bool append);
     /**
      * - Dispose the armature. (Return to the object pool)
      * @example
@@ -346,26 +339,6 @@ public:
      */
     Slot* getSlotByDisplay(void* display) const;
     /**
-     * @deprecated
-     */
-    void addBone(Bone* value, const std::string& parentName);
-    /**
-     * @deprecated
-     */
-    void addSlot(Slot* value, const std::string& boneName);
-    /**
-     * @private
-     */
-    void addConstraint(Constraint* value);
-    /**
-     * @deprecated
-     */
-    void removeBone(Bone* value);
-    /**
-     * @deprecated
-     */
-    void removeSlot(Slot* value);
-    /**
      * - Get all bones.
      * @see dragonBones.Bone
      * @version DragonBones 3.0
@@ -397,7 +370,6 @@ public:
     {
         return _slots;
     }
-
     /**
      * - Whether to flip the armature horizontally.
      * @version DragonBones 5.5
@@ -558,6 +530,14 @@ public:
         return _display;
     }
     /**
+     * @private
+     */
+    inline void* getReplacedTexture() const
+    {
+        return _replacedTexture;
+    }
+    void setReplacedTexture(void* value);
+    /**
      * @inheritDoc
      */
     inline WorldClock* getClock() const override
@@ -581,14 +561,6 @@ public:
     {
         return _parent;
     }
-    /**
-     * @private
-     */
-    inline void* getReplacedTexture() const 
-    {
-        return _replacedTexture;
-    }
-    void setReplacedTexture(void* value);
 
 public: // For WebAssembly.
     IAnimatable* getAnimatable() const { return (IAnimatable*)this; }

@@ -87,6 +87,7 @@ public:
     float timeScale;
 
 private:
+    float _systemTime;
     std::vector<IAnimatable*> _animatebles;
     WorldClock* _clock;
 
@@ -103,16 +104,14 @@ public:
      * @version DragonBones 3.0
      * @language zh_CN
      */
-    WorldClock(float ptime = -1.0f) :
-        time(ptime),
+    WorldClock(float timeValue = 0.0f) :
+        time(timeValue),
         timeScale(1.0f),
+        _systemTime(0.0f),
         _animatebles(),
         _clock(nullptr)
     {
-        if (time < 0.0f)
-        {
-            time = 0.0f;
-        }
+        _systemTime = 0.0f;
     }
     virtual ~WorldClock()
     {

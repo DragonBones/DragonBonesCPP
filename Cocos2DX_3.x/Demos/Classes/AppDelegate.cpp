@@ -12,7 +12,7 @@
 #include "ReplaceAnimation.h"
 #include "CoreElement.h"
 #include "PerformanceTest.h"
-// #include "DragonBonesTest.h"
+#include "DragonBonesTest.h"
 
 USING_NS_CC;
 
@@ -54,7 +54,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     FileUtils::getInstance()->addSearchPath("assets");
 
     // create a scene. it's an autorelease object
-    auto scene = HelloDragonBones::createScene();
+    // auto scene = HelloDragonBones::createScene();
     // auto scene = AnimationBase::createScene();
     // auto scene = DragonBonesEvent::createScene();
     // auto scene = AnimationLayer::createScene();
@@ -67,7 +67,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // auto scene = CoreElementGame::createScene();
     // auto scene = PerformanceTest::createScene();
 
-    // auto scene = DragonBonesTest::createScene();
+    auto scene = DragonBonesTest::createScene();
 
     // run
     director->runWithScene(scene);

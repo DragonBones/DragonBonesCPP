@@ -1,15 +1,15 @@
 #include "Slot.h"
-
 #include "../model/DragonBonesData.h"
 #include "../model/UserData.h"
-#include "../model/ArmatureData.h"
 #include "../model/SkinData.h"
 #include "../model/DisplayData.h"
 #include "../model/BoundingBoxData.h"
 #include "../model/TextureAtlasData.h"
 #include "Armature.h"
 #include "Bone.h"
+#include "DeformVertices.h"
 #include "../animation/Animation.h"
+#include "../event/EventObject.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -41,6 +41,11 @@ void Slot::_onClear()
         }
     }
 
+    if (_deformVertices != nullptr)
+    {
+        _deformVertices->returnToPool();
+    }
+
     if (_meshDisplay && _meshDisplay != _rawDisplay) 
     {
         _disposeDisplay(_meshDisplay, false);
@@ -56,7 +61,6 @@ void Slot::_onClear()
     _zOrderDirty = false;
     _blendModeDirty = false;
     _colorDirty = false;
-    _meshDirty = false;
     _transformDirty = false;
     _visible = true;
     _blendMode = BlendMode::Normal;
@@ -68,34 +72,20 @@ void Slot::_onClear()
     _pivotY = 0.0f;
     _localMatrix.identity();
     _colorTransform.identity();
-    _deformVertices.clear();
     _displayList.clear();
     _displayDatas.clear();
-    _meshBones.clear();
     _slotData = nullptr;
     _rawDisplayDatas = nullptr; //
     _displayData = nullptr;
-    _textureData = nullptr;
-    _meshData = nullptr;
     _boundingBoxData = nullptr;
+    _textureData = nullptr;
+    _deformVertices = nullptr;
     _rawDisplay = nullptr;
     _meshDisplay = nullptr;
     _display = nullptr;
     _childArmature = nullptr;
+    _parent = nullptr;
     _cachedFrameIndices = nullptr;
-}
-
-bool Slot::_isMeshBonesUpdate() const
-{
-    for (const auto bone : _meshBones)
-    {
-        if (bone != nullptr && bone->_childrenTransformDirty)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 DisplayData* Slot::_getDefaultRawDisplayData(unsigned displayIndex) const
@@ -116,9 +106,15 @@ DisplayData* Slot::_getDefaultRawDisplayData(unsigned displayIndex) const
 void Slot::_updateDisplayData()
 {
     const auto prevDisplayData = _displayData;
+    const auto prevVerticesData = _deformVertices != nullptr ? _deformVertices->verticesData : nullptr;
     const auto prevTextureData = _textureData;
-    const auto prevMeshData = _meshData;
+
     DisplayData* rawDisplayData = nullptr;
+    VerticesData* currentVerticesData = nullptr;
+
+    _displayData = nullptr;
+    _boundingBoxData = nullptr;
+    _textureData = nullptr;
 
     if (_displayIndex >= 0)
     {
@@ -137,43 +133,50 @@ void Slot::_updateDisplayData()
             _displayData = _displayDatas[_displayIndex];
         }
     }
-    else
-    {
-        rawDisplayData = nullptr;
-        _displayData = nullptr;
-    }
 
     // Update texture and mesh data.
     if (_displayData != nullptr)
     {
-        if (_displayData->type == DisplayType::Image || _displayData->type == DisplayType::Mesh)
+        if (_displayData->type == DisplayType::Mesh) 
         {
-            if (_displayData->type == DisplayType::Mesh)
+            currentVerticesData = &static_cast<MeshDisplayData*>(_displayData)->vertices;
+        }
+        else if (_displayData->type == DisplayType::Path) 
+        {
+            // TODO
+        }
+        else if (rawDisplayData != nullptr) 
+        {
+            if (rawDisplayData->type == DisplayType::Mesh) 
             {
-                _textureData = static_cast<MeshDisplayData*>(_displayData)->texture;
-                _meshData = static_cast<MeshDisplayData*>(_displayData);
+                currentVerticesData = &static_cast<MeshDisplayData*>(rawDisplayData)->vertices;
             }
-            else if (rawDisplayData != nullptr && rawDisplayData->type == DisplayType::Mesh)
+            else if (rawDisplayData->type == DisplayType::Path) 
             {
-                _textureData = static_cast<MeshDisplayData*>(_displayData)->texture;
-                _meshData = static_cast<MeshDisplayData*>(rawDisplayData);
-            }
-            else
-            {
-                _textureData = static_cast<ImageDisplayData*>(_displayData)->texture;
-                _meshData = nullptr;
+                // TODO
             }
         }
-        else
+
+        if (_displayData->type == DisplayType::BoundingBox) 
         {
-            _textureData = nullptr;
-            _meshData = nullptr;
+            _boundingBoxData = static_cast<BoundingBoxDisplayData*>(_displayData)->boundingBox;
         }
-    }
-    else
-    {
-        _textureData = nullptr;
-        _meshData = nullptr;
+        else if (rawDisplayData != nullptr) 
+        {
+            if (rawDisplayData->type == DisplayType::BoundingBox) 
+            {
+                _boundingBoxData = static_cast<BoundingBoxDisplayData*>(rawDisplayData)->boundingBox;
+            }
+        }
+
+        if (_displayData->type == DisplayType::Image) 
+        {
+            _textureData = static_cast<ImageDisplayData*>(_displayData)->texture;
+        }
+        else if (_displayData->type == DisplayType::Mesh) 
+        {
+            _textureData = static_cast<MeshDisplayData*>(_displayData)->texture;
+        }
     }
 
     // Update bounding box data.
@@ -190,15 +193,9 @@ void Slot::_updateDisplayData()
         _boundingBoxData = nullptr;
     }
 
-    if (_displayData != prevDisplayData || _textureData != prevTextureData || _meshData != prevMeshData)
+    if (_displayData != prevDisplayData || currentVerticesData != prevVerticesData || _textureData != prevTextureData)
     {
-        // Update pivot offset.
-        if (_meshData != nullptr)
-        {
-            _pivotX = 0.0f;
-            _pivotY = 0.0f;
-        }
-        else if (_textureData != nullptr) // TODO
+        if (currentVerticesData == nullptr && _textureData != nullptr)
         {
             const auto imageDisplayData = static_cast<ImageDisplayData*>(_displayData);
             const auto scale = _textureData->parent->scale * _armature->_armatureData->scale;
@@ -226,31 +223,31 @@ void Slot::_updateDisplayData()
                 _pivotY += frame->y * scale;
             }
 
+            // Update replace pivot.
+            if (_displayData != nullptr && rawDisplayData != nullptr && _displayData != rawDisplayData)
+            {
+                rawDisplayData->transform.toMatrix(_helpMatrix);
+                _helpMatrix.invert();
+                _helpMatrix.transformPoint(0.0f, 0.0f, _helpPoint);
+                _pivotX -= _helpPoint.x;
+                _pivotY -= _helpPoint.y;
+
+                _displayData->transform.toMatrix(_helpMatrix);
+                _helpMatrix.invert();
+                _helpMatrix.transformPoint(0.0f, 0.0f, _helpPoint);
+                _pivotX += _helpPoint.x;
+                _pivotY += _helpPoint.y;
+            }
+
             if (!DragonBones::yDown)
             {
-                _pivotY -= (_textureData->rotated ? _textureData->region.width : _textureData->region.height) * scale;
+                _pivotY = (_textureData->rotated ? _textureData->region.width : _textureData->region.height) * scale - _pivotY;
             }
         }
         else
         {
             _pivotX = 0.0f;
             _pivotY = 0.0f;
-        }
-
-        // Update replace pivot.
-        if (_displayData != nullptr && rawDisplayData != nullptr && _displayData != rawDisplayData && _meshData == nullptr)
-        {
-            rawDisplayData->transform.toMatrix(_helpMatrix);
-            _helpMatrix.invert();
-            _helpMatrix.transformPoint(0.0f, 0.0f, _helpPoint);
-            _pivotX -= _helpPoint.x;
-            _pivotY -= _helpPoint.y;
-
-            _displayData->transform.toMatrix(_helpMatrix);
-            _helpMatrix.invert();
-            _helpMatrix.transformPoint(0.0f, 0.0f, _helpPoint);
-            _pivotX += _helpPoint.x;
-            _pivotY += _helpPoint.y;
         }
 
         // Update original transform.
@@ -267,44 +264,19 @@ void Slot::_updateDisplayData()
             origin = nullptr;
         }
 
-        // Update mesh bones and ffd vertices.
-        if (_meshData != prevMeshData)
+        // Update vertices.
+        if (currentVerticesData != prevVerticesData) 
         {
-            if (_meshData != nullptr)
+            if (_deformVertices == nullptr)
             {
-                if (_meshData->weight != nullptr)
-                {
-                    _deformVertices.resize(_meshData->weight->count * 2);
-                    _meshBones.resize(_meshData->weight->bones.size());
-
-                    for (std::size_t i = 0, l = _meshBones.size(); i < l; ++i)
-                    {
-                        _meshBones[i] = _armature->getBone(_meshData->weight->bones[i]->name);
-                    }
-                }
-                else
-                {
-                    const auto vertexCount = (_meshData->parent->parent->parent->intArray)[_meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-                    _deformVertices.resize(vertexCount * 2);
-                    _meshBones.resize(0);
-                }
-
-                for (std::size_t i = 0, l = _deformVertices.size(); i < l; ++i)
-                {
-                    _deformVertices[i] = 0.0f;
-                }
-
-                _meshDirty = true;
+                _deformVertices = BaseObject::borrowObject<DeformVertices>();
             }
-            else
-            {
-                _deformVertices.resize(0);
-                _meshBones.resize(0);
-            }
+
+            _deformVertices->init(currentVerticesData, _armature);
         }
-        else if (_meshData != nullptr && _textureData != prevTextureData) // Update mesh after update frame.
-        {
-            _meshDirty = true;
+        else if (_deformVertices != nullptr && _textureData != prevTextureData) // Update mesh after update frame.
+        { 
+            _deformVertices->verticesDirty = true;
         }
 
         _displayDirty = true;
@@ -344,6 +316,7 @@ void Slot::_updateDisplay()
         _onUpdateDisplay();
         _replaceDisplay(prevDisplay, prevChildArmature != nullptr);
 
+        _transformDirty = true;
         _visibleDirty = true;
         _blendModeDirty = true;
         _colorDirty = true;
@@ -408,7 +381,10 @@ void Slot::_updateDisplay()
                 {
                     for (const auto action : *actions)
                     {
-                        _childArmature->_bufferAction(action, false); // Make sure default action at the beginning.
+                        const auto eventObject = BaseObject::borrowObject<EventObject>();
+                        EventObject::actionDataToInstance(action, eventObject, _armature);
+                        eventObject->slot = this;
+                        _armature->_bufferAction(eventObject, false);
                     }
                 }
                 else
@@ -433,33 +409,6 @@ void Slot::_updateGlobalTransformMatrix(bool isCache)
     else
     {
         _globalDirty = true;
-    }
-}
-
-void Slot::_setArmature(Armature* value)
-{
-    if (this->_armature == value)
-    {
-        return;
-    }
-
-    if (this->_armature)
-    {
-        this->_armature->_removeSlotFromSlotList(this);
-    }
-
-    this->_armature = value;
-
-    _onUpdateDisplay();
-
-    if (this->_armature)
-    {
-        this->_armature->_addSlotToSlotList(this);
-        _addDisplay();
-    }
-    else
-    {
-        _removeDisplay();
     }
 }
 
@@ -553,7 +502,7 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
     return _displayDirty;
 }
 
-void Slot::init(SlotData* slotData, std::vector<DisplayData*>* displayDatas, void* rawDisplay, void* meshDisplay)
+void Slot::init(const SlotData* slotData, Armature* armatureValue, void* rawDisplay, void* meshDisplay)
 {
     if (_slotData != nullptr)
     {
@@ -571,13 +520,28 @@ void Slot::init(SlotData* slotData, std::vector<DisplayData*>* displayDatas, voi
     _rawDisplay = rawDisplay;
     _meshDisplay = meshDisplay;
     //
-    setRawDisplayDatas(displayDatas);
+    _armature = armatureValue;
+    //
+    const auto slotParent = _armature->getBone(_slotData->parent->name);
+    if (slotParent != nullptr) 
+    {
+        _parent = slotParent;
+    }
+    else 
+    {
+        // Never;
+    }
+
+    _armature->_addSlot(this);
     //
     _initDisplay(_rawDisplay, false);
     if (_rawDisplay != _meshDisplay) 
     {
         _initDisplay(_meshDisplay, false);
     }
+
+    _onUpdateDisplay();
+    _addDisplay();
 }
 
 void Slot::update(int cacheFrameIndex)
@@ -667,19 +631,20 @@ void Slot::update(int cacheFrameIndex)
         _updateColor();
     }
 
-    if (_meshData != nullptr && _display == _meshDisplay)
+    if (_deformVertices != nullptr && _deformVertices->verticesData != nullptr && _display == _meshDisplay)
     {
-        const auto isSkinned = _meshData->weight != nullptr;
+        const auto isSkinned = _deformVertices->verticesData->weight != nullptr;
+
         if (
-            _meshDirty || 
-            (isSkinned && _isMeshBonesUpdate())
+            _deformVertices->verticesDirty ||
+            (isSkinned && _deformVertices->isBonesUpdate())
         )
         {
-            _meshDirty = false;
+            _deformVertices->verticesDirty = false;
             _updateMesh();
         }
 
-        if (isSkinned) 
+        if (isSkinned) // Compatible.
         {
             return;
         }
@@ -877,7 +842,7 @@ void Slot::setDisplayList(const std::vector<std::pair<void*, DisplayType>>& valu
     }
 }
 
-void Slot::setRawDisplayDatas(std::vector<DisplayData*>* value)
+void Slot::setRawDisplayDatas(const std::vector<DisplayData*>* value)
 {
     if (_rawDisplayDatas == value)
     {

@@ -7,7 +7,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-const std::string DragonBones::VEISION = "5.6.201";
+const std::string DragonBones::VEISION = "5.6.300";
 
 bool DragonBones::yDown = true;
 bool DragonBones::debug = false;
@@ -46,9 +46,7 @@ void DragonBones::advanceTime(float passedTime)
         _objects.clear();
     }
 
-    _clock->advanceTime(passedTime);
-
-    if (!_events.empty()) 
+    if (!_events.empty())
     {
         for (std::size_t i = 0; i < _events.size(); ++i)
         {
@@ -68,6 +66,8 @@ void DragonBones::advanceTime(float passedTime)
 
         _events.clear();
     }
+
+    _clock->advanceTime(passedTime);
 }
 
 void DragonBones::bufferEvent(EventObject* value)

@@ -95,7 +95,7 @@ public:
     /**
      * @private
      */
-    Transform* origin;
+    const Transform* origin;
     /**
      * @private
      */
@@ -107,11 +107,6 @@ public:
      * @private
      */
     Armature* _armature;
-    /**
-     * @internal
-     * @private
-     */
-    Bone* _parent;
 
 protected:
     /**
@@ -124,18 +119,6 @@ protected:
      * @private
      */
     virtual void _onClear() override;
-
-public:
-    /**
-     * @internal
-     * @private
-     */
-    virtual void _setArmature(Armature* value);
-    /**
-     * @internal
-     * @private
-     */
-    virtual void _setParent(Bone* value);
 
 public:
     /**
@@ -156,26 +139,12 @@ public:
     {
         return _armature;
     }
-    /**
-     * - The parent bone to which it belongs.
-     * @version DragonBones 3.0
-     * @language en_US
-     */
-    /**
-     * - 所属的父骨骼。
-     * @version DragonBones 3.0
-     * @language zh_CN
-     */
-    inline Bone* getParent() const
-    {
-        return _parent;
-    }
 
 public: // For WebAssembly.
     Matrix* getGlobalTransformMatrix() { return &globalTransformMatrix; }
     Transform* getGlobal() { return &global; }
     Transform* getOffset() { return &offset; }
-    Transform* getOrigin() const { return origin; }
+    const Transform* getOrigin() const { return origin; }
 };
 
 DRAGONBONES_NAMESPACE_END

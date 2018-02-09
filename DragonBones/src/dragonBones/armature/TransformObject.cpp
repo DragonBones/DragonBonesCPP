@@ -20,17 +20,6 @@ void TransformObject::_onClear()
 
     _globalDirty = false;
     _armature = nullptr;
-    _parent = nullptr;
-}
-
-void TransformObject::_setArmature(Armature * value)
-{
-    _armature = value;
-}
-
-void TransformObject::_setParent(Bone * value)
-{
-    _parent = value;
 }
 
 void TransformObject::updateGlobalTransform()
