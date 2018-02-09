@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -29,9 +29,8 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
-* @internal
-* @private
-*/
+ * @internal
+ */
 class VerticesData
 {
 public:
@@ -54,7 +53,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class DisplayData : public BaseObject
 {
@@ -81,7 +79,6 @@ public: // For WebAssembly.
 };
 /**
  * @internal
- * @private
  */
 class ImageDisplayData : public DisplayData
 {
@@ -102,7 +99,6 @@ public: // For WebAssembly.
 };
 /**
  * @internal
- * @private
  */
 class ArmatureDisplayData : public DisplayData
 {
@@ -130,7 +126,6 @@ public: // For WebAssembly.
 };
 /**
  * @internal
- * @private
  */
 class MeshDisplayData : public DisplayData
 {
@@ -145,7 +140,6 @@ protected:
 };
 /**
  * @internal
- * @private
  */
 class BoundingBoxDisplayData : public DisplayData
 {
@@ -173,7 +167,6 @@ public: // For WebAssembly.
 };
 /**
  * @internal
- * @private
  */
 class WeightData : public BaseObject
 {

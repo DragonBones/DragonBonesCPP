@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -87,12 +87,10 @@ public:
     std::string name;
     /**
      * @internal
-     * @private
      */
     std::vector<unsigned> frameIndices;
     /**
      * @internal
-     * @private
      */
     std::vector<float> cachedFrames;
     /**
@@ -112,37 +110,30 @@ public:
     std::map<std::string, ArmatureData*> armatures;
     /**
      * @internal
-     * @private
      */
     const char* binary;
     /**
      * @internal
-     * @private
      */
     const int16_t* intArray;
     /**
      * @internal
-     * @private
      */
     const float* floatArray;
     /**
      * @internal
-     * @private
      */
     const int16_t* frameIntArray;
     /**
      * @internal
-     * @private
      */
     const float* frameFloatArray;
     /**
      * @internal
-     * @private
      */
     const int16_t* frameArray;
     /**
      * @internal
-     * @private
      */
     const uint16_t* timelineArray;
     /**
@@ -161,18 +152,17 @@ public:
     }
     /**
      * @internal
-     * @private
      */
     void addArmature(ArmatureData* value);
     /**
      * - Get a specific armature data.
-     * @param name - The armature data name.
+     * @param armatureName - The armature data name.
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 获取特定的骨架数据。
-     * @param name - 骨架数据名称。
+     * @param armatureName - 骨架数据名称。
      * @version DragonBones 3.0
      * @language zh_CN
      */
@@ -182,9 +172,6 @@ public:
     }
 
 protected:
-    /**
-     * @inheritDoc
-     */
     virtual void _onClear() override;
 
 public: // For WebAssembly.

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -46,69 +46,24 @@ private:
     cocos2d::Node* _renderDisplay;
 
 protected:
-    /**
-     * @inheritDoc
-     */
     virtual void _onClear() override;
-    /**
-     * @inheritDoc
-     */
     virtual void _initDisplay(void* value, bool isRetain) override;
-    /**
-     * @inheritDoc
-     */
     virtual void _disposeDisplay(void* value, bool isRelease) override;
-    /**
-     * @inheritDoc
-     */
     virtual void _onUpdateDisplay() override;
-    /**
-     * @inheritDoc
-     */
     virtual void _addDisplay() override;
-    /**
-     * @inheritDoc
-     */
     virtual void _replaceDisplay(void* value, bool isArmatureDisplay) override;
-    /**
-     * @inheritDoc
-     */
     virtual void _removeDisplay() override;
-    /**
-     * @inheritDoc
-     */
     virtual void _updateZOrder() override;
 
 public:
-    /**
-     * @inheritDoc
-     */
     virtual void _updateVisible() override;
-    /**
-     * @inheritDoc
-     */
     virtual void _updateBlendMode() override;
-    /**
-     * @inheritDoc
-     */
     virtual void _updateColor() override;
 
 protected:
-    /**
-     * @inheritDoc
-     */
     virtual void _updateFrame() override;
-    /**
-     * @inheritDoc
-     */
     virtual void _updateMesh() override;
-    /**
-     * @inheritDoc
-     */
     virtual void _updateTransform() override;
-    /**
-    * @inheritDoc
-    */
     virtual void _identityTransform() override;
 
 public:

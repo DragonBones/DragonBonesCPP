@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -29,7 +29,6 @@
 DRAGONBONES_NAMESPACE_BEGIN
 /**
  * @internal
- * @private
  */
 class TimelineState : public BaseObject
 {
@@ -38,7 +37,6 @@ class TimelineState : public BaseObject
 protected:
     /**
      * @internal
-     * @private
      */
     enum class TweenState
     {
@@ -48,7 +46,10 @@ protected:
     };
 
 public:
-    int playState; // -1: start, 0: play, 1: complete;
+    /**
+     * -1: start, 0: play, 1: complete;
+     */
+    int playState;
     int currentPlayTimes;
     float currentTime;
 
@@ -89,7 +90,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class TweenTimelineState : public TimelineState
 {
@@ -153,7 +153,6 @@ protected:
 };
 /**
  * @internal
- * @private
  */
 class BoneTimelineState : public TweenTimelineState
 {
@@ -171,7 +170,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class SlotTimelineState : public TweenTimelineState
 {
@@ -185,7 +183,6 @@ protected:
 };
 /**
  * @internal
- * @private
  */
 class ConstraintTimelineState : public TweenTimelineState
 {

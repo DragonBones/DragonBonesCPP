@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -58,9 +58,6 @@ class BaseFactory
 {
 protected:
     static JSONDataParser _jsonParser;
-    /**
-     * @private
-     */
     static BinaryDataParser _binaryParser;
 
 public:
@@ -70,21 +67,9 @@ public:
     bool autoSearch;
 
 protected:
-    /**
-     * @private
-     */
     std::map<std::string, DragonBonesData*> _dragonBonesDataMap;
-    /**
-     * @private
-     */
     std::map<std::string, std::vector<TextureAtlasData*>> _textureAtlasDataMap;
-    /**
-     * @private
-     */
     DragonBones* _dragonBones;
-    /**
-     * @private
-     */
     DataParser* _dataParser;
 
 public:
@@ -116,51 +101,24 @@ public:
     }
 
 protected:
-    /**
-     * @private
-     */
     virtual inline bool _isSupportMesh() const
     {
         return true;
     }
-    /**
-     * @private
-     */
     virtual TextureData* _getTextureData(const std::string& textureAtlasName, const std::string& textureName) const;
-    /**
-     * @private
-     */
     virtual bool _fillBuildArmaturePackage(
         BuildArmaturePackage& dataPackage,
         const std::string& dragonBonesName, const std::string& armatureName, const std::string& skinName, const std::string& textureAtlasName
     ) const;
-    /**
-     * @private
-     */
     virtual void _buildBones(const BuildArmaturePackage& dataPackage, Armature* armature) const;
     /**
      * @private
      */
     virtual void _buildSlots(const BuildArmaturePackage& dataPackage, Armature* armature) const;
-    /**
-     * @private
-     */
     virtual Armature* _buildChildArmature(const BuildArmaturePackage* dataPackage, Slot* slot, DisplayData* displayData) const;
-    /**
-     * @private
-     */
     virtual std::pair<void*, DisplayType> _getSlotDisplay(const BuildArmaturePackage* dataPackage, DisplayData* displayData, DisplayData* rawDisplayData, Slot* slot) const;
-    /**
-     * @private
-     */
     virtual TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const = 0;
-    /**
-     * @private
-     */
     virtual Armature* _buildArmature(const BuildArmaturePackage& dataPackage) const = 0;
-    /**
-     * @private
-     */
     virtual Slot* _buildSlot(const BuildArmaturePackage& dataPackage, const SlotData* slotData, Armature* armature) const = 0;
 
 public:
@@ -394,6 +352,7 @@ public:
     virtual void clear(bool disposeData = true);
     /**
      * - Create a armature from cached DragonBonesData instances and TextureAtlasData instances.
+     * Note that when the created armature that is no longer in use, you need to explicitly dispose {@link #dragonBones.Armature#dispose()}.
      * @param armatureName - The armature data name.
      * @param dragonBonesName - The cached name of the DragonBonesData instance. (If not set, all DragonBonesData instances are retrieved, and when multiple DragonBonesData instances contain a the same name armature data, it may not be possible to accurately create a specific armature)
      * @param skinName - The skin name, you can set a different ArmatureData name to share it's skin data. (If not set, use the default skin data)
@@ -406,15 +365,15 @@ public:
      * </pre>
      * @see dragonBones.DragonBonesData
      * @see dragonBones.ArmatureData
-     * @see dragonBones.Armature
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 通过缓存的 DragonBonesData 实例和 TextureAtlasData 实例创建一个骨架。
+     * 注意，创建的骨架不再使用时，需要显式释放 {@link #dragonBones.Armature#dispose()}。
      * @param armatureName - 骨架数据名称。
      * @param dragonBonesName - DragonBonesData 实例的缓存名称。 （如果未设置，将检索所有的 DragonBonesData 实例，当多个 DragonBonesData 实例中包含同名的骨架数据时，可能无法准确的创建出特定的骨架）
-     * @param skinName - 皮肤名称，可以设置一个其他骨架数据名称来共享其皮肤数据（如果未设置，则使用默认的皮肤数据）。
+     * @param skinName - 皮肤名称，可以设置一个其他骨架数据名称来共享其皮肤数据。（如果未设置，则使用默认的皮肤数据）
      * @returns 骨架。
      * @example
      * TypeScript 风格，仅供参考。
@@ -424,7 +383,6 @@ public:
      * </pre>
      * @see dragonBones.DragonBonesData
      * @see dragonBones.ArmatureData
-     * @see dragonBones.Armature
      * @version DragonBones 3.0
      * @language zh_CN
      */
@@ -546,7 +504,7 @@ public:
      * 这样就能实现制作一个骨架动画模板，让其他没有制作动画的骨架共享该动画。
      * @param armature - 骨架。
      * @param armatureData - 骨架数据。
-     * @param isOverride - 是否完全覆盖原来的动画。 （默认: false）
+     * @param isOverride - 是否完全覆盖原来的动画。（默认: false）
      * @example
      * TypeScript 风格，仅供参考。
      * <pre>
@@ -608,7 +566,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class BuildArmaturePackage
 {

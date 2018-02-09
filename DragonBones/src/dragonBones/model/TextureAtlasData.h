@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -91,12 +91,10 @@ public:
     void copyFrom(const TextureAtlasData& value);
     /**
      * @internal
-     * @private
      */
     virtual TextureData* createTexture() const = 0;
     /**
      * @internal
-     * @private
      */
     virtual void addTexture(TextureData* value);
     /**
@@ -108,9 +106,6 @@ public:
     }
 
 protected:
-    /**
-     * @inheritDoc
-     */
     virtual void _onClear() override;
 
 public: // For WebAssembly.
@@ -118,7 +113,6 @@ public: // For WebAssembly.
 };
 /**
  * @internal
- * @private
  */
 class TextureData : public BaseObject
 {

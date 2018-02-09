@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -203,49 +203,40 @@ public:
     /**
      * - xx: Play Enabled, Fade Play Enabled
      * @internal
-     * @private
      */
     int _playheadState;
     /**
      * -1: Fade in, 0: Fade complete, 1: Fade out;
      * @internal
-     * @private
      */
     int _fadeState;
     /**
      * -1: Fade start, 0: Fading, 1: Fade complete;
      * @internal
-     * @private
      */
     int _subFadeState;
     /**
      * @internal
-     * @private
      */
     float _position;
     /**
      * @internal
-     * @private
      */
     float _duration;
     /**
      * @internal
-     * @private
      */
     float _fadeProgress;
     /**
-    * @internal
-    * @private
-    */
+     * @internal
+     */
     float _weightResult;
     /**
      * @internal
-     * @private
      */
     AnimationData* _animationData;
     /**
      * @internal
-     * @private
      */
     ActionTimelineState* _actionTimeline;
 
@@ -275,9 +266,6 @@ public:
     }
 
 protected:
-    /**
-     * @private
-     */
     virtual void _onClear() override;
 
 private:
@@ -288,12 +276,10 @@ private:
 public:
     /**
      * @internal
-     * @private
      */
     void init(Armature* armature, AnimationData* animationData, AnimationConfig* animationConfig);
     /**
      * @internal
-     * @private
      */
     void advanceTime(float passedTime, float cacheFrameRate);
     /**
@@ -335,27 +321,27 @@ public:
     void fadeOut(float fadeOutTime, bool pausePlayhead = true);
     /**
      * - Check if a specific bone mask is included.
-     * @param name - The bone name.
+     * @param boneName - The bone name.
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 检查是否包含特定骨骼遮罩。
-     * @param name - 骨骼名称。
+     * @param boneName - 骨骼名称。
      * @version DragonBones 3.0
      * @language zh_CN
      */
     bool containsBoneMask(const std::string& boneName) const;
     /**
      * - Add a specific bone mask.
-     * @param name - The bone name.
+     * @param boneName - The bone name.
      * @param recursive - Whether or not to add a mask to the bone's sub-bone.
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 添加特定的骨骼遮罩。
-     * @param name - 骨骼名称。
+     * @param boneName - 骨骼名称。
      * @param recursive - 是否为该骨骼的子骨骼添加遮罩。
      * @version DragonBones 3.0
      * @language zh_CN
@@ -363,14 +349,14 @@ public:
     void addBoneMask(const std::string& boneName, bool recursive = true);
     /**
      * - Remove the mask of a specific bone.
-     * @param name - The bone name.
+     * @param boneName - The bone name.
      * @param recursive - Whether to remove the bone's sub-bone mask.
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 删除特定骨骼的遮罩。
-     * @param name - 骨骼名称。
+     * @param boneName - 骨骼名称。
      * @param recursive - 是否删除该骨骼的子骨骼遮罩。
      * @version DragonBones 3.0
      * @language zh_CN
@@ -512,7 +498,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class BonePose : public BaseObject
 {
@@ -527,9 +512,8 @@ protected:
     virtual void _onClear() override;
 };
 /**
-* @internal
-* @private
-*/
+ * @internal
+ */
 class BlendState
 {
 public:
@@ -539,6 +523,9 @@ public:
     float layerWeight;
     float blendWeight;
 
+    /**
+     * -1: First blending, 0: No blending, 1: Blending.
+     */
     int update(float weight, int p_layer);
     void clear();
 };

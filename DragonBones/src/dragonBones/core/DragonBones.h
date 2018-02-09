@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -105,7 +105,6 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 /**
  * @internal
- * @private
  */
 enum class BinaryOffset
 {
@@ -140,7 +139,6 @@ enum class BinaryOffset
 
 /**
  * @internal
- * @private
  */
 enum class ArmatureType
 {
@@ -196,7 +194,6 @@ enum class BoundingBoxType
 
 /**
  * @internal
- * @private
  */
 enum class ActionType {
     Play = 0,
@@ -206,7 +203,6 @@ enum class ActionType {
 
 /**
  * @internal
- * @private
  */
 enum class BlendMode 
 {
@@ -228,7 +224,6 @@ enum class BlendMode
 
 /**
  * @internal
- * @private
  */
 enum class TweenType {
     None = 0,
@@ -241,7 +236,6 @@ enum class TweenType {
 
 /**
  * @internal
- * @private
  */
 enum class TimelineType {
     Action = 0,

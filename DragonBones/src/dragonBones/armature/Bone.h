@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -67,37 +67,30 @@ public:
     OffsetMode offsetMode;
     /**
      * @internal
-     * @private
      */
     Transform animationPose;
     /**
      * @internal
-     * @private
      */
     bool _transformDirty;
     /**
      * @internal
-     * @private
      */
     bool _childrenTransformDirty;
     /**
      * @internal
-     * @private
      */
     bool _hasConstraint;
     /**
-    * @internal
-    * @private
-    */
+     * @internal
+     */
     BlendState _blendState;
     /**
      * @internal
-     * @private
      */
     const BoneData* _boneData;
     /**
      * @internal
-     * @private
      */
     std::vector<int>* _cachedFrameIndices;
 
@@ -105,32 +98,26 @@ protected:
     bool _localDirty;
     bool _visible;
     int _cachedFrameIndex;
-    Bone* _parent;
-
-protected:
-    /**
-     * @inheritDoc
-     */
-    void _onClear() override;
     /**
      * @private
      */
+    Bone* _parent;
+
+protected:
+    void _onClear() override;
     void _updateGlobalTransformMatrix(bool isCache);
 
 public:
     /**
      * @internal
-     * @private
      */
     void init(const BoneData* boneData, Armature* armatureValue);
     /**
      * @internal
-     * @private
      */
     void update(int cacheFrameIndex);
     /**
      * @internal
-     * @private
      */
     void updateByConstraint();
     /**
@@ -167,14 +154,12 @@ public:
     /**
      * - Check whether the bone contains a specific bone.
      * @see dragonBones.Bone
-     * @see dragonBones.Slot
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 检查该骨骼是否包含特定的骨骼。
      * @see dragonBones.Bone
-     * @see dragonBones.Slot
      * @version DragonBones 3.0
      * @language zh_CN
      */
@@ -227,15 +212,15 @@ public:
         return _boneData->name;
     }
     /**
-    * - The parent bone to which it belongs.
-    * @version DragonBones 3.0
-    * @language en_US
-    */
+     * - The parent bone to which it belongs.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
     /**
-    * - 所属的父骨骼。
-    * @version DragonBones 3.0
-    * @language zh_CN
-    */
+     * - 所属的父骨骼。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
     inline Bone* getParent() const
     {
         return _parent;

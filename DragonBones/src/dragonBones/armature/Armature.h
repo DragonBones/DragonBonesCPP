@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -78,32 +78,26 @@ public:
 public:
     /**
      * @internal
-     * @private
      */
     int _cacheFrameIndex;
     /**
      * @internal
-     * @private
      */
     ArmatureData* _armatureData;
     /**
      * @internal
-     * @private
      */
     DragonBones* _dragonBones;
     /**
      * @internal
-     * @private
      */
     Slot* _parent;
     /**
      * @internal
-     * @private
      */
     TextureAtlasData* _replaceTextureAtlasData;
     /**
      * @internal
-     * @private
      */
     std::vector<Constraint*> _constraints;
 
@@ -138,9 +132,6 @@ public:
     }
 
 protected:
-    /**
-     * @private
-     */
     virtual void _onClear() override;
 
 private:
@@ -149,27 +140,22 @@ private:
 public:
     /**
      * @internal
-     * @private
      */
     void _sortZOrder(const int16_t* slotIndices, unsigned offset);
     /**
      * @internal
-     * @private
      */
     void _addBone(Bone* value);
     /**
      * @internal
-     * @private
      */
     void _addSlot(Slot* value);
     /**
-    * @internal
-    * @private
-    */
+     * @internal
+     */
     void _addConstraint(Constraint* value);
     /**
      * @internal
-     * @private
      */
     void _bufferAction(EventObject* action, bool append);
     /**
@@ -197,7 +183,6 @@ public:
     void dispose();
     /**
      * @internal
-     * @private
      */
     void init(ArmatureData *armatureData, IArmatureProxy* proxy, void* display, DragonBones* dragonBones);
     /**

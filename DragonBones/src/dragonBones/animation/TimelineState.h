@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -28,7 +28,6 @@
 DRAGONBONES_NAMESPACE_BEGIN
 /**
  * @internal
- * @private
  */
 class ActionTimelineState : public TimelineState
 {
@@ -46,7 +45,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class ZOrderTimelineState : public TimelineState 
 {
@@ -58,7 +56,6 @@ protected:
 };
 /**
  * @internal
- * @private
  */
 class BoneAllTimelineState : public BoneTimelineState
 {
@@ -73,7 +70,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class BoneTranslateTimelineState : public BoneTimelineState
 {
@@ -85,7 +81,6 @@ protected:
 };
 /**
  * @internal
- * @private
  */
 class BoneRotateTimelineState : public BoneTimelineState
 {
@@ -100,7 +95,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class BoneScaleTimelineState : public BoneTimelineState
 {
@@ -112,7 +106,6 @@ protected:
 };
 /**
  * @internal
- * @private
  */
 class SlotDislayTimelineState : public SlotTimelineState
 {
@@ -123,7 +116,6 @@ protected:
 };
 /**
  * @internal
- * @private
  */
 class SlotColorTimelineState : public SlotTimelineState
 {
@@ -163,7 +155,6 @@ public:
 };
 /**
  * @internal
- * @private
  */
 class DeformTimelineState : public SlotTimelineState
 {
@@ -195,7 +186,6 @@ public:
 
 /**
  * @internal
- * @private
  */
 class IKConstraintTimelineState : public ConstraintTimelineState 
 {

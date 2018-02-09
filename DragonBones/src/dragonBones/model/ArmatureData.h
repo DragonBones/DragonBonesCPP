@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2017 DragonBones team and other contributors
+ * Copyright (c) 2012-2018 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -176,71 +176,58 @@ public:
     }
 
 protected:
-/**
- * @inheritDoc
- */
 virtual void _onClear() override;
 
 public:
     /**
      * @internal
-     * @private
      */
     void sortBones();
     /**
      * @internal
-     * @private
      */
     void cacheFrames(unsigned frameRate);
     /**
      * @internal
-     * @private
      */
     int setCacheFrame(const Matrix& globalTransformMatrix, const Transform& transform);
     /**
      * @internal
-     * @private
      */
     void getCacheFrame(Matrix& globalTransformMatrix, Transform& transform, unsigned arrayOffset) const;
     /**
      * @internal
-     * @private
      */
     void addBone(BoneData* value);
     /**
      * @internal
-     * @private
      */
     void addSlot(SlotData* value);
     /**
      * @internal
-     * @private
      */
     void addConstraint(ConstraintData* value);
     /**
      * @internal
-     * @private
      */
     void addSkin(SkinData* value);
     /**
      * @internal
-     * @private
      */
     void addAnimation(AnimationData* value);
     /**
      * @internal
-     * @private
      */
     void addAction(ActionData* value, bool isDefault);
     /**
      * - Get a specific done data.
-     * @param name - The bone name.
+     * @param boneName - The bone name.
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 获取特定的骨骼数据。
-     * @param name - 骨骼名称。
+     * @param boneName - 骨骼名称。
      * @version DragonBones 3.0
      * @language zh_CN
      */
@@ -250,13 +237,13 @@ public:
     }
     /**
      * - Get a specific slot data.
-     * @param name - The slot name.
+     * @param slotName - The slot name.
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 获取特定的插槽数据。
-     * @param name - 插槽名称。
+     * @param slotName - 插槽名称。
      * @version DragonBones 3.0
      * @language zh_CN
      */
@@ -273,13 +260,13 @@ public:
     }
     /**
      * - Get a specific skin data.
-     * @param name - The skin name.
+     * @param skinName - The skin name.
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 获取特定皮肤数据。
-     * @param name - 皮肤名称。
+     * @param skinName - 皮肤名称。
      * @version DragonBones 3.0
      * @language zh_CN
      */
@@ -293,13 +280,13 @@ public:
     MeshDisplayData* getMesh(const std::string& skinName, const std::string& slotName, const std::string& meshName) const;
     /**
      * - Get a specific animation data.
-     * @param name - The animation name.
+     * @param animationName - The animation animationName.
      * @version DragonBones 3.0
      * @language en_US
      */
     /**
      * - 获取特定的动画数据。
-     * @param name - 动画名称。
+     * @param animationName - 动画名称。
      * @version DragonBones 3.0
      * @language zh_CN
      */
@@ -414,9 +401,6 @@ public:
     }
 
 protected:
-    /**
-     * @inheritDoc
-     */
     virtual void _onClear() override;
 
 public: // For WebAssembly.
@@ -445,12 +429,10 @@ class SlotData : public BaseObject
 public:
     /**
      * @internal
-     * @private
      */
     static ColorTransform DEFAULT_COLOR;
     /**
      * @internal
-     * @private
      */
     static ColorTransform* createColor();
 
@@ -509,9 +491,6 @@ public:
     }
 
 protected:
-    /**
-     * @inheritDoc
-     */
     virtual void _onClear() override;
 
 public: // For WebAssembly.
