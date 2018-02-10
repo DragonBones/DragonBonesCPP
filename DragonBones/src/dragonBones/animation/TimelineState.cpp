@@ -887,6 +887,10 @@ void DeformTimelineState::update(float passedTime)
     {
         return;
     }
+    else if (_timelineData != nullptr && _dragonBonesData != deformVertices->verticesData->data) 
+    {
+        return;
+    }
 
     SlotTimelineState::update(passedTime);
 
@@ -899,19 +903,31 @@ void DeformTimelineState::update(float passedTime)
         {
             const auto fadeProgress = pow(_animationState->_fadeProgress, 2);
 
-            for (std::size_t i = 0; i < _deformCount; ++i) 
+            if (_timelineData != nullptr)
             {
-                if (i < _valueOffset) 
+                for (std::size_t i = 0; i < _deformCount; ++i)
                 {
-                    result[i] += (_frameFloatArray[_frameFloatOffset + i] - result[i]) * fadeProgress;
+                    if (i < _valueOffset)
+                    {
+                        result[i] += (_frameFloatArray[_frameFloatOffset + i] - result[i]) * fadeProgress;
+                    }
+                    else if (i < _valueOffset + _valueCount)
+                    {
+                        result[i] += (_result[i - _valueOffset] - result[i]) * fadeProgress;
+                    }
+                    else
+                    {
+                        result[i] += (_frameFloatArray[_frameFloatOffset + i - _valueCount] - result[i]) * fadeProgress;
+                    }
                 }
-                else if (i < _valueOffset + _valueCount)
+            }
+            else 
+            {
+                _deformCount = result.size();
+
+                for (std::size_t i = 0; i < _deformCount; ++i)
                 {
-                    result[i] += (_result[i - _valueOffset] - result[i]) * fadeProgress;
-                }
-                else 
-                {
-                    result[i] += (_frameFloatArray[_frameFloatOffset + i - _valueCount] - result[i]) * fadeProgress;
+                    result[i] += (0.0f - result[i]) * fadeProgress;
                 }
             }
 
@@ -921,19 +937,31 @@ void DeformTimelineState::update(float passedTime)
         {
             _dirty = false;
 
-            for (std::size_t i = 0; i < _deformCount; ++i) 
+            if (_timelineData != nullptr)
             {
-                if (i < _valueOffset) 
+                for (std::size_t i = 0; i < _deformCount; ++i)
                 {
-                    result[i] = _frameFloatArray[_frameFloatOffset + i];
+                    if (i < _valueOffset)
+                    {
+                        result[i] = _frameFloatArray[_frameFloatOffset + i];
+                    }
+                    else if (i < _valueOffset + _valueCount)
+                    {
+                        result[i] = _result[i - _valueOffset];
+                    }
+                    else
+                    {
+                        result[i] = _frameFloatArray[_frameFloatOffset + i - _valueCount];
+                    }
                 }
-                else if (i < _valueOffset + _valueCount)
+            }
+            else 
+            {
+                _deformCount = result.size();
+
+                for (std::size_t i = 0; i < _deformCount; ++i)
                 {
-                    result[i] = _result[i - _valueOffset];
-                }
-                else 
-                {
-                    result[i] = _frameFloatArray[_frameFloatOffset + i - _valueCount];
+                    result[i] = 0.0f;
                 }
             }
 

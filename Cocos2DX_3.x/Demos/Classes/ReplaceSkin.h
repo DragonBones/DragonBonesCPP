@@ -79,6 +79,7 @@ protected:
         }
         //
         _armatureDisplay = _factory->buildArmatureDisplay("body");
+        _armatureDisplay->getEventDispatcher()->setEnabled(true);
         _armatureDisplay->getEventDispatcher()->addCustomEventListener(dragonBones::EventObject::LOOP_COMPLETE, std::bind(&ReplaceSkin::_animationEventHandler, this, std::placeholders::_1));
         _armatureDisplay->getAnimation()->play("idle", 0);
         //
@@ -108,7 +109,7 @@ private:
     {
         // Random animation index.
         const auto& animationNames = _armatureDisplay->getAnimation()->getAnimationNames();
-        const auto animationIndex = cocos2d::random((size_t)0, animationNames.size());
+        const auto animationIndex = cocos2d::random((size_t)0, animationNames.size() - 1);
         const auto& animationName = animationNames[animationIndex];
         // Play animation.
         _armatureDisplay->getAnimation()->fadeIn(animationName, 0.3f, 0);
