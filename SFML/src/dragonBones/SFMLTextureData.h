@@ -11,9 +11,9 @@
 
 #include <memory>
 
-#include <dragonBones\DragonBonesHeaders.h>
+#include <dragonBones/DragonBonesHeaders.h>
 
-#include <SFML\Graphics\Sprite.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 DRAGONBONES_NAMESPACE_BEGIN
 

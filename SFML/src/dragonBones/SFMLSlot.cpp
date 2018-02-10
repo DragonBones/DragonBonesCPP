@@ -9,7 +9,7 @@
 
 #include "SFMLSlot.h"
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "SFMLArmatureDisplay.h"
 #include "SFMLTextureAtlasData.h"

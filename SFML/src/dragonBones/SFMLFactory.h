@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 
-#include <dragonBones\DragonBonesHeaders.h>
+#include <dragonBones/DragonBonesHeaders.h>
 
-#include <SFML\Graphics\Sprite.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include "SFMLArmatureDisplay.h"
 #include "SFMLSlot.h"

@@ -9,10 +9,11 @@
 
 #pragma once
 
-#include <dragonBones\DragonBonesHeaders.h>
+#include <dragonBones/DragonBonesHeaders.h>
 
-#include <SFML\Graphics\RenderWindow.hpp>
-#include <SFML\Graphics\Drawable.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "SFMLEventDispatcher.h"
 

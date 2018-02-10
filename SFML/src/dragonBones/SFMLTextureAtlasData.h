@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <dragonBones\DragonBonesHeaders.h>
-#include <SFML\Graphics\Texture.hpp>
+#include <dragonBones/DragonBonesHeaders.h>
+#include <SFML/Graphics/Texture.hpp>
 
 DRAGONBONES_NAMESPACE_BEGIN
 

@@ -12,7 +12,7 @@
 
 #include <memory>
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 DRAGONBONES_NAMESPACE_BEGIN
 
