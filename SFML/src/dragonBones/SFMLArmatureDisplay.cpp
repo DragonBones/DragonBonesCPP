@@ -11,6 +11,7 @@
 
 #include <SFML\Graphics.hpp>
 
+#include "SFMLSlot.h"
 #include "SFMLDisplay.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -62,16 +63,49 @@ void SFMLArmatureDisplay::dispose(bool disposeProxy)
 	}
 }
 
+sf::FloatRect SFMLArmatureDisplay::getBoundingBox() const
+{
+	auto slots = _armature->getSlots();
+	bool isFirst = true;
+
+	sf::Vector2f min;
+	sf::Vector2f max;
+
+	for (const auto slot : _armature->getSlots())
+	{
+		if (!slot->getVisible() || !slot->getDisplay())
+		{
+			continue;
+		}
+
+		auto display = static_cast<SFMLDisplay*>(slot->getRawDisplay());
+		const auto bounds = display->getBoundingBox(_position);
+		if (isFirst)
+		{
+			isFirst = false;
+			min = { bounds.left, bounds.top };
+			max = { bounds.left + bounds.width, bounds.top + bounds.height };
+		}
+		else
+		{
+			min.x = std::min(min.x, bounds.left);
+			min.y = std::min(min.y, bounds.top);
+			max.x = std::max(max.x, bounds.left + bounds.width);
+			max.y = std::max(max.y, bounds.top + bounds.height);
+		}
+	}
+
+	return sf::FloatRect(min, max - min);
+}
+
 void SFMLArmatureDisplay::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	auto arr = _armature->getSlots();
-
-	for (auto item : arr)
+	for (auto slot : _armature->getSlots())
 	{
-		if (!item)
+		if (!slot)
 			continue;
 
-		auto display = static_cast<SFMLDisplay*>(item->getRawDisplay());
+		auto display = static_cast<SFMLDisplay*>(slot->getRawDisplay());
 
 		if (!display)
 			continue;

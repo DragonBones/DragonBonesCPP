@@ -44,6 +44,8 @@ public:
 	Armature* getArmature() const override { return _armature; }
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
 
+	sf::FloatRect getBoundingBox() const;
+
 	void setPosition(const sf::Vector2f& pos) { _position = pos; }
 	auto& getPosition() { return _position; }
 
