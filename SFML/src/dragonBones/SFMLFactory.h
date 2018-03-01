@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 
-#include <dragonBones\DragonBonesHeaders.h>
+#include <dragonBones/DragonBonesHeaders.h>
 
-#include <SFML\Graphics\Sprite.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include "SFMLArmatureDisplay.h"
 #include "SFMLSlot.h"
@@ -58,7 +58,7 @@ public:
 protected:
 	TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const override;
 	Armature* _buildArmature(const BuildArmaturePackage& dataPackage) const override;
-	Slot* _buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, Armature* armature) const override;
+	Slot* _buildSlot(const BuildArmaturePackage& dataPackage, const SlotData* slotData, Armature* armature) const override;
 };
 
 DRAGONBONES_NAMESPACE_END

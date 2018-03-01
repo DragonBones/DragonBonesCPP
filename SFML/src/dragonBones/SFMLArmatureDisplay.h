@@ -9,10 +9,11 @@
 
 #pragma once
 
-#include <dragonBones\DragonBonesHeaders.h>
+#include <dragonBones/DragonBonesHeaders.h>
 
-#include <SFML\Graphics\RenderWindow.hpp>
-#include <SFML\Graphics\Drawable.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "SFMLEventDispatcher.h"
 
@@ -43,6 +44,8 @@ public:
 	
 	Armature* getArmature() const override { return _armature; }
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
+
+	sf::FloatRect getBoundingBox() const;
 
 	void setPosition(const sf::Vector2f& pos) { _position = pos; }
 	auto& getPosition() { return _position; }

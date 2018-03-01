@@ -11,7 +11,7 @@
 
 #include <memory>
 
-#include <dragonBones\DragonBonesHeaders.h>
+#include <dragonBones/DragonBonesHeaders.h>
 
 #include "SFMLDisplay.h"
 

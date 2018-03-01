@@ -13,7 +13,7 @@
 #include <functional>
 #include <vector>
 
-#include <dragonBones\DragonBonesHeaders.h>
+#include <dragonBones/DragonBonesHeaders.h>
 
 DRAGONBONES_NAMESPACE_BEGIN
 

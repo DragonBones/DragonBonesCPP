@@ -9,7 +9,7 @@
 
 #include "SFMLSlot.h"
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "SFMLArmatureDisplay.h"
 #include "SFMLTextureAtlasData.h"
@@ -98,7 +98,7 @@ void SFMLSlot::_updateZOrder()
 
 void SFMLSlot::_updateFrame()
 {
-    const auto currentVerticesData = (_deformVertices != nullptr && _display == _meshDisplay) ? _deformVertices->verticesData : nullptr;
+	const auto currentVerticesData = (_deformVertices != nullptr && _display == _meshDisplay) ? _deformVertices->verticesData : nullptr;
 	auto currentTextureData = static_cast<SFMLTextureData*>(_textureData);
 
 	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
@@ -180,11 +180,11 @@ void SFMLSlot::_updateFrame()
 				_renderDisplay->verticesInTriagles = std::move(verticesInTriagles);
 				_renderDisplay->primitiveType = sf::PrimitiveType::Triangles;
 
-                const auto isSkinned = currentVerticesData->weight != nullptr;
-                if (isSkinned)
-                {
-                    _identityTransform();
-                }
+				const auto isSkinned = currentVerticesData->weight != nullptr;
+				if (isSkinned)
+				{
+					_identityTransform();
+				}
 			}
 			else // Normal texture
 			{
@@ -229,11 +229,11 @@ void SFMLSlot::_updateFrame()
 
 void SFMLSlot::_updateMesh()
 {
-    const auto scale = _armature->_armatureData->scale;
-    const auto& deformVertices = _deformVertices->vertices;
-    const auto& bones = _deformVertices->bones;
-    const auto verticesData = _deformVertices->verticesData;
-    const auto weightData = verticesData->weight;
+	const auto scale = _armature->_armatureData->scale;
+	const auto& deformVertices = _deformVertices->vertices;
+	const auto& bones = _deformVertices->bones;
+	const auto verticesData = _deformVertices->verticesData;
+	const auto weightData = verticesData->weight;
 
 	const auto hasFFD = !deformVertices.empty();
 	const auto meshDisplay = _renderDisplay.get();
@@ -262,7 +262,7 @@ void SFMLSlot::_updateMesh()
 			for (std::size_t j = 0; j < boneCount; ++j)
 			{
 				const auto boneIndex = (unsigned)intArray[iB++];
-				const auto bone = bone[boneIndex];
+				const auto bone = bones[boneIndex];
 				if (bone != nullptr)
 				{
 					const auto& matrix = bone->globalTransformMatrix;
@@ -331,8 +331,8 @@ void SFMLSlot::_updateTransform()
 
 	if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
 	{
-		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX - globalTransformMatrix.c * _pivotY);
-		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX - globalTransformMatrix.d * _pivotY);
+		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
+		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
 	}
 	else if (_childArmature)
 	{
