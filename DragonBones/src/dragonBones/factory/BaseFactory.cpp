@@ -192,7 +192,29 @@ Armature* BaseFactory::_buildChildArmature(const BuildArmaturePackage* dataPacka
 
 std::pair<void*, DisplayType> BaseFactory::_getSlotDisplay(const BuildArmaturePackage* dataPackage, DisplayData* displayData, DisplayData* rawDisplayData, Slot* slot) const
 {
-    const auto& dataName = dataPackage != nullptr ? dataPackage->dataName : displayData->parent->parent->parent->name;
+    std::string dataName = "";
+
+    if (dataPackage != nullptr)
+    {
+        dataName = dataPackage->dataName;
+    }
+    else 
+    {
+        for (const auto& pair : _dragonBonesDataMap) 
+        {
+            if (pair.second == displayData->parent->parent->parent)
+            {
+                dataName = pair.first;
+            }
+        }
+
+        if (dataName.empty())
+        {
+            dataName = displayData->parent->parent->parent->name;
+        }
+    }
+        dataPackage != nullptr ? dataPackage->dataName : displayData->parent->parent->parent->name;
+
     std::pair<void*, DisplayType> display(nullptr, DisplayType::Image);
     switch (displayData->type)
     {
