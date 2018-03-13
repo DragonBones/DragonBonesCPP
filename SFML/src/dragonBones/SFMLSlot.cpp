@@ -3,6 +3,7 @@
 * File          : SFMLSlot.cpp
 * Project		: DragonBonesSFML
 * Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
+*				: Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
 * License   	: MIT License
 *********************************************************************
 */
@@ -190,7 +191,6 @@ void SFMLSlot::_updateFrame()
 			{
 				const auto scale = currentTextureData->parent->scale * _armature->_armatureData->scale;
 				const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
-				_pivotY -= height;
 				_textureScale = scale; 
 
 				auto texRect = sf::FloatRect(currentTextureData->textureRect);
@@ -198,10 +198,10 @@ void SFMLSlot::_updateFrame()
 				_renderDisplay->texture = currentTextureData->texture;
 
 				_renderDisplay->verticesDisplay.resize(4);
-				_renderDisplay->verticesDisplay[0].texCoords = sf::Vector2f(texRect.left, texRect.top);
-				_renderDisplay->verticesDisplay[1].texCoords = sf::Vector2f(texRect.left, texRect.top + texRect.height);
-				_renderDisplay->verticesDisplay[2].texCoords = sf::Vector2f(texRect.left + texRect.width, texRect.top);
-				_renderDisplay->verticesDisplay[3].texCoords = sf::Vector2f(texRect.left + texRect.width, texRect.top + texRect.height);
+				_renderDisplay->verticesDisplay[0].texCoords = sf::Vector2f(texRect.left, 					texRect.top);
+				_renderDisplay->verticesDisplay[1].texCoords = sf::Vector2f(texRect.left, 					texRect.top + texRect.height);
+				_renderDisplay->verticesDisplay[2].texCoords = sf::Vector2f(texRect.left + texRect.width, 	texRect.top);
+				_renderDisplay->verticesDisplay[3].texCoords = sf::Vector2f(texRect.left + texRect.width, 	texRect.top + texRect.height);
 
 
 				float boundsWidth = static_cast<float>(std::abs(texRect.width));
@@ -213,7 +213,6 @@ void SFMLSlot::_updateFrame()
 				_renderDisplay->verticesDisplay[3].position = sf::Vector2f(boundsWidth, boundsheight);
 
 				_renderDisplay->setColor(sf::Color::White);
-				_renderDisplay->origin = sf::Vector2f(0.f, texRect.height);
 			}
 
 			_visibleDirty = true;

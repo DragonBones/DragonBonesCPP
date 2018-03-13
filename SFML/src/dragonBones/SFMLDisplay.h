@@ -1,9 +1,9 @@
 /*
 *********************************************************************
-* File          : SFMLDisplay.h
+* File			: SFMLDisplay.h
 * Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* Thanks to		: Patryk Ludwikowski
+* Developers	: Piotr Krupa (piotrkrupa06@gmail.com)
+*				: Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
 * License   	: MIT License
 *********************************************************************
 */
@@ -28,25 +28,23 @@ public:
 	bool							visible = true;
 
 	sf::BlendMode					blendMode;
-
-	sf::Vector2f					origin;
-
+	
 	sf::PrimitiveType				primitiveType = sf::PrimitiveType::TriangleStrip;
-
 private:
-	Matrix							_matrix;
-	sf::Vector2f					_offset;
-	float							_textureScale;
+	sf::Transform					transform;
+	
 
 public:
 	SFMLDisplay() = default;
 	~SFMLDisplay() = default;
 
-	void setMatrix(const Matrix& matrix, const sf::Vector2f& offset, float textureScale)
+	void setMatrix(const Matrix& matrix, const sf::Vector2f& offset = {0.f, 0.f}, const float& scale = 0.f)
 	{
-		_matrix = matrix;
-		_offset = offset;
-		_textureScale = textureScale;
+		this->transform = sf::Transform(
+			matrix.a * scale,	matrix.c * scale,	offset.x,
+			matrix.b * scale,	matrix.d * scale,	offset.y,
+			0.f,				0.f,				1.f
+		);
 	}
 
 	void setColor(const sf::Color& color)
@@ -57,19 +55,20 @@ public:
 		}
 	}
 
-	void draw(const sf::Vector2f& pos, sf::RenderTarget& target, sf::RenderStates states) const
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		if (visible) 
 		{
 			states.blendMode = blendMode;
 			states.texture = texture;
-			transformMatrix(states.transform, pos);
+			
+			states.transform.combine(this->transform);
 
 			target.draw(&verticesDisplay[0], verticesDisplay.size(), primitiveType, states);
 		}
 	}
 
-	sf::FloatRect getBoundingBox(const sf::Vector2f& pos)
+	sf::FloatRect getBoundingBox(const sf::Vector2f& position)
 	{
 		if (texture == nullptr)
 			return sf::FloatRect();
@@ -91,22 +90,10 @@ public:
 		sf::FloatRect rect(min, max - min);
 
 		sf::Transform matrix;
-		transformMatrix(matrix, pos);
+		matrix.translate(position).combine(this->transform);
 		rect = matrix.transformRect(rect);
 
 		return rect;
-	}
-
-private:
-	void transformMatrix(sf::Transform &matrix, const sf::Vector2f& pos = sf::Vector2f()) const
-	{
-		matrix *= sf::Transform(_matrix.a * _textureScale, _matrix.c * _textureScale, _offset.x + pos.x,
-								_matrix.b * _textureScale, _matrix.d * _textureScale, _offset.y + pos.y,
-								0.f, 0.f, 1.f);
-
-		matrix *= sf::Transform(1.f, 0.f, -origin.x,
-								0.f, 1.f, -origin.y,
-								0.f, 0.f, 1.f);
 	}
 };
 
