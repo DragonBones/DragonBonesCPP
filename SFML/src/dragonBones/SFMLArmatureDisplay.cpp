@@ -100,6 +100,8 @@ sf::FloatRect SFMLArmatureDisplay::getBoundingBox() const
 
 void SFMLArmatureDisplay::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	states.transform.translate(this->_position);
+	
 	for (auto slot : _armature->getSlots())
 	{
 		if (!slot)
@@ -110,7 +112,7 @@ void SFMLArmatureDisplay::draw(sf::RenderTarget& target, sf::RenderStates states
 		if (!display)
 			continue;
 
-		display->draw(_position, target, states);
+		display->draw(target, states);
 	}
 }
 

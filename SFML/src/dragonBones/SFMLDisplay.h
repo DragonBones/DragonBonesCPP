@@ -30,20 +30,20 @@ public:
 	sf::BlendMode					blendMode;
 	
 	sf::PrimitiveType				primitiveType = sf::PrimitiveType::TriangleStrip;
-
 private:
 	sf::Transform					transform;
+	
 
 public:
 	SFMLDisplay() = default;
 	~SFMLDisplay() = default;
 
-	void setMatrix(const Matrix& matrix, const sf::Vector2f& offset = {0.f, 0.f}, const float& textureScale = {1.f})
+	void setMatrix(const Matrix& matrix, const sf::Vector2f& offset = {0.f, 0.f}, const float& scale = 0.f)
 	{
 		this->transform = sf::Transform(
-			matrix.a * textureScale,	matrix.c * textureScale,	offset.x,
-			matrix.b * textureScale,	matrix.d * textureScale,	offset.y,
-			0.f,						0.f,						1.f
+			matrix.a * scale,	matrix.c * scale,	offset.x,
+			matrix.b * scale,	matrix.d * scale,	offset.y,
+			0.f,				0.f,				1.f
 		);
 	}
 
@@ -55,14 +55,14 @@ public:
 		}
 	}
 
-	void draw(const sf::Vector2f& position, sf::RenderTarget& target, sf::RenderStates states) const
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		if (visible) 
 		{
 			states.blendMode = blendMode;
 			states.texture = texture;
 			
-			states.transform.translate(position).combine(this->transform);
+			states.transform.combine(this->transform);
 
 			target.draw(&verticesDisplay[0], verticesDisplay.size(), primitiveType, states);
 		}
