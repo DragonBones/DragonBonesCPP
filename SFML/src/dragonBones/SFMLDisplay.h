@@ -38,7 +38,7 @@ public:
 	SFMLDisplay() = default;
 	~SFMLDisplay() = default;
 
-	void setMatrix(Matrix matrix, sf::Vector2f offset = {0.f, 0.f}, float textureScale = {1.f})
+	void setMatrix(const Matrix& matrix, const sf::Vector2f& offset = {0.f, 0.f}, const float& textureScale = {1.f})
 	{
 		this->transform = sf::Transform(
 			matrix.a * textureScale,	matrix.c * textureScale,	offset.x,
@@ -55,7 +55,7 @@ public:
 		}
 	}
 
-	void draw(sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const
+	void draw(const sf::Vector2f& position, sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		if (visible) 
 		{
@@ -68,7 +68,7 @@ public:
 		}
 	}
 
-	sf::FloatRect getBoundingBox(sf::Vector2f position)
+	sf::FloatRect getBoundingBox(const sf::Vector2f& position)
 	{
 		if (texture == nullptr)
 			return sf::FloatRect();
