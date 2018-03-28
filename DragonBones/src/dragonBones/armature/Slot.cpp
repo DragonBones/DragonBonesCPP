@@ -746,34 +746,34 @@ int Slot::intersectsSegment(
     {
         if (intersectionCount == 1 || intersectionCount == 2) 
         {
-            if (intersectionPointA == nullptr) 
+            if (intersectionPointA != nullptr) 
             {
                 globalTransformMatrix.transformPoint(intersectionPointA->x, intersectionPointA->y, *intersectionPointA);
-                if (intersectionPointB == nullptr) 
+                if (intersectionPointB != nullptr) 
                 {
                     intersectionPointB->x = intersectionPointA->x;
                     intersectionPointB->y = intersectionPointA->y;
                 }
             }
-            else if (intersectionPointB == nullptr) 
+            else if (intersectionPointB != nullptr) 
             {
                 globalTransformMatrix.transformPoint(intersectionPointB->x, intersectionPointB->y, *intersectionPointB);
             }
         }
         else 
         {
-            if (intersectionPointA == nullptr) 
+            if (intersectionPointA != nullptr) 
             {
                 globalTransformMatrix.transformPoint(intersectionPointA->x, intersectionPointA->y, *intersectionPointA);
             }
 
-            if (intersectionPointB == nullptr) 
+            if (intersectionPointB != nullptr) 
             {
                 globalTransformMatrix.transformPoint(intersectionPointB->x, intersectionPointB->y, *intersectionPointB);
             }
         }
 
-        if (normalRadians == nullptr)
+        if (normalRadians != nullptr)
         {
             globalTransformMatrix.transformPoint(cos(normalRadians->x), sin(normalRadians->x), _helpPoint, true);
             normalRadians->x = atan2(_helpPoint.y, _helpPoint.x);
