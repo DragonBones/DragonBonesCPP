@@ -23,7 +23,6 @@ class SFMLTextureData : public TextureData
 
 public:
 	sf::Texture*			texture;
-	sf::IntRect				textureRect;
 
 	std::string				path;
 
@@ -55,7 +54,6 @@ public:
 		region.height = static_cast<float>(size.y);
 
 		texture = value;
-		textureRect = { 0, 0, static_cast<int>(size.x), static_cast<int>(size.y) };
 	}
 };
 

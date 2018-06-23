@@ -211,8 +211,6 @@ Slot* SFMLFactory::_buildSlot(const BuildArmaturePackage& dataPackage, const Slo
 	auto slot = BaseObject::borrowObject<SFMLSlot>();
 	auto wrapperDisplay = new SFMLDisplay();
 
-	_wrapperSlots.push_back(std::unique_ptr<SFMLSlot>(slot));
-
 	slot->init(slotData, armature, wrapperDisplay, wrapperDisplay);
 
 	return slot;

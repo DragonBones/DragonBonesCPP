@@ -193,15 +193,15 @@ void SFMLSlot::_updateFrame()
 				const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
 				_textureScale = scale; 
 
-				auto texRect = sf::FloatRect(currentTextureData->textureRect);
+				auto texRect =currentTextureData->region;
 
 				_renderDisplay->texture = currentTextureData->texture;
 
 				_renderDisplay->verticesDisplay.resize(4);
-				_renderDisplay->verticesDisplay[0].texCoords = sf::Vector2f(texRect.left, 					texRect.top);
-				_renderDisplay->verticesDisplay[1].texCoords = sf::Vector2f(texRect.left, 					texRect.top + texRect.height);
-				_renderDisplay->verticesDisplay[2].texCoords = sf::Vector2f(texRect.left + texRect.width, 	texRect.top);
-				_renderDisplay->verticesDisplay[3].texCoords = sf::Vector2f(texRect.left + texRect.width, 	texRect.top + texRect.height);
+				_renderDisplay->verticesDisplay[0].texCoords = sf::Vector2f(texRect.x, 					texRect.y);
+				_renderDisplay->verticesDisplay[1].texCoords = sf::Vector2f(texRect.x, 					texRect.y + texRect.height);
+				_renderDisplay->verticesDisplay[2].texCoords = sf::Vector2f(texRect.x + texRect.width, 	texRect.y);
+				_renderDisplay->verticesDisplay[3].texCoords = sf::Vector2f(texRect.x + texRect.width, 	texRect.y + texRect.height);
 
 
 				float boundsWidth = static_cast<float>(std::abs(texRect.width));

@@ -45,14 +45,14 @@ void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 
 			if (textureData->texture == nullptr)
 			{
-				sf::IntRect rect(
-					static_cast<int>(textureData->region.x), static_cast<int>(textureData->region.y),
-					static_cast<int>(textureData->rotated ? textureData->region.height : textureData->region.width),
-					static_cast<int>(textureData->rotated ? textureData->region.width : textureData->region.height)
-				);
+				dragonBones::Rectangle region;
+				region.x = textureData->region.x;
+				region.y = textureData->region.y;
+				region.width = textureData->rotated ? textureData->region.height : textureData->region.width;
+				region.height = textureData->rotated ? textureData->region.width : textureData->region.height;
 
 				textureData->texture = _renderTexture;
-				textureData->textureRect = std::move(rect);
+				textureData->region = std::move(region);
 			}
 		}
 	}

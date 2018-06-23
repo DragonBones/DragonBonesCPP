@@ -30,9 +30,6 @@ protected:
 
 	std::unique_ptr<SFMLEventDispatcher>						_soundEventDispatcher;
 
-	mutable std::vector<std::unique_ptr<SFMLSlot>>				_wrapperSlots;
-	mutable std::vector<std::unique_ptr<SFMLTextureData>>		_wrapperTexturesData;
-
 public:
 	SFMLFactory();
 	~SFMLFactory();

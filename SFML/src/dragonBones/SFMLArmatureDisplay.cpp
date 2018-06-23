@@ -23,7 +23,11 @@ SFMLArmatureDisplay::SFMLArmatureDisplay()
 
 SFMLArmatureDisplay::~SFMLArmatureDisplay()
 {
-	_armature = nullptr;
+	if (_armature)
+	{
+		delete _armature;
+		_armature = nullptr;
+	}
 }
 
 void SFMLArmatureDisplay::dbInit(Armature* armature)
