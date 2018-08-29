@@ -1,20 +1,18 @@
-/*
-*********************************************************************
-* File          : DragonBoy.cpp
-* Project       : DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License       : MIT License
-*********************************************************************
-*/
+/** @file DragonBoy.cpp
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 
 #include <SFML/Graphics.hpp>
 
 #include <dragonBones/SFMLFactory.h>
 #include <dragonBones/SFMLArmatureDisplay.h>
 
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1024, 768), "My window");
+	window.setFramerateLimit(60);
 
 	dragonBones::SFMLFactory factory;
 
@@ -24,9 +22,9 @@ int main()
 	factory.loadDragonBonesData("DragonBoy_ske.json");
 	factory.loadTextureAtlasData("DragonBoy_tex.json", &texture);
 
-	auto armatureDisplay = factory.buildArmatureDisplay("Dragon");
+	auto armatureDisplay = new dragonBones::SFMLArmatureDisplay("Dragon");
 	armatureDisplay->getAnimation()->play("walk");
-	armatureDisplay->setPosition({512.f, 440.f});
+	armatureDisplay->setPosition({ 512.f, 440.f });
 
 	sf::Clock clock;
 
@@ -47,6 +45,6 @@ int main()
 		window.draw(*armatureDisplay);
 		window.display();
 	}
-
+	
 	return 0;
 }
