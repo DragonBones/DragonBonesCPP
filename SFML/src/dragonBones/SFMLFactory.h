@@ -47,9 +47,6 @@ public:
 
 	void update(float lastUpdate);
 
-	std::vector<SFMLTextureData*> getTexturesData(DragonBonesData* dragonBonesData, const std::string& folderPath);
-	TextureAtlasData* createTextureAtlasData(std::vector<SFMLTextureData*>& texturesData, DragonBonesData* dragonBonesData);
-
 	static SFMLFactory* get() { return _factory; }
 
 protected:

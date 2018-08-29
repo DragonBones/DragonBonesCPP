@@ -1,6 +1,0 @@
-# Compiling results
-obj/
-out/
-
-# Configurations
-settings.mk

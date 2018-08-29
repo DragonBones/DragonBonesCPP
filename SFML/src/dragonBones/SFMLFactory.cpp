@@ -92,58 +92,7 @@ TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath,
 	return static_cast<SFMLTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), atlasTexture, name, scale));
 }
 
-std::vector<SFMLTextureData*> SFMLFactory::getTexturesData(DragonBonesData* dragonBonesData, const std::string& folderPath)
-{
-	std::vector<SFMLTextureData*> texturesData;
-
-	if (dragonBonesData == nullptr)
-		return texturesData;
-
-	for (auto& armName : dragonBonesData->armatureNames) 
-	{
-		auto& arm = dragonBonesData->armatures[armName];
-
-		for (auto& skin : arm->skins)
-		{
-			for (auto& displays : skin.second->displays) 
-			{
-				for (auto display : displays.second)
-				{
-					const auto textureData = BaseObject::borrowObject<SFMLTextureData>();
-					textureData->rotated = false;
-					textureData->name = display->name;
-					textureData->path = folderPath + "/" + display->path + ".png";
-
-					texturesData.push_back(textureData);
-				}
-			}
-		}
-	}
-
-	return texturesData;
-}
-
-TextureAtlasData* SFMLFactory::createTextureAtlasData(std::vector<SFMLTextureData*>& texturesData, DragonBonesData* dragonBonesData)
-{
-	if (dragonBonesData == nullptr)
-		return nullptr;
-
-	auto textureAtlasData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureAtlasData>();
-	
-	textureAtlasData->name = dragonBonesData->name;
-	
-	for (auto& textureData : texturesData)
-	{
-		textureData->parent = textureAtlasData;
-		textureAtlasData->addTexture(textureData);
-	}
-
-	addTextureAtlasData(textureAtlasData);
-
-	return textureAtlasData;
-}
-
-SFMLArmatureDisplay* SFMLFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
+SFMLArmatureProxy* SFMLFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
 {
 	const auto armature = buildArmature(armatureName, dragonBonesName, skinName, textureAtlasName);
 
@@ -151,7 +100,7 @@ SFMLArmatureDisplay* SFMLFactory::buildArmatureDisplay(const std::string& armatu
 	{
 		_dragonBones->getClock()->add(armature);
 
-		return static_cast<SFMLArmatureDisplay*>(armature->getDisplay());
+		return static_cast<SFMLArmatureProxy*>(armature->getDisplay());
 	}
 
 	return nullptr;
