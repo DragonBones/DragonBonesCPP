@@ -1,11 +1,7 @@
-/*
-*********************************************************************
-* File          : SFMLSlot.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SFMLSlot.h
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 
 #pragma once
 
@@ -13,9 +9,9 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include "SFMLDisplay.h"
-
 DRAGONBONES_NAMESPACE_BEGIN
+
+class SFMLNode;
 
 class SFMLSlot : public Slot
 {
@@ -23,7 +19,7 @@ class SFMLSlot : public Slot
 
 private:
 	float _textureScale;
-	std::unique_ptr<SFMLDisplay> _renderDisplay;
+	SFMLNode* _renderDisplay = nullptr;
 
 public:
 	virtual void _updateVisible() override;

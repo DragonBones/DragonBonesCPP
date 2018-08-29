@@ -1,11 +1,7 @@
-/*
-*********************************************************************
-* File          : SFMLFactory.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SFMLFactory.cpp
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 
 #include "SFMLFactory.h"
 
@@ -17,7 +13,7 @@
 #include "SFMLSlot.h"
 #include "SFMLTextureData.h"
 #include "SFMLTextureAtlasData.h"
-#include "SFMLArmatureDisplay.h"
+#include "SFMLArmatureProxy.h"
 #include "SFMLDisplay.h"
 #include "SFMLEventDispatcher.h"
 
@@ -148,7 +144,7 @@ TextureAtlasData* SFMLFactory::_buildTextureAtlasData(TextureAtlasData* textureA
 Armature* SFMLFactory::_buildArmature(const BuildArmaturePackage& dataPackage) const
 {
 	const auto armature = BaseObject::borrowObject<Armature>();
-	const auto armatureDisplay = new SFMLArmatureDisplay();
+	const auto armatureDisplay = new SFMLArmatureProxy();
 
 	armature->init(dataPackage.armature, armatureDisplay, armatureDisplay, _dragonBones);
 

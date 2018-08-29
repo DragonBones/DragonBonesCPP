@@ -1,18 +1,15 @@
-/*
-*********************************************************************
-* File          : SFMLSlot.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-*				: Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SFMLSlot.cpp
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
+ ** @license MIT License
+ **/
 
 #include "SFMLSlot.h"
 
 #include <SFML/Graphics.hpp>
 
-#include "SFMLArmatureDisplay.h"
+#include "SFMLArmatureProxy.h"
+#include "SFMLDisplay.h"
 #include "SFMLTextureAtlasData.h"
 #include "SFMLTextureData.h"
 
@@ -20,26 +17,28 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 void SFMLSlot::_updateVisible()
 {
-	_renderDisplay->visible = _parent->getVisible();
+	_renderDisplay->setVisible(_parent->getVisible());
 }
 
 void SFMLSlot::_updateBlendMode()
 {
 	if (_renderDisplay)
 	{
+		auto display = static_cast<SFMLDisplay*>(_renderDisplay);
+
 		switch (_blendMode)
 		{
 			case BlendMode::Normal:
-				_renderDisplay->blendMode = sf::BlendMode();
+				display->blendMode = sf::BlendMode();
 				break;
 			case BlendMode::Add:
-				_renderDisplay->blendMode = sf::BlendAdd;
+				display->blendMode = sf::BlendAdd;
 				break;
 			case BlendMode::Multiply:
-				_renderDisplay->blendMode = sf::BlendMultiply;
+				display->blendMode = sf::BlendMultiply;
 				break;
 			default:
-				_renderDisplay->blendMode = sf::BlendMode();
+				display->blendMode = sf::BlendMode();
 				break;
 		}
 	}
@@ -57,14 +56,14 @@ void SFMLSlot::_updateColor()
 {
 	if (_renderDisplay)
 	{
-		sf::Color helpColor;
+		sf::Color color;
 
-		helpColor.a = static_cast<uint8_t>(_colorTransform.alphaMultiplier * 255.f);
-		helpColor.r = static_cast<uint8_t>(_colorTransform.redMultiplier * 255.f);
-		helpColor.g = static_cast<uint8_t>(_colorTransform.greenMultiplier * 255.f);
-		helpColor.b = static_cast<uint8_t>(_colorTransform.blueMultiplier * 255.f);
+		color.a = static_cast<uint8_t>(_colorTransform.alphaMultiplier * 255.f);
+		color.r = static_cast<uint8_t>(_colorTransform.redMultiplier * 255.f);
+		color.g = static_cast<uint8_t>(_colorTransform.greenMultiplier * 255.f);
+		color.b = static_cast<uint8_t>(_colorTransform.blueMultiplier * 255.f);
 
-		_renderDisplay->setColor(helpColor);
+		_renderDisplay->setColor(color);
 	}
 }
 
@@ -74,33 +73,60 @@ void SFMLSlot::_initDisplay(void* value, bool isRetain)
 
 void SFMLSlot::_disposeDisplay(void* value, bool isRelease)
 {
+	if (!isRelease && value)
+	{
+		delete value;
+	}
 }
 
 void SFMLSlot::_onUpdateDisplay()
 {
-	_renderDisplay = std::unique_ptr<SFMLDisplay>(static_cast<SFMLDisplay*>(_display != nullptr ? _display : _rawDisplay));
+	_renderDisplay = static_cast<SFMLNode*>(_display != nullptr ? _display : _rawDisplay);
+	_renderDisplay->setZOffset(_slotData->zOrder);
 }
 
 void SFMLSlot::_addDisplay()
 {
+	auto arm = static_cast<SFMLArmatureProxy*>(_armature->getDisplay());
+	arm->addNode(_renderDisplay);
 }
 
 void SFMLSlot::_replaceDisplay(void* value, bool isArmatureDisplay)
 {
+	auto prevDisplay = static_cast<SFMLNode*>(value);
+
+	auto arm = static_cast<SFMLArmatureProxy*>(_armature->getDisplay());
+
+	_renderDisplay->setZOffset(prevDisplay->getZOffset());
+
+	arm->removeNode(prevDisplay);
+	arm->addNode(_renderDisplay);
+
+	arm->sortNodes();
+
+	_textureScale = 1.f;
+
 }
 
 void SFMLSlot::_removeDisplay()
 {
+	auto arm = static_cast<SFMLArmatureProxy*>(_armature->getDisplay());
+	arm->removeNode(static_cast<SFMLNode*>(_renderDisplay));
 }
 
 void SFMLSlot::_updateZOrder()
 {
+	_renderDisplay->setZOffset(_slotData->zOrder);
+	auto arm = static_cast<SFMLArmatureProxy*>(_armature->getDisplay());
+	arm->sortNodes();
 }
 
 void SFMLSlot::_updateFrame()
 {
 	const auto currentVerticesData = (_deformVertices != nullptr && _display == _meshDisplay) ? _deformVertices->verticesData : nullptr;
 	auto currentTextureData = static_cast<SFMLTextureData*>(_textureData);
+
+	auto display = static_cast<SFMLDisplay*>(_renderDisplay);
 
 	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
 	{
@@ -176,10 +202,10 @@ void SFMLSlot::_updateFrame()
 
 				_textureScale = 1.f;
 
-				_renderDisplay->texture = currentTextureData->texture;
-				_renderDisplay->verticesDisplay = std::move(verticesDisplay);
-				_renderDisplay->verticesInTriagles = std::move(verticesInTriagles);
-				_renderDisplay->primitiveType = sf::PrimitiveType::Triangles;
+				display->texture = currentTextureData->texture;
+				display->verticesDisplay = std::move(verticesDisplay);
+				display->verticesInTriagles = std::move(verticesInTriagles);
+				display->primitiveType = sf::PrimitiveType::Triangles;
 
 				const auto isSkinned = currentVerticesData->weight != nullptr;
 				if (isSkinned)
@@ -195,24 +221,24 @@ void SFMLSlot::_updateFrame()
 
 				auto texRect =currentTextureData->region;
 
-				_renderDisplay->texture = currentTextureData->texture;
+				display->texture = currentTextureData->texture;
 
-				_renderDisplay->verticesDisplay.resize(4);
-				_renderDisplay->verticesDisplay[0].texCoords = sf::Vector2f(texRect.x, 					texRect.y);
-				_renderDisplay->verticesDisplay[1].texCoords = sf::Vector2f(texRect.x, 					texRect.y + texRect.height);
-				_renderDisplay->verticesDisplay[2].texCoords = sf::Vector2f(texRect.x + texRect.width, 	texRect.y);
-				_renderDisplay->verticesDisplay[3].texCoords = sf::Vector2f(texRect.x + texRect.width, 	texRect.y + texRect.height);
+				display->verticesDisplay.resize(4);
+				display->verticesDisplay[0].texCoords = sf::Vector2f(texRect.x, 					texRect.y);
+				display->verticesDisplay[1].texCoords = sf::Vector2f(texRect.x, 					texRect.y + texRect.height);
+				display->verticesDisplay[2].texCoords = sf::Vector2f(texRect.x + texRect.width, 	texRect.y);
+				display->verticesDisplay[3].texCoords = sf::Vector2f(texRect.x + texRect.width, 	texRect.y + texRect.height);
 
 
 				float boundsWidth = static_cast<float>(std::abs(texRect.width));
 				float boundsheight = static_cast<float>(std::abs(texRect.height));
 
-				_renderDisplay->verticesDisplay[0].position = sf::Vector2f(0.f, 0.f);
-				_renderDisplay->verticesDisplay[1].position = sf::Vector2f(0.f, boundsheight);
-				_renderDisplay->verticesDisplay[2].position = sf::Vector2f(boundsWidth, 0.f);
-				_renderDisplay->verticesDisplay[3].position = sf::Vector2f(boundsWidth, boundsheight);
+				display->verticesDisplay[0].position = sf::Vector2f(0.f, 0.f);
+				display->verticesDisplay[1].position = sf::Vector2f(0.f, boundsheight);
+				display->verticesDisplay[2].position = sf::Vector2f(boundsWidth, 0.f);
+				display->verticesDisplay[3].position = sf::Vector2f(boundsWidth, boundsheight);
 
-				_renderDisplay->setColor(sf::Color::White);
+				display->setColor(sf::Color::White);
 			}
 
 			_visibleDirty = true;
@@ -223,7 +249,7 @@ void SFMLSlot::_updateFrame()
 		}
 	}
 
-	_renderDisplay->visible = false;
+	_renderDisplay->setVisible(false);
 }
 
 void SFMLSlot::_updateMesh()
@@ -235,7 +261,8 @@ void SFMLSlot::_updateMesh()
 	const auto weightData = verticesData->weight;
 
 	const auto hasFFD = !deformVertices.empty();
-	const auto meshDisplay = _renderDisplay.get();
+	const auto meshDisplay = static_cast<SFMLDisplay*>(_renderDisplay);
+
 
 	if (weightData != nullptr)
 	{
@@ -321,31 +348,28 @@ void SFMLSlot::_updateMesh()
 
 void SFMLSlot::_identityTransform()
 {
-	_renderDisplay->setMatrix(Matrix(), sf::Vector2f(), _textureScale);
+	_renderDisplay->setMatrix(Matrix(), sf::Vector2f(), _textureScale, _textureScale);
 }
 
 void SFMLSlot::_updateTransform()
 {
-	sf::Vector2f pos;
+	sf::Vector2f pos(
+		globalTransformMatrix.tx,
+		globalTransformMatrix.ty
+	);
 
-	if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
+	if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
 	{
-		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
-		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
-	}
-	else if (_childArmature)
-	{
-		pos.x = globalTransformMatrix.tx;
-		pos.y = globalTransformMatrix.ty;
+		pos.x -= globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY;
+		pos.y -= globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY;
 	}
 	else
 	{
-		sf::Vector2f anchorPoint = { 1.f, 1.f };
-		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
-		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
+		pos.x -= globalTransformMatrix.a - globalTransformMatrix.c;
+		pos.y -= globalTransformMatrix.b - globalTransformMatrix.d;
 	}
 
-	_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale);
+	_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale, _textureScale);
 }
 
 void SFMLSlot::_onClear()
@@ -353,12 +377,7 @@ void SFMLSlot::_onClear()
 	Slot::_onClear();
 
 	_textureScale = 1.0f;
-
-	if (_textureData)
-	{
-		delete _textureData;
-		_textureData = nullptr;
-	}
+	_renderDisplay = nullptr;
 }
 
 DRAGONBONES_NAMESPACE_END

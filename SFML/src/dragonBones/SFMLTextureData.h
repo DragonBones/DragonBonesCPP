@@ -1,11 +1,7 @@
-/*
-*********************************************************************
-* File          : SFMLTextureData.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SFMLTextureData.h
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 
 #pragma once
 
@@ -23,8 +19,6 @@ class SFMLTextureData : public TextureData
 
 public:
 	sf::Texture*			texture;
-
-	std::string				path;
 
 public:
 	SFMLTextureData()

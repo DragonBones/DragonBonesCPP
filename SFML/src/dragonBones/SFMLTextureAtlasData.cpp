@@ -1,12 +1,7 @@
-/*
-*********************************************************************
-* File          : SFMLTextureAtlasData.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
-
+/** @file SFMLTextureAtlasData.cpp
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 #include "SFMLTextureAtlasData.h"
 
 #include <memory>
@@ -54,17 +49,6 @@ void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 				textureData->texture = _renderTexture;
 				textureData->region = std::move(region);
 			}
-		}
-	}
-	else
-	{
-		for (const auto& pair : textures)
-		{
-			const auto textureData = static_cast<SFMLTextureData*>(pair.second);
-
-			// textureData->Sprite.reset();
-
-			// nothing to release
 		}
 	}
 }

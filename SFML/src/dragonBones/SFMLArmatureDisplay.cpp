@@ -1,123 +1,70 @@
-/*
-*********************************************************************
-* File          : SFMLArmatureDisplay.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SFMLArmatureDisplay.cpp
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 
 #include "SFMLArmatureDisplay.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
-#include "SFMLSlot.h"
-#include "SFMLDisplay.h"
+#include "SFMLArmatureProxy.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-SFMLArmatureDisplay::SFMLArmatureDisplay()
+SFMLArmatureDisplay::SFMLArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName)
 {
-	_armature = nullptr;
+	_proxy = SFMLFactory::get()->buildArmatureDisplay(armatureName, dragonBonesName, skinName, textureAtlasName);
 }
 
 SFMLArmatureDisplay::~SFMLArmatureDisplay()
 {
-	if (_armature)
-	{
-		delete _armature;
-		_armature = nullptr;
-	}
+	_proxy->dispose(true);
+	_proxy = nullptr;
 }
 
-void SFMLArmatureDisplay::dbInit(Armature* armature)
+Armature* SFMLArmatureDisplay::getArmature() const
 {
-	_armature = armature;
+	if (_proxy)
+		return _proxy->getArmature();
+
+	return nullptr;
 }
 
-void SFMLArmatureDisplay::dbClear()
+Animation* SFMLArmatureDisplay::getAnimation() const
 {
-	_armature = nullptr;
+	if (_proxy)
+		return _proxy->getAnimation();
+
+	return nullptr;
 }
 
-void SFMLArmatureDisplay::dbUpdate()
+SFMLEventDispatcher* SFMLArmatureDisplay::getEventDispatcher()
 {
+	if (_proxy)
+		return _proxy->getEventDispatcher();
+
+	return nullptr;
 }
 
-void SFMLArmatureDisplay::addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener)
+SFMLArmatureProxy* SFMLArmatureDisplay::getArmatureProxy() const
 {
-	_dispatcher.addDBEventListener(type, listener);
+	return _proxy;
 }
 
-void SFMLArmatureDisplay::removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener)
+sf::FloatRect SFMLArmatureDisplay::getBoundingBox()
 {
-}
+	if (_proxy)
+		return _proxy->getBoundingBox();
 
-void SFMLArmatureDisplay::dispatchDBEvent(const std::string& type, EventObject* value)
-{
-	_dispatcher.dispatchDBEvent(type, value);
-}
-
-void SFMLArmatureDisplay::dispose(bool disposeProxy)
-{
-	if (_armature)
-	{
-		delete _armature;
-		_armature = nullptr;
-	}
-}
-
-sf::FloatRect SFMLArmatureDisplay::getBoundingBox() const
-{
-	auto slots = _armature->getSlots();
-	bool isFirst = true;
-
-	sf::Vector2f min;
-	sf::Vector2f max;
-
-	for (const auto slot : _armature->getSlots())
-	{
-		if (!slot->getVisible() || !slot->getDisplay())
-		{
-			continue;
-		}
-
-		auto display = static_cast<SFMLDisplay*>(slot->getRawDisplay());
-		const auto bounds = display->getBoundingBox(_position);
-		if (isFirst)
-		{
-			isFirst = false;
-			min = { bounds.left, bounds.top };
-			max = { bounds.left + bounds.width, bounds.top + bounds.height };
-		}
-		else
-		{
-			min.x = std::min(min.x, bounds.left);
-			min.y = std::min(min.y, bounds.top);
-			max.x = std::max(max.x, bounds.left + bounds.width);
-			max.y = std::max(max.y, bounds.top + bounds.height);
-		}
-	}
-
-	return sf::FloatRect(min, max - min);
+	return sf::FloatRect();
 }
 
 void SFMLArmatureDisplay::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	states.transform.translate(this->_position);
-	
-	for (auto slot : _armature->getSlots())
-	{
-		if (!slot)
-			continue;
+	states.transform.translate(_pos);
 
-		auto display = static_cast<SFMLDisplay*>(slot->getRawDisplay());
-
-		if (!display)
-			continue;
-
-		display->draw(target, states);
-	}
+	if (_proxy)
+		target.draw(*_proxy, states);
 }
 
 DRAGONBONES_NAMESPACE_END
