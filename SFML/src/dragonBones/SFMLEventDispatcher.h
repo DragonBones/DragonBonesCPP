@@ -1,11 +1,7 @@
-/*
-*********************************************************************
-* File          : SFMLEventDispatcher.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SFMLEventDispatcher.h
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 
 #pragma once
 
@@ -24,31 +20,36 @@ class SFMLEventDispatcher : public IEventDispatcher
 private:
 	std::unordered_map<std::string, std::vector<Func_t>> _listeners;
 
+	bool _enabled = true;
+
 public:
 	SFMLEventDispatcher() = default;
 	~SFMLEventDispatcher() = default;
 
-	virtual void addDBEventListener(const std::string& type, const Func_t& listener) override
+	void setEnabled(bool enabled) { _enabled = enabled; }
+
+	void addDBEventListener(const std::string& type, const Func_t& listener) override
 	{
 		_listeners[type].push_back(listener);
 	}
 
-	virtual void removeDBEventListener(const std::string& type, const Func_t& listener) override
+	void removeDBEventListener(const std::string& type, const Func_t& listener) override
 	{
-		/*for (auto& callback : _listeners[type])
-		{
-		}*/
+		// TODO
 	}
 
-	virtual void dispatchDBEvent(const std::string& type, EventObject* value) override
+	void dispatchDBEvent(const std::string& type, EventObject* value) override
 	{
+		if (!_enabled)
+			return;
+
 		for (auto& listener : _listeners[type])
 		{
 			listener(value);
 		}
 	}
 
-	virtual bool hasDBEventListener(const std::string& type) const { return true; };
+	bool hasDBEventListener(const std::string& type) const { return true; };
 };
 
 DRAGONBONES_NAMESPACE_END

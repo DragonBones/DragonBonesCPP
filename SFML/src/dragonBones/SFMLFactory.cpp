@@ -1,23 +1,20 @@
-/*
-*********************************************************************
-* File          : SFMLFactory.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SFMLFactory.cpp
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 
 #include "SFMLFactory.h"
 
 #include <fstream>
 #include <sstream>
+#include <memory>
 
 #include <SFML/Graphics.hpp>
 
 #include "SFMLSlot.h"
 #include "SFMLTextureData.h"
 #include "SFMLTextureAtlasData.h"
-#include "SFMLArmatureDisplay.h"
+#include "SFMLArmatureProxy.h"
 #include "SFMLDisplay.h"
 #include "SFMLEventDispatcher.h"
 
@@ -92,58 +89,7 @@ TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath,
 	return static_cast<SFMLTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), atlasTexture, name, scale));
 }
 
-std::vector<SFMLTextureData*> SFMLFactory::getTexturesData(DragonBonesData* dragonBonesData, const std::string& folderPath)
-{
-	std::vector<SFMLTextureData*> texturesData;
-
-	if (dragonBonesData == nullptr)
-		return texturesData;
-
-	for (auto& armName : dragonBonesData->armatureNames) 
-	{
-		auto& arm = dragonBonesData->armatures[armName];
-
-		for (auto& skin : arm->skins)
-		{
-			for (auto& displays : skin.second->displays) 
-			{
-				for (auto display : displays.second)
-				{
-					const auto textureData = BaseObject::borrowObject<SFMLTextureData>();
-					textureData->rotated = false;
-					textureData->name = display->name;
-					textureData->path = folderPath + "/" + display->path + ".png";
-
-					texturesData.push_back(textureData);
-				}
-			}
-		}
-	}
-
-	return texturesData;
-}
-
-TextureAtlasData* SFMLFactory::createTextureAtlasData(std::vector<SFMLTextureData*>& texturesData, DragonBonesData* dragonBonesData)
-{
-	if (dragonBonesData == nullptr)
-		return nullptr;
-
-	auto textureAtlasData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureAtlasData>();
-	
-	textureAtlasData->name = dragonBonesData->name;
-	
-	for (auto& textureData : texturesData)
-	{
-		textureData->parent = textureAtlasData;
-		textureAtlasData->addTexture(textureData);
-	}
-
-	addTextureAtlasData(textureAtlasData);
-
-	return textureAtlasData;
-}
-
-SFMLArmatureDisplay* SFMLFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
+SFMLArmatureProxy* SFMLFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
 {
 	const auto armature = buildArmature(armatureName, dragonBonesName, skinName, textureAtlasName);
 
@@ -151,7 +97,7 @@ SFMLArmatureDisplay* SFMLFactory::buildArmatureDisplay(const std::string& armatu
 	{
 		_dragonBones->getClock()->add(armature);
 
-		return static_cast<SFMLArmatureDisplay*>(armature->getDisplay());
+		return static_cast<SFMLArmatureProxy*>(armature->getDisplay());
 	}
 
 	return nullptr;
@@ -199,7 +145,7 @@ TextureAtlasData* SFMLFactory::_buildTextureAtlasData(TextureAtlasData* textureA
 Armature* SFMLFactory::_buildArmature(const BuildArmaturePackage& dataPackage) const
 {
 	const auto armature = BaseObject::borrowObject<Armature>();
-	const auto armatureDisplay = new SFMLArmatureDisplay();
+	const auto armatureDisplay = new SFMLArmatureProxy();
 
 	armature->init(dataPackage.armature, armatureDisplay, armatureDisplay, _dragonBones);
 
@@ -210,8 +156,6 @@ Slot* SFMLFactory::_buildSlot(const BuildArmaturePackage& dataPackage, const Slo
 {
 	auto slot = BaseObject::borrowObject<SFMLSlot>();
 	auto wrapperDisplay = new SFMLDisplay();
-
-	_wrapperSlots.push_back(std::unique_ptr<SFMLSlot>(slot));
 
 	slot->init(slotData, armature, wrapperDisplay, wrapperDisplay);
 

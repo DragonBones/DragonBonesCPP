@@ -1,11 +1,7 @@
-/*
-*********************************************************************
-* File          : SFMLTextureData.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SFMLTextureData.h
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ ** @license MIT License
+ **/
 
 #pragma once
 
@@ -23,9 +19,6 @@ class SFMLTextureData : public TextureData
 
 public:
 	sf::Texture*			texture;
-	sf::IntRect				textureRect;
-
-	std::string				path;
 
 public:
 	SFMLTextureData()
@@ -55,7 +48,6 @@ public:
 		region.height = static_cast<float>(size.y);
 
 		texture = value;
-		textureRect = { 0, 0, static_cast<int>(size.x), static_cast<int>(size.y) };
 	}
 };
 
