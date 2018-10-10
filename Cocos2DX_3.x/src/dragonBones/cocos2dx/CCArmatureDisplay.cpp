@@ -105,39 +105,11 @@ bool DBCCSprite::_checkVisibility(const cocos2d::Mat4& transform, const cocos2d:
     float hSizeX = size.width / 2;
     float hSizeY = size.height / 2;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    cocos2d::Vec3 v3p(hSizeX + rect.origin.x, hSizeY + rect.origin.y, 0);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#if COCOS2D_VERSION >= 0x00031500
+	cocos2d::Vec3 v3p(hSizeX, hSizeY, 0);
+#else
+	cocos2d::Vec3 v3p(hSizeX+rect.origin.x, hSizeY+rect.origin.y, 0);
+#endif
 
     transform.transformPoint(&v3p);
     cocos2d::Vec2 v2p = cocos2d::Camera::getVisitingCamera()->projectGL(v3p);
