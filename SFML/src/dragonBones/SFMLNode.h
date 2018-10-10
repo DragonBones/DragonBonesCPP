@@ -24,7 +24,7 @@ protected:
 
 public:
 	SFMLNode() = default;
-	~SFMLNode() = default;
+	virtual ~SFMLNode() = default;
 
 	void setZOffset(int zOffset) { _zOffset = zOffset; }
 	int getZOffset() const { return _zOffset; }

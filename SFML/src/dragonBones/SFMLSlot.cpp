@@ -75,7 +75,7 @@ void SFMLSlot::_disposeDisplay(void* value, bool isRelease)
 {
 	if (!isRelease && value)
 	{
-		delete value;
+		delete static_cast<SFMLNode*>(value);
 	}
 }
 
