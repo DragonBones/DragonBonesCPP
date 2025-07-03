@@ -90,7 +90,7 @@ fun DragonBonesAndroidDemo() {
         }
 
         animToPlay?.let {
-            controller.fadeInAnimation(name = it, layer = 0, loop = 0, fadeInTime = 0.3f)
+            // controller.fadeInAnimation(name = it, layer = 0, loop = 0, fadeInTime = 0.3f)
         }
     }
 
